@@ -9,10 +9,11 @@ const nextConfig = {
     '@company/commerce-seo',
   ],
   async rewrites() {
+    const wpBase = (process.env.NEXT_PUBLIC_WORDPRESS_URL || 'http://woo-catalog-nextjs.local').replace(/\/$/, '');
     return [
       {
         source: '/api/wp/:path*',
-        destination: 'http://woo-catalog-nextjs.local/wp-json/hcc/v1/:path*',
+        destination: `${wpBase}/wp-json/hcc/v1/:path*`,
       },
     ];
   },
