@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "@company/commerce-core": ["../commerce-core/src/index.ts"],
+      "@company/commerce-rest": ["../commerce-rest/src/index.ts"],
+      "@company/commerce-graphql": ["../commerce-graphql/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*"]
+}
