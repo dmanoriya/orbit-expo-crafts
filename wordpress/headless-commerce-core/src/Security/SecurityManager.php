@@ -20,7 +20,17 @@ class SecurityManager {
 	 * Handle CORS headers for Next.js frontend communication (REST/GraphQL API calls only)
 	 */
 	public static function handle_cors() {
-		header( 'Access-Control-Allow-Origin: *' );
+		$origin = isset( $_SERVER['HTTP_ORIGIN'] ) ? $_SERVER['HTTP_ORIGIN'] : '';
+		$frontend_url = get_option( 'hcc_frontend_url', '' );
+		$allowed_origin = '*';
+
+		if ( ! empty( $origin ) ) {
+			$allowed_origin = $origin;
+		} elseif ( ! empty( $frontend_url ) ) {
+			$allowed_origin = rtrim( $frontend_url, '/' );
+		}
+
+		header( "Access-Control-Allow-Origin: {$allowed_origin}" );
 		header( 'Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS' );
 		header( 'Access-Control-Allow-Credentials: true' );
 		header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Nonce, X-HCC-Session' );

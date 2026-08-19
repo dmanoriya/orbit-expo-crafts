@@ -388,7 +388,7 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
   hero_accent: 'project-ready.',
   hero_lede: 'We engineer and build loose furniture, casegoods, lighting and fixed joinery to project drawings for luxury hotels, resorts, fine dining and international export projects.',
   hero_bg_mode: 'image',
-  hero_bg_image: 'http://woo-catalog-nextjs.local/wp-content/uploads/2026/08/category-sofas.jpg',
+  hero_bg_image: '/fallback-product.svg',
   hero_bg_color: '#181512',
   hero_overlay_opacity: '85',
   stat1_number: '3,20,000',

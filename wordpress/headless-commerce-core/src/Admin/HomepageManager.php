@@ -36,7 +36,7 @@ class HomepageManager {
 			'hero_accent'       => 'project-ready.',
 			'hero_lede'         => 'We engineer and build loose furniture, casegoods, lighting and fixed joinery to project drawings for luxury hotels, resorts, fine dining and international export projects.',
 			'hero_bg_mode'          => 'image',
-			'hero_bg_image'         => 'http://woo-catalog-nextjs.local/wp-content/uploads/2026/08/category-sofas.jpg',
+			'hero_bg_image'         => site_url( '/wp-content/uploads/2026/08/category-sofas.jpg' ),
 			'hero_bg_color'         => '#181512',
 			'hero_overlay_opacity'  => '85',
 			
@@ -167,7 +167,7 @@ class HomepageManager {
 						<div style="display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-top:12px;">
 							<div>
 								<label style="font-weight:600; display:block; margin-bottom:4px;">Background Image URL (WordPress Media Library):</label>
-								<input type="text" name="hcc_homepage_options[hero_bg_image]" value="<?php echo esc_attr( $data['hero_bg_image'] ); ?>" style="width:100%;" placeholder="http://woo-catalog-nextjs.local/wp-content/uploads/2026/08/category-sofas.jpg" />
+								<input type="text" name="hcc_homepage_options[hero_bg_image]" value="<?php echo esc_attr( $data['hero_bg_image'] ); ?>" style="width:100%;" placeholder="https://yourdomain.com/wp-content/uploads/hero.jpg" />
 							</div>
 							<div>
 								<label style="font-weight:600; display:block; margin-bottom:4px;">Dark Scrim Opacity (%):</label>

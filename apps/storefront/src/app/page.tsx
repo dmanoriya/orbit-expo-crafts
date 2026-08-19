@@ -85,7 +85,7 @@ export default function HomePage() {
           <img
             src={
               hpData.hero_bg_image ||
-              'http://woo-catalog-nextjs.local/wp-content/uploads/2026/08/category-sofas.jpg'
+              '/fallback-product.svg'
             }
             alt="Hero Background"
             className="heroimg"
