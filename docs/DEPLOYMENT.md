@@ -15,23 +15,27 @@
 
 ## 2. Next.js Storefront Deployment (Vercel / Netlify / VPS)
 
-### Deploying to Vercel (Recommended):
+### Deploying to Hostinger (Node.js Web Hosting / VPS):
 
-1. **Connect GitHub Repository**:
-   - Go to [Vercel Dashboard](https://vercel.com/new).
-   - Import your GitHub repository: `dmanoriya/orbit-expo-crafts`.
-   - Select **Root Directory**: `apps/storefront` (or keep `./` with Root Directory set to `apps/storefront`).
-   - Build Command: `npx turbo build` (or `pnpm build`).
-   - Output Directory: `.next`.
+1. **Upload Hostinger Zip File**:
+   - Download the generated `hostinger-nextjs-storefront.zip` archive.
+   - In Hostinger hPanel -> **Files** -> **File Manager** (or SSH), upload `hostinger-nextjs-storefront.zip` to your Node.js application directory (e.g. `public_html` or `/home/username/nodeapp`).
+   - Extract `hostinger-nextjs-storefront.zip`.
 
 2. **Environment Variables**:
-   In your Vercel Project Settings -> **Environment Variables**, add:
-   ```env
-   NEXT_PUBLIC_WORDPRESS_URL=https://your-wordpress-domain.com
-   NEXT_PUBLIC_SITE_URL=https://your-storefront-domain.com
-   ```
+   - Open `.env` inside the extracted folder:
+     ```env
+     NEXT_PUBLIC_WORDPRESS_URL=https://your-wordpress-domain.com
+     NEXT_PUBLIC_SITE_URL=https://your-storefront-domain.com
+     PORT=3000
+     ```
 
-3. **Click Deploy**. Vercel will build and deploy your storefront.
+3. **Hostinger Node.js Setup**:
+   - In Hostinger hPanel -> **Node.js**:
+     - **Application Root**: `/` (or directory where `server.js` is located)
+     - **Application Startup File**: `server.js`
+     - **Node.js Version**: 18.x, 20.x, or 22.x
+   - Click **Start Application** / **Restart Application**.
 
 ---
 
