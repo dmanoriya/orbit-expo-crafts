@@ -157,6 +157,8 @@ export default function SampleCadModal({
       finish_preference: finish,
       quantity: quantity,
       product_name: productName,
+      product_image: productImage || '',
+      product_url: typeof window !== 'undefined' ? window.location.href : '',
       notes: notes,
     };
 

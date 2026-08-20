@@ -127,6 +127,7 @@ export default function ContactPage() {
 
     setIsSubmitting(true);
 
+    const firstItem = enquiry.length > 0 ? enquiry[0] : null;
     const formPayload = {
       form_type: 'quote_enquiry',
       full_name: fullName,
@@ -136,7 +137,10 @@ export default function ContactPage() {
       project_type: projectType,
       quantity: String(quantity),
       notes: description,
-      shortlist_items: enquiry.map((i) => ({ id: i.id, name: i.name, quantity: i.q })),
+      product_name: firstItem ? (enquiry.length === 1 ? firstItem.name : `${enquiry.length} Shortlisted Products`) : '',
+      product_image: firstItem?.image || '',
+      product_url: typeof window !== 'undefined' ? window.location.href : '',
+      shortlist_items: enquiry.map((i) => ({ id: i.id, name: i.name, quantity: i.q, image: i.image, catName: i.catName })),
     };
 
     let generatedRef = '';
