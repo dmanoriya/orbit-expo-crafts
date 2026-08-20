@@ -24,7 +24,7 @@ class FormEntriesManager {
 		$table_name = self::get_table_name();
 		$charset_collate = $wpdb->get_charset_collate();
 
-		$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
+		$sql = "CREATE TABLE {$table_name} (
 			id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			reference_id VARCHAR(50) NOT NULL,
 			form_type VARCHAR(50) NOT NULL DEFAULT 'quote_enquiry',
@@ -43,7 +43,7 @@ class FormEntriesManager {
 			shortlist_items LONGTEXT DEFAULT '',
 			status VARCHAR(50) NOT NULL DEFAULT 'new',
 			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-			PRIMARY KEY (id),
+			PRIMARY KEY  (id),
 			KEY reference_id (reference_id),
 			KEY form_type (form_type),
 			KEY status (status)
@@ -51,6 +51,20 @@ class FormEntriesManager {
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( $sql );
+
+		// Explicit column migrations to ensure existing tables get new columns immediately
+		$existing_columns = $wpdb->get_col( "DESCRIBE {$table_name}", 0 );
+		if ( is_array( $existing_columns ) && ! empty( $existing_columns ) ) {
+			if ( ! in_array( 'product_sku', $existing_columns, true ) ) {
+				$wpdb->query( "ALTER TABLE {$table_name} ADD COLUMN product_sku VARCHAR(100) DEFAULT '' AFTER product_name;" );
+			}
+			if ( ! in_array( 'product_url', $existing_columns, true ) ) {
+				$wpdb->query( "ALTER TABLE {$table_name} ADD COLUMN product_url VARCHAR(255) DEFAULT '' AFTER product_sku;" );
+			}
+			if ( ! in_array( 'product_image', $existing_columns, true ) ) {
+				$wpdb->query( "ALTER TABLE {$table_name} ADD COLUMN product_image VARCHAR(255) DEFAULT '' AFTER product_url;" );
+			}
+		}
 	}
 
 	public static function add_admin_menu() {
@@ -67,6 +81,9 @@ class FormEntriesManager {
 	public static function save_entry( $data ) {
 		global $wpdb;
 		$table_name = self::get_table_name();
+
+		// Ensure table exists & columns exist
+		self::create_table();
 
 		$prefix = ( ($data['form_type'] ?? '') === 'quote_enquiry' ) ? 'QT-' : 'REQ-';
 		$ref_id = ! empty( $data['reference_id'] ) ? $data['reference_id'] : $prefix . rand( 100000, 999999 );
@@ -91,9 +108,22 @@ class FormEntriesManager {
 			'created_at'        => current_time( 'mysql' ),
 		);
 
+		// Filter insert_data against actual table columns in case of column mismatch
+		$columns = $wpdb->get_col( "DESCRIBE {$table_name}", 0 );
+		if ( is_array( $columns ) && ! empty( $columns ) ) {
+			$filtered_data = array();
+			foreach ( $insert_data as $key => $val ) {
+				if ( in_array( $key, $columns, true ) ) {
+					$filtered_data[ $key ] = $val;
+				}
+			}
+			$insert_data = $filtered_data;
+		}
+
 		$result = $wpdb->insert( $table_name, $insert_data );
 
 		if ( false === $result ) {
+			error_log( 'HCC Form Save DB Error: ' . $wpdb->last_error );
 			return false;
 		}
 
