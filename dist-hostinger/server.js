@@ -1,3 +1,11 @@
 const path = require('path');
-process.chdir(path.join(__dirname, 'apps', 'storefront'));
-require('./apps/storefront/server.js');
+const fs = require('fs');
+
+process.env.NODE_ENV = 'production';
+
+const appDir = path.join(__dirname, 'apps', 'storefront');
+if (fs.existsSync(appDir)) {
+  process.chdir(appDir);
+}
+
+require('./server.js');

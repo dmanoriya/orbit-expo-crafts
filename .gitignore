@@ -5,6 +5,7 @@ node_modules/
 # Next.js & Turbo build outputs
 .next/
 dist/
+dist-hostinger/
 build/
 .turbo/
 out/
