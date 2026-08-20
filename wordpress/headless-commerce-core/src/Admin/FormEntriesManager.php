@@ -450,7 +450,17 @@ class FormEntriesManager {
 			if (entry.finish_preference) html += '<tr><td style="font-weight:600;">Finish Preference:</td><td>' + entry.finish_preference + '</td></tr>';
 			if (entry.quantity) html += '<tr><td style="font-weight:600;">Quantity:</td><td><strong>' + entry.quantity + ' units</strong></td></tr>';
 			if (entry.project_type) html += '<tr><td style="font-weight:600;">Project Domain:</td><td>' + entry.project_type + '</td></tr>';
-			if (entry.product_url) html += '<tr><td style="font-weight:600;">Source Page URL:</td><td><a href="' + entry.product_url + '" target="_blank">' + entry.product_url + ' ↗</a></td></tr>';
+			var displayUrl = entry.product_url;
+			if ((!displayUrl || displayUrl.indexOf('/contact') !== -1) && entry.shortlist_items) {
+				try {
+					var parsed = typeof entry.shortlist_items === 'string' ? JSON.parse(entry.shortlist_items) : entry.shortlist_items;
+					if (Array.isArray(parsed) && parsed.length > 0 && (parsed[0].id || parsed[0].url)) {
+						displayUrl = parsed[0].url || ('https://orbitexpocrafts.com/product/' + parsed[0].id);
+					}
+				} catch(e) {}
+			}
+
+			if (displayUrl) html += '<tr><td style="font-weight:600;">Product Page URL:</td><td><a href="' + displayUrl + '" target="_blank" style="color:#0E5C63; font-weight:600;">' + displayUrl + ' ↗</a></td></tr>';
 			html += '</table>';
 
 			if (entry.notes) {
@@ -462,10 +472,15 @@ class FormEntriesManager {
 				try {
 					var items = typeof entry.shortlist_items === 'string' ? JSON.parse(entry.shortlist_items) : entry.shortlist_items;
 					if (Array.isArray(items) && items.length > 0) {
-						html += '<h3 style="margin-top:16px; margin-bottom:8px; font-size:15px; border-bottom:1px solid #ccc; padding-bottom:4px;">Shortlisted Items (' + items.length + ')</h3>';
-						html += '<table class="widefat striped"><thead><tr><th>Product Name</th><th>Qty</th></tr></thead><tbody>';
+						html += '<h3 style="margin-top:16px; margin-bottom:8px; font-size:15px; border-bottom:1px solid #ccc; padding-bottom:4px;">Shortlisted Products (' + items.length + ')</h3>';
+						html += '<table class="widefat striped"><thead><tr><th>Product Name & Direct Link</th><th style="width:80px;">Qty</th></tr></thead><tbody>';
 						items.forEach(function(item) {
-							html += '<tr><td><strong>' + (item.name || item.id) + '</strong></td><td>' + (item.quantity || item.q || 1) + '</td></tr>';
+							var itemUrl = item.url || (item.id ? ('https://orbitexpocrafts.com/product/' + item.id) : '');
+							html += '<tr><td><strong>' + (item.name || item.id) + '</strong>';
+							if (itemUrl) {
+								html += '<br><a href="' + itemUrl + '" target="_blank" style="font-size:11.5px; color:#0E5C63; font-weight:600;">🔗 View Product Page ↗</a>';
+							}
+							html += '</td><td><strong>' + (item.quantity || item.q || 1) + '</strong></td></tr>';
 						});
 						html += '</tbody></table>';
 					}
