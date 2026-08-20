@@ -13,7 +13,7 @@ const nextConfig = {
     '@company/commerce-seo',
   ],
   async rewrites() {
-    const wpBase = (process.env.NEXT_PUBLIC_WORDPRESS_URL || 'http://woo-catalog-nextjs.local').replace(/\/$/, '');
+    const wpBase = (process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.orbitexpocrafts.com').replace(/\/$/, '');
     return [
       {
         source: '/api/wp/:path*',

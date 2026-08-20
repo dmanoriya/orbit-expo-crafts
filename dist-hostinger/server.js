@@ -7,7 +7,6 @@ process.env.NODE_ENV = 'production';
 
 const appDir = path.join(__dirname, 'apps', 'storefront');
 
-// Change working directory to storefront app dir for relative asset resolution
 if (fs.existsSync(appDir)) {
   process.chdir(appDir);
 }
@@ -17,8 +16,8 @@ const app = next({ dev: false, dir: '.' });
 const handle = app.getRequestHandler();
 
 const port = parseInt(process.env.PORT, 10) || 3000;
+const hostname = '0.0.0.0';
 
-// Hostinger requires server.listen() to be executed immediately on startup
 const server = createServer((req, res) => {
   const parsedUrl = parse(req.url, true);
   handle(req, res, parsedUrl);
@@ -30,7 +29,7 @@ app.prepare().then(() => {
   console.error('> Next.js prepare error:', err);
 });
 
-server.listen(port, (err) => {
+server.listen(port, hostname, (err) => {
   if (err) throw err;
-  console.log(`> Orbit Expo Crafts Hostinger Server running on port ${port}`);
+  console.log(`> Orbit Expo Crafts Hostinger Server running on http://${hostname}:${port}`);
 });

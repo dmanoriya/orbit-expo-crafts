@@ -90,6 +90,14 @@ export function getCachedStorefrontData(): StorefrontDataResult | null {
   return cachedStorefrontData;
 }
 
+export function getWpEndpoint(path: string): string {
+  if (typeof window !== 'undefined') {
+    return `/api/wp${path}`;
+  }
+  const wpBase = (process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.orbitexpocrafts.com').replace(/\/$/, '');
+  return `${wpBase}/wp-json/hcc/v1${path}`;
+}
+
 export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
   if (cachedStorefrontData) {
     return cachedStorefrontData;
@@ -97,9 +105,9 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
 
   try {
     const [resProd, resCat, resAttr] = await Promise.all([
-      fetch('/api/wp/products?per_page=-1', { cache: 'no-store' }).catch(() => null),
-      fetch('/api/wp/categories', { cache: 'no-store' }).catch(() => null),
-      fetch('/api/wp/attributes', { cache: 'no-store' }).catch(() => null),
+      fetch(getWpEndpoint('/products?per_page=-1'), { cache: 'no-store' }).catch(() => null),
+      fetch(getWpEndpoint('/categories'), { cache: 'no-store' }).catch(() => null),
+      fetch(getWpEndpoint('/attributes'), { cache: 'no-store' }).catch(() => null),
     ]);
 
     let wpProducts: ProductItem[] = [];
@@ -243,7 +251,7 @@ export async function fetchWpProductBySlug(slug: string): Promise<{ product: Pro
 
   // 1. Fetch single product from REST endpoint
   try {
-    const res = await fetch(`/api/wp/products/slug/${cleanSlug}`, { cache: 'no-store' }).catch(() => null);
+    const res = await fetch(getWpEndpoint(`/products/slug/${cleanSlug}`), { cache: 'no-store' }).catch(() => null);
     if (res && res.ok) {
       const json = await res.json().catch(() => null);
       if (json && json.success && json.data) {
@@ -442,7 +450,7 @@ let cachedHpData: HomepageData | null = null;
 export async function fetchWpHomepageData(): Promise<HomepageData> {
   if (cachedHpData) return cachedHpData;
   try {
-    const res = await fetch('/api/wp/homepage', { cache: 'no-store' }).catch(() => null);
+    const res = await fetch(getWpEndpoint('/homepage'), { cache: 'no-store' }).catch(() => null);
     if (res && res.ok) {
       const json = await res.json().catch(() => null);
       if (json && json.success && json.data) {
