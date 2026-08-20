@@ -1,7 +1,12 @@
-const { createServer } = require('http');
-const { parse } = require('url');
 const path = require('path');
 const fs = require('fs');
+
+// Configure Node.js module search paths to find next and all dependencies seamlessly
+module.paths.unshift(path.join(__dirname, 'node_modules'));
+module.paths.unshift(path.join(__dirname, 'apps', 'storefront', 'node_modules'));
+
+const { createServer } = require('http');
+const { parse } = require('url');
 
 process.env.NODE_ENV = 'production';
 
