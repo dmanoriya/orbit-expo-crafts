@@ -11,9 +11,23 @@ import Pagination from '../../components/Pagination';
 
 interface CatalogueClientProps {
   initialCategory?: string;
+  initialProducts?: ProductItem[];
+  initialCategories?: WpCategoryItem[];
+  initialSegments?: string[];
+  initialMaterials?: string[];
+  initialColors?: WpColorItem[];
+  isWpConnected?: boolean;
 }
 
-export default function CatalogueClient({ initialCategory }: CatalogueClientProps) {
+export default function CatalogueClient({
+  initialCategory,
+  initialProducts,
+  initialCategories,
+  initialSegments,
+  initialMaterials,
+  initialColors,
+  isWpConnected: initialWpConnected,
+}: CatalogueClientProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { addEnquiry } = useEnquiry();
@@ -29,22 +43,26 @@ export default function CatalogueClient({ initialCategory }: CatalogueClientProp
   const initialCache = getCachedStorefrontData();
 
   const [products, setProducts] = useState<ProductItem[]>(
-    initialCache ? initialCache.products : MOCK_PRODUCTS
+    initialProducts || (initialCache ? initialCache.products : MOCK_PRODUCTS)
   );
   const [categories, setCategories] = useState<WpCategoryItem[]>(
-    initialCache ? initialCache.categories : []
+    initialCategories || (initialCache ? initialCache.categories : [])
   );
   const [segmentsList, setSegmentsList] = useState<string[]>(
-    initialCache && initialCache.segments.length > 0 ? initialCache.segments : SEGMENTS
+    initialSegments || (initialCache && initialCache.segments.length > 0 ? initialCache.segments : SEGMENTS)
   );
   const [materialsList, setMaterialsList] = useState<string[]>(
-    initialCache && initialCache.materials.length > 0 ? initialCache.materials : MATERIALS
+    initialMaterials || (initialCache && initialCache.materials.length > 0 ? initialCache.materials : MATERIALS)
   );
   const [colorsList, setColorsList] = useState<WpColorItem[]>(
-    initialCache && initialCache.colors.length > 0 ? initialCache.colors : FINISHES
+    initialColors || (initialCache && initialCache.colors.length > 0 ? initialCache.colors : FINISHES)
   );
-  const [isWpConnected, setIsWpConnected] = useState(initialCache ? initialCache.isWpConnected : false);
-  const [loading, setLoading] = useState(!initialCache);
+  const [isWpConnected, setIsWpConnected] = useState(
+    initialWpConnected ?? (initialCache ? initialCache.isWpConnected : false)
+  );
+  const [loading, setLoading] = useState(
+    !initialProducts && !initialCache
+  );
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   const activeFiltersCount =
@@ -82,6 +100,10 @@ export default function CatalogueClient({ initialCategory }: CatalogueClientProp
 
   useEffect(() => {
     async function loadData() {
+      if (initialProducts && initialProducts.length > 0) {
+        setLoading(false);
+        return;
+      }
       const data = await fetchWpStorefrontData();
       setProducts(data.products);
       setCategories(data.categories);
@@ -92,7 +114,7 @@ export default function CatalogueClient({ initialCategory }: CatalogueClientProp
       setLoading(false);
     }
     loadData();
-  }, []);
+  }, [initialProducts]);
 
   const handleSelectCat = (slug: string) => {
     setCatFilter(slug);

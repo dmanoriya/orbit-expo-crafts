@@ -1,6 +1,9 @@
 import React, { Suspense } from 'react';
 import { Metadata } from 'next';
 import CatalogueClient from './CatalogueClient';
+import { fetchWpStorefrontData } from '../../lib/wpCommerce';
+
+export const revalidate = 60; // 1-min ISR cache for super-fast server response
 
 export const metadata: Metadata = {
   title: 'Contract Furniture Catalogue | ORBIT Expo Crafts',
@@ -16,10 +19,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CataloguePage() {
+export default async function CataloguePage() {
+  const sfData = await fetchWpStorefrontData();
+
   return (
     <Suspense fallback={<div className="wrap" style={{ padding: '60px 28px' }}>Loading Catalogue...</div>}>
-      <CatalogueClient />
+      <CatalogueClient
+        initialProducts={sfData.products}
+        initialCategories={sfData.categories}
+        initialSegments={sfData.segments}
+        initialMaterials={sfData.materials}
+        initialColors={sfData.colors}
+        isWpConnected={sfData.isWpConnected}
+      />
     </Suspense>
   );
 }
