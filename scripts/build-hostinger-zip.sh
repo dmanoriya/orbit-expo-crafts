@@ -31,7 +31,7 @@ cp -rL "$ROOT_DIR/node_modules/next" "$ROOT_DIR/dist-hostinger/apps/storefront/n
 echo "✂️ Step 4/5: Pruning Build Caches and Source Maps..."
 rm -rf "$ROOT_DIR/dist-hostinger/apps/storefront/.next/cache"
 find "$ROOT_DIR/dist-hostinger" -name "*.map" -delete 2>/dev/null || true
-find "$ROOT_DIR/dist-hostinger" -type d -name "typescript" -exec rm -rf {} + 2>/dev/null || true
+find "$ROOT_DIR/dist-hostinger" -type d -name "typescript" -not -path "*/node_modules/next/*" -exec rm -rf {} + 2>/dev/null || true
 find "$ROOT_DIR/dist-hostinger" -type d -name "turbo" -exec rm -rf {} + 2>/dev/null || true
 find "$ROOT_DIR/dist-hostinger" -type d -name "@turbo" -exec rm -rf {} + 2>/dev/null || true
 
