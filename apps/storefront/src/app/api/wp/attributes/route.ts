@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   const wpBaseUrl = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'http://woo-catalog-nextjs.local';
   try {
-    const res = await fetch(`${wpBaseUrl}/wp-json/hcc/v1/attributes`, { cache: 'no-store' });
+    const res = await fetch(`${wpBaseUrl}/wp-json/hcc/v1/attributes`, { next: { tags: ['wp-attributes'], revalidate: 86400 } });
     if (res.ok) {
       const data = await res.json();
       return NextResponse.json(data);

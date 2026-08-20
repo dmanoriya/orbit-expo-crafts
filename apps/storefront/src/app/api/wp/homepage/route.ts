@@ -5,7 +5,7 @@ const WP_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'http://woo-catalog-
 export async function GET() {
   try {
     const res = await fetch(`${WP_API_URL}/wp-json/hcc/v1/homepage`, {
-      cache: 'no-store',
+      next: { tags: ['wp-homepage'], revalidate: 86400 },
     });
 
     if (!res.ok) {

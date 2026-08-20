@@ -105,9 +105,9 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
 
   try {
     const [resProd, resCat, resAttr] = await Promise.all([
-      fetch(getWpEndpoint('/products?per_page=-1'), { cache: 'no-store' }).catch(() => null),
-      fetch(getWpEndpoint('/categories'), { cache: 'no-store' }).catch(() => null),
-      fetch(getWpEndpoint('/attributes'), { cache: 'no-store' }).catch(() => null),
+      fetch(getWpEndpoint('/products?per_page=-1'), { next: { tags: ['wp-products'], revalidate: 86400 } }).catch(() => null),
+      fetch(getWpEndpoint('/categories'), { next: { tags: ['wp-categories'], revalidate: 86400 } }).catch(() => null),
+      fetch(getWpEndpoint('/attributes'), { next: { tags: ['wp-attributes'], revalidate: 86400 } }).catch(() => null),
     ]);
 
     let wpProducts: ProductItem[] = [];
@@ -251,7 +251,7 @@ export async function fetchWpProductBySlug(slug: string): Promise<{ product: Pro
 
   // 1. Fetch single product from REST endpoint
   try {
-    const res = await fetch(getWpEndpoint(`/products/slug/${cleanSlug}`), { cache: 'no-store' }).catch(() => null);
+    const res = await fetch(getWpEndpoint(`/products/slug/${cleanSlug}`), { next: { tags: ['wp-products', `wp-product-${cleanSlug}`], revalidate: 86400 } }).catch(() => null);
     if (res && res.ok) {
       const json = await res.json().catch(() => null);
       if (json && json.success && json.data) {
@@ -450,7 +450,7 @@ let cachedHpData: HomepageData | null = null;
 export async function fetchWpHomepageData(): Promise<HomepageData> {
   if (cachedHpData) return cachedHpData;
   try {
-    const res = await fetch(getWpEndpoint('/homepage'), { cache: 'no-store' }).catch(() => null);
+    const res = await fetch(getWpEndpoint('/homepage'), { next: { tags: ['wp-homepage'], revalidate: 86400 } }).catch(() => null);
     if (res && res.ok) {
       const json = await res.json().catch(() => null);
       if (json && json.success && json.data) {
