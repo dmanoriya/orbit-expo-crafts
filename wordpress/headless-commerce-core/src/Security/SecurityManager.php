@@ -58,7 +58,11 @@ class SecurityManager {
 		$transient_key = 'hcc_rate_' . md5( $ip );
 		$current_hits  = (int) get_transient( $transient_key );
 
-		if ( $current_hits >= 120 ) {
+		// Rate limit POST/PUT/DELETE actions; allow GET queries up to 1200/min
+		$method = isset( $_SERVER['REQUEST_METHOD'] ) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+		$limit  = ( 'GET' === $method ) ? 1200 : 300;
+
+		if ( $current_hits >= $limit ) {
 			return new \WP_Error(
 				'hcc_rate_limit_exceeded',
 				__( 'Rate limit exceeded. Please try again later.', 'headless-commerce-core' ),
