@@ -12,6 +12,7 @@ export default function TurnkeyPage() {
           src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80"
           alt="Turnkey Works"
         />
+        <div className="hero-overlay" />
         <div className="wrap" style={{ paddingBottom: 78 }}>
           <span className="eyebrow mono">
             <i /> For hotels · restaurants · offices · developers
