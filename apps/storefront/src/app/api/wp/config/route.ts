@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 
-const WP_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'http://woo-catalog-nextjs.local';
+const WP_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.orbitexpocrafts.com';
 
 export async function GET() {
   try {
-    const res = await fetch(`${WP_API_URL}/wp-json/hcc/v1/config`, {
-      next: { tags: ['wp-config'], revalidate: 86400 },
+    const res = await fetch(`${WP_API_URL.replace(/\/$/, '')}/wp-json/hcc/v1/config`, {
+      cache: 'no-store',
     });
 
     if (!res.ok) {

@@ -98,6 +98,11 @@ export function getWpEndpoint(path: string): string {
   return `${wpBase}/wp-json/hcc/v1${path}`;
 }
 
+export function clearWpDataCache() {
+  cachedStorefrontData = null;
+  productCacheMap.clear();
+}
+
 export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
   if (cachedStorefrontData) {
     return cachedStorefrontData;
@@ -105,9 +110,9 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
 
   try {
     const [resProd, resCat, resAttr] = await Promise.all([
-      fetch(getWpEndpoint('/products?per_page=-1'), { next: { tags: ['wp-products'], revalidate: 86400 } }).catch(() => null),
-      fetch(getWpEndpoint('/categories'), { next: { tags: ['wp-categories'], revalidate: 86400 } }).catch(() => null),
-      fetch(getWpEndpoint('/attributes'), { next: { tags: ['wp-attributes'], revalidate: 86400 } }).catch(() => null),
+      fetch(getWpEndpoint('/products?per_page=-1'), { next: { tags: ['wp-products'], revalidate: 30 } }).catch(() => null),
+      fetch(getWpEndpoint('/categories'), { next: { tags: ['wp-categories'], revalidate: 30 } }).catch(() => null),
+      fetch(getWpEndpoint('/attributes'), { next: { tags: ['wp-attributes'], revalidate: 60 } }).catch(() => null),
     ]);
 
     let wpProducts: ProductItem[] = [];
@@ -445,12 +450,9 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
   band_cta2_url: '/catalogue',
 };
 
-let cachedHpData: HomepageData | null = null;
-
 export async function fetchWpHomepageData(): Promise<HomepageData> {
-  if (cachedHpData) return cachedHpData;
   try {
-    const res = await fetch(getWpEndpoint('/homepage'), { next: { tags: ['wp-homepage'], revalidate: 86400 } }).catch(() => null);
+    const res = await fetch(getWpEndpoint('/homepage'), { cache: 'no-store' }).catch(() => null);
     if (res && res.ok) {
       const json = await res.json().catch(() => null);
       if (json && json.success && json.data) {
@@ -459,8 +461,7 @@ export async function fetchWpHomepageData(): Promise<HomepageData> {
         Object.keys(raw).forEach((k) => {
           cleaned[k] = typeof raw[k] === 'string' ? decodeHtmlEntities(raw[k]) : raw[k];
         });
-        cachedHpData = { ...DEFAULT_HOMEPAGE_DATA, ...cleaned };
-        return cachedHpData!;
+        return { ...DEFAULT_HOMEPAGE_DATA, ...cleaned };
       }
     }
   } catch (e) {

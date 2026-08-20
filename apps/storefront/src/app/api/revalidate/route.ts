@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidateTag, revalidatePath } from 'next/cache';
+import { clearWpDataCache } from '../../../lib/wpCommerce';
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,6 +11,9 @@ export async function POST(request: NextRequest) {
     if (secret !== expectedSecret && authHeader !== expectedSecret) {
       return NextResponse.json({ message: 'Invalid secret key' }, { status: 401 });
     }
+
+    // Instantly wipe memory caches
+    clearWpDataCache();
 
     const body = await request.json().catch(() => ({}));
     const tags: string[] = Array.isArray(body.tags) && body.tags.length > 0

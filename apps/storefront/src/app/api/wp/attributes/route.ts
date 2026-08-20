@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  const wpBaseUrl = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'http://woo-catalog-nextjs.local';
+  const wpBaseUrl = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.orbitexpocrafts.com';
   try {
-    const res = await fetch(`${wpBaseUrl}/wp-json/hcc/v1/attributes`, { next: { tags: ['wp-attributes'], revalidate: 86400 } });
+    const res = await fetch(`${wpBaseUrl.replace(/\/$/, '')}/wp-json/hcc/v1/attributes`, {
+      next: { tags: ['wp-attributes'], revalidate: 60 },
+    });
     if (res.ok) {
       const data = await res.json();
       return NextResponse.json(data);
@@ -12,7 +14,6 @@ export async function GET() {
     console.error('Error fetching attributes proxy:', err);
   }
 
-  // Fallback default attributes matching reference prototype
   return NextResponse.json({
     success: true,
     data: {
