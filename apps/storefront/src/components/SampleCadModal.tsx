@@ -42,18 +42,19 @@ const SPAM_KEYWORDS = [
 export default function SampleCadModal({
   isOpen,
   onClose,
-  requestType: initialRequestType,
-  productName,
+  requestType: initialRequestType = 'sample',
+  productName = 'Selected Product',
   productImage,
   productMoq = 1,
   initialFinish = 'Standard Finish',
 }: SampleCadModalProps) {
+  const safeMoq = Math.max(1, Number(productMoq) || 1);
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [reqType, setReqType] = useState<'sample' | 'cad'>(initialRequestType);
+  const [reqType, setReqType] = useState<'sample' | 'cad'>(initialRequestType || 'sample');
   
   // Step 1 Fields
-  const [finish, setFinish] = useState(initialFinish);
-  const [quantity, setQuantity] = useState(productMoq);
+  const [finish, setFinish] = useState(initialFinish || 'Standard Finish');
+  const [quantity, setQuantity] = useState(safeMoq);
   const [notes, setNotes] = useState('');
 
   // Step 2 Fields
@@ -67,25 +68,27 @@ export default function SampleCadModal({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [refId, setRefId] = useState('');
 
+  const safeCountry = selectedCountry || COUNTRIES[0] || { country: 'India', code: '+91', flag: '🇮🇳', iso: 'IN' };
+
   useEffect(() => {
-    setReqType(initialRequestType);
-    setFinish(initialFinish);
-    setQuantity(productMoq);
+    setReqType(initialRequestType || 'sample');
+    setFinish(initialFinish || 'Standard Finish');
+    setQuantity(safeMoq);
     setStep(1);
     setErrors({});
-  }, [initialRequestType, initialFinish, productMoq, isOpen]);
+  }, [initialRequestType, initialFinish, safeMoq, isOpen]);
 
   if (!isOpen) return null;
 
   // Validation Checkers
   const validateStep1 = (): boolean => {
     const errs: Record<string, string> = {};
-    if (quantity < productMoq) {
-      errs.quantity = `Quantity cannot be less than Minimum Order Quantity (${productMoq} units).`;
+    if (quantity < safeMoq) {
+      errs.quantity = `Quantity cannot be less than Minimum Order Quantity (${safeMoq} units).`;
     }
 
     if (notes) {
-      const lower = notes.toLowerCase();
+      const lower = (notes || '').toLowerCase();
       const hasSpam = SPAM_KEYWORDS.some((kw) => lower.includes(kw));
       if (hasSpam) {
         errs.notes = 'Spam URLs or inappropriate text detected. Please describe your project requirements cleanly.';
@@ -100,7 +103,7 @@ export default function SampleCadModal({
     const errs: Record<string, string> = {};
 
     // Name validation
-    const trimmedName = fullName.trim();
+    const trimmedName = (fullName || '').trim();
     if (!trimmedName) {
       errs.fullName = 'Full Name is required.';
     } else if (trimmedName.length < 2) {
@@ -115,7 +118,7 @@ export default function SampleCadModal({
     }
 
     // Email validation
-    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedEmail = (email || '').trim().toLowerCase();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!trimmedEmail) {
       errs.email = 'Email Address is required.';
@@ -124,8 +127,8 @@ export default function SampleCadModal({
     }
 
     // Phone / WhatsApp validation
-    const cleanPhone = phone.replace(/\D/g, '');
-    const isIndia = selectedCountry.code === '+91';
+    const cleanPhone = (phone || '').replace(/\D/g, '');
+    const isIndia = safeCountry.code === '+91';
 
     if (!cleanPhone) {
       errs.phone = 'Phone / WhatsApp number is required.';
@@ -158,7 +161,7 @@ export default function SampleCadModal({
       full_name: fullName,
       company: company,
       email: email,
-      phone: `${selectedCountry.code} ${phone}`,
+      phone: `${safeCountry.code} ${phone}`,
       finish_preference: finish,
       quantity: quantity,
       product_name: productName,
@@ -266,12 +269,12 @@ export default function SampleCadModal({
               </div>
 
               <div className="field">
-                <label>APPROX. QUANTITY (MIN MOQ: {productMoq})</label>
+                <label>APPROX. QUANTITY (MIN MOQ: {safeMoq})</label>
                 <input
                   type="number"
-                  min={productMoq}
+                  min={safeMoq}
                   value={quantity}
-                  onChange={(e) => setQuantity(Math.max(productMoq, parseInt(e.target.value) || productMoq))}
+                  onChange={(e) => setQuantity(Math.max(safeMoq, parseInt(e.target.value) || safeMoq))}
                 />
                 {errors.quantity && <span className="field-error">{errors.quantity}</span>}
               </div>
@@ -320,15 +323,15 @@ export default function SampleCadModal({
               <label>COMPANY / ARCHITECTURAL FIRM (OPTIONAL)</label>
               <input
                 type="text"
-                placeholder="e.g. Studio Lotus Architects"
+                placeholder="e.g. Studio Lotus / Oberoi Hotels"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
               />
             </div>
 
-            {/* EMAIL ADDRESS */}
+            {/* EMAIL */}
             <div className="field">
-              <label>BUSINESS EMAIL *</label>
+              <label>EMAIL ADDRESS *</label>
               <input
                 type="email"
                 placeholder="priya@studiolotus.in"
@@ -344,7 +347,7 @@ export default function SampleCadModal({
               <div className="sample-phone-group">
                 <div className="sample-flag-selector">
                   <select
-                    value={selectedCountry.iso}
+                    value={safeCountry.iso}
                     onChange={(e) => {
                       const found = COUNTRIES.find((c) => c.iso === e.target.value);
                       if (found) setSelectedCountry(found);
@@ -357,16 +360,16 @@ export default function SampleCadModal({
                     ))}
                   </select>
                   <span className="flag-display">
-                    {selectedCountry.flag} {selectedCountry.code}
+                    {safeCountry.flag} {safeCountry.code}
                   </span>
                 </div>
                 <input
                   type="tel"
-                  maxLength={selectedCountry.code === '+91' ? 10 : 12}
-                  placeholder={selectedCountry.code === '+91' ? '98765 43210 (10 digits)' : 'Phone number'}
+                  maxLength={safeCountry.code === '+91' ? 10 : 12}
+                  placeholder={safeCountry.code === '+91' ? '98765 43210 (10 digits)' : 'Phone number'}
                   value={phone}
                   onChange={(e) => {
-                    const maxDigits = selectedCountry.code === '+91' ? 10 : 12;
+                    const maxDigits = safeCountry.code === '+91' ? 10 : 12;
                     const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, maxDigits);
                     setPhone(digitsOnly);
                   }}
@@ -399,7 +402,7 @@ export default function SampleCadModal({
               <div><span>Product:</span> <strong>{productName}</strong></div>
               <div><span>Type:</span> <strong>{reqType === 'sample' ? 'Finish Samples' : 'CAD 3D Block'}</strong></div>
               <div><span>Finish:</span> <strong>{finish}</strong></div>
-              <div><span>Contact Phone:</span> <strong>{selectedCountry.code} {phone}</strong></div>
+              <div><span>Contact Phone:</span> <strong>{safeCountry.code} {phone}</strong></div>
             </div>
             <button type="button" className="btn btn-primary btn-lg" onClick={onClose} style={{ marginTop: 20 }}>
               Done & Close
