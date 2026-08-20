@@ -229,7 +229,7 @@ export default function ProductClientView({
                   })
                 }
               >
-                + Add to Enquiry List
+                + Add to Enquiry
               </button>
             </div>
 
