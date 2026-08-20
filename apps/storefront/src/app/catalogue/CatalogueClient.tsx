@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { CATEGORIES, SEGMENTS, MATERIALS, FINISHES, ProductItem, MOCK_PRODUCTS } from '../../data/catalogData';
 import { useEnquiry } from '../../context/EnquiryContext';
 import { fetchWpStorefrontData, getCachedStorefrontData, WpCategoryItem, WpColorItem } from '../../lib/wpCommerce';
 import ProductSkeletonGrid from '../../components/ProductSkeletonGrid';
+import Pagination from '../../components/Pagination';
 
 interface CatalogueClientProps {
   initialCategory?: string;
@@ -135,6 +136,23 @@ export default function CatalogueClient({ initialCategory }: CatalogueClientProp
     router.push(`/catalogue?${params.toString()}`);
   };
 
+  const gridRef = useRef<HTMLDivElement>(null);
+  const ITEMS_PER_PAGE = 12;
+
+  const pageParam = parseInt(searchParams.get('page') || '1', 10);
+  const [currentPage, setCurrentPage] = useState(isNaN(pageParam) || pageParam < 1 ? 1 : pageParam);
+
+  // Sync currentPage from URL searchParams
+  useEffect(() => {
+    const p = parseInt(searchParams.get('page') || '1', 10);
+    setCurrentPage(isNaN(p) || p < 1 ? 1 : p);
+  }, [searchParams]);
+
+  // Reset page to 1 whenever filters or search query change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [catFilter, segFilter, matFilter, colorFilter, searchQuery]);
+
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
       // Category matching (checks catSlugs or cat)
@@ -168,6 +186,31 @@ export default function CatalogueClient({ initialCategory }: CatalogueClientProp
       return true;
     });
   }, [products, catFilter, segFilter, matFilter, colorFilter, searchQuery]);
+
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+
+  const paginatedProducts = useMemo(() => {
+    const safePage = Math.min(Math.max(1, currentPage), Math.max(1, totalPages));
+    const start = (safePage - 1) * ITEMS_PER_PAGE;
+    return filteredProducts.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredProducts, currentPage, totalPages]);
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    const params = new URLSearchParams(searchParams.toString());
+    if (newPage > 1) {
+      params.set('page', String(newPage));
+    } else {
+      params.delete('page');
+    }
+    const path = initialCategory ? `/catalogue/${initialCategory}` : '/catalogue';
+    const query = params.toString();
+    router.push(query ? `${path}?${query}` : path, { scroll: false });
+
+    if (gridRef.current) {
+      gridRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   const activeCategory = categories.find((c) => c.id.toLowerCase() === catFilter.toLowerCase());
 
@@ -314,7 +357,7 @@ export default function CatalogueClient({ initialCategory }: CatalogueClientProp
         </aside>
 
         {/* MAIN PRODUCT GRID */}
-        <div>
+        <div ref={gridRef} style={{ scrollMarginTop: 100 }}>
           {/* TOOLBAR SEARCH & FILTER BUTTON */}
           <div className="toolbar">
             <button
@@ -350,48 +393,59 @@ export default function CatalogueClient({ initialCategory }: CatalogueClientProp
           {loading ? (
             <ProductSkeletonGrid count={8} />
           ) : filteredProducts.length > 0 ? (
-            <div className="prod-grid">
-              {filteredProducts.map((p) => (
-                <article key={p.id} className="card">
-                  <div className="thumb">
-                    {p.badge && (
-                      <span className={`tag ${p.badge === 'New' ? 'new' : ''}`}>
-                        {p.badge}
-                      </span>
-                    )}
-                    <Link href={`/product/${p.id}`}>
-                      <img src={p.image || `/categories/${p.cat || 'seating'}.jpg`} alt={p.name} loading="lazy" />
-                    </Link>
-                    <div className="acts">
-                      <Link href={`/product/${p.id}`} className="btn btn-soft btn-sm">
-                        Details
+            <>
+              <div className="prod-grid">
+                {paginatedProducts.map((p) => (
+                  <article key={p.id} className="card">
+                    <div className="thumb">
+                      {p.badge && (
+                        <span className={`tag ${p.badge === 'New' ? 'new' : ''}`}>
+                          {p.badge}
+                        </span>
+                      )}
+                      <Link href={`/product/${p.id}`}>
+                        <img src={p.image || `/categories/${p.cat || 'seating'}.jpg`} alt={p.name} loading="lazy" />
                       </Link>
-                      <button
-                        className="btn btn-primary btn-sm"
-                        onClick={() =>
-                          addEnquiry({
-                            id: p.id,
-                            name: p.name,
-                            catName: p.catName,
-                            q: p.moq,
-                            image: p.image || '/fallback-product.svg',
-                            moq: p.moq,
-                          })
-                        }
-                      >
-                        + Enquiry
-                      </button>
+                      <div className="acts">
+                        <Link href={`/product/${p.id}`} className="btn btn-soft btn-sm">
+                          Details
+                        </Link>
+                        <button
+                          className="btn btn-primary btn-sm"
+                          onClick={() =>
+                            addEnquiry({
+                              id: p.id,
+                              name: p.name,
+                              catName: p.catName,
+                              q: p.moq,
+                              image: p.image || '/fallback-product.svg',
+                              moq: p.moq,
+                            })
+                          }
+                        >
+                          + Enquiry
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <div className="body">
-                    <Link href={`/product/${p.id}`}>
-                      <h4>{p.name}</h4>
-                    </Link>
-                    <span className="price-note">Price on request</span>
-                  </div>
-                </article>
-              ))}
-            </div>
+                    <div className="body">
+                      <Link href={`/product/${p.id}`}>
+                        <h4>{p.name}</h4>
+                      </Link>
+                      <span className="price-note">Price on request</span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+
+              {/* ELEGANT B2B PAGINATION CONTROLS */}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={filteredProducts.length}
+                itemsPerPage={ITEMS_PER_PAGE}
+                onPageChange={handlePageChange}
+              />
+            </>
           ) : (
             <div className="empty" style={{ textAlign: 'center', padding: '60px 20px', background: 'var(--surface)', borderRadius: 'var(--r-lg)', border: '1px solid var(--line)' }}>
               <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--line)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ margin: '0 auto 16px' }}>

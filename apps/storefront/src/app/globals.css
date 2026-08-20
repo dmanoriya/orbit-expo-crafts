@@ -1271,3 +1271,91 @@ footer li a:hover { color: var(--brand); }
   }
 }
 
+/* ==========================================================================
+   ELEGANT B2B PAGINATION STYLES
+   ========================================================================== */
+.pagination-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+.pagination-info {
+  font-size: 13.5px;
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+}
+.pagination-info strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.page-btn {
+  min-width: 40px;
+  height: 40px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  user-select: none;
+}
+.page-btn:hover:not(:disabled) {
+  border-color: var(--brand);
+  color: var(--brand);
+  background: var(--surface-2);
+}
+.page-btn.active {
+  background: var(--brand);
+  color: #FFFFFF;
+  border-color: var(--brand);
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(14, 92, 99, 0.22);
+}
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: var(--surface-2);
+}
+.page-dots {
+  padding: 0 4px;
+  color: var(--ink-3);
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .pagination-wrap {
+    margin-top: 36px;
+    padding-top: 24px;
+  }
+  .page-btn {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    font-size: 13px;
+  }
+}
+
