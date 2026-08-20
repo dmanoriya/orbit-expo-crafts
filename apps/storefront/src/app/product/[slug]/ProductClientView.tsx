@@ -335,15 +335,18 @@ export default function ProductClientView({
       )}
 
       {/* MULTI-STEP SAMPLE & CAD REQUEST MODAL */}
-      <SampleCadModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        requestType={modalType}
-        productName={product?.name || 'Selected Product'}
-        productImage={activeImage || product?.image || '/fallback-product.svg'}
-        productMoq={product?.moq || 1}
-        initialFinish={selectedFinish}
-      />
+      {isModalOpen && (
+        <SampleCadModal
+          key={modalType}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          requestType={modalType}
+          productName={product?.name || 'Selected Product'}
+          productImage={activeImage || product?.image || '/fallback-product.svg'}
+          productMoq={product?.moq || 1}
+          initialFinish={selectedFinish}
+        />
+      )}
     </div>
   );
 }

@@ -70,14 +70,6 @@ export default function SampleCadModal({
 
   const safeCountry = selectedCountry || COUNTRIES[0] || { country: 'India', code: '+91', flag: '🇮🇳', iso: 'IN' };
 
-  useEffect(() => {
-    setReqType(initialRequestType || 'sample');
-    setFinish(initialFinish || 'Standard Finish');
-    setQuantity(safeMoq);
-    setStep(1);
-    setErrors({});
-  }, [initialRequestType, initialFinish, safeMoq, isOpen]);
-
   if (!isOpen) return null;
 
   // Validation Checkers
