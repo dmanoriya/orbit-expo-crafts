@@ -13,6 +13,22 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" data-theme="peacock">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.addEventListener('error', function(e) {
+                if (e && e.message && (e.message.indexOf('ChunkLoadError') !== -1 || e.message.indexOf('Loading chunk') !== -1)) {
+                  if (!window.sessionStorage.getItem('chunk_reload_retry')) {
+                    window.sessionStorage.setItem('chunk_reload_retry', 'true');
+                    window.location.reload();
+                  }
+                }
+              });
+            `,
+          }}
+        />
+      </head>
       <body suppressHydrationWarning>
         <FontLoader />
         <EnquiryProvider>

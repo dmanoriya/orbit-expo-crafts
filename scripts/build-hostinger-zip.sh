@@ -18,6 +18,8 @@ rm -rf "$ROOT_DIR/dist-hostinger/apps/storefront/.next"
 cp -rL "$ROOT_DIR/apps/storefront/.next/standalone/apps/storefront/.next" "$ROOT_DIR/dist-hostinger/apps/storefront/"
 cp -rL "$ROOT_DIR/apps/storefront/.next/static" "$ROOT_DIR/dist-hostinger/apps/storefront/.next/"
 cp -rL "$ROOT_DIR/apps/storefront/public" "$ROOT_DIR/dist-hostinger/apps/storefront/"
+mkdir -p "$ROOT_DIR/dist-hostinger/apps/storefront/public/_next"
+cp -rL "$ROOT_DIR/apps/storefront/.next/static" "$ROOT_DIR/dist-hostinger/apps/storefront/public/_next/"
 
 # 3. Ensure Runtime Node.js Modules Are Dereferenced
 echo "🔧 Step 3/5: Dereferencing Node.js Runtime Dependencies..."
