@@ -3,10 +3,17 @@ import { ProductItem, MOCK_PRODUCTS, CATEGORIES, SEGMENTS, MATERIALS, FINISHES }
 export interface WpCategoryItem {
   id: string;
   name: string;
+  slug: string;
   wpId?: number;
+  parent?: number;
+  level?: number;
   count?: number;
   description?: string;
   image?: string;
+  facets?: string;
+  styles?: string;
+  room?: string;
+  children?: WpCategoryItem[];
 }
 
 export interface WpColorItem {
@@ -17,10 +24,34 @@ export interface WpColorItem {
 export interface StorefrontDataResult {
   products: ProductItem[];
   categories: WpCategoryItem[];
+  categoryTree: WpCategoryItem[];
   segments: string[];
   materials: string[];
   colors: WpColorItem[];
   isWpConnected: boolean;
+}
+
+export function buildCategoryTree(categories: WpCategoryItem[]): WpCategoryItem[] {
+  const itemMap = new Map<number, WpCategoryItem>();
+  const rootItems: WpCategoryItem[] = [];
+
+  categories.forEach((cat) => {
+    if (cat.wpId) {
+      itemMap.set(cat.wpId, { ...cat, children: [] });
+    }
+  });
+
+  itemMap.forEach((item) => {
+    if (item.parent && itemMap.has(item.parent)) {
+      const parentItem = itemMap.get(item.parent)!;
+      if (!parentItem.children) parentItem.children = [];
+      parentItem.children.push(item);
+    } else {
+      rootItems.push(item);
+    }
+  });
+
+  return rootItems;
 }
 
 export function decodeHtmlEntities(str: string): string {
@@ -148,10 +179,16 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
           .map((c: any) => ({
             id: c.slug,
             name: decodeHtmlEntities(c.name),
+            slug: c.slug,
             wpId: c.id,
+            parent: c.parent ? Number(c.parent) : 0,
+            level: c.level !== undefined && c.level !== null ? Number(c.level) : undefined,
             count: c.count || 0,
             description: decodeHtmlEntities(c.description || ''),
             image: c.image || '',
+            facets: c.facets || '',
+            styles: c.styles || '',
+            room: c.room || '',
           }));
       }
     }
@@ -211,17 +248,13 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
     if (!isWpConnected) {
       return {
         products: MOCK_PRODUCTS,
-        categories: CATEGORIES.map((c) => ({ id: c.id, name: c.name, count: 0 })),
+        categories: [],
+        categoryTree: [],
         segments: SEGMENTS.map(decodeHtmlEntities),
         materials: MATERIALS.map(decodeHtmlEntities),
         colors: FINISHES.map((f) => ({ name: decodeHtmlEntities(f.name), code: f.code })),
         isWpConnected: false,
       };
-    }
-
-    // IF WORDPRESS IS CONNECTED BUT HAS 0 PRODUCTS/CATEGORIES YET:
-    if (wpCategories.length === 0) {
-      wpCategories = CATEGORIES.map((c) => ({ id: c.id, name: c.name, count: 0 }));
     }
 
     if (wpProducts.length === 0) {
@@ -231,6 +264,7 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
     cachedStorefrontData = {
       products: wpProducts,
       categories: wpCategories,
+      categoryTree: buildCategoryTree(wpCategories),
       segments: wpSegments,
       materials: wpMaterials,
       colors: wpColors,
@@ -242,7 +276,8 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
     console.log('Error fetching WordPress storefront data, using fallback:', err);
     return {
       products: MOCK_PRODUCTS,
-      categories: CATEGORIES.map((c) => ({ id: c.id, name: c.name, count: 0 })),
+      categories: [],
+      categoryTree: [],
       segments: SEGMENTS.map(decodeHtmlEntities),
       materials: MATERIALS.map(decodeHtmlEntities),
       colors: FINISHES.map((f) => ({ name: decodeHtmlEntities(f.name), code: f.code })),

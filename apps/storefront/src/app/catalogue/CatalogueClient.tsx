@@ -295,15 +295,41 @@ export default function CatalogueClient({
               >
                 All categories
               </button>
-              {categories.map((c) => (
-                <button
-                  key={c.id}
-                  className={`fopt ${catFilter.toLowerCase() === c.id.toLowerCase() ? 'on' : ''}`}
-                  onClick={() => handleSelectCat(c.id)}
-                >
-                  {c.name} {c.count ? `(${c.count})` : ''}
-                </button>
-              ))}
+              {(() => {
+                const roots = categories.filter((c) => !c.parent || c.parent === 0);
+                const displayCategories = roots.length > 0 ? roots : categories;
+
+                return displayCategories.map((c) => {
+                  const children = categories.filter((sub) => sub.parent === c.wpId);
+                  const isSelected = catFilter.toLowerCase() === c.id.toLowerCase() || catFilter.toLowerCase() === c.slug.toLowerCase();
+
+                  return (
+                    <div key={c.id || c.slug} style={{ marginBottom: 4 }}>
+                      <button
+                        className={`fopt ${isSelected ? 'on' : ''}`}
+                        onClick={() => handleSelectCat(c.slug || c.id)}
+                        style={{ fontWeight: c.parent === 0 ? 600 : 400 }}
+                      >
+                        {c.name} {c.count ? `(${c.count})` : ''}
+                      </button>
+                      {children.length > 0 && (
+                        <div style={{ paddingLeft: 12, borderLeft: '1px solid #E2DDD5', marginLeft: 6, marginTop: 2 }}>
+                          {children.map((sub) => (
+                            <button
+                              key={sub.id || sub.slug}
+                              className={`fopt ${catFilter.toLowerCase() === (sub.slug || sub.id).toLowerCase() ? 'on' : ''}`}
+                              onClick={() => handleSelectCat(sub.slug || sub.id)}
+                              style={{ fontSize: 13, padding: '3px 0' }}
+                            >
+                              {sub.name} {sub.count ? `(${sub.count})` : ''}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                });
+              })()}
             </div>
 
             <div className="fgroup">

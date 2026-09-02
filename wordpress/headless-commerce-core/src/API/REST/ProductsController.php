@@ -152,6 +152,8 @@ class ProductsController extends RestController {
 		$terms = get_terms( array(
 			'taxonomy'   => 'product_cat',
 			'hide_empty' => false,
+			'orderby'    => 'name',
+			'order'      => 'ASC',
 		) );
 
 		$categories = array();
@@ -159,14 +161,20 @@ class ProductsController extends RestController {
 			foreach ( $terms as $term ) {
 				$thumbnail_id = get_term_meta( $term->term_id, 'thumbnail_id', true );
 				$image        = $thumbnail_id ? wp_get_attachment_url( $thumbnail_id ) : '';
+				$level        = get_term_meta( $term->term_id, '_hcc_level', true );
+
 				$categories[] = array(
 					'id'          => $term->term_id,
 					'name'        => $this->decode_str( $term->name ),
 					'slug'        => $term->slug,
 					'description' => $this->decode_str( $term->description ),
 					'count'       => $term->count,
-					'parent'      => $term->parent,
+					'parent'      => (int) $term->parent,
+					'level'       => ($level !== '' && $level !== false) ? (int) $level : null,
 					'image'       => $image ? $image : '',
+					'facets'      => (string) get_term_meta( $term->term_id, '_hcc_facets', true ),
+					'styles'      => (string) get_term_meta( $term->term_id, '_hcc_styles', true ),
+					'room'        => (string) get_term_meta( $term->term_id, '_hcc_room', true ),
 				);
 			}
 		}

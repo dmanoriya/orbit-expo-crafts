@@ -35,7 +35,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 5, title: 'Journals', url: '/journals' },
 ];
 
-import { decodeHtmlEntities } from '../lib/wpCommerce';
+import { decodeHtmlEntities, fetchWpStorefrontData } from '../lib/wpCommerce';
 
 function normalizeMenuItems(items: MenuItem[]): MenuItem[] {
   return items
@@ -103,20 +103,51 @@ export const Header: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    async function fetchWpMenu() {
+    async function fetchWpData() {
       try {
-        const res = await fetch('/api/wp/menu').catch(() => null);
-        if (res && res.ok) {
-          const json = await res.json().catch(() => null);
+        const [resMenu, sfData] = await Promise.all([
+          fetch('/api/wp/menu').catch(() => null),
+          fetchWpStorefrontData().catch(() => null),
+        ]);
+
+        let items = DEFAULT_MENU_ITEMS;
+        if (resMenu && resMenu.ok) {
+          const json = await resMenu.json().catch(() => null);
           if (json && json.success && Array.isArray(json.data?.items) && json.data.items.length > 0) {
-            setMenuItems(normalizeMenuItems(json.data.items));
+            items = normalizeMenuItems(json.data.items);
           }
         }
+
+        // Dynamically inject Master Taxonomy Departments into Collections dropdown
+        if (sfData && sfData.categories && sfData.categories.length > 0) {
+          const topDepts = sfData.categoryTree && sfData.categoryTree.length > 0
+            ? sfData.categoryTree
+            : sfData.categories.filter((c) => !c.parent || c.parent === 0);
+
+          if (topDepts.length > 0) {
+            const collectionsIndex = items.findIndex((i) => i.title === 'Collections' || i.title === 'Catalogue');
+            if (collectionsIndex !== -1) {
+              const updatedItems = [...items];
+              updatedItems[collectionsIndex] = {
+                ...updatedItems[collectionsIndex],
+                title: 'Collections',
+                children: topDepts.map((d, index) => ({
+                  id: d.wpId || index + 100,
+                  title: d.name,
+                  url: `/catalogue?cat=${encodeURIComponent(d.slug || d.id)}`,
+                })),
+              };
+              items = updatedItems;
+            }
+          }
+        }
+
+        setMenuItems(items);
       } catch (err) {
         console.log('Using default header navigation menu structure:', err);
       }
     }
-    fetchWpMenu();
+    fetchWpData();
   }, []);
 
   return (

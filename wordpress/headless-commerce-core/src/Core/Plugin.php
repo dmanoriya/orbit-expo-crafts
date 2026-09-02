@@ -61,8 +61,10 @@ class Plugin {
 			\HeadlessCommerceCore\Admin\HomepageManager::init();
 			\HeadlessCommerceCore\Admin\TypographyManager::init();
 			\HeadlessCommerceCore\Admin\FooterManager::init();
+			\HeadlessCommerceCore\Admin\CategoryTaxonomyManager::init();
 		}
 		\HeadlessCommerceCore\Admin\FormEntriesManager::init();
+		\HeadlessCommerceCore\Admin\CategoryTaxonomyManager::init();
 	}
 
 	public function register_rest_routes() {
