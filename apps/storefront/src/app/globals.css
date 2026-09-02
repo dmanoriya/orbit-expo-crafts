@@ -1553,3 +1553,197 @@ footer li a:hover { color: var(--brand); }
   }
 }
 
+/* ==========================================================================
+   LUXURY ANIMATIONS & MICRO-INTERACTIONS
+   ========================================================================== */
+
+/* Keyframe Definitions */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes dropdownSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scaleY(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes floatBadge {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(194, 166, 134, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(194, 166, 134, 0);
+  }
+}
+
+/* Page & Element Stagger Entrance Utilities */
+.animate-fade-in-up {
+  animation: fadeInUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-delay-100 { animation-delay: 100ms; }
+.animate-delay-200 { animation-delay: 200ms; }
+.animate-delay-300 { animation-delay: 300ms; }
+.animate-delay-400 { animation-delay: 400ms; }
+
+/* Category Cards Micro-Interactions & Hover Animations */
+.cat-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-md);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+  will-change: transform;
+}
+
+.cat-card img {
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+  will-change: transform;
+}
+
+.cat-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+  border-color: var(--brand);
+}
+
+.cat-card:hover img {
+  transform: scale(1.07);
+  filter: brightness(1.03);
+}
+
+.cat-card .link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+}
+
+.cat-card:hover .link-arrow {
+  transform: translateX(6px);
+  color: var(--brand);
+}
+
+/* Product Cards Micro-Interactions */
+.prod-grid .card, .card {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease;
+  will-change: transform;
+}
+
+.prod-grid .card:hover, .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
+  border-color: var(--brand);
+}
+
+.prod-grid .card .thumb img, .card .thumb img {
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.prod-grid .card:hover .thumb img, .card:hover .thumb img {
+  transform: scale(1.05);
+}
+
+/* Button Animations & Touch Feedback */
+.btn {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn svg {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn:hover svg {
+  transform: translateX(3px);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+/* Header & Dropdown Transitions */
+header.site {
+  transition: background-color 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.dropdown, .sub-menu {
+  animation: dropdownSlideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: top center;
+}
+
+/* Hero Slider Animations */
+.hero-slider-img {
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-slider-img.active {
+  transform: scale(1.02);
+}
+
+/* Shortlist Drawer Floating Badge */
+.shortlist-float-badge {
+  animation: floatBadge 3s ease-in-out infinite;
+}
+
+/* Filter Accordion Smooth Expand */
+.fopt {
+  transition: background-color 0.2s ease, color 0.2s ease, padding-left 0.2s ease;
+}
+
+.fopt:hover {
+  padding-left: 4px;
+}
+
+
