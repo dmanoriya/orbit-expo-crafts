@@ -104,7 +104,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
       <div className="search-modal-card" onClick={(e) => e.stopPropagation()}>
         {/* MODAL SEARCH HEADER */}
         <div className="search-modal-head">
-          <svg className="search-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <svg className="search-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111111" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.5-4.5" />
           </svg>
           <input

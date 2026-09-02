@@ -187,7 +187,7 @@ export const Header: React.FC = () => {
           </nav>
 
           {/* ACTIONS */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div className="header-actions">
             {/* SEARCH TRIGGER BUTTON */}
             <button
               className="icon-btn search-trigger-btn"
