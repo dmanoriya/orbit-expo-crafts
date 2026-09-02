@@ -62,19 +62,49 @@ export default function HomeClientView({
 
   // Fallback 10 categories matching prototype
   const fallbackCategories = [
-    { id: 'seating', name: 'Seating & Chairs', count: 42, desc: 'Dining, lounge & accent chairs', image: '/categories/seating.jpg' },
-    { id: 'tables', name: 'Tables & Dining', count: 28, desc: 'Dining, coffee & side tables', image: '/categories/tables.jpg' },
-    { id: 'sofas', name: 'Sofas & Lounges', count: 18, desc: 'Contract sofas & banquettes', image: '/categories/sofas.jpg' },
-    { id: 'beds', name: 'Beds & Nightstands', count: 15, desc: 'Headboards, platforms & nightstands', image: '/categories/beds.jpg' },
-    { id: 'storage', name: 'Credenzas & Storage', count: 22, desc: 'Sideboards, dressers & wardrobes', image: '/categories/storage.jpg' },
-    { id: 'outdoor', name: 'Outdoor & Patio', count: 12, desc: 'Weather-resistant teak & metal', image: '/categories/outdoor.jpg' },
-    { id: 'lighting', name: 'Lighting', count: 16, desc: 'Pendants, floor & table lamps', image: '/categories/lighting.jpg' },
-    { id: 'decor', name: 'Decor & Objects', count: 25, desc: 'Artifacts, mirrors & accessories', image: '/categories/decor.jpg' },
-    { id: 'benches', name: 'Benches & Ottomans', count: 10, desc: 'Custom hallway & footrest benches', image: '/categories/benches.jpg' },
-    { id: 'fitout', name: 'Fit-out & Counters', count: 14, desc: 'Bar stools & counter units', image: '/categories/fitout.jpg' },
+    { id: 'seating', slug: 'seating', name: 'Seating & Chairs', count: 42, desc: 'Dining, lounge & accent chairs', image: '/categories/seating.jpg' },
+    { id: 'tables', slug: 'tables', name: 'Tables & Dining', count: 28, desc: 'Dining, coffee & side tables', image: '/categories/tables.jpg' },
+    { id: 'sofas', slug: 'sofas', name: 'Sofas & Lounges', count: 18, desc: 'Contract sofas & banquettes', image: '/categories/sofas.jpg' },
+    { id: 'beds', slug: 'beds', name: 'Beds & Nightstands', count: 15, desc: 'Headboards, platforms & nightstands', image: '/categories/beds.jpg' },
+    { id: 'storage', slug: 'storage', name: 'Credenzas & Storage', count: 22, desc: 'Sideboards, dressers & wardrobes', image: '/categories/storage.jpg' },
+    { id: 'outdoor', slug: 'outdoor', name: 'Outdoor & Patio', count: 12, desc: 'Weather-resistant teak & metal', image: '/categories/outdoor.jpg' },
+    { id: 'lighting', slug: 'lighting', name: 'Lighting', count: 16, desc: 'Pendants, floor & table lamps', image: '/categories/lighting.jpg' },
+    { id: 'decor', slug: 'decor', name: 'Decor & Objects', count: 25, desc: 'Artifacts, mirrors & accessories', image: '/categories/decor.jpg' },
+    { id: 'benches', slug: 'benches', name: 'Benches & Ottomans', count: 10, desc: 'Custom hallway & footrest benches', image: '/categories/benches.jpg' },
+    { id: 'fitout', slug: 'fitout', name: 'Fit-out & Counters', count: 14, desc: 'Bar stools & counter units', image: '/categories/fitout.jpg' },
   ];
 
-  const displayCategories = categories.length > 0 ? categories : fallbackCategories;
+  const FALLBACK_DEPT_IMAGES: Record<string, string> = {
+    'furniture': '/categories/tables.jpg',
+    'home-decor': '/categories/decor.jpg',
+    'wall-decor-and-mirrors': '/categories/decor.jpg',
+    'lighting': '/categories/lighting.jpg',
+    'rugs-and-floor-coverings': '/categories/decor.jpg',
+    'storage-and-organization': '/categories/storage.jpg',
+    'kitchen-and-tabletop': '/categories/tables.jpg',
+    'outdoor-and-garden': '/categories/outdoor.jpg',
+    'kids-and-baby-home': '/categories/beds.jpg',
+    'pet-home': '/categories/benches.jpg',
+    'seating': '/categories/seating.jpg',
+    'tables': '/categories/tables.jpg',
+    'sofas': '/categories/sofas.jpg',
+    'beds': '/categories/beds.jpg',
+    'storage': '/categories/storage.jpg',
+    'outdoor': '/categories/outdoor.jpg',
+    'decor': '/categories/decor.jpg',
+    'benches': '/categories/benches.jpg',
+    'fitout': '/categories/fitout.jpg',
+  };
+
+  const displayCategories = React.useMemo(() => {
+    if (categories && categories.length > 0) {
+      const mainDepts = categories.filter((c) => !c.parent || c.parent === 0 || c.level === 0);
+      if (mainDepts.length > 0) {
+        return mainDepts;
+      }
+    }
+    return fallbackCategories;
+  }, [categories]);
 
   // Project domain spaces with background images matching prototype
   const projectSpaces = [
@@ -223,17 +253,25 @@ export default function HomeClientView({
           </div>
 
           <div className="cat-grid">
-            {displayCategories.map((c) => (
-              <Link href={`/collections/${c.id}`} key={c.id} className="cat-card">
-                <img src={c.image || `/categories/${c.id}.jpg`} alt={c.name} loading="lazy" />
-                <div className="overlay" />
-                <div className="info">
-                  <h3>{c.name}</h3>
-                  <p>{(c as any).description || (c as any).desc || `${c.count || 20}+ baseline specs`}</p>
-                  <span className="link-arrow">Explore range →</span>
-                </div>
-              </Link>
-            ))}
+            {displayCategories.map((c) => {
+              const catSlug = c.slug || c.id;
+              const catImg =
+                c.image && c.image.trim() !== ''
+                  ? c.image
+                  : FALLBACK_DEPT_IMAGES[catSlug] || `/categories/${c.id}.jpg` || '/categories/tables.jpg';
+
+              return (
+                <Link href={`/collections/${catSlug}`} key={c.id || catSlug} className="cat-card">
+                  <img src={catImg} alt={c.name} loading="lazy" />
+                  <div className="overlay" />
+                  <div className="info">
+                    <h3>{c.name}</h3>
+                    <p>{(c as any).description || (c as any).desc || `${c.count || 20}+ baseline specs`}</p>
+                    <span className="link-arrow">Explore range →</span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
