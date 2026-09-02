@@ -149,6 +149,11 @@ export const Header: React.FC = () => {
           }
         }
 
+        // Ensure Journals link is always present in top navigation
+        if (!items.some((i) => i.title === 'Journals' || i.url === '/journals')) {
+          items.push({ id: 50, title: 'Journals', url: '/journals' });
+        }
+
         setMenuItems(items);
       } catch (err) {
         console.log('Using default header navigation menu structure:', err);

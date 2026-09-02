@@ -559,3 +559,42 @@ export async function fetchWpHomepageData(): Promise<HomepageData> {
 
   return DEFAULT_HOMEPAGE_DATA;
 }
+
+export interface WpBlogPostItem {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  date: string;
+  author: string;
+  category: string;
+  image: string;
+  readTime: string;
+}
+
+export async function fetchWpBlogPosts(): Promise<WpBlogPostItem[]> {
+  try {
+    const res = await fetch(getWpEndpoint('/posts?per_page=20'), { next: { tags: ['wp-posts'], revalidate: 60 } });
+    if (!res.ok) return [];
+
+    const json = await res.json();
+    if (json && json.success && Array.isArray(json.data?.posts)) {
+      return json.data.posts.map((p: any) => ({
+        id: p.id,
+        title: decodeHtmlEntities(p.title || ''),
+        slug: p.slug,
+        excerpt: decodeHtmlEntities(p.excerpt || '').replace(/<[^>]+>/g, ''),
+        content: p.content || '',
+        date: p.date ? new Date(p.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '',
+        author: p.author || 'Orbit Expo Crafts Team',
+        category: p.categories && p.categories.length > 0 ? decodeHtmlEntities(p.categories[0].name) : 'Manufacturing Insights',
+        image: p.image || '/categories/tables.jpg',
+        readTime: '5 min read',
+      }));
+    }
+  } catch (err) {
+    console.error('Error fetching blog posts from WordPress API:', err);
+  }
+  return [];
+}

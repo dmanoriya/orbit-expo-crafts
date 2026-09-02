@@ -1,58 +1,80 @@
 import React from 'react';
 import Link from 'next/link';
+import { fetchWpBlogPosts, WpBlogPostItem } from '../../lib/wpCommerce';
+
+export const revalidate = 60;
 
 export const metadata = {
   title: 'Journals & Articles — ORBIT Expo Crafts',
   description: 'Insights into contract furniture manufacturing, timber treatments, bone inlay techniques, and turnkey hospitality fit-outs in Rajasthan.',
 };
 
-const JOURNAL_ARTICLES = [
+const FALLBACK_JOURNAL_ARTICLES: WpBlogPostItem[] = [
   {
+    id: 1,
     slug: 'seasoning-timber-rajasthan-climate',
     title: 'Precision Kiln-Drying: Why 8-10% Moisture Content Matters for International Export',
     category: 'Timber Engineering',
     date: 'August 18, 2026',
-    author: 'Rajeev Sharma, Chief Technical Director',
+    author: 'Rajeev Sharma',
     readTime: '6 min read',
     image: '/categories/tables.jpg',
     excerpt: 'Solid wood exported from Rajasthan to humid or coastal environments must undergo vacuum kiln-seasoning to prevent warping, checking, or joint distortion across seasonal temperature swings.',
+    content: '',
   },
   {
+    id: 2,
     slug: 'bone-inlay-craft-technique',
     title: 'The Heritage Art of Camel Bone & Mother of Pearl Inlay in Modern Luxury Hospitality',
     category: 'Artisanal Craft',
     date: 'July 24, 2026',
-    author: 'Sunil Jha, Master Artisan Lead',
+    author: 'Sunil Jha',
     readTime: '8 min read',
     image: '/categories/decor.jpg',
     excerpt: 'Trace the 400-year history of Rajasthani inlay work from royal palaces to contemporary boutique hotel credenzas, mirrors, and accent tables.',
+    content: '',
   },
   {
+    id: 3,
     slug: 'turnkey-hotel-fitout-checklist',
     title: '45-Day Turnkey Room Package Delivery: Engineering Shop Drawings to Site Installation',
     category: 'Turnkey Execution',
     date: 'June 12, 2026',
-    author: 'Divya Mehta, Project Operations Lead',
+    author: 'Divya Mehta',
     readTime: '5 min read',
     image: '/categories/beds.jpg',
     excerpt: 'A comprehensive guide for architects and procurement agencies on streamlining pre-engineered room fit-outs with CAD approvals and containerized logistics.',
+    content: '',
   },
   {
+    id: 4,
     slug: 'heavy-contract-durability-standards',
     title: 'Commercial Seating Specification: Martindale Ratings, Anti-Borer Treatment & Joinery Standards',
     category: 'Quality Standards',
     date: 'May 29, 2026',
-    author: 'Karan Singhal, Lead Designer',
+    author: 'Karan Singhal',
     readTime: '7 min read',
     image: '/categories/seating.jpg',
     excerpt: 'How we engineer contract chairs and banquettes to withstand high-footfall hotel dining, restaurant, and lounge environments without compromising aesthetic finesse.',
+    content: '',
   },
 ];
 
-export default function JournalsPage() {
+export default async function JournalsPage() {
+  const wpPosts = await fetchWpBlogPosts();
+  const articles = wpPosts && wpPosts.length > 0 ? wpPosts : FALLBACK_JOURNAL_ARTICLES;
+
+  const featured = articles[0];
+  const gridArticles = articles.slice(1);
+
   return (
     <div style={{ backgroundColor: '#FFFFFF', color: '#111111', minHeight: '100vh', padding: '40px 0 80px' }}>
       <div className="wrap">
+        {/* BREADCRUMBS */}
+        <div className="crumbs" style={{ marginBottom: 20 }}>
+          <Link href="/">Home</Link> / <span style={{ fontWeight: 600 }}>Journals</span>
+        </div>
+
         {/* PAGE HEADER */}
         <div style={{ borderBottom: '1px solid #E2DDD5', paddingBottom: '32px', marginBottom: '48px' }}>
           <div className="mono" style={{ color: '#666666', letterSpacing: '0.15em', marginBottom: '12px' }}>
@@ -62,54 +84,58 @@ export default function JournalsPage() {
             Journals & Field Notes
           </h1>
           <p style={{ fontSize: '18px', color: '#555555', maxWidth: '64ch', marginTop: '16px', lineHeight: '1.6' }}>
-            Technical articles, craft heritage studies, and project specification guides from our Udaipur and Jodhpur production facilities.
+            Technical articles, craft heritage studies, and project specification guides directly from our Udaipur and Jodhpur production facilities.
           </p>
         </div>
 
         {/* FEATURED ARTICLE HERO */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1.1fr 0.9fr',
-            gap: '40px',
-            alignItems: 'center',
-            backgroundColor: '#F1EFE9',
-            border: '1px solid #E2DDD5',
-            borderRadius: '8px',
-            padding: '36px',
-            marginBottom: '64px',
-          }}
-        >
-          <div>
-            <span className="mono" style={{ color: '#111111', fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', display: 'inline-block', marginBottom: '12px' }}>
-              FEATURED READ · {JOURNAL_ARTICLES[0].category}
-            </span>
-            <h2 className="disp" style={{ fontSize: '32px', fontWeight: 400, color: '#111111', lineHeight: '1.2', marginBottom: '16px' }}>
-              {JOURNAL_ARTICLES[0].title}
-            </h2>
-            <p style={{ fontSize: '15.5px', color: '#4A4640', lineHeight: '1.6', marginBottom: '24px' }}>
-              {JOURNAL_ARTICLES[0].excerpt}
-            </p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '13px', color: '#666666' }}>
-              <span>{JOURNAL_ARTICLES[0].author}</span>
-              <span>•</span>
-              <span>{JOURNAL_ARTICLES[0].readTime}</span>
+        {featured && (
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1.1fr 0.9fr',
+              gap: '40px',
+              alignItems: 'center',
+              backgroundColor: '#F1EFE9',
+              border: '1px solid #E2DDD5',
+              borderRadius: '8px',
+              padding: '36px',
+              marginBottom: '64px',
+            }}
+          >
+            <div>
+              <span className="mono" style={{ color: '#111111', fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', display: 'inline-block', marginBottom: '12px' }}>
+                FEATURED READ · {featured.category}
+              </span>
+              <h2 className="disp" style={{ fontSize: '32px', fontWeight: 400, color: '#111111', lineHeight: '1.2', marginBottom: '16px' }}>
+                {featured.title}
+              </h2>
+              <p style={{ fontSize: '15.5px', color: '#4A4640', lineHeight: '1.6', marginBottom: '24px' }}>
+                {featured.excerpt}
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '13px', color: '#666666' }}>
+                <span>{featured.author}</span>
+                <span>•</span>
+                <span>{featured.date}</span>
+                <span>•</span>
+                <span>{featured.readTime}</span>
+              </div>
+            </div>
+            <div style={{ width: '100%', height: '320px', borderRadius: '6px', overflow: 'hidden' }}>
+              <img
+                src={featured.image}
+                alt={featured.title}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
             </div>
           </div>
-          <div style={{ width: '100%', height: '320px', borderRadius: '6px', overflow: 'hidden' }}>
-            <img
-              src={JOURNAL_ARTICLES[0].image}
-              alt={JOURNAL_ARTICLES[0].title}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-          </div>
-        </div>
+        )}
 
         {/* ARTICLES GRID */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '32px' }}>
-          {JOURNAL_ARTICLES.slice(1).map((article) => (
+          {gridArticles.map((article) => (
             <article
-              key={article.slug}
+              key={article.slug || article.id}
               style={{
                 backgroundColor: '#FFFFFF',
                 border: '1px solid #E2DDD5',
