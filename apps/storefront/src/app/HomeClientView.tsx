@@ -262,12 +262,15 @@ export default function HomeClientView({
 
               return (
                 <Link href={`/collections/${catSlug}`} key={c.id || catSlug} className="cat-card">
-                  <img src={catImg} alt={c.name} loading="lazy" />
-                  <div className="overlay" />
+                  <div className="cat-card-art">
+                    <img src={catImg} alt={c.name} loading="lazy" />
+                  </div>
                   <div className="info">
                     <h3>{c.name}</h3>
                     <p>{(c as any).description || (c as any).desc || `${c.count || 20}+ baseline specs`}</p>
-                    <span className="link-arrow">Explore range →</span>
+                    <span className="link-arrow">
+                      Explore range <span className="arrow-icon">→</span>
+                    </span>
                   </div>
                 </Link>
               );
