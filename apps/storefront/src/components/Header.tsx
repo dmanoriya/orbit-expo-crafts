@@ -122,19 +122,21 @@ export const Header: React.FC = () => {
         <div className="topbar">
           <div className="wrap">
             <span>Udaipur & Jodhpur Works, Rajasthan &nbsp;·&nbsp; Exporting to 24 countries</span>
-            <span>Trade & bulk enquiries: <b>+91 98290 00000</b> &nbsp;·&nbsp; Direct Factory — <b>quote-first</b></span>
+            <span>Direct factory &nbsp;·&nbsp; Quote-first</span>
           </div>
         </div>
 
         {/* MAIN NAV HEADER */}
         <div className="wrap nav">
-          {/* LOGO IMAGE ONLY */}
-          <Link className="logo" href="/" style={{ padding: '4px 0' }}>
-            <img
-              src="/logo.webp"
-              alt="ORBIT Expo Crafts"
-              style={{ height: '48px', width: 'auto', objectFit: 'contain' }}
-            />
+          {/* LOGO IN LIGHT CONTAINER BOX MATCHING REFERENCE IMAGE */}
+          <Link className="logo" href="/">
+            <div className="logo-box">
+              <img
+                src="/logo.webp"
+                alt="ORBIT Expo Crafts"
+                style={{ height: '40px', width: 'auto', objectFit: 'contain' }}
+              />
+            </div>
           </Link>
 
           {/* DYNAMIC SHORT MENU - DESKTOP */}
@@ -192,20 +194,20 @@ export const Header: React.FC = () => {
               onClick={() => setIsSearchOpen(true)}
               title="Search products (Cmd + K)"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.5-4.5" />
               </svg>
             </button>
 
             {/* CART ENQUIRY BUTTON */}
             <button className="icon-btn" onClick={openDrawer} title="Enquiry List">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M3 4h2l2.6 11.4A2 2 0 009.5 17h8a2 2 0 002-1.6L21 8H6M10 21a1 1 0 100-2 1 1 0 000 2M18 21a1 1 0 100-2 1 1 0 000 2" />
               </svg>
               <span className="badge" id="cartCount">{enquiry.length}</span>
             </button>
 
-            <Link href="/contact" className="btn btn-primary btn-sm desk-only">
+            <Link href="/contact" className="btn-quote-header desk-only">
               Request a Quote
             </Link>
 

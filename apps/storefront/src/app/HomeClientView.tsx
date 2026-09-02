@@ -85,88 +85,127 @@ export default function HomeClientView({
     { id: 'bar-nightclub', name: 'Bar & Nightclub', subtitle: 'Bespoke counters & high-seating', image: '/categories/fitout.jpg' },
   ];
 
+  // Hero Image Slider slides
+  const heroSlides = [
+    { id: 1, image: '/categories/decor.jpg', alt: 'Bone Inlay Console & Rajasthan Crafts' },
+    { id: 2, image: '/categories/sofas.jpg', alt: 'Luxury Hotel Suite & Contract Seating' },
+    { id: 3, image: '/categories/tables.jpg', alt: 'Solid Wood Dining & Fine Joinery' },
+    { id: 4, image: '/categories/beds.jpg', alt: 'Turnkey Bedroom Suite Packages' },
+  ];
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [heroSlides.length]);
+
   return (
     <div>
-      {/* 1. HERO SECTION WITH SPLIT AUDIENCE TRACK CARDS */}
-      <section
-        className="hero"
-        style={{
-          backgroundColor: hpData.hero_bg_color || '#181512',
-        }}
-      >
-        {hpData.hero_bg_mode !== 'color' && (
-          <img
-            src={
-              hpData.hero_bg_image ||
-              '/fallback-product.svg'
-            }
-            alt="Hero Background"
-            className="heroimg"
-          />
-        )}
-        <div
-          className="hero-overlay"
-          style={{
-            opacity: hpData.hero_overlay_opacity
-              ? Number(hpData.hero_overlay_opacity) / 100
-              : 0.85,
-          }}
-        />
-        <div className="wrap" style={{ position: 'relative', zIndex: 2 }}>
-          <div className="mono eyebrow" style={{ color: 'var(--brand)', textTransform: 'uppercase' }}>
-            {hpData.hero_eyebrow}
-          </div>
-          <h1 className="disp" style={{ color: '#FFFFFF', whiteSpace: 'pre-line' }}>
-            {hpData.hero_title}
-          </h1>
-          <p className="lede" style={{ color: '#FFFFFF', opacity: 0.95, textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
-            {hpData.hero_lede}
-          </p>
+      {/* 1. LIGHT THEME HERO SECTION MATCHING REFERENCE DESIGN */}
+      <section className="hero-light-layout">
+        <div className="wrap">
+          <div className="hero-split-grid">
+            {/* LEFT COLUMN: TYPOGRAPHY & 2-COLUMN TRACK CARDS */}
+            <div className="hero-left">
+              <div className="mono hero-eyebrow">
+                {hpData.hero_eyebrow || 'DIRECT FACTORY · EST. 2011'}
+              </div>
 
-          <div className="tracks">
-            <div className="track">
-              <h3>{hpData.track1_title}</h3>
-              <p>{hpData.track1_desc}</p>
-              <ul>
-                {track1Points.map((pt, i) => (
-                  <li key={i}>{pt}</li>
+              <h1 className="disp hero-title">
+                {hpData.hero_title || 'Furniture that arrives project-ready.'}
+              </h1>
+
+              <p className="hero-lede">
+                {hpData.hero_lede || 'We engineer and build furniture, casegoods, lighting and fixed joinery to project drawings for luxury hotels, resorts, fine dining and international export projects.'}
+              </p>
+
+              {/* 2-COLUMN SPLIT TRACKS */}
+              <div className="hero-split-tracks">
+                <div className="hero-track">
+                  <h3>{hpData.track1_title || 'Direct contract projects'}</h3>
+                  <p>{hpData.track1_desc || 'Full-scope loose furniture and fixed joinery built to architect specifications.'}</p>
+                  <ul className="track-bullets">
+                    {(track1Points.length > 0 ? track1Points : [
+                      'Kiln-dried & anti-borer treated timber',
+                      'Custom stain matching & fabric approvals',
+                      'CAD/3D shop drawing review',
+                      'Door-to-door freight & logistics'
+                    ]).map((pt, i) => (
+                      <li key={i}>{pt}</li>
+                    ))}
+                  </ul>
+                  <Link href="/catalogue" className="track-link">
+                    Browse 2026 Catalogue →
+                  </Link>
+                </div>
+
+                <div className="hero-track">
+                  <h3>{hpData.track2_title || 'Turnkey plug-in packages'}</h3>
+                  <p>{hpData.track2_desc || 'Pre-engineered room packages for rapid hotel and restaurant fit-outs.'}</p>
+                  <ul className="track-bullets">
+                    {(track2Points.length > 0 ? track2Points : [
+                      'FSC certified wood options',
+                      'Flexible order quantities',
+                      'Defined production schedules',
+                      'Site installation support'
+                    ]).map((pt, i) => (
+                      <li key={i}>{pt}</li>
+                    ))}
+                  </ul>
+                  <Link href="/turnkey" className="track-link">
+                    Explore Room Packages →
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN: SLIDER OF IMAGES ONE BY ONE */}
+            <div className="hero-right">
+              <div className="hero-slider-box">
+                {heroSlides.map((slide, idx) => (
+                  <div
+                    key={slide.id}
+                    className={`hero-slide ${idx === currentSlide ? 'active' : ''}`}
+                  >
+                    <img src={slide.image} alt={slide.alt} />
+                  </div>
                 ))}
-              </ul>
-              <Link href="/catalogue" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center' }}>
-                Browse 2026 Catalogue →
-              </Link>
-            </div>
+                <div className="crafted-badge">CRAFTED IN RAJASTHAN</div>
 
-            <div className="track alt">
-              <h3>{hpData.track2_title}</h3>
-              <p>{hpData.track2_desc}</p>
-              <ul>
-                {track2Points.map((pt, i) => (
-                  <li key={i}>{pt}</li>
-                ))}
-              </ul>
-              <Link href="/turnkey" className="btn btn-outline" style={{ width: '100%', justifyContent: 'center', borderColor: '#FFFFFF', color: '#FFFFFF' }}>
-                Explore Room Packages →
-              </Link>
+                <div className="slider-dots">
+                  {heroSlides.map((_, idx) => (
+                    <button
+                      key={idx}
+                      className={`dot ${idx === currentSlide ? 'active' : ''}`}
+                      onClick={() => setCurrentSlide(idx)}
+                      aria-label={`Go to slide ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="stats">
+          {/* LIGHT STATS STRIP BELOW HERO */}
+          <div className="hero-stats-light">
             <div>
-              <strong>{hpData.stat1_number}</strong>
-              <span>{hpData.stat1_label}</span>
+              <strong>{hpData.stat1_number || '3,20,000'}</strong>
+              <span>{hpData.stat1_label || 'SQ. FT. WORKS'}</span>
             </div>
             <div>
-              <strong>{hpData.stat2_number}</strong>
-              <span>{hpData.stat2_label}</span>
+              <strong>{hpData.stat2_number || '1,400+'}</strong>
+              <span>{hpData.stat2_label || 'CRAFTSMEN & STAFF'}</span>
             </div>
             <div>
-              <strong>{hpData.stat3_number}</strong>
-              <span>{hpData.stat3_label}</span>
+              <strong>{hpData.stat3_number || '24'}</strong>
+              <span>{hpData.stat3_label || 'EXPORT MARKETS'}</span>
             </div>
             <div>
-              <strong>{hpData.stat4_number}</strong>
-              <span>{hpData.stat4_label}</span>
+              <strong>{hpData.stat4_number || '98%'}</strong>
+              <span>{hpData.stat4_label || 'ON-TIME DELIVERY'}</span>
             </div>
           </div>
         </div>
