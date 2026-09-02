@@ -17,7 +17,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   { id: 1, title: 'Home', url: '/' },
   {
     id: 2,
-    title: 'Catalogue',
+    title: 'Collections',
     url: '/catalogue',
     children: [
       { id: 21, title: 'Seating & Chairs', url: '/catalogue/seating' },
@@ -32,41 +32,45 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   },
   { id: 3, title: 'Turnkey Projects', url: '/turnkey' },
   { id: 4, title: 'Craft & Materials', url: '/craft' },
-  { id: 5, title: 'About', url: '/about' },
+  { id: 5, title: 'Journals', url: '/journals' },
 ];
 
 import { decodeHtmlEntities } from '../lib/wpCommerce';
 
 function normalizeMenuItems(items: MenuItem[]): MenuItem[] {
-  return items.map((item) => {
-    let cleanUrl = item.url || '/';
-    // Strip backend domain if present
-    cleanUrl = cleanUrl.replace(/^https?:\/\/[^\/]+/, '');
+  return items
+    .filter((item) => item.title !== 'About' && item.url !== '/about')
+    .map((item) => {
+      let cleanUrl = item.url || '/';
+      cleanUrl = cleanUrl.replace(/^https?:\/\/[^\/]+/, '');
 
-    // Convert legacy query params /catalogue?cat=seating -> SEO URL /catalogue/seating
-    if (cleanUrl.includes('/catalogue?cat=')) {
-      const catSlug = cleanUrl.split('/catalogue?cat=')[1]?.split('&')[0];
-      if (catSlug) {
-        cleanUrl = `/catalogue/${catSlug}`;
+      if (cleanUrl.includes('/catalogue?cat=')) {
+        const catSlug = cleanUrl.split('/catalogue?cat=')[1]?.split('&')[0];
+        if (catSlug) {
+          cleanUrl = `/catalogue/${catSlug}`;
+        }
       }
-    }
 
-    // Convert WooCommerce category taxonomy links /product-category/seating/ -> SEO URL /catalogue/seating
-    if (cleanUrl.includes('/product-category/')) {
-      const parts = cleanUrl.split('/product-category/')[1]?.split('/').filter(Boolean);
-      const catSlug = parts?.[0];
-      if (catSlug) {
-        cleanUrl = `/catalogue/${catSlug}`;
+      if (cleanUrl.includes('/product-category/')) {
+        const parts = cleanUrl.split('/product-category/')[1]?.split('/').filter(Boolean);
+        const catSlug = parts?.[0];
+        if (catSlug) {
+          cleanUrl = `/catalogue/${catSlug}`;
+        }
       }
-    }
 
-    return {
-      ...item,
-      title: decodeHtmlEntities(item.title || ''),
-      url: cleanUrl,
-      children: item.children ? normalizeMenuItems(item.children) : [],
-    };
-  });
+      let displayTitle = decodeHtmlEntities(item.title || '');
+      if (displayTitle === 'Catalogue' || displayTitle === 'Catalog') {
+        displayTitle = 'Collections';
+      }
+
+      return {
+        ...item,
+        title: displayTitle,
+        url: cleanUrl,
+        children: item.children ? normalizeMenuItems(item.children) : [],
+      };
+    });
 }
 
 export const Header: React.FC = () => {
