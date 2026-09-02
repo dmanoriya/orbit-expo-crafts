@@ -6,5 +6,5 @@ interface CategorySlugProps {
 
 export default async function CategorySlugRedirect({ params }: CategorySlugProps) {
   const { slug } = await params;
-  redirect(`/catalogue/${slug}`);
+  redirect(`/collections/${slug}`);
 }

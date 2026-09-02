@@ -121,14 +121,14 @@ export const Footer: React.FC = () => {
           <div>
             <h6>Furniture Categories</h6>
             <ul>
-              <li><Link href="/catalogue/seating">Seating & Chairs</Link></li>
-              <li><Link href="/catalogue/tables">Tables & Desks</Link></li>
-              <li><Link href="/catalogue/sofas">Sofas & Lounge</Link></li>
-              <li><Link href="/catalogue/beds">Beds & Bedroom</Link></li>
-              <li><Link href="/catalogue/storage">Storage & Casegoods</Link></li>
-              <li><Link href="/catalogue/benches">Benches & Ottomans</Link></li>
-              <li><Link href="/catalogue/outdoor">Outdoor & Poolside</Link></li>
-              <li><Link href="/catalogue/lighting">Lighting & Sconces</Link></li>
+              <li><Link href="/collections/furniture">Furniture Collections</Link></li>
+              <li><Link href="/collections/home-decor">Home Decor</Link></li>
+              <li><Link href="/collections/wall-decor-and-mirrors">Wall Decor & Mirrors</Link></li>
+              <li><Link href="/collections/lighting">Lighting</Link></li>
+              <li><Link href="/collections/rugs-and-floor-coverings">Rugs & Floor Coverings</Link></li>
+              <li><Link href="/collections/storage-and-organization">Storage & Organization</Link></li>
+              <li><Link href="/collections/kitchen-and-tabletop">Kitchen & Tabletop</Link></li>
+              <li><Link href="/collections/outdoor-and-garden">Outdoor & Garden</Link></li>
             </ul>
           </div>
 
@@ -136,8 +136,8 @@ export const Footer: React.FC = () => {
           <div>
             <h6>Trade & Specifiers</h6>
             <ul>
-              <li><Link href="/turnkey">Contract Manufacturing</Link></li>
-              <li><Link href="/turnkey">Turnkey Room Packages</Link></li>
+              <li><Link href="/collections">Hotel Furniture Spec</Link></li>
+              <li><Link href="/collections">Villa & Resort Fit-out</Link></li>
               <li><Link href="/contact">Request Finish Swatches</Link></li>
               <li><Link href="/contact">Request CAD/3D Blocks</Link></li>
               <li><Link href="/catalogue">Hotel Furniture Spec</Link></li>

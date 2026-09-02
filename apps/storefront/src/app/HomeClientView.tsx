@@ -137,7 +137,7 @@ export default function HomeClientView({
                       <li key={i}>{pt}</li>
                     ))}
                   </ul>
-                  <Link href="/catalogue" className="track-link">
+                  <Link href="/collections" className="track-link">
                     Browse 2026 Catalogue →
                   </Link>
                 </div>
@@ -224,7 +224,7 @@ export default function HomeClientView({
 
           <div className="cat-grid">
             {displayCategories.map((c) => (
-              <Link href={`/catalogue/${c.id}`} key={c.id} className="cat-card">
+              <Link href={`/collections/${c.id}`} key={c.id} className="cat-card">
                 <img src={c.image || `/categories/${c.id}.jpg`} alt={c.name} loading="lazy" />
                 <div className="overlay" />
                 <div className="info">
@@ -251,7 +251,7 @@ export default function HomeClientView({
 
           <div className="caps">
             {projectSpaces.map((ps) => (
-              <Link href={`/catalogue?seg=${encodeURIComponent(ps.name)}`} key={ps.id} className="cap-card">
+              <Link href={`/collections?seg=${encodeURIComponent(ps.name)}`} key={ps.id} className="cap-card">
                 <img src={ps.image} alt={ps.name} loading="lazy" />
                 <div className="overlay" />
                 <div className="cap-info">
@@ -315,7 +315,7 @@ export default function HomeClientView({
           </div>
 
           <div style={{ textAlign: 'center', marginTop: 40 }}>
-            <Link href="/catalogue" className="btn btn-primary btn-lg">
+            <Link href="/collections" className="btn btn-primary btn-lg">
               Explore All {products.length} Baseline Designs →
             </Link>
           </div>
@@ -381,7 +381,7 @@ export default function HomeClientView({
             {MATERIALS.map((m) => (
               <Link
                 key={m}
-                href={`/catalogue?mat=${encodeURIComponent(m)}`}
+                href={`/collections?mat=${encodeURIComponent(m)}`}
                 className="chip"
                 style={{
                   background: 'var(--surface-2)',
@@ -413,7 +413,7 @@ export default function HomeClientView({
                 {hpData.band_cta1_text || 'Start an enquiry →'}
               </Link>
               <Link
-                href={hpData.band_cta2_url || '/catalogue'}
+                href={hpData.band_cta2_url || '/collections'}
                 className="btn btn-outline btn-lg"
                 style={{ borderColor: 'var(--brand)', color: 'var(--brand)' }}
               >

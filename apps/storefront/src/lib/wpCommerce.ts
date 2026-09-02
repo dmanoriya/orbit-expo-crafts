@@ -54,6 +54,59 @@ export function buildCategoryTree(categories: WpCategoryItem[]): WpCategoryItem[
   return rootItems;
 }
 
+export function getCategorySeoPath(cat: WpCategoryItem | null | undefined, categories: WpCategoryItem[]): string {
+  if (!cat || !cat.slug || cat.slug === 'all') return '/collections';
+  
+  const idMap = new Map<number, WpCategoryItem>();
+  categories.forEach((item) => {
+    if (item.wpId) idMap.set(item.wpId, item);
+  });
+
+  const pathSlugs: string[] = [];
+  let current: WpCategoryItem | undefined = cat;
+
+  while (current && current.slug) {
+    pathSlugs.unshift(current.slug);
+    if (current.parent && idMap.has(current.parent)) {
+      current = idMap.get(current.parent);
+    } else {
+      break;
+    }
+  }
+
+  return `/collections/${pathSlugs.join('/')}`;
+}
+
+export function getCategoryBreadcrumbs(cat: WpCategoryItem | null | undefined, categories: WpCategoryItem[]): { name: string; url: string }[] {
+  const crumbs: { name: string; url: string }[] = [{ name: 'Collections', url: '/collections' }];
+  if (!cat || !cat.slug || cat.slug === 'all') return crumbs;
+
+  const idMap = new Map<number, WpCategoryItem>();
+  categories.forEach((item) => {
+    if (item.wpId) idMap.set(item.wpId, item);
+  });
+
+  const chain: WpCategoryItem[] = [];
+  let current: WpCategoryItem | undefined = cat;
+
+  while (current) {
+    chain.unshift(current);
+    if (current.parent && idMap.has(current.parent)) {
+      current = idMap.get(current.parent);
+    } else {
+      break;
+    }
+  }
+
+  let accumulatedPath = '/collections';
+  chain.forEach((item) => {
+    accumulatedPath += `/${item.slug}`;
+    crumbs.push({ name: item.name, url: accumulatedPath });
+  });
+
+  return crumbs;
+}
+
 export function decodeHtmlEntities(str: string): string {
   if (!str) return '';
   let decoded = str;
@@ -125,7 +178,8 @@ export function getWpEndpoint(path: string): string {
   if (typeof window !== 'undefined') {
     return `/api/wp${path}`;
   }
-  const wpBase = (process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.orbitexpocrafts.com').replace(/\/$/, '');
+  const defaultWp = process.env.NODE_ENV === 'development' ? 'http://woo-catalog-nextjs.local' : 'https://admin.orbitexpocrafts.com';
+  const wpBase = (process.env.NEXT_PUBLIC_WORDPRESS_URL || process.env.WORDPRESS_URL || defaultWp).replace(/\/$/, '');
   return `${wpBase}/wp-json/hcc/v1${path}`;
 }
 

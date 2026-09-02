@@ -18,16 +18,16 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
   {
     id: 2,
     title: 'Collections',
-    url: '/catalogue',
+    url: '/collections',
     children: [
-      { id: 21, title: 'Seating & Chairs', url: '/catalogue/seating' },
-      { id: 22, title: 'Tables & Dining', url: '/catalogue/tables' },
-      { id: 23, title: 'Sofas & Lounges', url: '/catalogue/sofas' },
-      { id: 24, title: 'Beds & Nightstands', url: '/catalogue/beds' },
-      { id: 25, title: 'Credenzas & Storage', url: '/catalogue/storage' },
-      { id: 26, title: 'Outdoor & Patio', url: '/catalogue/outdoor' },
-      { id: 27, title: 'Lighting', url: '/catalogue/lighting' },
-      { id: 28, title: 'Decor & Objects', url: '/catalogue/decor' },
+      { id: 21, title: 'Furniture', url: '/collections/furniture' },
+      { id: 22, title: 'Home Decor', url: '/collections/home-decor' },
+      { id: 23, title: 'Wall Decor & Mirrors', url: '/collections/wall-decor-and-mirrors' },
+      { id: 24, title: 'Lighting', url: '/collections/lighting' },
+      { id: 25, title: 'Rugs & Floor Coverings', url: '/collections/rugs-and-floor-coverings' },
+      { id: 26, title: 'Storage & Organization', url: '/collections/storage-and-organization' },
+      { id: 27, title: 'Kitchen & Tabletop', url: '/collections/kitchen-and-tabletop' },
+      { id: 28, title: 'Outdoor & Garden', url: '/collections/outdoor-and-garden' },
     ],
   },
   { id: 3, title: 'Turnkey Projects', url: '/turnkey' },
@@ -43,11 +43,12 @@ function normalizeMenuItems(items: MenuItem[]): MenuItem[] {
     .map((item) => {
       let cleanUrl = item.url || '/';
       cleanUrl = cleanUrl.replace(/^https?:\/\/[^\/]+/, '');
+      cleanUrl = cleanUrl.replace(/\/catalogue/g, '/collections');
 
-      if (cleanUrl.includes('/catalogue?cat=')) {
-        const catSlug = cleanUrl.split('/catalogue?cat=')[1]?.split('&')[0];
+      if (cleanUrl.includes('/collections?cat=')) {
+        const catSlug = cleanUrl.split('/collections?cat=')[1]?.split('&')[0];
         if (catSlug) {
-          cleanUrl = `/catalogue/${catSlug}`;
+          cleanUrl = `/collections/${catSlug}`;
         }
       }
 
@@ -55,7 +56,7 @@ function normalizeMenuItems(items: MenuItem[]): MenuItem[] {
         const parts = cleanUrl.split('/product-category/')[1]?.split('/').filter(Boolean);
         const catSlug = parts?.[0];
         if (catSlug) {
-          cleanUrl = `/catalogue/${catSlug}`;
+          cleanUrl = `/collections/${catSlug}`;
         }
       }
 
@@ -131,10 +132,16 @@ export const Header: React.FC = () => {
               updatedItems[collectionsIndex] = {
                 ...updatedItems[collectionsIndex],
                 title: 'Collections',
+                url: '/collections',
                 children: topDepts.map((d, index) => ({
                   id: d.wpId || index + 100,
                   title: d.name,
-                  url: `/catalogue?cat=${encodeURIComponent(d.slug || d.id)}`,
+                  url: `/collections/${d.slug || d.id}`,
+                  children: d.children ? d.children.map((sub, sIndex) => ({
+                    id: sub.wpId || sIndex + 1000,
+                    title: sub.name,
+                    url: `/collections/${d.slug || d.id}/${sub.slug || sub.id}`,
+                  })) : [],
                 })),
               };
               items = updatedItems;

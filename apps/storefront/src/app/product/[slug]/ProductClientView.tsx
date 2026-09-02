@@ -88,8 +88,8 @@ export default function ProductClientView({
     <div className="wrap">
       {/* BREADCRUMBS */}
       <div className="crumbs">
-        <Link href="/">HOME</Link> / <Link href="/catalogue">CATALOGUE</Link> /{' '}
-        <Link href={`/catalogue/${product.cat}`}>{product.catName.toUpperCase()}</Link> / {product.name.toUpperCase()}
+        <Link href="/">HOME</Link> / <Link href="/collections">COLLECTIONS</Link> /{' '}
+        <Link href={`/collections/${product.cat}`}>{product.catName.toUpperCase()}</Link> / {product.name.toUpperCase()}
       </div>
 
       {/* PDP GRID */}
