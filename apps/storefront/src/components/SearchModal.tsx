@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
-import { ProductItem } from '../data/catalogData';
+import { ProductItem, getProductSlug } from '../data/catalogData';
 import { useEnquiry } from '../context/EnquiryContext';
 import { fetchWpStorefrontData, WpCategoryItem } from '../lib/wpCommerce';
 
@@ -30,10 +30,11 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
   const [recentlyViewed, setRecentlyViewed] = useState<ProductItem[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-focus input on open
+  // Auto-focus input on open & lazy load data
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 100);
+      
       // Load recently viewed from localStorage
       try {
         const stored = localStorage.getItem('orbit_recently_viewed');
@@ -44,6 +45,12 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
       } catch (e) {
         console.log('Error reading recently viewed:', e);
       }
+
+      // Fetch fresh data adhering to wpCommerce TTL
+      fetchWpStorefrontData().then((data) => {
+        setProducts(data.products);
+        setCategories(data.categories);
+      });
     } else {
       setQuery('');
     }
@@ -75,7 +82,15 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
     if (!query.trim()) return [];
     const q = query.toLowerCase().trim();
     return products.filter((p) => {
-      const haystack = [p.name, p.id, p.catName, p.type, p.material, p.material2, p.segment, p.segment2].join(' ').toLowerCase();
+      const catTerms = [
+        p.catName,
+        p.cat,
+        ...(p.catSlugs || []),
+        ...((p as any).catNames || []),
+        ...((p as any).categories || []).map((c: any) => c.name),
+        ...((p as any).categories || []).map((c: any) => c.slug),
+      ].filter(Boolean).join(' ');
+      const haystack = [p.name, p.id, p.slug, (p as any).sku, catTerms, p.type, p.material, p.material2, p.segment, p.segment2].join(' ').toLowerCase();
       return haystack.includes(q);
     });
   }, [query, products]);
@@ -135,8 +150,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
               <div className="section-title">
                 <span>Matching Results ({searchResults.length})</span>
                 {searchResults.length > 0 && (
-                  <Link href={`/catalogue?search=${encodeURIComponent(query)}`} onClick={onClose} style={{ color: 'var(--brand)', fontWeight: 600, fontSize: 13 }}>
-                    View all in Catalogue →
+                  <Link href={`/collections?search=${encodeURIComponent(query)}`} onClick={onClose} style={{ color: 'var(--brand)', fontWeight: 600, fontSize: 13 }}>
+                    View all in Collections →
                   </Link>
                 )}
               </div>
@@ -145,12 +160,12 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
                 <div className="search-results-grid">
                   {searchResults.map((p) => (
                     <div key={p.id} className="search-result-item">
-                      <Link href={`/product/${p.id}`} onClick={() => handleProductClick(p)} className="result-thumb">
+                      <Link href={`/product/${getProductSlug(p)}`} onClick={() => handleProductClick(p)} className="result-thumb">
                         <img src={p.image} alt={p.name} />
                       </Link>
                       <div className="result-info">
                         <span className="mono" style={{ fontSize: 10, color: 'var(--brand)' }}>{p.id} · {p.catName}</span>
-                        <Link href={`/product/${p.id}`} onClick={() => handleProductClick(p)}>
+                        <Link href={`/product/${getProductSlug(p)}`} onClick={() => handleProductClick(p)}>
                           <h5>{p.name}</h5>
                         </Link>
                         <small>{p.material} · MOQ {p.moq} units · {p.lead}d lead</small>
@@ -203,7 +218,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
                   <span className="section-label mono" style={{ marginBottom: 10, display: 'block' }}>Browse Categories</span>
                   <div className="cat-quick-chips">
                     {categories.slice(0, 8).map((c) => (
-                      <Link href={`/catalogue/${c.id}`} key={c.id} onClick={onClose} className="cat-quick-chip">
+                      <Link href={`/collections/${c.slug || c.id}`} key={c.id} onClick={onClose} className="cat-quick-chip">
                         {c.name} {c.count ? `(${c.count})` : ''}
                       </Link>
                     ))}
@@ -235,8 +250,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
         {/* MODAL FOOTER */}
         <div className="search-modal-foot">
           <span>Tip: Press <kbd>Cmd</kbd> + <kbd>K</kbd> or <kbd>Ctrl</kbd> + <kbd>K</kbd> anywhere to trigger quick search</span>
-          <Link href="/catalogue" onClick={onClose} style={{ color: 'var(--brand)', fontWeight: 600 }}>
-            Open Full Catalogue →
+          <Link href="/collections" onClick={onClose} style={{ color: 'var(--brand)', fontWeight: 600 }}>
+            Open Full Collections →
           </Link>
         </div>
       </div>

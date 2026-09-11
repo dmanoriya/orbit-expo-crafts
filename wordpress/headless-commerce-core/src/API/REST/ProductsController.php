@@ -136,6 +136,39 @@ class ProductsController extends RestController {
 		);
 		$posts = get_posts( $args );
 
+		// 1. Fallback: check if $slug was an older slug before rename (_wp_old_slug)
+		if ( empty( $posts ) ) {
+			$old_posts = get_posts( array(
+				'post_type'   => 'product',
+				'post_status' => 'publish',
+				'meta_key'    => '_wp_old_slug',
+				'meta_value'  => $slug,
+				'numberposts' => 1,
+			) );
+			if ( ! empty( $old_posts ) ) {
+				$posts = $old_posts;
+			}
+		}
+
+		// 2. Fallback: check if $slug is an SKU
+		if ( empty( $posts ) && function_exists( 'wc_get_product_id_by_sku' ) ) {
+			$sku_id = wc_get_product_id_by_sku( $slug );
+			if ( $sku_id ) {
+				$p = get_post( $sku_id );
+				if ( $p && 'product' === $p->post_type && 'publish' === $p->post_status ) {
+					$posts = array( $p );
+				}
+			}
+		}
+
+		// 3. Fallback: check if $slug is numeric product ID
+		if ( empty( $posts ) && is_numeric( $slug ) ) {
+			$id_post = get_post( (int) $slug );
+			if ( $id_post && 'product' === $id_post->post_type && 'publish' === $id_post->post_status ) {
+				$posts = array( $id_post );
+			}
+		}
+
 		if ( empty( $posts ) ) {
 			return $this->error_response( 'hcc_product_not_found', 'Product not found', 404 );
 		}
@@ -175,6 +208,7 @@ class ProductsController extends RestController {
 					'facets'      => (string) get_term_meta( $term->term_id, '_hcc_facets', true ),
 					'styles'      => (string) get_term_meta( $term->term_id, '_hcc_styles', true ),
 					'room'        => (string) get_term_meta( $term->term_id, '_hcc_room', true ),
+					'seo'         => SEOService::get_seo( $term->term_id, 'term' ),
 				);
 			}
 		}
@@ -486,7 +520,10 @@ class ProductsController extends RestController {
 		$lead_time_text = (string) ( $product->get_meta( '_lead_time_text' ) ?: sprintf( '%d working days after sample approval', $lead_time ) );
 		$price_note     = (string) ( $product->get_meta( '_price_note' ) ?: 'Quoted to your spec & quantity' );
 		$raw_badge      = (string) ( $product->get_meta( '_badge' ) ?: '' );
-		$badge          = null;
+		if ( in_array( strtolower( trim( $raw_badge ) ), array( 'none', 'null', '' ), true ) ) {
+			$raw_badge = '';
+		}
+		$badge          = ! empty( $raw_badge ) ? $raw_badge : ( $product->is_on_sale() ? 'Best Seller' : '' );
 
 		// Extract terms from WooCommerce Taxonomies if assigned
 		$seg_terms = wp_get_post_terms( $id, 'pa_segment' );
@@ -578,6 +615,7 @@ class ProductsController extends RestController {
 			'regularPrice'     => (float) $product->get_regular_price(),
 			'salePrice'        => (float) $product->get_sale_price(),
 			'onSale'           => $product->is_on_sale(),
+			'dateCreated'      => $product->get_date_created() ? $product->get_date_created()->date( 'Y-m-d H:i:s' ) : '',
 			'badge'            => $this->decode_str( $badge ),
 			'stockStatus'      => $product->get_stock_status(),
 			'inStock'          => $product->is_in_stock(),

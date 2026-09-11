@@ -1,4 +1,6 @@
 import './globals.css';
+import { AuthProvider } from '../context/AuthContext';
+import { FavoritesProvider } from '../context/FavoritesContext';
 import { EnquiryProvider } from '../context/EnquiryContext';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
@@ -6,6 +8,7 @@ import { EnquiryDrawer } from '../components/EnquiryDrawer';
 import { FontLoader } from '../components/FontLoader';
 
 export const metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://orbitexpocrafts.com'),
   title: 'ORBIT Expo Crafts — Turnkey Furniture Manufacturer',
   description: 'Turnkey furniture manufacturing for hospitality, commercial and residential projects in Rajasthan.',
 };
@@ -14,6 +17,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" data-theme="peacock">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Gilda+Display&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap"
+          rel="stylesheet"
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -31,12 +40,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body suppressHydrationWarning>
         <FontLoader />
-        <EnquiryProvider>
-          <Header />
-          <main id="app">{children}</main>
-          <Footer />
-          <EnquiryDrawer />
-        </EnquiryProvider>
+        <AuthProvider>
+          <EnquiryProvider>
+            <FavoritesProvider>
+              <Header />
+              <main id="app">{children}</main>
+              <Footer />
+              <EnquiryDrawer />
+            </FavoritesProvider>
+          </EnquiryProvider>
+        </AuthProvider>
       </body>
     </html>
   );

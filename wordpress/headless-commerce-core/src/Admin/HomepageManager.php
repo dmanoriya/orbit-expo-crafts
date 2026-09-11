@@ -31,14 +31,18 @@ class HomepageManager {
 	public static function get_homepage_data() {
 		$defaults = array(
 			// Hero
-			'hero_eyebrow'      => 'DIRECT FACTORY · UDAIPUR & JODHPUR · EST. 2011',
-			'hero_title'        => 'Furniture that arrives project-ready.',
-			'hero_accent'       => 'project-ready.',
-			'hero_lede'         => 'We engineer and build loose furniture, casegoods, lighting and fixed joinery to project drawings for luxury hotels, resorts, fine dining and international export projects.',
+			'hero_eyebrow'          => 'THE LIVING GALLERY',
+			'hero_title'            => 'Objects with a life beyond trends.',
+			'hero_accent'           => 'beyond trends.',
+			'hero_lede'             => 'Handcrafted furniture and décor, shaped by enduring materials and thoughtful detail.',
 			'hero_bg_mode'          => 'image',
-			'hero_bg_image'         => site_url( '/wp-content/uploads/2026/08/category-sofas.jpg' ),
-			'hero_bg_color'         => '#181512',
-			'hero_overlay_opacity'  => '85',
+			'hero_bg_image'         => site_url( '/wp-content/uploads/hero_section_bg.webp' ),
+			'hero_bg_color'         => '#F5F2EC',
+			'hero_overlay_opacity'  => '0',
+			'hero_cta1_text'        => 'EXPLORE THE COLLECTION',
+			'hero_cta1_url'         => '/collections',
+			'hero_cta2_text'        => 'DISCOVER OUR CRAFT',
+			'hero_cta2_url'         => '/about',
 			
 			// Stats
 			'stat1_number'      => '3,20,000',
@@ -49,6 +53,22 @@ class HomepageManager {
 			'stat3_label'       => 'EXPORT MARKETS',
 			'stat4_number'      => '98%',
 			'stat4_label'       => 'ON-TIME DELIVERY',
+
+			// Work With Us Section
+			'work_title'         => "Choose How You'd Like to Work With Us",
+			'work_card1_eyebrow' => 'SHOP FURNITURE',
+			'work_card1_title'   => 'Individual Pieces, Made to Belong',
+			'work_card1_desc'    => 'Discover considered furniture and objects for one room, one corner, or the whole home.',
+			'work_card1_cta'     => 'EXPLORE THE COLLECTION',
+			'work_card1_url'     => '/collections',
+			'work_card1_image'   => '/Explore_collection.webp',
+
+			'work_card2_eyebrow' => 'COMPLETE PROJECTS',
+			'work_card2_title'   => 'Spaces, Crafted from Brief to Installation',
+			'work_card2_desc'    => 'Partner with our project team for custom furniture, material development, production and complete execution.',
+			'work_card2_cta'     => 'VISIT THE TRADE DESK',
+			'work_card2_url'     => '/discuss-projects',
+			'work_card2_image'   => '/Project.webp',
 
 			// Feature Track Cards
 			'track1_title'      => 'Direct contract projects',
@@ -70,9 +90,11 @@ class HomepageManager {
 			'seg_desc'          => 'Furniture engineered for commercial spaces with heavy contract use standards.',
 
 			// Featured Designs
-			'feat_eyebrow'      => 'EXPORT READY',
+			'feat_eyebrow'      => '',
 			'feat_title'        => 'A few we are proud of this season.',
 			'feat_desc'         => 'Popular baseline designs ready for customization to your project’s material, fabric, and dimensional specifications.',
+			'feat_cta_text'     => 'Explore Collection',
+			'feat_cta_url'      => '/collections',
 
 			// 5 Steps
 			'step_eyebrow'      => 'FACTORY PROCESS',
@@ -146,6 +168,21 @@ class HomepageManager {
 					<div style="margin-top:16px;">
 						<label style="font-weight:600; display:block; margin-bottom:4px;">Hero Paragraph Description:</label>
 						<textarea name="hcc_homepage_options[hero_lede]" rows="3" style="width:100%;"><?php echo esc_textarea( $data['hero_lede'] ); ?></textarea>
+					</div>
+
+					<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;">
+						<div>
+							<label style="font-weight:600; display:block; margin-bottom:4px;">Primary CTA Button Text:</label>
+							<input type="text" name="hcc_homepage_options[hero_cta1_text]" value="<?php echo esc_attr( $data['hero_cta1_text'] ?? 'EXPLORE THE COLLECTION' ); ?>" style="width:100%;" />
+							<label style="font-size:11px; color:#666; display:block; margin-top:4px;">Button Link (e.g. /collections):</label>
+							<input type="text" name="hcc_homepage_options[hero_cta1_url]" value="<?php echo esc_attr( $data['hero_cta1_url'] ?? '/collections' ); ?>" style="width:100%;" />
+						</div>
+						<div>
+							<label style="font-weight:600; display:block; margin-bottom:4px;">Secondary Action Link Text:</label>
+							<input type="text" name="hcc_homepage_options[hero_cta2_text]" value="<?php echo esc_attr( $data['hero_cta2_text'] ?? 'DISCOVER OUR CRAFT' ); ?>" style="width:100%;" />
+							<label style="font-size:11px; color:#666; display:block; margin-top:4px;">Link URL (e.g. /about):</label>
+							<input type="text" name="hcc_homepage_options[hero_cta2_url]" value="<?php echo esc_attr( $data['hero_cta2_url'] ?? '/about' ); ?>" style="width:100%;" />
+						</div>
 					</div>
 
 					<div style="margin-top:16px; background:#f9f9f9; padding:14px; border-radius:6px; border:1px solid #e5e5e5;">
@@ -240,6 +277,77 @@ class HomepageManager {
 							<div>
 								<label style="font-size:12px; font-weight:600; display:block;">Bullet Points (1 per line):</label>
 								<textarea name="hcc_homepage_options[track2_points]" rows="4" style="width:100%; font-size:12px;"><?php echo esc_textarea( $data['track2_points'] ); ?></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- SECTION: WORK WITH US (CHOOSE HOW YOU'D LIKE TO WORK WITH US) -->
+				<div class="postbox" style="padding:20px; margin-bottom:24px; background:#fff; border:1px solid #c3c4c7; border-radius:6px;">
+					<h2 style="font-size:18px; font-weight:700; border-bottom:1px solid #eee; padding-bottom:10px; margin-top:0; color:#0E5C63;">
+						2. "Choose How You'd Like to Work With Us" Section (Cards Below Stats)
+					</h2>
+					<div style="margin-top:16px; margin-bottom:20px;">
+						<label style="font-weight:600; display:block; margin-bottom:4px;">Main Section Title:</label>
+						<input type="text" name="hcc_homepage_options[work_title]" value="<?php echo esc_attr( $data['work_title'] ?? "Choose How You'd Like to Work With Us" ); ?>" style="width:100%; font-size:15px;" />
+					</div>
+
+					<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+						<!-- CARD 1 -->
+						<div style="background:#f9f9f9; padding:16px; border-radius:6px; border:1px solid #e5e5e5;">
+							<h3 style="margin-top:0; font-size:15px; color:#A36B3B;">Left Card: Individual Pieces (Shop Furniture)</h3>
+							<div style="margin-bottom:10px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Eyebrow Tag:</label>
+								<input type="text" name="hcc_homepage_options[work_card1_eyebrow]" value="<?php echo esc_attr( $data['work_card1_eyebrow'] ?? 'SHOP FURNITURE' ); ?>" style="width:100%;" />
+							</div>
+							<div style="margin-bottom:10px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Card Heading:</label>
+								<input type="text" name="hcc_homepage_options[work_card1_title]" value="<?php echo esc_attr( $data['work_card1_title'] ?? 'Individual Pieces, Made to Belong' ); ?>" style="width:100%;" />
+							</div>
+							<div style="margin-bottom:10px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Description:</label>
+								<textarea name="hcc_homepage_options[work_card1_desc]" rows="3" style="width:100%;"><?php echo esc_textarea( $data['work_card1_desc'] ?? 'Discover considered furniture and objects for one room, one corner, or the whole home.' ); ?></textarea>
+							</div>
+							<div style="margin-bottom:10px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Button / Link Text:</label>
+								<input type="text" name="hcc_homepage_options[work_card1_cta]" value="<?php echo esc_attr( $data['work_card1_cta'] ?? 'EXPLORE THE COLLECTION' ); ?>" style="width:100%;" />
+							</div>
+							<div style="margin-bottom:10px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Target URL Link:</label>
+								<input type="text" name="hcc_homepage_options[work_card1_url]" value="<?php echo esc_attr( $data['work_card1_url'] ?? '/collections' ); ?>" style="width:100%;" />
+							</div>
+							<div>
+								<label style="font-size:12px; font-weight:600; display:block;">Image URL / Path:</label>
+								<input type="text" name="hcc_homepage_options[work_card1_image]" value="<?php echo esc_attr( $data['work_card1_image'] ?? '/Explore_collection.webp' ); ?>" style="width:100%;" />
+							</div>
+						</div>
+
+						<!-- CARD 2 -->
+						<div style="background:#f9f9f9; padding:16px; border-radius:6px; border:1px solid #e5e5e5;">
+							<h3 style="margin-top:0; font-size:15px; color:#A36B3B;">Right Card: Complete Projects (Trade Desk)</h3>
+							<div style="margin-bottom:10px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Eyebrow Tag:</label>
+								<input type="text" name="hcc_homepage_options[work_card2_eyebrow]" value="<?php echo esc_attr( $data['work_card2_eyebrow'] ?? 'COMPLETE PROJECTS' ); ?>" style="width:100%;" />
+							</div>
+							<div style="margin-bottom:10px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Card Heading:</label>
+								<input type="text" name="hcc_homepage_options[work_card2_title]" value="<?php echo esc_attr( $data['work_card2_title'] ?? 'Spaces, Crafted from Brief to Installation' ); ?>" style="width:100%;" />
+							</div>
+							<div style="margin-bottom:10px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Description:</label>
+								<textarea name="hcc_homepage_options[work_card2_desc]" rows="3" style="width:100%;"><?php echo esc_textarea( $data['work_card2_desc'] ?? 'Partner with our project team for custom furniture, material development, production and complete execution.' ); ?></textarea>
+							</div>
+							<div style="margin-bottom:10px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Button / Link Text:</label>
+								<input type="text" name="hcc_homepage_options[work_card2_cta]" value="<?php echo esc_attr( $data['work_card2_cta'] ?? 'VISIT THE TRADE DESK' ); ?>" style="width:100%;" />
+							</div>
+							<div style="margin-bottom:10px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Target URL Link:</label>
+								<input type="text" name="hcc_homepage_options[work_card2_url]" value="<?php echo esc_attr( $data['work_card2_url'] ?? '/discuss-projects' ); ?>" style="width:100%;" />
+							</div>
+							<div>
+								<label style="font-size:12px; font-weight:600; display:block;">Image URL / Path:</label>
+								<input type="text" name="hcc_homepage_options[work_card2_image]" value="<?php echo esc_attr( $data['work_card2_image'] ?? '/Project.webp' ); ?>" style="width:100%;" />
 							</div>
 						</div>
 					</div>

@@ -10,12 +10,17 @@ interface FontConfig {
   fontMono: string;
 }
 
+let loadedFontConfig = false;
+
 export const FontLoader: React.FC = () => {
   useEffect(() => {
+    if (loadedFontConfig) return;
+
     async function loadFonts() {
       try {
         const res = await fetch('/api/wp/config').catch(() => null);
         if (!res || !res.ok) return;
+        loadedFontConfig = true;
 
         const json = await res.json().catch(() => null);
         if (!json || !json.success || !json.data?.fonts) return;

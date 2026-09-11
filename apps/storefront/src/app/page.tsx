@@ -23,6 +23,7 @@ export default async function HomePage() {
     <HomeClientView
       initialProducts={storefrontData.products}
       initialCategories={storefrontData.categories}
+      initialMaterials={storefrontData.materials}
       initialHpData={homepageData}
       isWpConnected={storefrontData.isWpConnected}
     />

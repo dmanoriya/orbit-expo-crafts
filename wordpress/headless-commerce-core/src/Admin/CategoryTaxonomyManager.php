@@ -14,6 +14,14 @@ class CategoryTaxonomyManager {
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'add_admin_menu' ), 20 );
 		add_action( 'rest_api_init', array( __CLASS__, 'register_rest_routes' ) );
+		add_action( 'admin_init', function() {
+			if ( taxonomy_exists( 'product_cat' ) ) {
+				$cat_count = wp_count_terms( array( 'taxonomy' => 'product_cat', 'hide_empty' => false ) );
+				if ( ! is_wp_error( $cat_count ) && intval( $cat_count ) <= 1 ) {
+					self::import_master_taxonomy();
+				}
+			}
+		} );
 	}
 
 	public static function add_admin_menu() {

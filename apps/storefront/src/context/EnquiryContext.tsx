@@ -9,6 +9,11 @@ export interface EnquiryItem {
   q: number;
   image?: string;
   moq?: number;
+  material?: string;
+  finish?: string;
+  dims?: string | number[];
+  unitPrice?: number;
+  slug?: string;
 }
 
 interface EnquiryContextType {

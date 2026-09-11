@@ -1,8 +1,13 @@
 {
-  "name": "orbit-expo-crafts-hostinger",
+  "name": "orbit-expo-crafts-storefront",
   "version": "1.0.0",
   "private": true,
+  "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "echo 'Pre-built package ready'"
+  },
+  "dependencies": {
+    "next": "15.5.23"
   }
 }

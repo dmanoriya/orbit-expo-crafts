@@ -26,8 +26,8 @@ export const SEGMENTS = [
 
 export const MATERIALS = [
   'Solid Sheesham', 'Solid Teak', 'Solid Mango', 'Solid Acacia', 'Engineered Panel', 'MS / Powder Coated Metal',
-  'Brass & Bronze', 'Stainless Steel', 'Bone Inlay', 'Marble & Stone', 'Terrazzo', 'Cane & Rattan', 'Rope Weave', 'Resin',
-  'Tile Inlay', 'Hand Carving', 'Upholstery Fabric', 'Genuine Leather', 'Vegan Leather', 'Glass', 'Reclaimed Wood'
+  'Brass & Bronze', 'Stainless Steel', 'Home Decor', 'Lamp and Lighting', 'Marble & Stone', 'Terrazzo', 'Cane & Rattan', 'Rope Weave', 'Resin',
+  'Tile Inlay', 'Hand Carving', 'Upholstery Fabric', 'Glass', 'Reclaimed Wood'
 ];
 
 export const FINISHES = [
@@ -41,13 +41,37 @@ export const FINISHES = [
   { n: 'Graphite Metal', c: '#4A4E54', name: 'Graphite Metal', code: '#4A4E54' }
 ];
 
+export interface WpSeoData {
+  provider?: string;
+  title?: string;
+  description?: string;
+  canonical?: string;
+  robots?: string;
+  keywords?: string;
+  openGraph?: {
+    title?: string;
+    description?: string;
+    image?: string;
+  };
+  twitter?: {
+    card?: string;
+    title?: string;
+    description?: string;
+    image?: string;
+  };
+  schema?: Record<string, any>;
+}
+
 export interface ProductItem {
   id: string;
   sku?: string;
+  slug?: string;
   name: string;
   cat: string;
   catName: string;
   catSlugs?: string[];
+  catNames?: string[];
+  categories?: Array<{ id: number | string; name: string; slug: string }>;
   type: string;
   segment: string;
   segment2?: string;
@@ -64,16 +88,35 @@ export interface ProductItem {
   leadTimeText?: string;
   priceNote?: string;
   badge?: 'New' | 'Best Seller' | 'Export Ready' | null;
+  is_new?: boolean;
+  onSale?: boolean;
+  dateCreated?: string;
   image?: string;
   shortDescription?: string;
   description?: string;
   gallery?: string[];
+  seo?: WpSeoData;
+}
+
+export function getProductSlug(p: { slug?: string; name?: string; id?: string }): string {
+  if (p.slug && p.slug.trim()) return p.slug.trim().toLowerCase();
+  if (p.name) {
+    const clean = p.name
+      .toLowerCase()
+      .trim()
+      .replace(/&/g, 'and')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    if (clean) return clean;
+  }
+  return p.id || 'product';
 }
 
 export const MOCK_PRODUCTS: ProductItem[] = [
   {
     id: 'ORB-1001',
     sku: 'ORB-1001',
+    slug: 'marwar-dining-chair',
     name: 'Marwar Dining Chair',
     cat: 'seating',
     catName: 'Seating',
@@ -92,6 +135,7 @@ export const MOCK_PRODUCTS: ProductItem[] = [
   {
     id: 'ORB-1002',
     sku: 'ORB-1002',
+    slug: 'chittor-console-table',
     name: 'Chittor Console Table',
     cat: 'tables',
     catName: 'Tables & Desks',
@@ -99,17 +143,19 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     type: 'Console Table',
     segment: 'Hotel Lobby',
     segment2: 'Resort & Villa',
-    material: 'Bone Inlay',
+    material: 'Home Decor',
     material2: 'Brass & Bronze',
     moq: 2,
     lead: 30,
     dims: [140, 40, 76],
-    badge: null,
+    badge: 'New',
+    is_new: true,
     image: '/categories/tables.jpg',
   },
   {
     id: 'ORB-1003',
     sku: 'ORB-1003',
+    slug: 'amrai-velvet-sofa',
     name: 'Amrai Velvet Sofa',
     cat: 'sofas',
     catName: 'Sofas & Lounge',
@@ -123,11 +169,13 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     lead: 25,
     dims: [210, 88, 80],
     badge: 'New',
+    is_new: true,
     image: '/categories/sofas.jpg',
   },
   {
     id: 'ORB-1004',
     sku: 'ORB-1004',
+    slug: 'jaisalmer-canopy-bed',
     name: 'Jaisalmer Canopy Bed',
     cat: 'beds',
     catName: 'Beds & Bedroom',
@@ -146,6 +194,7 @@ export const MOCK_PRODUCTS: ProductItem[] = [
   {
     id: 'ORB-1005',
     sku: 'ORB-1005',
+    slug: 'ranakpur-sideboard-cabinet',
     name: 'Ranakpur Sideboard Cabinet',
     cat: 'storage',
     catName: 'Storage & Casegoods',
@@ -164,6 +213,7 @@ export const MOCK_PRODUCTS: ProductItem[] = [
   {
     id: 'ORB-1006',
     sku: 'ORB-1006',
+    slug: 'udaipur-brass-dome-pendant',
     name: 'Udaipur Brass Dome Pendant',
     cat: 'lighting',
     catName: 'Lighting',
@@ -176,12 +226,14 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     moq: 10,
     lead: 14,
     dims: [45, 45, 40],
-    badge: null,
+    badge: 'New',
+    is_new: true,
     image: '/categories/lighting.jpg',
   },
   {
     id: 'ORB-1007',
     sku: 'ORB-1007',
+    slug: 'mehrangarh-outdoor-sofa',
     name: 'Mehrangarh Outdoor Sofa',
     cat: 'outdoor',
     catName: 'Outdoor & Poolside',
@@ -194,12 +246,14 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     moq: 6,
     lead: 24,
     dims: [180, 80, 72],
-    badge: null,
+    badge: 'New',
+    is_new: true,
     image: '/categories/outdoor.jpg',
   },
   {
     id: 'ORB-1008',
     sku: 'ORB-1008',
+    slug: 'jaipur-carved-arch-mirror',
     name: 'Jaipur Carved Arch Mirror',
     cat: 'decor',
     catName: 'Decor & Mirrors',

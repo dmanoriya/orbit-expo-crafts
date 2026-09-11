@@ -1,12 +1,24 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
 import { MATERIALS, MOCK_PRODUCTS } from '../../data/catalogData';
+import { fetchWpStorefrontData } from '../../lib/wpCommerce';
 
-export default function CraftPage() {
+export const revalidate = 0;
+export const dynamic = 'force-dynamic';
+
+export default async function CraftPage() {
+  const { products: wpProducts } = await fetchWpStorefrontData();
+  const allProducts = wpProducts && wpProducts.length > 0 ? wpProducts : MOCK_PRODUCTS;
+
   const getMaterialCount = (mat: string) => {
-    return MOCK_PRODUCTS.filter((p) => p.material === mat || p.material2 === mat).length;
+    const matLower = mat.toLowerCase();
+    return allProducts.filter((p) => {
+      const m1 = (p.material || '').toLowerCase();
+      const m2 = (p.material2 || '').toLowerCase();
+      const name = (p.name || '').toLowerCase();
+      const catName = (p.catName || '').toLowerCase();
+      return m1.includes(matLower) || m2.includes(matLower) || name.includes(matLower) || catName.includes(matLower);
+    }).length;
   };
 
   const getSceneImg = (index: number) => {
@@ -26,7 +38,33 @@ export default function CraftPage() {
         <Link href="/">Home</Link> / Craft & Materials
       </div>
 
-      <section className="blk" style={{ paddingTop: 20 }}>
+      {/* CRAFT HERO SECTION */}
+      <section className="craft-hero" style={{ padding: '24px 0 54px', borderBottom: '1px solid var(--line)', marginBottom: 40 }}>
+        <div className="craft-hero-grid" style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 56, alignItems: 'center' }}>
+          <div>
+            <span className="mono" style={{ fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--ink-3)', display: 'block', marginBottom: 20 }}>
+              CRAFT & MATERIALS
+            </span>
+            <h1 className="disp" style={{ fontSize: 'clamp(36px, 4.2vw, 58px)', lineHeight: 1.12, fontWeight: 400, marginBottom: 24, color: 'var(--ink)' }}>
+              Rajasthan makes it.<br />
+              <span style={{ fontStyle: 'italic', color: '#B8AF9F', fontWeight: 300 }}>We make it repeatable.</span>
+            </h1>
+            <p style={{ fontSize: 17, color: 'var(--ink-2)', lineHeight: 1.6, maxWidth: 520, fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
+              Traditional material knowledge disciplined by drawings, samples and repeatable production standards.
+            </p>
+          </div>
+
+          <div style={{ borderRadius: 'var(--r-md)', overflow: 'hidden', boxShadow: 'var(--shadow-md)', aspectRatio: '4/3' }}>
+            <img
+              src="/categories/decor.jpg"
+              alt="Rajasthan Craftsmanship & Repeatable Quality"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="blk" style={{ paddingTop: 0 }}>
         <div className="sec-head">
           <div>
             <span className="mono">Material library</span>
@@ -38,24 +76,28 @@ export default function CraftPage() {
         </div>
 
         <div className="cat-grid">
-          {MATERIALS.map((m, i) => (
-            <Link href={`/catalogue?mat=${encodeURIComponent(m)}`} key={m} className="cat">
-              <div className="art">
-                <span className="arrow">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M5 12h14M13 6l6 6-6 6" />
-                  </svg>
-                </span>
-                <img
-                  src={getSceneImg(i)}
-                  alt={m}
-                  loading="lazy"
-                />
-              </div>
-              <h4>{m}</h4>
-              <span>{getMaterialCount(m) || 4} designs</span>
-            </Link>
-          ))}
+          {MATERIALS.map((m, i) => {
+            const count = getMaterialCount(m);
+            const countLabel = count > 0 ? `${count} ${count === 1 ? 'design' : 'designs'}` : 'Explore collection';
+            return (
+              <Link href={`/collections?mat=${encodeURIComponent(m)}`} key={m} className="cat">
+                <div className="art">
+                  <span className="arrow">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
+                  </span>
+                  <img
+                    src={getSceneImg(i)}
+                    alt={m}
+                    loading="lazy"
+                  />
+                </div>
+                <h4>{m}</h4>
+                <span>{countLabel}</span>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

@@ -24,8 +24,8 @@ export async function GET() {
       ],
       materials: [
         'Solid Sheesham', 'Solid Teak', 'Solid Mango', 'Solid Acacia', 'Engineered Panel', 'MS / Powder Coated Metal',
-        'Brass & Bronze', 'Stainless Steel', 'Bone Inlay', 'Marble & Stone', 'Terrazzo', 'Cane & Rattan', 'Rope Weave', 'Resin',
-        'Tile Inlay', 'Hand Carving', 'Upholstery Fabric', 'Genuine Leather', 'Vegan Leather', 'Glass', 'Reclaimed Wood',
+        'Brass & Bronze', 'Stainless Steel', 'Home Decor', 'Lamp and Lighting', 'Marble & Stone', 'Terrazzo', 'Cane & Rattan', 'Rope Weave', 'Resin',
+        'Tile Inlay', 'Hand Carving', 'Upholstery Fabric', 'Glass', 'Reclaimed Wood',
       ],
       colors: [
         { name: 'Natural Oil', code: '#C8A06A' },

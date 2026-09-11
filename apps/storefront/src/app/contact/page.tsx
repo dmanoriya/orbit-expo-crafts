@@ -223,8 +223,8 @@ export default function ContactPage() {
             ) : (
               <div className="note" style={{ marginBottom: 24, padding: '16px 20px', background: 'var(--surface-2)', borderRadius: 'var(--r-md)', fontSize: 13.5, color: 'var(--ink-2)' }}>
                 Your shortlist is empty — that&apos;s fine! Describe your project requirements below, or{' '}
-                <Link href="/catalogue" style={{ color: 'var(--brand)', fontWeight: 700 }}>
-                  browse our catalogue
+                <Link href="/collections" style={{ color: 'var(--brand)', fontWeight: 700 }}>
+                  browse our collections
                 </Link>{' '}
                 to shortlist items.
               </div>
@@ -456,8 +456,8 @@ export default function ContactPage() {
                   <div><span>Email:</span> <strong>{email}</strong></div>
                 </div>
 
-                <Link href="/catalogue" className="btn btn-primary btn-lg">
-                  Return to Catalogue
+                <Link href="/collections" className="btn btn-primary btn-lg">
+                  Return to Collections
                 </Link>
               </div>
             )}

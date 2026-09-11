@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { SEGMENTS, MATERIALS, MOCK_PRODUCTS, ProductItem } from '../data/catalogData';
+import { SEGMENTS, MATERIALS, MOCK_PRODUCTS, ProductItem, getProductSlug } from '../data/catalogData';
 import { useEnquiry } from '../context/EnquiryContext';
+import { useFavorites } from '../context/FavoritesContext';
 import {
   fetchWpStorefrontData,
   fetchWpHomepageData,
@@ -11,10 +12,12 @@ import {
   HomepageData,
   DEFAULT_HOMEPAGE_DATA,
 } from '../lib/wpCommerce';
+import { isKnownDepartment } from '../lib/categoryTaxonomy';
 
 interface HomeClientViewProps {
   initialProducts: ProductItem[];
   initialCategories: WpCategoryItem[];
+  initialMaterials?: string[];
   initialHpData: HomepageData;
   isWpConnected: boolean;
 }
@@ -22,12 +25,17 @@ interface HomeClientViewProps {
 export default function HomeClientView({
   initialProducts,
   initialCategories,
+  initialMaterials,
   initialHpData,
   isWpConnected: initialWpConnected,
 }: HomeClientViewProps) {
   const { addEnquiry } = useEnquiry();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [products, setProducts] = useState<ProductItem[]>(initialProducts || MOCK_PRODUCTS);
   const [categories, setCategories] = useState<WpCategoryItem[]>(initialCategories || []);
+  const [materialsList, setMaterialsList] = useState<string[]>(
+    initialMaterials && initialMaterials.length > 0 ? initialMaterials : MATERIALS
+  );
   const [hpData, setHpData] = useState<HomepageData>(initialHpData || DEFAULT_HOMEPAGE_DATA);
   const [isWpConnected, setIsWpConnected] = useState(initialWpConnected);
 
@@ -40,13 +48,40 @@ export default function HomeClientView({
       ]);
       setProducts(sfData.products);
       setCategories(sfData.categories);
+      if (sfData.materials && sfData.materials.length > 0) {
+        setMaterialsList(sfData.materials);
+      }
       setIsWpConnected(sfData.isWpConnected);
       setHpData(homepageConfig);
     }
     refreshData();
   }, []);
 
+  // Complete list of materials and heritage crafts
+  const allMaterials = React.useMemo(() => {
+    const set = new Set<string>();
+    materialsList.forEach((m) => { if (m) set.add(m); });
+    MATERIALS.forEach((m) => { if (m) set.add(m); });
+    products.forEach((p) => {
+      if (p.material) set.add(p.material);
+      if ((p as any).material2) set.add((p as any).material2);
+      if (Array.isArray((p as any).attributes?.pa_material)) {
+        (p as any).attributes.pa_material.forEach((m: string) => { if (m) set.add(m); });
+      }
+      if (Array.isArray((p as any).attributes?.material)) {
+        (p as any).attributes.material.forEach((m: string) => { if (m) set.add(m); });
+      }
+    });
+    return Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b));
+  }, [materialsList, products]);
+
   const featured = products.slice(0, 6);
+
+  const newArrivals = React.useMemo(() => {
+    const marked = products.filter((p) => p.badge === 'New' || (p as any).is_new);
+    if (marked.length > 0) return marked.slice(0, 4);
+    return products.slice(0, 4);
+  }, [products]);
 
   // Helper to split bullet points string into array
   const parsePoints = (str: string) =>
@@ -106,14 +141,34 @@ export default function HomeClientView({
     return fallbackCategories;
   }, [categories]);
 
-  // Project domain spaces with background images matching prototype
+  // Project domain spaces matching prototype
   const projectSpaces = [
-    { id: 'hotel-guestrooms', name: 'Hotel Guestrooms', subtitle: '45-60 day package delivery', image: '/categories/beds.jpg' },
-    { id: 'hotel-lobby', name: 'Hotel Lobby', subtitle: 'Statement lounge & reception', image: '/categories/sofas.jpg' },
-    { id: 'restaurant', name: 'Restaurant', subtitle: 'Heavy contract durability', image: '/categories/tables.jpg' },
-    { id: 'cafe', name: 'Café & Bistro', subtitle: 'Compact seating & tables', image: '/categories/seating.jpg' },
-    { id: 'bar-nightclub', name: 'Bar & Nightclub', subtitle: 'Bespoke counters & high-seating', image: '/categories/fitout.jpg' },
+    {
+      id: 'hotel-guestrooms',
+      name: 'Hotel Guestrooms',
+      image: '/project-categories/hotel-guestrooms.webp',
+      url: '/collections?seg=Hotel%20Guestrooms',
+    },
+    {
+      id: 'hotel-lobby',
+      name: 'Hotel Lobby',
+      image: '/project-categories/hotel-lobby.webp',
+      url: '/collections?seg=Hotel%20Lobby',
+    },
+    {
+      id: 'restaurant',
+      name: 'Restaurant',
+      image: '/project-categories/restaurant.webp',
+      url: '/collections?seg=Restaurant',
+    },
+    {
+      id: 'cafe-bistro',
+      name: 'Café & Bistro',
+      image: '/project-categories/cafe-bistro.webp',
+      url: '/collections?seg=Caf%C3%A9%20%26%20Bistro',
+    },
   ];
+
 
   // Hero Image Slider slides
   const heroSlides = [
@@ -132,116 +187,185 @@ export default function HomeClientView({
     return () => clearInterval(timer);
   }, [heroSlides.length]);
 
+  const heroBgImage =
+    hpData.hero_bg_image &&
+    !hpData.hero_bg_image.includes('category-outdoor.jpg') &&
+    !hpData.hero_bg_image.includes('category-sofas.jpg')
+      ? hpData.hero_bg_image
+      : '/hero_section_bg.webp';
+
   return (
     <div>
-      {/* 1. LIGHT THEME HERO SECTION MATCHING REFERENCE DESIGN */}
-      <section className="hero-light-layout">
-        <div className="wrap">
-          <div className="hero-split-grid">
-            {/* LEFT COLUMN: TYPOGRAPHY & 2-COLUMN TRACK CARDS */}
-            <div className="hero-left">
-              <div className="mono hero-eyebrow">
-                {hpData.hero_eyebrow || 'DIRECT FACTORY · EST. 2011'}
-              </div>
+      {/* 1. NEW PRIORITY GALLERY HERO SECTION (THE LIVING GALLERY) */}
+      <section 
+        className="hero-gallery-banner" 
+        style={{ 
+          backgroundImage: `url(${heroBgImage})`,
+          backgroundColor: hpData.hero_bg_color || '#F5F2EC'
+        }}
+      >
+        <div className="hero-gallery-overlay" />
+        <div className="wrap hero-gallery-container">
+          <div className="hero-gallery-content">
+            <span className="hero-gallery-eyebrow">
+              {hpData.hero_eyebrow || 'THE LIVING GALLERY'}
+            </span>
 
-              <h1 className="disp hero-title">
-                {hpData.hero_title || 'Furniture that arrives project-ready.'}
-              </h1>
+            <h1 className="hero-gallery-title">
+              {hpData.hero_title || 'Objects with a life beyond trends.'}
+            </h1>
 
-              <p className="hero-lede">
-                {hpData.hero_lede || 'We engineer and build furniture, casegoods, lighting and fixed joinery to project drawings for luxury hotels, resorts, fine dining and international export projects.'}
-              </p>
+            <p className="hero-gallery-lede">
+              {hpData.hero_lede || 'Handcrafted furniture and décor, shaped by enduring materials and thoughtful detail.'}
+            </p>
 
-              {/* 2-COLUMN SPLIT TRACKS */}
-              <div className="hero-split-tracks">
-                <div className="hero-track">
-                  <h3>{hpData.track1_title || 'Direct contract projects'}</h3>
-                  <p>{hpData.track1_desc || 'Full-scope loose furniture and fixed joinery built to architect specifications.'}</p>
-                  <ul className="track-bullets">
-                    {(track1Points.length > 0 ? track1Points : [
-                      'Kiln-dried & anti-borer treated timber',
-                      'Custom stain matching & fabric approvals',
-                      'CAD/3D shop drawing review',
-                      'Door-to-door freight & logistics'
-                    ]).map((pt, i) => (
-                      <li key={i}>{pt}</li>
-                    ))}
-                  </ul>
-                  <Link href="/collections" className="track-link">
-                    Browse 2026 Catalogue →
-                  </Link>
-                </div>
+            <div className="hero-gallery-actions">
+              <Link 
+                href={hpData.hero_cta1_url || '/collections'} 
+                className="hero-gallery-btn-primary"
+              >
+                <span>{hpData.hero_cta1_text || 'EXPLORE THE COLLECTION'}</span>
+                <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="hero-btn-arrow" aria-hidden="true">
+                  <path d="M12 1L17 6M17 6L12 11M17 6H1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
 
-                <div className="hero-track">
-                  <h3>{hpData.track2_title || 'Turnkey plug-in packages'}</h3>
-                  <p>{hpData.track2_desc || 'Pre-engineered room packages for rapid hotel and restaurant fit-outs.'}</p>
-                  <ul className="track-bullets">
-                    {(track2Points.length > 0 ? track2Points : [
-                      'FSC certified wood options',
-                      'Flexible order quantities',
-                      'Defined production schedules',
-                      'Site installation support'
-                    ]).map((pt, i) => (
-                      <li key={i}>{pt}</li>
-                    ))}
-                  </ul>
-                  <Link href="/turnkey" className="track-link">
-                    Explore Room Packages →
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* RIGHT COLUMN: SLIDER OF IMAGES ONE BY ONE */}
-            <div className="hero-right">
-              <div className="hero-slider-box">
-                {heroSlides.map((slide, idx) => (
-                  <div
-                    key={slide.id}
-                    className={`hero-slide ${idx === currentSlide ? 'active' : ''}`}
-                  >
-                    <img src={slide.image} alt={slide.alt} />
-                  </div>
-                ))}
-                <div className="crafted-badge">CRAFTED IN RAJASTHAN</div>
-
-                <div className="slider-dots">
-                  {heroSlides.map((_, idx) => (
-                    <button
-                      key={idx}
-                      className={`dot ${idx === currentSlide ? 'active' : ''}`}
-                      onClick={() => setCurrentSlide(idx)}
-                      aria-label={`Go to slide ${idx + 1}`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* LIGHT STATS STRIP BELOW HERO */}
-          <div className="hero-stats-light">
-            <div>
-              <strong>{hpData.stat1_number || '3,20,000'}</strong>
-              <span>{hpData.stat1_label || 'SQ. FT. WORKS'}</span>
-            </div>
-            <div>
-              <strong>{hpData.stat2_number || '1,400+'}</strong>
-              <span>{hpData.stat2_label || 'CRAFTSMEN & STAFF'}</span>
-            </div>
-            <div>
-              <strong>{hpData.stat3_number || '24'}</strong>
-              <span>{hpData.stat3_label || 'EXPORT MARKETS'}</span>
-            </div>
-            <div>
-              <strong>{hpData.stat4_number || '98%'}</strong>
-              <span>{hpData.stat4_label || 'ON-TIME DELIVERY'}</span>
+              <Link 
+                href={hpData.hero_cta2_url || '/about'} 
+                className="hero-gallery-link-secondary"
+              >
+                {hpData.hero_cta2_text || 'DISCOVER OUR CRAFT'}
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. PRODUCT CATEGORIES GRID */}
+      {/* ESTABLISHMENT DETAILS & STATS STRIP */}
+      <section className="establishment-stats-strip">
+        <div className="wrap">
+          <div className="establishment-stats-grid">
+            <div className="stat-col">
+              <strong className="stat-number">{hpData.stat1_number || '3,20,000'}</strong>
+              <span className="stat-label">{hpData.stat1_label || 'SQ. FT. WORKS'}</span>
+            </div>
+            <div className="stat-col">
+              <strong className="stat-number">{hpData.stat2_number || '1,400+'}</strong>
+              <span className="stat-label">{hpData.stat2_label || 'CRAFTSMEN & STAFF'}</span>
+            </div>
+            <div className="stat-col">
+              <strong className="stat-number">{hpData.stat3_number || '24'}</strong>
+              <span className="stat-label">{hpData.stat3_label || 'EXPORT MARKETS'}</span>
+            </div>
+            <div className="stat-col">
+              <strong className="stat-number">{hpData.stat4_number || '98%'}</strong>
+              <span className="stat-label">{hpData.stat4_label || 'ON-TIME DELIVERY'}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 1.75 WORK WITH US (CHOOSE HOW YOU'D LIKE TO WORK WITH US) */}
+      <section className="work-with-us-section">
+        <div className="wrap">
+          <div className="work-section-header">
+            <h2 className="work-section-title">{hpData.work_title || "Choose How You'd Like to Work With Us"}</h2>
+          </div>
+
+          <div className="work-cards-grid">
+            {/* CARD 1: SHOP FURNITURE */}
+            <article className="work-card">
+              <Link href={hpData.work_card1_url && hpData.work_card1_url !== '/collections' ? hpData.work_card1_url : '/furniture'} className="work-card-image-wrap">
+                <img
+                  src={hpData.work_card1_image || '/Explore_collection.webp'}
+                  alt={hpData.work_card1_title || 'Shop Furniture'}
+                  loading="lazy"
+                />
+              </Link>
+              <div className="work-card-body">
+                <span className="work-card-eyebrow">{hpData.work_card1_eyebrow || 'SHOP FURNITURE'}</span>
+                <h3 className="work-card-title">
+                  <Link href={hpData.work_card1_url && hpData.work_card1_url !== '/collections' ? hpData.work_card1_url : '/furniture'}>
+                    {hpData.work_card1_title || 'Individual Pieces, Made to Belong'}
+                  </Link>
+                </h3>
+                <p className="work-card-desc">
+                  {hpData.work_card1_desc || 'Discover considered furniture and objects for one room, one corner, or the whole home.'}
+                </p>
+                <Link href={hpData.work_card1_url && hpData.work_card1_url !== '/collections' ? hpData.work_card1_url : '/furniture'} className="work-card-cta">
+                  <span className="work-card-cta-text">{hpData.work_card1_cta || 'EXPLORE THE COLLECTION'}</span>
+                  <span className="work-card-arrow" aria-hidden="true">→</span>
+                </Link>
+              </div>
+            </article>
+
+            {/* CARD 2: COMPLETE PROJECTS */}
+            <article className="work-card">
+              <Link href={hpData.work_card2_url || '/discuss-projects'} className="work-card-image-wrap">
+                <img
+                  src={hpData.work_card2_image || '/Project.webp'}
+                  alt={hpData.work_card2_title || 'Complete Projects'}
+                  loading="lazy"
+                />
+              </Link>
+              <div className="work-card-body">
+                <span className="work-card-eyebrow">{hpData.work_card2_eyebrow || 'COMPLETE PROJECTS'}</span>
+                <h3 className="work-card-title">
+                  <Link href={hpData.work_card2_url || '/discuss-projects'}>
+                    {hpData.work_card2_title || 'Spaces, Crafted from Brief to Installation'}
+                  </Link>
+                </h3>
+                <p className="work-card-desc">
+                  {hpData.work_card2_desc || 'Partner with our project team for custom furniture, material development, production and complete execution.'}
+                </p>
+                <Link href={hpData.work_card2_url || '/discuss-projects'} className="work-card-cta">
+                  <span className="work-card-cta-text">{hpData.work_card2_cta || 'VISIT THE TRADE DESK'}</span>
+                  <span className="work-card-arrow" aria-hidden="true">→</span>
+                </Link>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. PROJECT DOMAINS (SHOP THE WAY A PROJECT ACTUALLY GETS SPECIFIED) */}
+      <section className="project-domains-section">
+        <div className="wrap">
+          <div className="project-domains-head">
+            <div className="project-domains-left">
+              {hpData.seg_eyebrow && (
+                <span className="project-domains-eyebrow">{hpData.seg_eyebrow}</span>
+              )}
+              <h2 className="project-domains-title">
+                {hpData.seg_title || 'Shop the way a project actually gets specified.'}
+              </h2>
+            </div>
+            <div className="project-domains-right">
+              <p className="project-domains-desc">
+                {hpData.seg_desc || 'Furniture engineered for commercial spaces with heavy contract use standards.'}
+              </p>
+            </div>
+          </div>
+
+          <div className="project-domains-grid">
+            {projectSpaces.map((ps) => (
+              <Link href={ps.url} key={ps.id} className="project-domain-card">
+                <div className="project-domain-art">
+                  <img src={ps.image} alt={ps.name} loading="lazy" />
+                </div>
+                <div className="project-domain-info">
+                  <h3 className="project-domain-name">{ps.name}</h3>
+                  <span className="project-domain-link">
+                    Explore project <span className="arrow-icon">→</span>
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. PRODUCT CATEGORIES GRID */}
       <section className="blk">
         <div className="wrap">
           <div className="sec-head">
@@ -259,9 +383,10 @@ export default function HomeClientView({
                 c.image && c.image.trim() !== ''
                   ? c.image
                   : FALLBACK_DEPT_IMAGES[catSlug] || `/categories/${c.id}.jpg` || '/categories/tables.jpg';
+              const cardHref = isKnownDepartment(catSlug) ? `/${catSlug}` : `/collections/${catSlug}`;
 
               return (
-                <Link href={`/collections/${catSlug}`} key={c.id || catSlug} className="cat-card">
+                <Link href={cardHref} key={c.id || catSlug} className="cat-card">
                   <div className="cat-card-art">
                     <img src={catImg} alt={c.name} loading="lazy" />
                   </div>
@@ -279,26 +404,46 @@ export default function HomeClientView({
         </div>
       </section>
 
-      {/* 3. SHOP BY SPACE / SEGMENT (PROJECT DOMAINS) */}
-      <section className="blk tight" style={{ background: 'var(--surface-2)' }}>
+      {/* 3.5. HERITAGE CRAFTS & MATERIALS VOCABULARIES (DIRECTLY ABOVE "A FEW WE ARE PROUD OF") */}
+      <section className="blk materials-showcase-sec" style={{ background: 'var(--surface-2)', padding: '56px 0' }}>
         <div className="wrap">
-          <div className="sec-head">
+          <div className="sec-head" style={{ marginBottom: 28 }}>
             <div>
-              <span className="mono">{hpData.seg_eyebrow}</span>
-              <h2 className="disp">{hpData.seg_title}</h2>
+              <span className="mono" style={{ color: 'var(--brand)', letterSpacing: '0.08em' }}>
+                {hpData.mat_eyebrow || 'HERITAGE CRAFTS & MATERIALS'}
+              </span>
+              <h2 className="disp" style={{ marginTop: 6 }}>
+                {hpData.mat_title || 'Twenty-one material vocabularies under one roof.'}
+              </h2>
             </div>
-            <p>{hpData.seg_desc}</p>
+            <p style={{ maxWidth: 540 }}>
+              {hpData.mat_desc || 'Combining traditional Rajasthan woodworking, bone inlay, brass casting, and stone masonry with contract-grade durability.'}
+            </p>
           </div>
 
-          <div className="caps">
-            {projectSpaces.map((ps) => (
-              <Link href={`/collections?seg=${encodeURIComponent(ps.name)}`} key={ps.id} className="cap-card">
-                <img src={ps.image} alt={ps.name} loading="lazy" />
-                <div className="overlay" />
-                <div className="cap-info">
-                  <h4>{ps.name}</h4>
-                  <span>{ps.subtitle}</span>
-                </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+            {allMaterials.map((m) => (
+              <Link
+                key={m}
+                href={`/collections?mat=${encodeURIComponent(m)}`}
+                className="chip material-pill"
+                style={{
+                  background: '#FFFFFF',
+                  border: '1px solid var(--line)',
+                  padding: '10px 18px',
+                  borderRadius: 'var(--r-pill)',
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: 'var(--ink)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                }}
+              >
+                <span>{m}</span>
+                <span style={{ fontSize: 12, opacity: 0.5, color: 'var(--brand)' }}>↗</span>
               </Link>
             ))}
           </div>
@@ -310,7 +455,6 @@ export default function HomeClientView({
         <div className="wrap">
           <div className="sec-head">
             <div>
-              <span className="mono">{hpData.feat_eyebrow}</span>
               <h2 className="disp">{hpData.feat_title}</h2>
             </div>
             <p>{hpData.feat_desc}</p>
@@ -319,13 +463,64 @@ export default function HomeClientView({
           <div className="prod-grid">
             {featured.map((p) => (
               <article key={p.id} className="card">
-                <div className="thumb">
-                  {p.badge && <span className={`tag ${p.badge === 'New' ? 'new' : ''}`}>{p.badge}</span>}
-                  <Link href={`/product/${p.id}`}>
+                <div className="thumb" style={{ position: 'relative' }}>
+                  {p.badge && p.badge.toLowerCase() !== 'none' && (
+                    <span className={`tag ${p.badge === 'New' ? 'new' : ''}`}>{p.badge}</span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleFavorite({
+                        id: p.id,
+                        name: p.name,
+                        catName: p.catName,
+                        image: p.image || `/categories/${p.cat || 'seating'}.jpg`,
+                        moq: p.moq,
+                        material: p.material,
+                        finish: (p as any).color || (p as any).finish,
+                        slug: getProductSlug(p),
+                      });
+                    }}
+                    title={isFavorite(p.id) ? 'Remove from Favourites' : 'Save to Favourites'}
+                    aria-label={isFavorite(p.id) ? 'Remove from Favourites' : 'Save to Favourites'}
+                    style={{
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      width: 32,
+                      height: 32,
+                      borderRadius: '50%',
+                      background: isFavorite(p.id) ? '#FFFFFF' : 'rgba(255, 255, 255, 0.9)',
+                      border: '1px solid rgba(0, 0, 0, 0.08)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      zIndex: 3,
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.12)',
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill={isFavorite(p.id) ? '#B85735' : 'none'}
+                      stroke={isFavorite(p.id) ? '#B85735' : '#111111'}
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                    </svg>
+                  </button>
+                  <Link href={`/product/${getProductSlug(p)}`}>
                     <img src={p.image || `/categories/${p.cat || 'seating'}.jpg`} alt={p.name} loading="lazy" />
                   </Link>
                   <div className="acts">
-                    <Link href={`/product/${p.id}`} className="btn btn-soft btn-sm">
+                    <Link href={`/product/${getProductSlug(p)}`} className="btn btn-soft btn-sm">
                       Details
                     </Link>
                     <button
@@ -346,7 +541,9 @@ export default function HomeClientView({
                   </div>
                 </div>
                 <div className="body">
-                  <Link href={`/product/${p.id}`}>
+                  <span className="meta">{p.catName || p.type || 'FURNITURE'}</span>
+                  <span className="made-to-order-tag">Made-To-Order</span>
+                  <Link href={`/product/${getProductSlug(p)}`}>
                     <h4>{p.name}</h4>
                   </Link>
                   <span className="price-note">Price on request</span>
@@ -356,110 +553,204 @@ export default function HomeClientView({
           </div>
 
           <div style={{ textAlign: 'center', marginTop: 40 }}>
-            <Link href="/collections" className="btn btn-primary btn-lg">
-              Explore All {products.length} Baseline Designs →
+            <Link href={hpData.feat_cta_url || '/collections'} className="btn btn-primary btn-lg">
+              {(hpData.feat_cta_text || 'Explore Collection').replace(/[\s→\->]+$/g, '').trim()} →
             </Link>
           </div>
         </div>
       </section>
 
       {/* 5. 5-STEP CONTRACT WORKFLOW */}
-      <section className="blk tight" style={{ background: 'var(--surface-2)' }}>
+      <section className="blk tight factory-process-sec" style={{ background: 'var(--surface-2)' }}>
         <div className="wrap">
           <div className="sec-head">
             <div>
-              <span className="mono">{hpData.step_eyebrow}</span>
-              <h2 className="disp">{hpData.step_title}</h2>
+              <span className="mono">{hpData.step_eyebrow || 'FACTORY PROCESS'}</span>
+              <h2 className="disp">{hpData.step_title || 'Five steps from your drawing to your floor.'}</h2>
             </div>
           </div>
 
           <div className="rail">
-            <div className="step-card">
-              <span className="num">01</span>
-              <h4>{hpData.step1_title}</h4>
-              <p>{hpData.step1_desc}</p>
+            <div className="step step-card">
+              <span className="k num">01</span>
+              <h4 className="step-title">{hpData.step1_title || 'Enquiry'}</h4>
+              <p>{hpData.step1_desc || 'Send drawings, BOQ, or shortlist catalog items for quotation.'}</p>
             </div>
 
-            <div className="step-card">
-              <span className="num">02</span>
-              <h4>{hpData.step2_title}</h4>
-              <p>{hpData.step2_desc}</p>
+            <div className="step step-card">
+              <span className="k num">02</span>
+              <h4 className="step-title">{hpData.step2_title || 'Specs'}</h4>
+              <p>{hpData.step2_desc || 'CAD shop drawings, timber samples, and fabric approvals.'}</p>
             </div>
 
-            <div className="step-card">
-              <span className="num">03</span>
-              <h4>{hpData.step3_title}</h4>
-              <p>{hpData.step3_desc}</p>
+            <div className="step step-card">
+              <span className="k num">03</span>
+              <h4 className="step-title">{hpData.step3_title || 'Prototype'}</h4>
+              <p>{hpData.step3_desc || 'First-piece inspection before bulk production begins.'}</p>
             </div>
 
-            <div className="step-card">
-              <span className="num">04</span>
-              <h4>{hpData.step4_title}</h4>
-              <p>{hpData.step4_desc}</p>
+            <div className="step step-card">
+              <span className="k num">04</span>
+              <h4 className="step-title">{hpData.step4_title || 'Manufacture'}</h4>
+              <p>{hpData.step4_desc || 'Solid wood joinery, finishing, upholstery, and QC.'}</p>
             </div>
 
-            <div className="step-card">
-              <span className="num">05</span>
-              <h4>{hpData.step5_title}</h4>
-              <p>{hpData.step5_desc}</p>
+            <div className="step step-card">
+              <span className="k num">05</span>
+              <h4 className="step-title">{hpData.step5_title || 'Delivery'}</h4>
+              <p>{hpData.step5_desc || 'Export-grade packaging, shipping, and site installation.'}</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 6. HERITAGE MATERIALS GRID */}
-      <section className="blk">
+      {/* 5. 5-STEP CONTRACT WORKFLOW ends */}
+
+      {/* 5.5. NEW ARRIVALS */}
+      <section className="blk new-arrivals-section">
         <div className="wrap">
           <div className="sec-head">
             <div>
-              <span className="mono">{hpData.mat_eyebrow}</span>
-              <h2 className="disp">{hpData.mat_title}</h2>
+              <span className="mono">{hpData.new_arrivals_eyebrow || 'NEW ARRIVALS'}</span>
+              <h2 className="disp">{hpData.new_arrivals_title || 'Fresh from the Rajasthan Workshops'}</h2>
             </div>
-            <p>{hpData.mat_desc}</p>
+            <div className="new-arrivals-head-meta">
+              <p>
+                {hpData.new_arrivals_desc ||
+                  'Recently finished bespoke archetypes, contemporary additions, and seasonal design debuts ready for contract specification.'}
+              </p>
+              <Link href={hpData.new_arrivals_url || '/collections?badge=new'} className="link-arrow new-arrivals-link">
+                {(hpData.new_arrivals_cta || 'Explore all new arrivals').replace(/[\s→\->]+$/g, '').trim()}{' '}
+                <span className="arrow-icon">→</span>
+              </Link>
+            </div>
           </div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-            {MATERIALS.map((m) => (
-              <Link
-                key={m}
-                href={`/collections?mat=${encodeURIComponent(m)}`}
-                className="chip"
-                style={{
-                  background: 'var(--surface-2)',
-                  border: '1px solid var(--line)',
-                  padding: '8px 16px',
-                  borderRadius: 'var(--r-pill)',
-                  fontSize: 13.5,
-                  fontWeight: 500,
-                  color: 'var(--ink)',
-                }}
-              >
-                {m}
-              </Link>
+          <div className="new-arrivals-grid">
+            {newArrivals.map((p) => (
+              <article key={`new-${p.id}`} className="card new-arrival-card">
+                <div className="thumb" style={{ position: 'relative' }}>
+                  <span className="tag new">{p.badge || 'New'}</span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleFavorite({
+                        id: p.id,
+                        name: p.name,
+                        catName: p.catName,
+                        image: p.image || `/categories/${p.cat || 'seating'}.jpg`,
+                        moq: p.moq,
+                        material: p.material,
+                        finish: (p as any).color || (p as any).finish,
+                        slug: getProductSlug(p),
+                      });
+                    }}
+                    title={isFavorite(p.id) ? 'Remove from Favourites' : 'Save to Favourites'}
+                    aria-label={isFavorite(p.id) ? 'Remove from Favourites' : 'Save to Favourites'}
+                    style={{
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      width: 32,
+                      height: 32,
+                      borderRadius: '50%',
+                      background: isFavorite(p.id) ? '#FFFFFF' : 'rgba(255, 255, 255, 0.9)',
+                      border: '1px solid rgba(0, 0, 0, 0.08)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      zIndex: 3,
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.12)',
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill={isFavorite(p.id) ? '#B85735' : 'none'}
+                      stroke={isFavorite(p.id) ? '#B85735' : '#111111'}
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                    </svg>
+                  </button>
+                  <Link href={`/product/${getProductSlug(p)}`}>
+                    <img src={p.image || `/categories/${p.cat || 'seating'}.jpg`} alt={p.name} loading="lazy" />
+                  </Link>
+                  <div className="acts">
+                    <Link href={`/product/${getProductSlug(p)}`} className="btn btn-soft btn-sm">
+                      Details
+                    </Link>
+                    <button
+                      className="btn btn-primary btn-sm"
+                      onClick={() =>
+                        addEnquiry({
+                          id: p.id,
+                          name: p.name,
+                          catName: p.catName,
+                          q: p.moq,
+                          image: p.image || '/fallback-product.svg',
+                          moq: p.moq,
+                        })
+                      }
+                    >
+                      + Enquiry
+                    </button>
+                  </div>
+                </div>
+                <div className="body">
+                  <span className="meta">{p.catName || p.type || 'FURNITURE'}</span>
+                  <span className="made-to-order-tag">Made-To-Order</span>
+                  <Link href={`/product/${getProductSlug(p)}`}>
+                    <h4>{p.name}</h4>
+                  </Link>
+                  <span className="price-note">{p.priceNote || 'Price on request'}</span>
+                </div>
+              </article>
             ))}
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: 40 }}>
+            <Link href={hpData.new_arrivals_url || '/collections?badge=new'} className="btn btn-primary btn-lg">
+              {(hpData.new_arrivals_cta || 'Explore all new arrivals').replace(/[\s→\->]+$/g, '').trim()} →
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* 7. BOTTOM CTA BANNER */}
-      <section className="blk tight">
+      {/* 7. BOTTOM CTA BANNER - TELL US WHAT YOU'RE BUILDING */}
+      <section className="blk tight boq-banner-section">
         <div className="wrap">
-          <div className="band">
-            <div>
-              <h2>{hpData.band_title}</h2>
-              <p>{hpData.band_desc}</p>
+          <div className="boq-band">
+            <div className="boq-art">
+              <img src="/boq-banner.webp" alt="Orbit Expo Crafts Architectural Project" loading="eager" />
             </div>
-            <div className="acts">
-              <Link href={hpData.band_cta1_url || '/contact'} className="btn btn-ghost btn-lg">
-                {hpData.band_cta1_text || 'Start an enquiry →'}
-              </Link>
-              <Link
-                href={hpData.band_cta2_url || '/collections'}
-                className="btn btn-outline btn-lg"
-                style={{ borderColor: 'var(--brand)', color: 'var(--brand)' }}
-              >
-                {hpData.band_cta2_text || 'Explore 2026 catalogue'}
-              </Link>
+            <div className="boq-content">
+              <div className="boq-text">
+                <h2>{hpData.band_title || "Tell us what you're building."}</h2>
+                <p>
+                  {hpData.band_desc ||
+                    'Send your BOQ or architectural drawings. Our project desk replies with formal pricing, lead time, and freight within 24 working hours.'}
+                </p>
+              </div>
+              <div className="boq-actions">
+                <Link href={hpData.band_cta1_url || '/contact'} className="boq-btn">
+                  {(hpData.band_cta1_text || 'Start an enquiry').replace(/[\s→\->]+$/g, '').trim()}{' '}
+                  <span className="arrow-icon">→</span>
+                </Link>
+                <Link
+                  href={(hpData.band_cta2_url || '/collections').replace('/catalogue', '/collections')}
+                  className="boq-btn"
+                >
+                  {(hpData.band_cta2_text || 'Explore 2026 collections').replace(/catalogue/gi, 'collections')}
+                </Link>
+              </div>
             </div>
           </div>
         </div>

@@ -35,6 +35,38 @@ class AuthController extends RestController {
 			'callback'            => array( $this, 'get_current_customer' ),
 			'permission_callback' => array( $this, 'check_authenticated' ),
 		) );
+
+		register_rest_route( $this->namespace, '/customers/favorites', array(
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_favorites' ),
+				'permission_callback' => array( $this, 'check_authenticated' ),
+			),
+			array(
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'save_favorites' ),
+				'permission_callback' => array( $this, 'check_authenticated' ),
+			),
+		) );
+
+		register_rest_route( $this->namespace, '/customers/bookings', array(
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_bookings' ),
+				'permission_callback' => '__return_true',
+			),
+			array(
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'save_booking' ),
+				'permission_callback' => '__return_true',
+			),
+		) );
+
+		register_rest_route( $this->namespace, '/customers/bookings/(?P<id>[a-zA-Z0-9_-]+)/messages', array(
+			'methods'             => \WP_REST_Server::CREATABLE,
+			'callback'            => array( $this, 'add_booking_message' ),
+			'permission_callback' => '__return_true',
+		) );
 	}
 
 	public function login( $request ) {
@@ -63,12 +95,18 @@ class AuthController extends RestController {
 			$last_name  = $customer->get_last_name();
 		}
 
+		$favs = get_user_meta( $user->ID, '_orbit_favorites', true );
+		if ( ! is_array( $favs ) ) {
+			$favs = array();
+		}
+
 		return $this->success_response( array(
 			'id'        => $user->ID,
 			'username'  => $user->user_login,
 			'email'     => $user->user_email,
 			'firstName' => $first_name,
 			'lastName'  => $last_name,
+			'favorites' => $favs,
 		) );
 	}
 
@@ -164,6 +202,11 @@ class AuthController extends RestController {
 			}
 		}
 
+		$favs = get_user_meta( $user_id, '_orbit_favorites', true );
+		if ( ! is_array( $favs ) ) {
+			$favs = array();
+		}
+
 		return $this->success_response( array(
 			'id'        => $user_id,
 			'username'  => $user->user_login,
@@ -173,6 +216,127 @@ class AuthController extends RestController {
 			'billing'   => $billing,
 			'shipping'  => $shipping,
 			'orders'    => $orders,
+			'favorites' => $favs,
+		) );
+	}
+
+	public function get_favorites( $request ) {
+		$user_id = get_current_user_id();
+		$favs    = get_user_meta( $user_id, '_orbit_favorites', true );
+		if ( ! is_array( $favs ) ) {
+			$favs = array();
+		}
+		return $this->success_response( array( 'favorites' => $favs ) );
+	}
+
+	public function save_favorites( $request ) {
+		$user_id = get_current_user_id();
+		$favs    = $request->get_param( 'favorites' );
+		if ( ! is_array( $favs ) ) {
+			$favs = array();
+		}
+		update_user_meta( $user_id, '_orbit_favorites', $favs );
+		return $this->success_response( array(
+			'favorites' => $favs,
+			'message'   => 'Favorites synced successfully.',
+		) );
+	}
+
+	public function get_bookings( $request ) {
+		$user_id = get_current_user_id();
+		$email   = sanitize_email( $request->get_param( 'email' ) );
+
+		if ( $user_id ) {
+			$bookings = get_user_meta( $user_id, '_orbit_commercial_bookings', true );
+		} elseif ( ! empty( $email ) ) {
+			$user = get_user_by( 'email', $email );
+			if ( $user ) {
+				$bookings = get_user_meta( $user->ID, '_orbit_commercial_bookings', true );
+			} else {
+				$bookings = get_option( '_orbit_anon_bookings_' . md5( $email ), array() );
+			}
+		} else {
+			$bookings = array();
+		}
+
+		if ( ! is_array( $bookings ) ) {
+			$bookings = array();
+		}
+
+		return $this->success_response( array( 'bookings' => $bookings ) );
+	}
+
+	public function save_booking( $request ) {
+		$params  = $request->get_json_params();
+		$booking = ! empty( $params ) ? $params : $request->get_params();
+		$user_id = get_current_user_id();
+		$email   = ! empty( $booking['email'] ) ? sanitize_email( $booking['email'] ) : '';
+
+		if ( ! $user_id && ! empty( $email ) ) {
+			$user = get_user_by( 'email', $email );
+			if ( $user ) {
+				$user_id = $user->ID;
+			}
+		}
+
+		if ( $user_id ) {
+			$existing = get_user_meta( $user_id, '_orbit_commercial_bookings', true );
+			if ( ! is_array( $existing ) ) {
+				$existing = array();
+			}
+			$idx = -1;
+			foreach ( $existing as $k => $b ) {
+				if ( isset( $b['id'] ) && $b['id'] === $booking['id'] ) {
+					$idx = $k;
+					break;
+				}
+			}
+			if ( $idx >= 0 ) {
+				$existing[ $idx ] = $booking;
+			} else {
+				array_unshift( $existing, $booking );
+			}
+			update_user_meta( $user_id, '_orbit_commercial_bookings', $existing );
+		} elseif ( ! empty( $email ) ) {
+			$key      = '_orbit_anon_bookings_' . md5( $email );
+			$existing = get_option( $key, array() );
+			if ( ! is_array( $existing ) ) {
+				$existing = array();
+			}
+			array_unshift( $existing, $booking );
+			update_option( $key, $existing, false );
+		}
+
+		return $this->success_response( array(
+			'message' => 'Commercial booking recorded successfully.',
+			'booking' => $booking,
+		) );
+	}
+
+	public function add_booking_message( $request ) {
+		$booking_id = sanitize_text_field( $request->get_param( 'id' ) );
+		$params     = $request->get_json_params();
+		$message    = ! empty( $params ) ? $params : $request->get_params();
+		$user_id    = get_current_user_id();
+
+		if ( $user_id ) {
+			$bookings = get_user_meta( $user_id, '_orbit_commercial_bookings', true );
+			if ( is_array( $bookings ) ) {
+				foreach ( $bookings as &$b ) {
+					if ( isset( $b['id'] ) && $b['id'] === $booking_id ) {
+						if ( ! isset( $b['messages'] ) || ! is_array( $b['messages'] ) ) {
+							$b['messages'] = array();
+						}
+						$b['messages'][] = $message;
+						break;
+					}
+				}
+				update_user_meta( $user_id, '_orbit_commercial_bookings', $bookings );
+			}
+		}
+
+		return $this->success_response( array(
+			'message' => 'Message registered to booking conversation.',
 		) );
 	}
 

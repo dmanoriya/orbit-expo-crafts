@@ -62,9 +62,11 @@ class Plugin {
 			\HeadlessCommerceCore\Admin\TypographyManager::init();
 			\HeadlessCommerceCore\Admin\FooterManager::init();
 			\HeadlessCommerceCore\Admin\CategoryTaxonomyManager::init();
+			\HeadlessCommerceCore\Admin\ProductImporterManager::init();
 		}
 		\HeadlessCommerceCore\Admin\FormEntriesManager::init();
 		\HeadlessCommerceCore\Admin\CategoryTaxonomyManager::init();
+		\HeadlessCommerceCore\Admin\ProductImporterManager::init();
 	}
 
 	public function register_rest_routes() {
@@ -116,6 +118,9 @@ class Plugin {
 	public static function activate() {
 		if ( ! get_option( 'hcc_store_mode' ) ) {
 			update_option( 'hcc_store_mode', StoreMode::HEADLESS_CATALOG );
+		}
+		if ( class_exists( '\\HeadlessCommerceCore\\Admin\\CategoryTaxonomyManager' ) ) {
+			\HeadlessCommerceCore\Admin\CategoryTaxonomyManager::import_master_taxonomy();
 		}
 		flush_rewrite_rules();
 	}

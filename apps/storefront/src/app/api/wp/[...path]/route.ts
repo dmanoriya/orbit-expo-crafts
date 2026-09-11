@@ -32,14 +32,16 @@ export async function GET(
       cache: 'no-store',
     });
 
-    if (!res.ok) {
-      return NextResponse.json({ success: false, data: null }, { status: res.status });
+    const text = await res.text().catch(() => '');
+    let data: any = null;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { success: res.ok, data: null };
     }
-
-    const data = await res.json();
-    return NextResponse.json(data);
+    return NextResponse.json(data, { status: res.status });
   } catch (error) {
-    return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ success: false, error: (error as Error).message, offline: true }, { status: 503 });
   }
 }
 
@@ -64,9 +66,19 @@ export async function POST(
       body: JSON.stringify(body),
     });
 
-    const data = await res.json();
+    const text = await res.text().catch(() => '');
+    let data: any = null;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { success: res.ok, message: text || `Status ${res.status}` };
+    }
+
     return NextResponse.json(data, { status: res.status });
   } catch (error) {
-    return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: (error as Error).message, offline: true },
+      { status: 503 }
+    );
   }
 }

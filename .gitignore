@@ -28,5 +28,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+*.tsbuildinfo
+Website_Discussion/
 *.zip
+!wordpress/headless-commerce-core.zip
 dist-hostinger/
+
