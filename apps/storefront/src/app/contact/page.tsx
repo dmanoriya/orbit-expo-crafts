@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useEnquiry } from '../../context/EnquiryContext';
 import { useAuth } from '../../context/AuthContext';
+import { submitFormEntry } from '../../lib/submitFormEntry';
 
 interface CountryCode {
   country: string;
@@ -169,20 +170,13 @@ export default function ContactPage() {
     };
 
     let generatedRef = '';
-
     try {
-      const res = await fetch('/api/wp/forms/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formPayload),
-      });
-
-      const data = await res.json();
-      if (data.success && data.data?.reference_id) {
-        generatedRef = data.data.reference_id;
+      const subRes = await submitFormEntry(formPayload);
+      if (subRes.referenceId) {
+        generatedRef = subRes.referenceId;
       }
     } catch (err) {
-      console.warn('Form API submit error:', err);
+      console.warn('Form submission error:', err);
     }
 
     if (!generatedRef) {

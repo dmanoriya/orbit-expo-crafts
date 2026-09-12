@@ -192,9 +192,6 @@ export function getWpEndpoint(path: string): string {
   }
   const defaultWp = process.env.NODE_ENV === 'development' ? 'http://woo-catalog-nextjs.local' : 'https://admin.orbitexpocrafts.com';
   let wpBase = (process.env.NEXT_PUBLIC_WORDPRESS_URL || process.env.WORDPRESS_URL || defaultWp).replace(/\/$/, '');
-  if (process.env.NODE_ENV === 'production' && (wpBase.includes('.local') || wpBase.includes('localhost'))) {
-    wpBase = 'https://admin.orbitexpocrafts.com';
-  }
   return `${wpBase}/wp-json/hcc/v1${path}`;
 }
 

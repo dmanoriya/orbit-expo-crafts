@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../../context/AuthContext';
+import { submitFormEntry } from '../../lib/submitFormEntry';
 
 export default function InteriorDesignersPage() {
   const { user } = useAuth();
@@ -57,15 +58,9 @@ export default function InteriorDesignersPage() {
     let generatedRef = '';
 
     try {
-      const res = await fetch('/api/wp/forms/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formPayload),
-      });
-
-      const data = await res.json().catch(() => null);
-      if (data && (data.data?.reference_id || data.reference_id)) {
-        generatedRef = data.data?.reference_id || data.reference_id;
+      const subRes = await submitFormEntry(formPayload);
+      if (subRes.referenceId) {
+        generatedRef = subRes.referenceId;
       }
     } catch (err) {
       console.warn('Error submitting interior designer inquiry:', err);

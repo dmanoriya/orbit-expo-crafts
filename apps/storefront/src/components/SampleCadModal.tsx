@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { submitFormEntry } from '../lib/submitFormEntry';
 
 interface SampleCadModalProps {
   isOpen: boolean;
@@ -181,15 +182,9 @@ export default function SampleCadModal({
     let generatedRef = '';
 
     try {
-      const res = await fetch('/api/wp/forms/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formPayload),
-      });
-
-      const data = await res.json();
-      if (data.success && data.data?.reference_id) {
-        generatedRef = data.data.reference_id;
+      const subRes = await submitFormEntry(formPayload);
+      if (subRes.referenceId) {
+        generatedRef = subRes.referenceId;
       }
     } catch (err) {
       console.warn('Form API error, fallback ref:', err);

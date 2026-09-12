@@ -4586,6 +4586,52 @@ section.blk.tight { padding: 72px 0; }
   color: var(--brand, #B85735);
 }
 
+/* ==========================================================================
+   CUSTOMER TRADE PORTAL RESPONSIVE UTILITIES & MOBILE TABLES
+   ========================================================================== */
+.portal-desktop-only {
+  display: block !important;
+}
+
+.portal-mobile-only {
+  display: none !important;
+}
+
+.portal-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  margin-bottom: 24px;
+}
+
+.portal-table-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.portal-table-scroll::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+
+.portal-table-scroll::-webkit-scrollbar-track {
+  background: #F8FAFC;
+}
+
+@media (max-width: 768px) {
+  .portal-desktop-only {
+    display: none !important;
+  }
+
+  .portal-mobile-only {
+    display: flex !important;
+    flex-direction: column;
+    gap: 14px;
+  }
+}
+
+
 
 
 

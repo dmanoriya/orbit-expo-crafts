@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 
 function getWpApiUrl(): string {
-  let url = process.env.WORDPRESS_URL || process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.orbitexpocrafts.com';
-  if (process.env.NODE_ENV === 'production' && (url.includes('.local') || url.includes('localhost'))) {
-    url = 'https://admin.orbitexpocrafts.com';
+  let url = process.env.WORDPRESS_URL || process.env.NEXT_PUBLIC_WORDPRESS_URL;
+  if (!url) {
+    url = process.env.NODE_ENV === 'development' ? 'http://woo-catalog-nextjs.local' : 'https://admin.orbitexpocrafts.com';
   }
   return url.replace(/\/$/, '');
 }

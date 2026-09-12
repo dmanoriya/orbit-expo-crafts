@@ -315,7 +315,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
             ) : (
               /* REGISTER FORM */
               <form onSubmit={handleRegisterSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12 }}>
                   <div>
                     <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 5 }}>
                       First Name *
@@ -357,7 +357,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                   />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12 }}>
                   <div>
                     <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 5 }}>
                       Work Email *
@@ -1243,9 +1243,9 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                       </div>
                     </div>
 
-                    {/* ITEMS TABLE */}
-                    <div style={{ border: '1px solid var(--line)', borderRadius: 'var(--r-md)', overflow: 'hidden', marginBottom: 28 }}>
-                      <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                    {/* ITEMS TABLE (DESKTOP) */}
+                    <div className="portal-desktop-only portal-table-scroll">
+                      <table style={{ width: '100%', minWidth: 640, borderCollapse: 'collapse', textAlign: 'left' }}>
                         <thead>
                           <tr style={{ background: '#FAF9F5', borderBottom: '1px solid var(--line)' }}>
                             <th style={{ padding: '14px 18px', fontSize: 12.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Article / Specification</th>
@@ -1292,6 +1292,55 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                           ))}
                         </tbody>
                       </table>
+                    </div>
+
+                    {/* ITEMS LIST (MOBILE CARDS) */}
+                    <div className="portal-mobile-only" style={{ marginBottom: 28 }}>
+                      {(selectedBooking.items || []).map((it, idx) => (
+                        <div
+                          key={it.id || idx}
+                          style={{
+                            background: '#FFFFFF',
+                            border: '1px solid var(--line)',
+                            borderRadius: 'var(--r-md)',
+                            padding: '16px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 12,
+                          }}
+                        >
+                          <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
+                            {it.image && (
+                              <img
+                                src={it.image}
+                                alt={it.name}
+                                style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 6, border: '1px solid #ECE7DE', flexShrink: 0 }}
+                              />
+                            )}
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontWeight: 600, fontSize: 14.5, color: '#111111' }}>{it.name}</div>
+                              <div style={{ fontSize: 12, color: '#777777', marginTop: 2 }}>
+                                SKU: {it.id} &bull; {it.catName || 'Catalog Selection'}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div style={{ background: '#FAF9F5', padding: '10px 12px', borderRadius: 6, fontSize: 12.5, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                            <div><strong>Material:</strong> {it.material || 'Solid Hardwood'}</div>
+                            {it.finish && <div><strong>Finish:</strong> {it.finish}</div>}
+                            <div><strong>Dimensions:</strong> {it.dimensions || 'Per CAD Drawing'}</div>
+                          </div>
+
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 6, borderTop: '1px solid #ECE7DE' }}>
+                            <span style={{ fontSize: 13, fontWeight: 600, color: '#555555' }}>
+                              Quantity: <strong>{it.quantity} pcs</strong>
+                            </span>
+                            <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--brand)' }}>
+                              ${((it.totalPrice || (it.quantity * (it.unitPrice || 320)))).toLocaleString()} USD
+                            </span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
 
                     {/* CONSIGNEE ADDRESS & SITE CONSTRAINTS */}
@@ -1366,7 +1415,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                     </div>
 
                     {/* BUYER / CONSIGNEE */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 28, padding: 18, background: '#FAF9F5', borderRadius: 6 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 24, marginBottom: 28, padding: 18, background: '#FAF9F5', borderRadius: 6 }}>
                       <div>
                         <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#777777', marginBottom: 6 }}>
                           CONSIGNEE / BUYER
@@ -1378,7 +1427,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                         {selectedBooking.gstOrTaxId && <div style={{ fontSize: 12.5, marginTop: 4 }}>Tax ID / GST: {selectedBooking.gstOrTaxId}</div>}
                       </div>
 
-                      <div style={{ textAlign: 'right' }}>
+                      <div>
                         <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#777777', marginBottom: 6 }}>
                           COMMERCIAL SHIPPING TERMS
                         </div>
@@ -1390,8 +1439,8 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                     </div>
 
                     {/* TABLE */}
-                    <div style={{ marginBottom: 28 }}>
-                      <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                    <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', border: '1px solid #ECE7DE', borderRadius: 'var(--r-md)', marginBottom: 28 }}>
+                      <table style={{ width: '100%', minWidth: 600, borderCollapse: 'collapse', textAlign: 'left' }}>
                         <thead>
                           <tr style={{ background: '#111111', color: '#FFFFFF' }}>
                             <th style={{ padding: '10px 14px', fontSize: 12, textTransform: 'uppercase' }}>#</th>
@@ -1426,7 +1475,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
 
                     {/* FINANCIAL TOTALS */}
                     <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 32 }}>
-                      <div style={{ width: 340, fontSize: 13.5 }}>
+                      <div style={{ width: '100%', maxWidth: 360, fontSize: 13.5 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #ECE7DE' }}>
                           <span style={{ color: '#666666' }}>Subtotal Ex-Factory:</span>
                           <strong>${selectedBooking.invoice?.subtotal.toLocaleString()}</strong>
@@ -1603,104 +1652,203 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                 </div>
 
                 {bookings.length > 0 ? (
-                  <div style={{ overflowX: 'auto', border: '1px solid var(--line)', borderRadius: 'var(--r-md)' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                      <thead>
-                        <tr style={{ background: '#FAF9F5', borderBottom: '2px solid var(--line)' }}>
-                          <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Booking Ref & PI #</th>
-                          <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Date</th>
-                          <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Project & Location</th>
-                          <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Consignment Specs</th>
-                          <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Status</th>
-                          <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: 'right' }}>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {bookings.map((bk) => (
-                          <tr key={bk.id} style={{ borderBottom: '1px solid #ECE7DE' }}>
-                            <td style={{ padding: '16px' }}>
-                              <div style={{ fontWeight: 700, fontSize: 14 }}>{bk.id}</div>
-                              <div style={{ fontSize: 12, color: '#777777', marginTop: 2 }}>
-                                PI #{bk.invoice?.invoiceNumber || 'Pending'}
-                              </div>
-                            </td>
-                            <td style={{ padding: '16px', fontSize: 13.5, color: '#666666' }}>
-                              {bk.createdAt}
-                            </td>
-                            <td style={{ padding: '16px' }}>
-                              <div style={{ fontWeight: 600, fontSize: 14 }}>{bk.projectName}</div>
-                              <div style={{ fontSize: 12, color: '#777777' }}>
-                                {bk.shippingAddress?.city}, {bk.shippingAddress?.country}
-                              </div>
-                            </td>
-                            <td style={{ padding: '16px', fontSize: 13.5 }}>
-                              <div><strong>{bk.totalPieces} pcs</strong> &bull; {bk.estimatedCbm} CBM</div>
-                              <div style={{ fontSize: 12, color: '#777777' }}>
-                                {bk.items.length} unique specification{bk.items.length > 1 ? 's' : ''}
-                              </div>
-                            </td>
-                            <td style={{ padding: '16px' }}>
-                              <span
-                                style={{
-                                  background: bk.status === 'Dispatched' ? '#E8F5E9' : '#FFF3E0',
-                                  color: bk.status === 'Dispatched' ? '#2E7D32' : '#B45309',
-                                  padding: '4px 10px',
-                                  borderRadius: 999,
-                                  fontSize: 12,
-                                  fontWeight: 700,
-                                }}
-                              >
-                                {bk.status}
-                              </span>
-                            </td>
-                            <td style={{ padding: '16px', textAlign: 'right' }}>
-                              <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setSelectedBooking(bk);
-                                    setInspectorTab('timeline');
-                                  }}
-                                  style={{
-                                    background: '#111111',
-                                    color: '#FFFFFF',
-                                    border: 'none',
-                                    borderRadius: 4,
-                                    padding: '7px 12px',
-                                    fontSize: 12.5,
-                                    fontWeight: 600,
-                                    cursor: 'pointer',
-                                  }}
-                                >
-                                  Inspect & Track →
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setSelectedBooking(bk);
-                                    setInspectorTab('conversation');
-                                  }}
-                                  style={{
-                                    background: '#FAF9F5',
-                                    color: '#111111',
-                                    border: '1px solid #CCC',
-                                    borderRadius: 4,
-                                    padding: '7px 10px',
-                                    fontSize: 12.5,
-                                    fontWeight: 600,
-                                    cursor: 'pointer',
-                                  }}
-                                  title="Open conversation thread"
-                                >
-                                  💬 ({bk.messages?.length || 0})
-                                </button>
-                              </div>
-                            </td>
+                  <>
+                    {/* DESKTOP TABLE */}
+                    <div className="portal-desktop-only portal-table-scroll">
+                      <table style={{ width: '100%', minWidth: 720, borderCollapse: 'collapse', textAlign: 'left' }}>
+                        <thead>
+                          <tr style={{ background: '#FAF9F5', borderBottom: '2px solid var(--line)' }}>
+                            <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Booking Ref & PI #</th>
+                            <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Date</th>
+                            <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Project & Location</th>
+                            <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Consignment Specs</th>
+                            <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Status</th>
+                            <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: 'right' }}>Actions</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                        </thead>
+                        <tbody>
+                          {bookings.map((bk) => (
+                            <tr key={bk.id} style={{ borderBottom: '1px solid #ECE7DE' }}>
+                              <td style={{ padding: '16px' }}>
+                                <div style={{ fontWeight: 700, fontSize: 14 }}>{bk.id}</div>
+                                <div style={{ fontSize: 12, color: '#777777', marginTop: 2 }}>
+                                  PI #{bk.invoice?.invoiceNumber || 'Pending'}
+                                </div>
+                              </td>
+                              <td style={{ padding: '16px', fontSize: 13.5, color: '#666666' }}>
+                                {bk.createdAt}
+                              </td>
+                              <td style={{ padding: '16px' }}>
+                                <div style={{ fontWeight: 600, fontSize: 14 }}>{bk.projectName}</div>
+                                <div style={{ fontSize: 12, color: '#777777' }}>
+                                  {bk.shippingAddress?.city}, {bk.shippingAddress?.country}
+                                </div>
+                              </td>
+                              <td style={{ padding: '16px', fontSize: 13.5 }}>
+                                <div><strong>{bk.totalPieces} pcs</strong> &bull; {bk.estimatedCbm} CBM</div>
+                                <div style={{ fontSize: 12, color: '#777777' }}>
+                                  {bk.items.length} unique specification{bk.items.length > 1 ? 's' : ''}
+                                </div>
+                              </td>
+                              <td style={{ padding: '16px' }}>
+                                <span
+                                  style={{
+                                    background: bk.status === 'Dispatched' ? '#E8F5E9' : '#FFF3E0',
+                                    color: bk.status === 'Dispatched' ? '#2E7D32' : '#B45309',
+                                    padding: '4px 10px',
+                                    borderRadius: 999,
+                                    fontSize: 12,
+                                    fontWeight: 700,
+                                  }}
+                                >
+                                  {bk.status}
+                                </span>
+                              </td>
+                              <td style={{ padding: '16px', textAlign: 'right' }}>
+                                <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedBooking(bk);
+                                      setInspectorTab('timeline');
+                                    }}
+                                    style={{
+                                      background: '#111111',
+                                      color: '#FFFFFF',
+                                      border: 'none',
+                                      borderRadius: 4,
+                                      padding: '7px 12px',
+                                      fontSize: 12.5,
+                                      fontWeight: 600,
+                                      cursor: 'pointer',
+                                    }}
+                                  >
+                                    Inspect & Track →
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setSelectedBooking(bk);
+                                      setInspectorTab('conversation');
+                                    }}
+                                    style={{
+                                      background: '#FAF9F5',
+                                      color: '#111111',
+                                      border: '1px solid #CCC',
+                                      borderRadius: 4,
+                                      padding: '7px 10px',
+                                      fontSize: 12.5,
+                                      fontWeight: 600,
+                                      cursor: 'pointer',
+                                    }}
+                                    title="Open conversation thread"
+                                  >
+                                    💬 ({bk.messages?.length || 0})
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* MOBILE CARDS */}
+                    <div className="portal-mobile-only" style={{ marginBottom: 28 }}>
+                      {bookings.map((bk) => (
+                        <div
+                          key={bk.id}
+                          style={{
+                            background: '#FFFFFF',
+                            border: '1px solid var(--line)',
+                            borderRadius: 'var(--r-md)',
+                            padding: '16px',
+                            boxShadow: 'var(--shadow-sm)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 12,
+                          }}
+                        >
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                            <div>
+                              <div style={{ fontWeight: 700, fontSize: 15, color: '#111111' }}>{bk.id}</div>
+                              <div style={{ fontSize: 12, color: '#777777', marginTop: 2 }}>
+                                PI #{bk.invoice?.invoiceNumber || 'Pending'} &bull; {bk.createdAt}
+                              </div>
+                            </div>
+                            <span
+                              style={{
+                                background: bk.status === 'Dispatched' ? '#E8F5E9' : '#FFF3E0',
+                                color: bk.status === 'Dispatched' ? '#2E7D32' : '#B45309',
+                                padding: '3px 10px',
+                                borderRadius: 999,
+                                fontSize: 11.5,
+                                fontWeight: 700,
+                                whiteSpace: 'nowrap',
+                              }}
+                            >
+                              {bk.status}
+                            </span>
+                          </div>
+
+                          <div style={{ borderTop: '1px solid #F0ECE4', borderBottom: '1px solid #F0ECE4', padding: '10px 0', fontSize: 13 }}>
+                            <div style={{ fontWeight: 600, color: '#222222', marginBottom: 2 }}>{bk.projectName}</div>
+                            <div style={{ fontSize: 12, color: '#666666' }}>
+                              📍 {bk.shippingAddress?.city || 'Project Site'}, {bk.shippingAddress?.country || ''}
+                            </div>
+                            <div style={{ fontSize: 12, color: '#444444', marginTop: 6, display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                              <span>📦 <strong>{bk.totalPieces} pcs</strong></span>
+                              <span>📐 <strong>{bk.estimatedCbm} CBM</strong></span>
+                              {bk.invoice && <span>💵 <strong>${bk.invoice.totalAmount.toLocaleString()} USD</strong></span>}
+                            </div>
+                          </div>
+
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 8 }}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedBooking(bk);
+                                setInspectorTab('timeline');
+                              }}
+                              style={{
+                                background: '#111111',
+                                color: '#FFFFFF',
+                                border: 'none',
+                                borderRadius: 6,
+                                padding: '9px 14px',
+                                fontSize: 13,
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                textAlign: 'center',
+                              }}
+                            >
+                              Inspect & Track →
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedBooking(bk);
+                                setInspectorTab('conversation');
+                              }}
+                              style={{
+                                background: '#FAF9F5',
+                                color: '#111111',
+                                border: '1px solid #CCC',
+                                borderRadius: 6,
+                                padding: '9px 12px',
+                                fontSize: 12.5,
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                whiteSpace: 'nowrap',
+                              }}
+                            >
+                              💬 ({bk.messages?.length || 0})
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
                 ) : (
                   <div style={{ textAlign: 'center', padding: '64px 20px', background: '#F9F8F5', borderRadius: 'var(--r-md)', border: '1px solid #ECE7DE' }}>
                     <div style={{ fontSize: 40, marginBottom: 12 }}>📋</div>
@@ -1744,7 +1892,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
             )}
 
             <form onSubmit={handleProfileSave} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
                 <div>
                   <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6 }}>
                     First Name
@@ -1781,7 +1929,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
                 <div>
                   <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6 }}>
                     Email Address

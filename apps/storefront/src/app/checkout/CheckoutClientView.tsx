@@ -7,6 +7,7 @@ import { useEnquiry } from '../../context/EnquiryContext';
 import { useAuth } from '../../context/AuthContext';
 import { BookingRecord } from '../../types/booking';
 import { saveBooking, generateDefaultMilestones } from '../../lib/bookingStore';
+import { submitFormEntry } from '../../lib/submitFormEntry';
 
 export const CheckoutClientView: React.FC = () => {
   const router = useRouter();
@@ -244,13 +245,14 @@ export const CheckoutClientView: React.FC = () => {
     };
 
     try {
-      await fetch('/api/wp/forms/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formPayload),
-      });
+      const subRes = await submitFormEntry(formPayload);
+      if (subRes.success) {
+        console.log('Commercial booking recorded in WordPress:', subRes.entryId, subRes.referenceId);
+      } else {
+        console.warn('Backend recorded with fallback:', subRes.error);
+      }
     } catch (wpErr) {
-      console.warn('Error recording submission to /api/wp/forms/submit:', wpErr);
+      console.warn('Error recording submission:', wpErr);
     }
 
     saveBooking(newBooking);

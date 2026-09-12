@@ -2,11 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 
 function getWpBaseUrl(): string {
   let url = process.env.WORDPRESS_URL || process.env.NEXT_PUBLIC_WORDPRESS_URL;
-  if (process.env.NODE_ENV === 'production' || !process.env.NODE_ENV) {
-    if (!url || url.includes('.local') || url.includes('localhost')) {
-      return 'https://admin.orbitexpocrafts.com';
-    }
-  }
   if (url) {
     return url.replace(/\/$/, '');
   }

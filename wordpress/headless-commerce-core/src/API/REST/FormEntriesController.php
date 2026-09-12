@@ -34,13 +34,17 @@ class FormEntriesController extends RestController {
 		}
 
 		$form_type = ! empty( $params['form_type'] ) ? sanitize_text_field( $params['form_type'] ) : 'quote_enquiry';
-		$full_name = ! empty( $params['full_name'] ) ? sanitize_text_field( $params['full_name'] ) : '';
-		$email     = ! empty( $params['email'] ) ? sanitize_email( $params['email'] ) : '';
-		$phone     = ! empty( $params['phone'] ) ? sanitize_text_field( $params['phone'] ) : '';
+		$full_name = ! empty( $params['full_name'] ) ? sanitize_text_field( $params['full_name'] ) : ( ! empty( $params['name'] ) ? sanitize_text_field( $params['name'] ) : ( ! empty( $params['clientName'] ) ? sanitize_text_field( $params['clientName'] ) : 'Trade Client' ) );
+		$email     = ! empty( $params['email'] ) ? sanitize_email( $params['email'] ) : ( ! empty( $params['user_email'] ) ? sanitize_email( $params['user_email'] ) : '' );
+		$phone     = ! empty( $params['phone'] ) ? sanitize_text_field( $params['phone'] ) : ( ! empty( $params['tel'] ) ? sanitize_text_field( $params['tel'] ) : ( ! empty( $params['mobile'] ) ? sanitize_text_field( $params['mobile'] ) : '' ) );
 
-		if ( empty( $full_name ) || empty( $email ) || empty( $phone ) ) {
-			return $this->error_response( 'missing_required_fields', 'Full name, email and phone number are required.', 400 );
+		if ( empty( $email ) ) {
+			return $this->error_response( 'missing_required_fields', 'A valid email address is required for all form enquiries.', 400 );
 		}
+
+		$params['full_name'] = $full_name;
+		$params['email']     = $email;
+		$params['phone']     = $phone;
 
 		// Determine customer account association
 		$user_id = get_current_user_id();

@@ -13,10 +13,7 @@ const nextConfig = {
     '@company/commerce-seo',
   ],
   async rewrites() {
-    let wpBase = (process.env.NEXT_PUBLIC_WORDPRESS_URL || process.env.WORDPRESS_URL || 'https://admin.orbitexpocrafts.com').replace(/\/$/, '');
-    if (process.env.NODE_ENV === 'production' || wpBase.includes('.local') || wpBase.includes('localhost')) {
-      wpBase = 'https://admin.orbitexpocrafts.com';
-    }
+    let wpBase = (process.env.NEXT_PUBLIC_WORDPRESS_URL || process.env.WORDPRESS_URL || (process.env.NODE_ENV === 'development' ? 'http://woo-catalog-nextjs.local' : 'https://admin.orbitexpocrafts.com')).replace(/\/$/, '');
     return [
       {
         source: '/api/wp/:path*',
