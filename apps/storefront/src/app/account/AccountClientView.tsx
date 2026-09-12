@@ -7,7 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useFavorites } from '../../context/FavoritesContext';
 import { useEnquiry } from '../../context/EnquiryContext';
 import { BookingRecord, BookingMessage } from '../../types/booking';
-import { getStoredBookings, appendMessageToBooking } from '../../lib/bookingStore';
+import { getStoredBookings, saveBooking, appendMessageToBooking, generateDefaultMilestones } from '../../lib/bookingStore';
 
 interface AccountClientViewProps {
   initialTab?: 'overview' | 'favorites' | 'orders' | 'profile';
@@ -204,6 +204,101 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
         }
       }, 1200);
     }
+  };
+
+  const handleAdvanceMilestone = () => {
+    if (!selectedBooking) return;
+    const currentMilestones = [...(selectedBooking.milestones || [])];
+    const activeIdx = currentMilestones.findIndex((m) => m.active);
+    const nowStr = new Date().toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    let newStatus = selectedBooking.status;
+    let newNote = selectedBooking.logistics?.currentMilestoneNote || '';
+
+    if (activeIdx >= 0) {
+      // Mark currently active milestone as completed
+      currentMilestones[activeIdx] = {
+        ...currentMilestones[activeIdx],
+        completed: true,
+        active: false,
+        date: nowStr,
+      };
+
+      // Activate the next milestone if available
+      if (activeIdx + 1 < currentMilestones.length) {
+        currentMilestones[activeIdx + 1] = {
+          ...currentMilestones[activeIdx + 1],
+          active: true,
+          completed: false,
+          date: 'In Progress (Active)',
+        };
+
+        const nextKey = currentMilestones[activeIdx + 1].key;
+        if (nextKey === 'proforma_issued') {
+          newStatus = 'Proforma Issued';
+          newNote = 'Proforma invoice verified with SWIFT wire terms. Awaiting deposit confirmation.';
+        } else if (nextKey === 'production') {
+          newStatus = 'In Production';
+          newNote = 'Timber seasoning complete (8-10% EMC). Precision carving & joinery active on shop floor.';
+        } else if (nextKey === 'qc_packing') {
+          newStatus = 'Quality Control & Packing';
+          newNote = 'Assembly finished. 5-point quality inspection & ISPM-15 export crating underway.';
+        } else if (nextKey === 'dispatch') {
+          newStatus = 'Dispatched';
+          newNote = 'Consignment loaded in container. Dispatched via fleet to Mundra Port, Gujarat.';
+        }
+      } else {
+        newStatus = 'Dispatched';
+        newNote = 'Consignment fully exported and underway to destination port.';
+      }
+    } else {
+      // If no active, find the first uncompleted milestone
+      const uncompletedIdx = currentMilestones.findIndex((m) => !m.completed);
+      if (uncompletedIdx >= 0) {
+        currentMilestones[uncompletedIdx] = {
+          ...currentMilestones[uncompletedIdx],
+          active: true,
+          date: 'In Progress (Active)',
+        };
+      }
+    }
+
+    const updated: BookingRecord = {
+      ...selectedBooking,
+      status: newStatus as any,
+      milestones: currentMilestones,
+      logistics: {
+        ...selectedBooking.logistics,
+        currentMilestoneNote: newNote,
+      },
+    };
+
+    saveBooking(updated);
+    setSelectedBooking({ ...updated });
+    refreshBookings();
+  };
+
+  const handleResetMilestones = () => {
+    if (!selectedBooking) return;
+    const defaultM = generateDefaultMilestones();
+    const updated: BookingRecord = {
+      ...selectedBooking,
+      status: 'Booking Received',
+      milestones: defaultM,
+      logistics: {
+        ...selectedBooking.logistics,
+        currentMilestoneNote: 'Consolidated booking received in Rajasthan factory queue. Awaiting CAD review.',
+      },
+    };
+    saveBooking(updated);
+    setSelectedBooking({ ...updated });
+    refreshBookings();
   };
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
@@ -1252,9 +1347,55 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                     </div>
 
                     {/* 6-STAGE MILESTONES STEPPER */}
-                    <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 16 }}>
-                      Production & Export Milestone Progression
-                    </h3>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+                      <div>
+                        <h3 style={{ fontSize: 18, fontWeight: 600, margin: 0 }}>
+                          Production & Export Milestone Progression
+                        </h3>
+                        <p style={{ fontSize: 13, color: '#666666', margin: '2px 0 0' }}>
+                          Real-time factory floor & customs export lifecycle tracking.
+                        </p>
+                      </div>
+                      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                        <button
+                          type="button"
+                          onClick={handleAdvanceMilestone}
+                          style={{
+                            background: '#111111',
+                            color: '#FFFFFF',
+                            border: 'none',
+                            borderRadius: 6,
+                            padding: '8px 14px',
+                            fontSize: 12.5,
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 6,
+                          }}
+                          title="Advance to next factory production stage"
+                        >
+                          <span>⚡ Advance Stage →</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleResetMilestones}
+                          style={{
+                            background: '#FAF9F5',
+                            color: '#777777',
+                            border: '1px solid #DDDDDD',
+                            borderRadius: 6,
+                            padding: '8px 12px',
+                            fontSize: 12.5,
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                          }}
+                          title="Reset milestones to stage 1"
+                        >
+                          ↺ Reset
+                        </button>
+                      </div>
+                    </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                       {(selectedBooking.milestones || []).map((m, idx) => (
                         <div
