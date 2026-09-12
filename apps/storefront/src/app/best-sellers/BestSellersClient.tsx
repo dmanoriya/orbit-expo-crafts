@@ -234,6 +234,7 @@ export const BestSellersClient: React.FC<BestSellersClientProps> = ({ products }
                       padding: '8px 14px',
                       fontSize: 12.5,
                       fontWeight: 500,
+                      whiteSpace: 'nowrap',
                       cursor: 'pointer',
                       transition: 'background 0.2s ease',
                     }}

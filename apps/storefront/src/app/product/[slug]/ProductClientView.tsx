@@ -206,11 +206,12 @@ export default function ProductClientView({
 
             {/* ACTION BOX CONTAINER CARD */}
             <div className="pdp-action-card">
-              <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
-                <div className="qty-mini" style={{ height: 44, padding: '0 4px', background: '#fff' }}>
+              <div className="pdp-actions-row">
+                <div className="qty-mini pdp-qty-picker">
                   <button
+                    type="button"
                     style={{
-                      width: 32,
+                      width: 28,
                       height: 44,
                       fontSize: 16,
                       opacity: quantity <= (product.moq || 1) ? 0.35 : 1,
@@ -218,16 +219,24 @@ export default function ProductClientView({
                     }}
                     disabled={quantity <= (product.moq || 1)}
                     onClick={() => setQuantity(Math.max(product.moq || 1, quantity - 1))}
+                    aria-label="Decrease quantity"
                   >
                     -
                   </button>
-                  <span style={{ fontSize: 15, padding: '0 12px' }}>{quantity}</span>
-                  <button style={{ width: 32, height: 44, fontSize: 16 }} onClick={() => setQuantity(quantity + 1)}>+</button>
+                  <span className="pdp-qty-val">{quantity}</span>
+                  <button
+                    type="button"
+                    style={{ width: 28, height: 44, fontSize: 16 }}
+                    onClick={() => setQuantity(quantity + 1)}
+                    aria-label="Increase quantity"
+                  >
+                    +
+                  </button>
                 </div>
 
                 <button
-                  className="btn btn-primary btn-lg"
-                  style={{ flex: 1, justifyContent: 'center', height: 44 }}
+                  type="button"
+                  className="btn btn-primary pdp-enquiry-btn"
                   onClick={() =>
                     addEnquiry({
                       id: product.id,
@@ -244,6 +253,7 @@ export default function ProductClientView({
 
                 <button
                   type="button"
+                  className="pdp-fav-btn"
                   onClick={() =>
                     toggleFavorite({
                       id: product.id,
@@ -259,17 +269,8 @@ export default function ProductClientView({
                   title={isFavorite(product.id) ? 'Remove from Favourites' : 'Save to Favourites'}
                   aria-label={isFavorite(product.id) ? 'Remove from Favourites' : 'Save to Favourites'}
                   style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 6,
                     border: isFavorite(product.id) ? '1.5px solid #B85735' : '1px solid var(--line)',
                     background: isFavorite(product.id) ? '#FDF6F3' : '#FFFFFF',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    flexShrink: 0,
-                    transition: 'all 0.2s ease',
                   }}
                 >
                   <svg

@@ -958,6 +958,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                             padding: '7px 12px',
                             fontSize: 12,
                             fontWeight: 600,
+                            whiteSpace: 'nowrap',
                             cursor: 'pointer',
                           }}
                         >
