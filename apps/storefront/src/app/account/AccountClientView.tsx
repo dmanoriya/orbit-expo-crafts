@@ -160,13 +160,40 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
     }
   }, [user]);
 
-  // Refresh bookings on mount & when user changes
-  const refreshBookings = () => {
+  // Refresh bookings on mount & when user changes, plus fetch live updates from WordPress
+  const refreshBookings = async () => {
     const list = getStoredBookings(user?.email);
     setBookings(list);
     if (selectedBooking) {
       const updated = list.find((b) => b.id === selectedBooking.id);
       if (updated) setSelectedBooking(updated);
+    } else if (list.length > 0) {
+      setSelectedBooking(list[0]);
+    }
+
+    // Query backend to sync live updates made by website owner in WordPress Admin
+    const queryEmail = user?.email || (list.length > 0 ? list[0].email : '');
+    if (queryEmail) {
+      try {
+        const res = await fetch(`/api/wp/customers/bookings?email=${encodeURIComponent(queryEmail)}`);
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data?.bookings) && json.data.bookings.length > 0) {
+          const serverBookings: BookingRecord[] = json.data.bookings;
+          serverBookings.forEach((sb) => {
+            saveBooking(sb);
+          });
+          const merged = getStoredBookings(queryEmail);
+          setBookings(merged);
+          if (selectedBooking) {
+            const up = merged.find((b) => b.id === selectedBooking.id);
+            if (up) setSelectedBooking(up);
+          } else if (merged.length > 0) {
+            setSelectedBooking(merged[0]);
+          }
+        }
+      } catch (e) {
+        // Offline or backend unavailable, local bookings preserved
+      }
     }
   };
 
@@ -204,101 +231,6 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
         }
       }, 1200);
     }
-  };
-
-  const handleAdvanceMilestone = () => {
-    if (!selectedBooking) return;
-    const currentMilestones = [...(selectedBooking.milestones || [])];
-    const activeIdx = currentMilestones.findIndex((m) => m.active);
-    const nowStr = new Date().toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-
-    let newStatus = selectedBooking.status;
-    let newNote = selectedBooking.logistics?.currentMilestoneNote || '';
-
-    if (activeIdx >= 0) {
-      // Mark currently active milestone as completed
-      currentMilestones[activeIdx] = {
-        ...currentMilestones[activeIdx],
-        completed: true,
-        active: false,
-        date: nowStr,
-      };
-
-      // Activate the next milestone if available
-      if (activeIdx + 1 < currentMilestones.length) {
-        currentMilestones[activeIdx + 1] = {
-          ...currentMilestones[activeIdx + 1],
-          active: true,
-          completed: false,
-          date: 'In Progress (Active)',
-        };
-
-        const nextKey = currentMilestones[activeIdx + 1].key;
-        if (nextKey === 'proforma_issued') {
-          newStatus = 'Proforma Issued';
-          newNote = 'Proforma invoice verified with SWIFT wire terms. Awaiting deposit confirmation.';
-        } else if (nextKey === 'production') {
-          newStatus = 'In Production';
-          newNote = 'Timber seasoning complete (8-10% EMC). Precision carving & joinery active on shop floor.';
-        } else if (nextKey === 'qc_packing') {
-          newStatus = 'Quality Control & Packing';
-          newNote = 'Assembly finished. 5-point quality inspection & ISPM-15 export crating underway.';
-        } else if (nextKey === 'dispatch') {
-          newStatus = 'Dispatched';
-          newNote = 'Consignment loaded in container. Dispatched via fleet to Mundra Port, Gujarat.';
-        }
-      } else {
-        newStatus = 'Dispatched';
-        newNote = 'Consignment fully exported and underway to destination port.';
-      }
-    } else {
-      // If no active, find the first uncompleted milestone
-      const uncompletedIdx = currentMilestones.findIndex((m) => !m.completed);
-      if (uncompletedIdx >= 0) {
-        currentMilestones[uncompletedIdx] = {
-          ...currentMilestones[uncompletedIdx],
-          active: true,
-          date: 'In Progress (Active)',
-        };
-      }
-    }
-
-    const updated: BookingRecord = {
-      ...selectedBooking,
-      status: newStatus as any,
-      milestones: currentMilestones,
-      logistics: {
-        ...selectedBooking.logistics,
-        currentMilestoneNote: newNote,
-      },
-    };
-
-    saveBooking(updated);
-    setSelectedBooking({ ...updated });
-    refreshBookings();
-  };
-
-  const handleResetMilestones = () => {
-    if (!selectedBooking) return;
-    const defaultM = generateDefaultMilestones();
-    const updated: BookingRecord = {
-      ...selectedBooking,
-      status: 'Booking Received',
-      milestones: defaultM,
-      logistics: {
-        ...selectedBooking.logistics,
-        currentMilestoneNote: 'Consolidated booking received in Rajasthan factory queue. Awaiting CAD review.',
-      },
-    };
-    saveBooking(updated);
-    setSelectedBooking({ ...updated });
-    refreshBookings();
   };
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
@@ -1356,44 +1288,33 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                           Real-time factory floor & customs export lifecycle tracking.
                         </p>
                       </div>
-                      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                        <button
-                          type="button"
-                          onClick={handleAdvanceMilestone}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span
                           style={{
-                            background: '#111111',
-                            color: '#FFFFFF',
-                            border: 'none',
-                            borderRadius: 6,
-                            padding: '8px 14px',
-                            fontSize: 12.5,
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                            display: 'flex',
+                            display: 'inline-flex',
                             alignItems: 'center',
-                            gap: 6,
-                          }}
-                          title="Advance to next factory production stage"
-                        >
-                          <span>⚡ Advance Stage →</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={handleResetMilestones}
-                          style={{
-                            background: '#FAF9F5',
-                            color: '#777777',
-                            border: '1px solid #DDDDDD',
-                            borderRadius: 6,
-                            padding: '8px 12px',
-                            fontSize: 12.5,
+                            gap: 7,
+                            fontSize: 12,
                             fontWeight: 600,
-                            cursor: 'pointer',
+                            color: '#0E5C63',
+                            background: '#E6F4EA',
+                            border: '1px solid #A8DAB5',
+                            padding: '6px 14px',
+                            borderRadius: 20,
+                            letterSpacing: '0.02em',
                           }}
-                          title="Reset milestones to stage 1"
                         >
-                          ↺ Reset
-                        </button>
+                          <span
+                            style={{
+                              display: 'inline-block',
+                              width: 8,
+                              height: 8,
+                              borderRadius: '50%',
+                              background: '#2E7D32',
+                            }}
+                          />
+                          Verified Factory Tracking
+                        </span>
                       </div>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>

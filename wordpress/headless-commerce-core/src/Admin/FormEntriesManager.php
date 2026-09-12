@@ -192,6 +192,18 @@ class FormEntriesManager {
 			$insert_data = $filtered_data;
 		}
 
+		// Check for existing submission with the same reference_id to update instead of duplicating
+		$existing_id = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$table_name} WHERE reference_id = %s LIMIT 1", $ref_id ) );
+		if ( $existing_id ) {
+			unset( $insert_data['created_at'] );
+			unset( $insert_data['status'] ); // Preserve existing admin status
+			$wpdb->update( $table_name, $insert_data, array( 'id' => $existing_id ) );
+			return array(
+				'id'           => $existing_id,
+				'reference_id' => $ref_id,
+			);
+		}
+
 		$result = $wpdb->insert( $table_name, $insert_data );
 
 		if ( false === $result ) {
@@ -203,6 +215,215 @@ class FormEntriesManager {
 			'id'           => $wpdb->insert_id,
 			'reference_id' => $ref_id,
 		);
+	}
+
+	/**
+	 * Milestone definitions and status mapping
+	 */
+	public static function get_milestone_definitions() {
+		return array(
+			1 => array(
+				'key'          => 'received',
+				'label'        => 'Commercial Booking Received',
+				'default_note' => 'Bill of quantities registered in Rajasthan factory queue.',
+				'status'       => 'Booking Received',
+				'db_status'    => 'new',
+			),
+			2 => array(
+				'key'          => 'cad_review',
+				'label'        => 'CAD Engineering & Material Verification',
+				'default_note' => 'Technical specifier reviewing wood species, joinery, and moisture level.',
+				'status'       => 'Engineering & CAD Review',
+				'db_status'    => 'in_review',
+			),
+			3 => array(
+				'key'          => 'proforma_issued',
+				'label'        => 'Commercial Proposal & Proforma Invoice Issued',
+				'default_note' => 'Official invoice generated with RTGS / SWIFT wire instructions.',
+				'status'       => 'Proforma Issued',
+				'db_status'    => 'quoted',
+			),
+			4 => array(
+				'key'          => 'production',
+				'label'        => 'Timber Seasoning & Joinery Crafting',
+				'default_note' => 'Kiln-drying to 8-10% EMC followed by master carving and inlay assembly.',
+				'status'       => 'In Production',
+				'db_status'    => 'in_production',
+			),
+			5 => array(
+				'key'          => 'qc_packing',
+				'label'        => 'Final QC Inspection & Export Crating',
+				'default_note' => 'Fumigated wooden box crating (ISPM-15 compliant) with moisture barrier.',
+				'status'       => 'Quality Control & Packing',
+				'db_status'    => 'qc_packing',
+			),
+			6 => array(
+				'key'          => 'dispatch',
+				'label'        => 'Container Loaded & Dispatched (Mundra Port)',
+				'default_note' => 'Bill of Lading and vessel consignment tracking activated.',
+				'status'       => 'Dispatched',
+				'db_status'    => 'dispatched',
+			),
+		);
+	}
+
+	/**
+	 * Update milestone progression, logistics, and sync to user meta
+	 */
+	public static function update_booking_milestone_and_sync( $entry_id, $stage_index, $milestone_note = '', $logistics = array(), $db_status_override = '' ) {
+		global $wpdb;
+		$table_name = self::get_table_name();
+
+		$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_name} WHERE id = %d", $entry_id ) );
+		if ( ! $row ) {
+			return false;
+		}
+
+		$b_data = ! empty( $row->booking_data ) ? json_decode( $row->booking_data, true ) : array();
+		if ( ! is_array( $b_data ) ) {
+			$b_data = array();
+		}
+
+		$stage_index = intval( $stage_index );
+		if ( $stage_index < 1 ) $stage_index = 1;
+		if ( $stage_index > 6 ) $stage_index = 6;
+
+		$milestone_defs = self::get_milestone_definitions();
+		$active_def     = $milestone_defs[ $stage_index ];
+		$now_str        = date( 'M j, Y, g:i a' );
+
+		// Preserve existing milestone timestamps if already completed
+		$existing_milestones = isset( $b_data['milestones'] ) && is_array( $b_data['milestones'] ) ? $b_data['milestones'] : array();
+		$existing_by_key    = array();
+		foreach ( $existing_milestones as $em ) {
+			if ( ! empty( $em['key'] ) ) {
+				$existing_by_key[ $em['key'] ] = $em;
+			}
+		}
+
+		$updated_milestones = array();
+		foreach ( $milestone_defs as $idx => $def ) {
+			$is_completed = ( $idx < $stage_index ) || ( $idx === 6 && $stage_index === 6 );
+			$is_active    = ( $idx === $stage_index && $stage_index < 6 );
+
+			$date_str = '';
+			if ( $is_completed ) {
+				if ( isset( $existing_by_key[ $def['key'] ]['date'] ) && ! empty( $existing_by_key[ $def['key'] ]['date'] ) && false === strpos( $existing_by_key[ $def['key'] ]['date'], 'In Progress' ) ) {
+					$date_str = $existing_by_key[ $def['key'] ]['date'];
+				} else {
+					$date_str = $now_str;
+				}
+			} elseif ( $is_active ) {
+				$date_str = 'In Progress (Active)';
+			}
+
+			$note_str = $def['default_note'];
+			if ( $idx === $stage_index && ! empty( $milestone_note ) ) {
+				$note_str = $milestone_note;
+			} elseif ( isset( $existing_by_key[ $def['key'] ]['note'] ) && ! empty( $existing_by_key[ $def['key'] ]['note'] ) ) {
+				$note_str = $existing_by_key[ $def['key'] ]['note'];
+			}
+
+			$updated_milestones[] = array(
+				'key'       => $def['key'],
+				'label'     => $def['label'],
+				'date'      => $date_str,
+				'completed' => $is_completed,
+				'active'    => $is_active,
+				'note'      => $note_str,
+			);
+		}
+
+		$b_data['milestones'] = $updated_milestones;
+		$b_data['status']     = $active_def['status'];
+
+		if ( ! isset( $b_data['logistics'] ) || ! is_array( $b_data['logistics'] ) ) {
+			$b_data['logistics'] = array();
+		}
+
+		$b_data['logistics']['currentMilestoneNote'] = ! empty( $milestone_note ) ? $milestone_note : ( $b_data['logistics']['currentMilestoneNote'] ?? $active_def['default_note'] );
+
+		if ( ! empty( $logistics['trackingNumber'] ) ) {
+			$b_data['logistics']['trackingNumber'] = sanitize_text_field( $logistics['trackingNumber'] );
+		}
+		if ( ! empty( $logistics['carrier'] ) ) {
+			$b_data['logistics']['carrier'] = sanitize_text_field( $logistics['carrier'] );
+		}
+		if ( ! empty( $logistics['vesselName'] ) ) {
+			$b_data['logistics']['vesselName'] = sanitize_text_field( $logistics['vesselName'] );
+		}
+		if ( ! empty( $logistics['originPort'] ) ) {
+			$b_data['logistics']['originPort'] = sanitize_text_field( $logistics['originPort'] );
+		}
+		if ( ! empty( $logistics['destinationPort'] ) ) {
+			$b_data['logistics']['destinationPort'] = sanitize_text_field( $logistics['destinationPort'] );
+		}
+		if ( ! empty( $logistics['estimatedDelivery'] ) ) {
+			$b_data['logistics']['estimatedDelivery'] = sanitize_text_field( $logistics['estimatedDelivery'] );
+		}
+
+		$final_db_status = ! empty( $db_status_override ) ? $db_status_override : $active_def['db_status'];
+
+		// Update database row
+		$wpdb->update(
+			$table_name,
+			array(
+				'booking_data' => wp_json_encode( $b_data ),
+				'status'       => $final_db_status,
+			),
+			array( 'id' => $entry_id )
+		);
+
+		// Synchronize to WordPress User Meta or Guest Option
+		$b_id    = $b_data['id'] ?? ( $row->reference_id ?? '' );
+		$u_id    = intval( $row->user_id );
+		$u_email = sanitize_email( $row->email );
+
+		if ( ! $u_id && ! empty( $u_email ) ) {
+			$u = get_user_by( 'email', $u_email );
+			if ( $u ) {
+				$u_id = $u->ID;
+			}
+		}
+
+		if ( $u_id ) {
+			$meta_bookings = get_user_meta( $u_id, '_orbit_commercial_bookings', true );
+			if ( ! is_array( $meta_bookings ) ) {
+				$meta_bookings = array();
+			}
+			$found = false;
+			foreach ( $meta_bookings as $mk => $mb ) {
+				if ( ( isset( $mb['id'] ) && $mb['id'] === $b_id ) || ( isset( $mb['reference_id'] ) && $mb['reference_id'] === $b_id ) ) {
+					$meta_bookings[ $mk ] = $b_data;
+					$found = true;
+					break;
+				}
+			}
+			if ( ! $found ) {
+				array_unshift( $meta_bookings, $b_data );
+			}
+			update_user_meta( $u_id, '_orbit_commercial_bookings', $meta_bookings );
+		} elseif ( ! empty( $u_email ) ) {
+			$anon_key      = '_orbit_anon_bookings_' . md5( $u_email );
+			$anon_bookings = get_option( $anon_key, array() );
+			if ( ! is_array( $anon_bookings ) ) {
+				$anon_bookings = array();
+			}
+			$found = false;
+			foreach ( $anon_bookings as $ak => $ab ) {
+				if ( ( isset( $ab['id'] ) && $ab['id'] === $b_id ) || ( isset( $ab['reference_id'] ) && $ab['reference_id'] === $b_id ) ) {
+					$anon_bookings[ $ak ] = $b_data;
+					$found = true;
+					break;
+				}
+			}
+			if ( ! $found ) {
+				array_unshift( $anon_bookings, $b_data );
+			}
+			update_option( $anon_key, $anon_bookings, false );
+		}
+
+		return true;
 	}
 
 	public static function handle_actions() {
@@ -221,12 +442,48 @@ class FormEntriesManager {
 			exit;
 		}
 
-		// Handle Status Update
+		// Handle Status Update from table row dropdown
 		if ( isset( $_POST['hcc_update_status'] ) && isset( $_POST['entry_id'] ) && check_admin_referer( 'hcc_status_nonce' ) ) {
-			$entry_id = intval( $_POST['entry_id'] );
+			$entry_id   = intval( $_POST['entry_id'] );
 			$new_status = sanitize_text_field( $_POST['status'] );
-			$wpdb->update( $table_name, array( 'status' => $new_status ), array( 'id' => $entry_id ) );
+
+			// Check if this is a commercial booking with milestones to synchronize
+			$status_to_stage = array(
+				'new'           => 1,
+				'in_review'     => 2,
+				'quoted'        => 3,
+				'in_production' => 4,
+				'qc_packing'    => 5,
+				'dispatched'    => 6,
+			);
+
+			if ( isset( $status_to_stage[ $new_status ] ) ) {
+				self::update_booking_milestone_and_sync( $entry_id, $status_to_stage[ $new_status ], '', array(), $new_status );
+			} else {
+				$wpdb->update( $table_name, array( 'status' => $new_status ), array( 'id' => $entry_id ) );
+			}
+
 			wp_safe_redirect( admin_url( 'admin.php?page=hcc-form-submissions&updated=1' ) );
+			exit;
+		}
+
+		// Handle Dedicated Milestone Progression Update Form from Details Modal
+		if ( isset( $_POST['hcc_update_milestones'] ) && isset( $_POST['entry_id'] ) && check_admin_referer( 'hcc_milestone_nonce' ) ) {
+			$entry_id    = intval( $_POST['entry_id'] );
+			$stage_index = isset( $_POST['milestone_stage'] ) ? intval( $_POST['milestone_stage'] ) : 1;
+			$stage_note  = sanitize_textarea_field( $_POST['milestone_note'] ?? '' );
+			$logistics   = array(
+				'trackingNumber'    => sanitize_text_field( $_POST['tracking_number'] ?? '' ),
+				'carrier'           => sanitize_text_field( $_POST['carrier'] ?? '' ),
+				'vesselName'        => sanitize_text_field( $_POST['vessel_name'] ?? '' ),
+				'originPort'        => sanitize_text_field( $_POST['origin_port'] ?? '' ),
+				'destinationPort'   => sanitize_text_field( $_POST['destination_port'] ?? '' ),
+				'estimatedDelivery' => sanitize_text_field( $_POST['estimated_delivery'] ?? '' ),
+			);
+
+			self::update_booking_milestone_and_sync( $entry_id, $stage_index, $stage_note, $logistics );
+
+			wp_safe_redirect( admin_url( 'admin.php?page=hcc-form-submissions&milestone_updated=1' ) );
 			exit;
 		}
 
@@ -377,6 +634,9 @@ class FormEntriesManager {
 			<?php if ( isset( $_GET['updated'] ) ) : ?>
 				<div class="updated"><p>Status updated successfully.</p></div>
 			<?php endif; ?>
+			<?php if ( isset( $_GET['milestone_updated'] ) ) : ?>
+				<div class="updated"><p><strong>Success:</strong> Production milestone progression, factory notes, and freight tracking updated and synchronized to customer portal.</p></div>
+			<?php endif; ?>
 
 			<!-- FILTER TABS -->
 			<ul class="subsubsub">
@@ -403,10 +663,12 @@ class FormEntriesManager {
 				<div class="alignleft actions">
 					<select onchange="location = this.value;">
 						<option value="admin.php?page=hcc-form-submissions">All Statuses</option>
-						<option value="admin.php?page=hcc-form-submissions&status=new" <?php selected( $status_filter, 'new' ); ?>>New</option>
-						<option value="admin.php?page=hcc-form-submissions&status=in_review" <?php selected( $status_filter, 'in_review' ); ?>>In Review</option>
-						<option value="admin.php?page=hcc-form-submissions&status=quoted" <?php selected( $status_filter, 'quoted' ); ?>>Quoted</option>
-						<option value="admin.php?page=hcc-form-submissions&status=dispatched" <?php selected( $status_filter, 'dispatched' ); ?>>Dispatched</option>
+						<option value="admin.php?page=hcc-form-submissions&status=new" <?php selected( $status_filter, 'new' ); ?>>New (Booking Received)</option>
+						<option value="admin.php?page=hcc-form-submissions&status=in_review" <?php selected( $status_filter, 'in_review' ); ?>>In Review (CAD Verification)</option>
+						<option value="admin.php?page=hcc-form-submissions&status=quoted" <?php selected( $status_filter, 'quoted' ); ?>>Quoted (Proforma Issued)</option>
+						<option value="admin.php?page=hcc-form-submissions&status=in_production" <?php selected( $status_filter, 'in_production' ); ?>>In Production (Timber Seasoning)</option>
+						<option value="admin.php?page=hcc-form-submissions&status=qc_packing" <?php selected( $status_filter, 'qc_packing' ); ?>>QC &amp; Packing (ISPM-15)</option>
+						<option value="admin.php?page=hcc-form-submissions&status=dispatched" <?php selected( $status_filter, 'dispatched' ); ?>>Dispatched (Ocean Transit)</option>
 						<option value="admin.php?page=hcc-form-submissions&status=closed" <?php selected( $status_filter, 'closed' ); ?>>Closed</option>
 					</select>
 				</div>
@@ -463,6 +725,18 @@ class FormEntriesManager {
 							} elseif ( $entry->status === 'in_review' ) {
 								$status_bg = '#fef7e0';
 								$status_fg = '#b06000';
+							} elseif ( $entry->status === 'quoted' ) {
+								$status_bg = '#f3e8ff';
+								$status_fg = '#7e22ce';
+							} elseif ( $entry->status === 'in_production' ) {
+								$status_bg = '#fef3c7';
+								$status_fg = '#92400e';
+							} elseif ( $entry->status === 'qc_packing' ) {
+								$status_bg = '#ede9fe';
+								$status_fg = '#5b21b6';
+							} elseif ( $entry->status === 'dispatched' ) {
+								$status_bg = '#e0f2fe';
+								$status_fg = '#0369a1';
 							} elseif ( $entry->status === 'closed' ) {
 								$status_bg = '#f1f3f4';
 								$status_fg = '#5f6368';
@@ -620,10 +894,12 @@ class FormEntriesManager {
 										<?php wp_nonce_field( 'hcc_status_nonce' ); ?>
 										<input type="hidden" name="entry_id" value="<?php echo intval( $entry->id ); ?>" />
 										<select name="status" onchange="this.form.submit()" style="font-size:11.5px; padding:2px 4px; background:<?php echo $status_bg; ?>; color:<?php echo $status_fg; ?>; border-color:<?php echo $status_fg; ?>; font-weight:600; border-radius:4px;">
-											<option value="new" <?php selected( $entry->status, 'new' ); ?>>New</option>
-											<option value="in_review" <?php selected( $entry->status, 'in_review' ); ?>>In Review</option>
-											<option value="quoted" <?php selected( $entry->status, 'quoted' ); ?>>Quoted</option>
-											<option value="dispatched" <?php selected( $entry->status, 'dispatched' ); ?>>Dispatched</option>
+											<option value="new" <?php selected( $entry->status, 'new' ); ?>>New (Booking Received)</option>
+											<option value="in_review" <?php selected( $entry->status, 'in_review' ); ?>>In Review (CAD Review)</option>
+											<option value="quoted" <?php selected( $entry->status, 'quoted' ); ?>>Quoted (Proforma)</option>
+											<option value="in_production" <?php selected( $entry->status, 'in_production' ); ?>>In Production (Seasoning)</option>
+											<option value="qc_packing" <?php selected( $entry->status, 'qc_packing' ); ?>>QC &amp; Packing (ISPM-15)</option>
+											<option value="dispatched" <?php selected( $entry->status, 'dispatched' ); ?>>Dispatched (Ocean Transit)</option>
 											<option value="closed" <?php selected( $entry->status, 'closed' ); ?>>Closed</option>
 										</select>
 										<input type="hidden" name="hcc_update_status" value="1" />
@@ -648,6 +924,9 @@ class FormEntriesManager {
 		</div>
 
 		<!-- RICH ADMIN SUBMISSION DETAIL MODAL -->
+		<div style="display:none;">
+			<?php wp_nonce_field( 'hcc_milestone_nonce', 'hcc_milestone_nonce_field' ); ?>
+		</div>
 		<div id="hcc-detail-modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:99999; align-items:center; justify-content:center; padding:20px;">
 			<div style="background:#fff; border-radius:8px; width:min(720px, 95vw); max-height:90vh; overflow-y:auto; padding:24px; box-shadow:0 10px 30px rgba(0,0,0,0.3); position:relative;">
 				<button type="button" onclick="hccCloseDetails()" style="position:absolute; top:16px; right:16px; background:none; border:none; font-size:22px; cursor:pointer; color:#666;">✕</button>
@@ -753,6 +1032,98 @@ class FormEntriesManager {
 							});
 							html += '</tbody></table>';
 						}
+
+						// MILESTONE & LOGISTICS MANAGEMENT CARD FOR WEBSITE OWNER / ADMIN
+						var activeStage = 1;
+						if (Array.isArray(bData.milestones)) {
+							var activeIdx = bData.milestones.findIndex(function(m) { return m.active; });
+							if (activeIdx >= 0) {
+								activeStage = activeIdx + 1;
+							} else {
+								var allDone = bData.milestones.every(function(m) { return m.completed; });
+								if (allDone) activeStage = 6;
+							}
+						}
+
+						var curNote = (bData.logistics && bData.logistics.currentMilestoneNote) ? bData.logistics.currentMilestoneNote : '';
+						var curTracking = (bData.logistics && bData.logistics.trackingNumber) ? bData.logistics.trackingNumber : '';
+						var curCarrier = (bData.logistics && bData.logistics.carrier) ? bData.logistics.carrier : 'Maersk Global Logistics';
+						var curVessel = (bData.logistics && bData.logistics.vesselName) ? bData.logistics.vesselName : '';
+						var curOriginPort = (bData.logistics && bData.logistics.originPort) ? bData.logistics.originPort : 'Mundra Port, Gujarat (INMUN1)';
+						var curDestPort = (bData.logistics && bData.logistics.destinationPort) ? bData.logistics.destinationPort : '';
+						var curEta = (bData.logistics && bData.logistics.estimatedDelivery) ? bData.logistics.estimatedDelivery : (bData.targetDeliveryDate || 'Within 60 working days');
+						var nonceEl = document.getElementById('hcc_milestone_nonce_field');
+						var nonceVal = nonceEl ? nonceEl.value : '';
+
+						html += '<div style="margin-top:20px; background:#F8FAFC; border:1.5px solid #0E5C63; border-radius:8px; padding:18px; box-shadow:0 2px 6px rgba(14,92,99,0.08);">';
+						html += '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">';
+						html += '<h3 style="margin:0; font-size:16px; color:#0E5C63; display:flex; align-items:center; gap:8px;"><span>🏭</span> Production &amp; Export Milestone Control</h3>';
+						html += '<span style="background:#0E5C63; color:#fff; font-size:11px; padding:3px 8px; border-radius:4px; font-weight:600;">Live Customer Portal Sync</span>';
+						html += '</div>';
+						html += '<p style="margin:0 0 16px; font-size:12.5px; color:#475569;">Update manufacturing stage, factory floor notes, and ocean logistics. Changes immediately synchronize to the customer\'s order tracking portal.</p>';
+
+						html += '<form method="post" action="admin.php?page=hcc-form-submissions">';
+						html += '<input type="hidden" name="_wpnonce" value="' + nonceVal + '" />';
+						html += '<input type="hidden" name="hcc_update_milestones" value="1" />';
+						html += '<input type="hidden" name="entry_id" value="' + entry.id + '" />';
+
+						// STAGE SELECTOR
+						html += '<div style="margin-bottom:14px;">';
+						html += '<label style="display:block; font-weight:600; font-size:13px; margin-bottom:4px; color:#0F172A;">Active Production Stage:</label>';
+						html += '<select name="milestone_stage" style="width:100%; max-width:480px; font-size:13px; font-weight:600; padding:6px 10px; border-radius:5px; border:1px solid #94A3B8;">';
+						var stages = [
+							{ val: 1, label: 'Stage 1: Commercial Booking Received (Factory Queue)' },
+							{ val: 2, label: 'Stage 2: CAD Engineering & Material Verification' },
+							{ val: 3, label: 'Stage 3: Commercial Proposal & Proforma Invoice Issued' },
+							{ val: 4, label: 'Stage 4: Timber Seasoning & Joinery Crafting' },
+							{ val: 5, label: 'Stage 5: Final QC Inspection & Export Crating' },
+							{ val: 6, label: 'Stage 6: Container Loaded & Dispatched (Mundra Port)' }
+						];
+						stages.forEach(function(s) {
+							html += '<option value="' + s.val + '"' + (activeStage === s.val ? ' selected' : '') + '>' + s.label + '</option>';
+						});
+						html += '</select>';
+						html += '</div>';
+
+						// LIVE FACTORY NOTE
+						html += '<div style="margin-bottom:14px;">';
+						html += '<label style="display:block; font-weight:600; font-size:13px; margin-bottom:4px; color:#0F172A;">Current Live Note / Factory Update (Visible to Client):</label>';
+						html += '<textarea name="milestone_note" rows="2" style="width:100%; font-size:13px; padding:8px 10px; border-radius:5px; border:1px solid #94A3B8;" placeholder="e.g. Kiln-drying completed to 8.5% EMC. Master carving and joinery active on shop floor.">' + curNote + '</textarea>';
+						html += '</div>';
+
+						// LOGISTICS GRID
+						html += '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">';
+						html += '<div>';
+						html += '<label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:3px;">Container / Tracking #</label>';
+						html += '<input type="text" name="tracking_number" value="' + curTracking + '" style="width:100%; font-family:monospace; font-size:13px; font-weight:600;" placeholder="e.g. MSKU-820491-9" />';
+						html += '</div>';
+						html += '<div>';
+						html += '<label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:3px;">Carrier / Ocean Line</label>';
+						html += '<input type="text" name="carrier" value="' + curCarrier + '" style="width:100%; font-size:13px;" placeholder="e.g. Maersk Global Logistics" />';
+						html += '</div>';
+						html += '<div>';
+						html += '<label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:3px;">Vessel Name &amp; Voyage</label>';
+						html += '<input type="text" name="vessel_name" value="' + curVessel + '" style="width:100%; font-size:13px;" placeholder="e.g. MV Rajasthan Express (Voyage 2608)" />';
+						html += '</div>';
+						html += '<div>';
+						html += '<label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:3px;">Estimated Handover / ETD</label>';
+						html += '<input type="text" name="estimated_delivery" value="' + curEta + '" style="width:100%; font-size:13px;" placeholder="e.g. Within 60 working days" />';
+						html += '</div>';
+						html += '<div>';
+						html += '<label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:3px;">Port of Loading (POL)</label>';
+						html += '<input type="text" name="origin_port" value="' + curOriginPort + '" style="width:100%; font-size:13px;" placeholder="e.g. Mundra Port, Gujarat (INMUN1)" />';
+						html += '</div>';
+						html += '<div>';
+						html += '<label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:3px;">Port of Discharge (POD)</label>';
+						html += '<input type="text" name="destination_port" value="' + curDestPort + '" style="width:100%; font-size:13px;" placeholder="e.g. Destination Port" />';
+						html += '</div>';
+						html += '</div>';
+
+						html += '<button type="submit" class="button button-primary" style="background:#0E5C63; border-color:#0E5C63; font-weight:600; padding:6px 18px; font-size:13px; height:auto;">';
+						html += '💾 Update Production Milestone &amp; Synchronize to Customer Portal';
+						html += '</button>';
+						html += '</form>';
+						html += '</div>';
 					}
 				} catch(e) {}
 			}

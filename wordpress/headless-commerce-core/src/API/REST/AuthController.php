@@ -428,20 +428,55 @@ class AuthController extends RestController {
 	}
 
 	public function get_bookings( $request ) {
+		global $wpdb;
 		$user_id = get_current_user_id();
 		$email   = sanitize_email( $request->get_param( 'email' ) );
 
-		if ( $user_id ) {
-			$bookings = get_user_meta( $user_id, '_orbit_commercial_bookings', true );
-		} elseif ( ! empty( $email ) ) {
+		if ( ! $user_id && ! empty( $email ) ) {
 			$user = get_user_by( 'email', $email );
 			if ( $user ) {
-				$bookings = get_user_meta( $user->ID, '_orbit_commercial_bookings', true );
-			} else {
-				$bookings = get_option( '_orbit_anon_bookings_' . md5( $email ), array() );
+				$user_id = $user->ID;
 			}
-		} else {
-			$bookings = array();
+		}
+
+		$bookings = array();
+
+		// Primary source: check wp_hcc_form_entries table directly so admin edits reflect immediately
+		$entries_tbl = FormEntriesManager::get_table_name();
+		$where       = array();
+		if ( $user_id ) {
+			$where[] = $wpdb->prepare( 'user_id = %d', $user_id );
+		}
+		if ( ! empty( $email ) ) {
+			$where[] = $wpdb->prepare( 'email = %s', $email );
+		}
+
+		if ( ! empty( $where ) ) {
+			$where_sql = implode( ' OR ', $where );
+			$rows      = $wpdb->get_results( "SELECT booking_data FROM {$entries_tbl} WHERE form_type = 'commercial_booking' AND ({$where_sql}) ORDER BY id DESC" );
+			if ( ! empty( $rows ) ) {
+				foreach ( $rows as $row ) {
+					if ( ! empty( $row->booking_data ) ) {
+						$decoded = json_decode( $row->booking_data, true );
+						if ( is_array( $decoded ) && ! empty( $decoded['id'] ) ) {
+							$bookings[] = $decoded;
+						}
+					}
+				}
+			}
+		}
+
+		// Fallback: check user meta or anon options if table query returned none
+		if ( empty( $bookings ) && $user_id ) {
+			$meta_bookings = get_user_meta( $user_id, '_orbit_commercial_bookings', true );
+			if ( is_array( $meta_bookings ) ) {
+				$bookings = $meta_bookings;
+			}
+		} elseif ( empty( $bookings ) && ! empty( $email ) ) {
+			$anon = get_option( '_orbit_anon_bookings_' . md5( $email ), array() );
+			if ( is_array( $anon ) ) {
+				$bookings = $anon;
+			}
 		}
 
 		if ( ! is_array( $bookings ) ) {
@@ -461,6 +496,23 @@ class AuthController extends RestController {
 			$user = get_user_by( 'email', $email );
 			if ( $user ) {
 				$user_id = $user->ID;
+			}
+		}
+
+		// Ensure default milestones if none provided
+		if ( empty( $booking['milestones'] ) && class_exists( '\HeadlessCommerceCore\Admin\FormEntriesManager' ) ) {
+			$today = date( 'M j, Y' );
+			$defs  = \HeadlessCommerceCore\Admin\FormEntriesManager::get_milestone_definitions();
+			$booking['milestones'] = array();
+			foreach ( $defs as $idx => $d ) {
+				$booking['milestones'][] = array(
+					'key'       => $d['key'],
+					'label'     => $d['label'],
+					'date'      => $idx === 1 ? $today : ( $idx === 2 ? 'In Progress (24h turnaround)' : '' ),
+					'completed' => $idx === 1,
+					'active'    => $idx === 2,
+					'note'      => $d['default_note'],
+				);
 			}
 		}
 
