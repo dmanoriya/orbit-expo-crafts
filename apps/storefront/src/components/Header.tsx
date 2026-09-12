@@ -49,19 +49,20 @@ interface MobileDept {
   name: string;
   slug: string;
   deptKey: string;
+  count: number;
 }
 
 const MOBILE_DEPARTMENTS: MobileDept[] = [
-  { name: 'Furniture', slug: 'furniture', deptKey: 'Furniture' },
-  { name: 'Home Decor', slug: 'home-decor', deptKey: 'Home Decor' },
-  { name: 'Wall Decor & Mirrors', slug: 'wall-decor-and-mirrors', deptKey: 'Wall Decor & Mirrors' },
-  { name: 'Lighting', slug: 'lighting', deptKey: 'Lighting' },
-  { name: 'Rugs & Floor Coverings', slug: 'rugs-and-floor-coverings', deptKey: 'Rugs & Floor Coverings' },
-  { name: 'Storage & Organization', slug: 'storage-and-organization', deptKey: 'Storage & Organization' },
-  { name: 'Kitchen & Tabletop', slug: 'kitchen-and-tabletop', deptKey: 'Kitchen & Tabletop' },
-  { name: 'Outdoor & Garden', slug: 'outdoor-and-garden', deptKey: 'Outdoor & Garden' },
-  { name: 'Kids & Baby Home', slug: 'kids-and-baby-home', deptKey: 'Kids & Baby Home' },
-  { name: 'Pet Home', slug: 'pet-home', deptKey: 'Pet Home' },
+  { name: 'Furniture', slug: 'furniture', deptKey: 'Furniture', count: Object.keys((megaTaxonomyData as Record<string, any>)['Furniture'] || {}).length },
+  { name: 'Home Decor', slug: 'home-decor', deptKey: 'Home Decor', count: Object.keys((megaTaxonomyData as Record<string, any>)['Home Decor'] || {}).length },
+  { name: 'Wall Decor & Mirrors', slug: 'wall-decor-and-mirrors', deptKey: 'Wall Decor & Mirrors', count: Object.keys((megaTaxonomyData as Record<string, any>)['Wall Decor & Mirrors'] || {}).length },
+  { name: 'Lighting', slug: 'lighting', deptKey: 'Lighting', count: Object.keys((megaTaxonomyData as Record<string, any>)['Lighting'] || {}).length },
+  { name: 'Rugs & Floor Coverings', slug: 'rugs-and-floor-coverings', deptKey: 'Rugs & Floor Coverings', count: Object.keys((megaTaxonomyData as Record<string, any>)['Rugs & Floor Coverings'] || {}).length },
+  { name: 'Storage & Organization', slug: 'storage-and-organization', deptKey: 'Storage & Organization', count: Object.keys((megaTaxonomyData as Record<string, any>)['Storage & Organization'] || {}).length },
+  { name: 'Kitchen & Tabletop', slug: 'kitchen-and-tabletop', deptKey: 'Kitchen & Tabletop', count: Object.keys((megaTaxonomyData as Record<string, any>)['Kitchen & Tabletop'] || {}).length },
+  { name: 'Outdoor & Garden', slug: 'outdoor-and-garden', deptKey: 'Outdoor & Garden', count: Object.keys((megaTaxonomyData as Record<string, any>)['Outdoor & Garden'] || {}).length },
+  { name: 'Kids & Baby Home', slug: 'kids-and-baby-home', deptKey: 'Kids & Baby Home', count: Object.keys((megaTaxonomyData as Record<string, any>)['Kids & Baby Home'] || {}).length },
+  { name: 'Pet Home', slug: 'pet-home', deptKey: 'Pet Home', count: Object.keys((megaTaxonomyData as Record<string, any>)['Pet Home'] || {}).length },
 ];
 
 export const Header: React.FC = () => {
@@ -78,7 +79,9 @@ export const Header: React.FC = () => {
 
   const closeMobileDrawer = () => {
     setIsMobileOpen(false);
-    setDrillStack([ROOT_STEP]);
+    setTimeout(() => {
+      setDrillStack([ROOT_STEP]);
+    }, 280);
   };
 
   const handleGoBack = () => {
@@ -480,19 +483,17 @@ export const Header: React.FC = () => {
       </header>
 
       {/* MOBILE NAVIGATION DRAWER & BACKDROP */}
-      {isMobileOpen && (
-        <div>
-          <div
-            className={`mobile-menu-scrim ${isMobileOpen ? 'open' : ''}`}
-            onClick={closeMobileDrawer}
-            aria-hidden={!isMobileOpen}
-          />
+      <div
+        className={`mobile-menu-scrim ${isMobileOpen ? 'open' : ''}`}
+        onClick={closeMobileDrawer}
+        aria-hidden={!isMobileOpen}
+      />
 
-          <aside
-            className={`mobile-nav-drawer ${isMobileOpen ? 'open' : ''}`}
-            aria-label="Mobile Navigation Menu"
-            aria-hidden={!isMobileOpen}
-          >
+      <aside
+        className={`mobile-nav-drawer ${isMobileOpen ? 'open' : ''}`}
+        aria-label="Mobile Navigation Menu"
+        aria-hidden={!isMobileOpen}
+      >
             {/* DRAWER TOP HEADER */}
             <div className={`mobile-drawer-header ${currentStep.level > 0 ? 'drill-header' : ''}`}>
               {currentStep.level === 0 ? (
@@ -612,25 +613,20 @@ export const Header: React.FC = () => {
 
                   {/* 10 DEPARTMENTS DRILL LIST */}
                   <div className="mobile-drill-list">
-                    {MOBILE_DEPARTMENTS.map((dept) => {
-                      const subData = (megaTaxonomyData as Record<string, any>)[dept.deptKey] || {};
-                      const l1Count = Object.keys(subData).length;
-
-                      return (
-                        <button
-                          key={dept.slug}
-                          type="button"
-                          className="mobile-drill-row"
-                          onClick={() => handleOpenDept(dept.name, dept.slug, dept.deptKey)}
-                        >
-                          <span className="row-title">{dept.name}</span>
-                          <span className="row-badge">{l1Count} Categories</span>
-                          <svg className="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                            <path d="M9 18l6-6-6-6" />
-                          </svg>
-                        </button>
-                      );
-                    })}
+                    {MOBILE_DEPARTMENTS.map((dept) => (
+                      <button
+                        key={dept.slug}
+                        type="button"
+                        className="mobile-drill-row"
+                        onClick={() => handleOpenDept(dept.name, dept.slug, dept.deptKey)}
+                      >
+                        <span className="row-title">{dept.name}</span>
+                        <span className="row-badge">{dept.count} Categories</span>
+                        <svg className="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                          <path d="M9 18l6-6-6-6" />
+                        </svg>
+                      </button>
+                    ))}
                   </div>
 
                   {/* DIRECT EXTRA LINKS */}
@@ -848,8 +844,6 @@ export const Header: React.FC = () => {
               </button>
             </div>
           </aside>
-        </div>
-      )}
 
       {/* SEARCH MODAL */}
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />

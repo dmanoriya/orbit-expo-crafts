@@ -1,3 +1,4 @@
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { AuthProvider } from '../context/AuthContext';
 import { FavoritesProvider } from '../context/FavoritesContext';
@@ -7,7 +8,14 @@ import { Footer } from '../components/Footer';
 import { EnquiryDrawer } from '../components/EnquiryDrawer';
 import { FontLoader } from '../components/FontLoader';
 
-export const metadata = {
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#FAF8F5',
+};
+
+export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://orbitexpocrafts.com'),
   title: 'ORBIT Expo Crafts — Turnkey Furniture Manufacturer',
   description: 'Turnkey furniture manufacturing for hospitality, commercial and residential projects in Rajasthan.',
