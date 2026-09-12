@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 interface SampleCadModalProps {
   isOpen: boolean;
@@ -48,6 +49,7 @@ export default function SampleCadModal({
   productMoq = 1,
   initialFinish = 'Standard Finish',
 }: SampleCadModalProps) {
+  const { user } = useAuth();
   const safeMoq = Math.max(1, Number(productMoq) || 1);
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [reqType, setReqType] = useState<'sample' | 'cad'>(initialRequestType || 'sample');
@@ -63,6 +65,16 @@ export default function SampleCadModal({
   const [email, setEmail] = useState('');
   const [selectedCountry, setSelectedCountry] = useState<CountryCode>(COUNTRIES[0]);
   const [phone, setPhone] = useState('');
+
+  // Auto-fill from user profile
+  useEffect(() => {
+    if (user) {
+      if (!fullName) setFullName(`${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username || '');
+      if (!email && user.email) setEmail(user.email);
+      if (!company && user.company) setCompany(user.company);
+      if (!phone && user.phone) setPhone(user.phone);
+    }
+  }, [user]);
 
   // Errors & Submission
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -159,6 +171,10 @@ export default function SampleCadModal({
       product_name: productName,
       product_image: productImage || '',
       product_url: typeof window !== 'undefined' ? window.location.href : '',
+      source_page: typeof window !== 'undefined' ? window.location.pathname : '',
+      source_title: reqType === 'sample' ? `PDP Finish Sample (${productName})` : `PDP 3D CAD Request (${productName})`,
+      user_id: user?.id || 0,
+      account_status: user ? 'Registered Customer' : 'Guest',
       notes: notes,
     };
 

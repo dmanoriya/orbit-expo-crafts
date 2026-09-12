@@ -2,6 +2,8 @@
 
 namespace HeadlessCommerceCore\API\REST;
 
+use HeadlessCommerceCore\Admin\FormEntriesManager;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -305,6 +307,32 @@ class AuthController extends RestController {
 			}
 			array_unshift( $existing, $booking );
 			update_option( $key, $existing, false );
+		}
+
+		// Mirror to FormEntriesManager to ensure it appears in Form Submissions admin table
+		try {
+			$form_entry_payload = array(
+				'reference_id'     => ! empty( $booking['id'] ) ? $booking['id'] : '',
+				'form_type'        => 'commercial_booking',
+				'full_name'        => $booking['clientName'] ?? ( $booking['full_name'] ?? '' ),
+				'company'          => $booking['companyName'] ?? ( $booking['company'] ?? '' ),
+				'email'            => $email,
+				'phone'            => $booking['phone'] ?? '',
+				'project_type'     => $booking['projectName'] ?? 'Commercial Order',
+				'quantity'         => (string)( $booking['totalPieces'] ?? ( is_array( $booking['items'] ?? null ) ? count( $booking['items'] ) : '1' ) ),
+				'tax_id'           => $booking['gstOrTaxId'] ?? '',
+				'source_page'      => $booking['source_page'] ?? '/checkout',
+				'source_title'     => $booking['source_title'] ?? 'Commercial Order Checkout',
+				'user_id'          => $user_id ? $user_id : 0,
+				'account_status'   => $user_id ? 'Registered Customer' : ( $booking['account_status'] ?? 'Guest' ),
+				'shipping_address' => $booking['shippingAddress'] ?? ( $booking['shipping_address'] ?? '' ),
+				'booking_data'     => $booking,
+				'notes'            => $booking['specialNotes'] ?? ( $booking['notes'] ?? '' ),
+				'shortlist_items'  => $booking['items'] ?? '',
+			);
+			FormEntriesManager::save_entry( $form_entry_payload );
+		} catch ( \Throwable $th ) {
+			error_log( 'Error mirroring booking to FormEntriesManager: ' . $th->getMessage() );
 		}
 
 		return $this->success_response( array(

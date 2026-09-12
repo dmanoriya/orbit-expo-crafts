@@ -13,22 +13,50 @@ export async function POST(request: Request) {
     const body = await request.json();
     const wpBase = getWpApiUrl();
 
-    const res = await fetch(`${wpBase}/index.php?rest_route=/hcc/v1/forms/submit`, {
+    // Primary: query parameter rest route
+    let res = await fetch(`${wpBase}/index.php?rest_route=/hcc/v1/forms/submit`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
       body: JSON.stringify(body),
       cache: 'no-store',
-    });
+    }).catch(() => null);
 
-    const data = await res.json();
+    // Fallback: pretty permalink rest route
+    if (!res || !res.ok) {
+      const fallbackRes = await fetch(`${wpBase}/wp-json/hcc/v1/forms/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(body),
+        cache: 'no-store',
+      }).catch(() => null);
 
-    if (!res.ok) {
-      return NextResponse.json(data, { status: res.status });
+      if (fallbackRes && fallbackRes.ok) {
+        res = fallbackRes;
+      }
     }
 
-    return NextResponse.json(data);
+    if (!res) {
+      return NextResponse.json(
+        { success: false, error: 'Could not connect to WordPress backend.' },
+        { status: 503 }
+      );
+    }
+
+    const text = await res.text().catch(() => '');
+    let data: any = null;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { success: res.ok, message: text || `HTTP ${res.status}` };
+    }
+
+    return NextResponse.json(data, { status: res.status });
   } catch (error) {
     console.error('API /forms/submit error:', error);
     return NextResponse.json(

@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useAuth } from '../../context/AuthContext';
 
 export default function InteriorDesignersPage() {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -17,9 +19,64 @@ export default function InteriorDesignersPage() {
     projectSpecialization: 'Luxury Residential',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [refId, setRefId] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Prefill if logged in
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        name: prev.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username || '',
+        email: prev.email || user.email || '',
+        studioName: prev.studioName || user.company || '',
+        phone: prev.phone || user.phone || '',
+      }));
+    }
+  }, [user]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
+    const formPayload = {
+      form_type: 'interior_designer',
+      full_name: formData.name,
+      company: formData.studioName,
+      email: formData.email,
+      phone: formData.phone,
+      tax_id: formData.taxId,
+      project_type: formData.businessType,
+      notes: `Website / Portfolio: ${formData.website}\nSpecialization: ${formData.projectSpecialization}\nCity & Country: ${formData.cityCountry}\nStudio Address: ${formData.address}`,
+      source_page: typeof window !== 'undefined' ? window.location.pathname : '/interior-designers',
+      source_title: 'Interior Designer Trade Application',
+      user_id: user?.id || 0,
+      account_status: user ? 'Registered Customer' : 'Guest',
+    };
+
+    let generatedRef = '';
+
+    try {
+      const res = await fetch('/api/wp/forms/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formPayload),
+      });
+
+      const data = await res.json().catch(() => null);
+      if (data && (data.data?.reference_id || data.reference_id)) {
+        generatedRef = data.data?.reference_id || data.reference_id;
+      }
+    } catch (err) {
+      console.warn('Error submitting interior designer inquiry:', err);
+    }
+
+    if (!generatedRef) {
+      generatedRef = 'DES-' + Math.floor(100000 + Math.random() * 900000);
+    }
+
+    setRefId(generatedRef);
+    setIsSubmitting(false);
     setSubmitted(true);
   };
 
@@ -124,23 +181,48 @@ export default function InteriorDesignersPage() {
               <div style={{ textAlign: 'center', padding: '48px 16px' }}>
                 <div style={{ fontSize: 44, marginBottom: 16 }}>✓</div>
                 <h3 style={{ fontSize: 24, fontWeight: 600, marginBottom: 12 }}>Application Submitted</h3>
+                {refId && (
+                  <div style={{ display: 'inline-block', background: '#F3F4F6', border: '1px solid #D1D5DB', borderRadius: 4, padding: '4px 12px', fontSize: 13, fontWeight: 700, color: '#1F2937', marginBottom: 16 }}>
+                    Reference ID: <code>{refId}</code>
+                  </div>
+                )}
                 <p style={{ fontSize: 15, color: '#555555', lineHeight: 1.6, maxWidth: '42ch', margin: '0 auto 24px' }}>
                   Thank you for applying for the Orbit Expo Crafts Trade Program. Our trade desk will verify your credentials and send your trade account details within 24 hours.
                 </p>
-                <Link
-                  href="/collections"
-                  style={{
-                    display: 'inline-block',
-                    background: '#111111',
-                    color: '#FFFFFF',
-                    textDecoration: 'none',
-                    borderRadius: 6,
-                    padding: '10px 24px',
-                    fontSize: 14,
-                  }}
-                >
-                  Explore Catalog
-                </Link>
+                <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+                  <Link
+                    href="/collections"
+                    style={{
+                      display: 'inline-block',
+                      background: '#111111',
+                      color: '#FFFFFF',
+                      textDecoration: 'none',
+                      borderRadius: 6,
+                      padding: '10px 24px',
+                      fontSize: 14,
+                    }}
+                  >
+                    Explore Catalog
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSubmitted(false);
+                      setRefId('');
+                    }}
+                    style={{
+                      background: '#F3F4F6',
+                      color: '#111111',
+                      border: '1px solid #D1D5DB',
+                      borderRadius: 6,
+                      padding: '10px 20px',
+                      fontSize: 14,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Submit Another Application
+                  </button>
+                </div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
@@ -266,6 +348,7 @@ export default function InteriorDesignersPage() {
 
                 <button
                   type="submit"
+                  disabled={isSubmitting}
                   style={{
                     background: '#111111',
                     color: '#FFFFFF',
@@ -274,12 +357,12 @@ export default function InteriorDesignersPage() {
                     padding: '13px 24px',
                     fontSize: 14,
                     fontWeight: 600,
-                    cursor: 'pointer',
+                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
                     transition: 'background 0.2s ease',
                     marginTop: 6,
                   }}
                 >
-                  Submit Trade Application →
+                  {isSubmitting ? 'Submitting Application...' : 'Submit Trade Application →'}
                 </button>
               </form>
             )}

@@ -11,7 +11,7 @@ import { saveBooking, generateDefaultMilestones } from '../../lib/bookingStore';
 export const CheckoutClientView: React.FC = () => {
   const router = useRouter();
   const { enquiry, clearEnquiry } = useEnquiry();
-  const { user } = useAuth();
+  const { user, login, register } = useAuth();
 
   // Form State
   const [projectName, setProjectName] = useState('');
@@ -20,6 +20,16 @@ export const CheckoutClientView: React.FC = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [gstOrTaxId, setGstOrTaxId] = useState('');
+
+  // Account creation & inline login state
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [showInlineLogin, setShowInlineLogin] = useState(false);
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const [street, setStreet] = useState('');
   const [city, setCity] = useState('');
@@ -45,14 +55,65 @@ export const CheckoutClientView: React.FC = () => {
     }
   }, [user]);
 
+  const handleInlineLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError('');
+    if (!loginEmail || !loginPassword) {
+      setLoginError('Please provide both email and password.');
+      return;
+    }
+    setIsLoggingIn(true);
+    const res = await login(loginEmail, loginPassword);
+    setIsLoggingIn(false);
+    if (!res.success) {
+      setLoginError(res.error || 'Invalid email or password.');
+    } else {
+      setShowInlineLogin(false);
+      setPasswordError('');
+    }
+  };
+
   const totalPieces = enquiry.reduce((acc, item) => acc + (item.q || 1), 0);
   const estimatedCbm = (totalPieces * 0.28).toFixed(2);
 
   const handleSubmitBooking = async (e: React.FormEvent) => {
     e.preventDefault();
     if (enquiry.length === 0) return;
+    setPasswordError('');
+
+    // If guest, validate account creation fields
+    if (!user) {
+      if (!password || password.length < 6) {
+        setPasswordError('Password must be at least 6 characters to create your Trade Portal account.');
+        return;
+      }
+      if (password !== confirmPassword) {
+        setPasswordError('Passwords do not match. Please re-enter your password.');
+        return;
+      }
+    }
 
     setIsSubmitting(true);
+
+    // If guest, create customer account via auth provider
+    if (!user) {
+      try {
+        const nameParts = clientName.trim().split(' ');
+        const fName = nameParts[0] || 'Trade';
+        const lName = nameParts.slice(1).join(' ') || 'Client';
+
+        await register({
+          email: email.trim(),
+          password,
+          firstName: fName,
+          lastName: lName,
+          company: companyName,
+          phone,
+        });
+      } catch (err) {
+        console.warn('Account registration client error:', err);
+      }
+    }
 
     const bookingNum = 'OEC-2026-' + Math.floor(1000 + Math.random() * 9000);
     const invoiceNum = 'PI-2026-' + Math.floor(1000 + Math.random() * 9000);
@@ -142,6 +203,55 @@ export const CheckoutClientView: React.FC = () => {
         },
       ],
     };
+
+    // Submit directly to WordPress Form Submissions endpoint with full origin & account tracking
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://orbitexpocrafts.com';
+    const formPayload = {
+      form_type: 'commercial_booking',
+      reference_id: bookingNum,
+      full_name: clientName || (user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : 'Trade Client'),
+      company: companyName,
+      email: email,
+      phone: phone,
+      tax_id: gstOrTaxId,
+      source_page: typeof window !== 'undefined' ? window.location.pathname : '/checkout',
+      source_title: 'Commercial Order Checkout',
+      project_type: projectName || 'Commercial Project',
+      quantity: String(totalPieces),
+      shipping_address: {
+        street,
+        city,
+        state,
+        postalCode,
+        country,
+        siteAccessNotes,
+      },
+      booking_data: newBooking,
+      notes: specialNotes,
+      shortlist_items: enquiry.map((i) => ({
+        id: i.id,
+        name: i.name,
+        quantity: i.q || 1,
+        material: i.material,
+        finish: i.finish,
+        image: i.image,
+        url: `${origin}/product/${i.id}`,
+      })),
+      user_id: user?.id || 0,
+      account_status: user ? 'Registered Customer' : 'New Account Created',
+      create_account: !user,
+      password: password || undefined,
+    };
+
+    try {
+      await fetch('/api/wp/forms/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formPayload),
+      });
+    } catch (wpErr) {
+      console.warn('Error recording submission to /api/wp/forms/submit:', wpErr);
+    }
 
     saveBooking(newBooking);
     clearEnquiry();
@@ -373,6 +483,131 @@ export const CheckoutClientView: React.FC = () => {
                       style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14 }}
                     />
                   </div>
+
+                  {/* TRADE PORTAL ACCOUNT & AUTHENTICATION SECTION */}
+                  {user ? (
+                    <div style={{ background: '#E8F5E9', border: '1px solid #A5D6A7', borderRadius: 6, padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, marginTop: 6 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#1B5E20' }}>
+                        <span style={{ fontSize: 18 }}>👤</span>
+                        <div>
+                          <strong>{user.firstName || user.username} {user.lastName || ''}</strong> ({user.email})
+                          <div style={{ fontSize: 11.5, color: '#2E7D32' }}>Commercial booking will be linked to your portal account.</div>
+                        </div>
+                      </div>
+                      <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', background: '#2E7D32', color: '#FFF', padding: '4px 10px', borderRadius: 4 }}>
+                        Account Active
+                      </span>
+                    </div>
+                  ) : (
+                    <div style={{ background: '#F8FAFC', border: '1.5px solid #CBD5E1', borderRadius: 8, padding: '18px 20px', marginTop: 8 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, flexWrap: 'wrap', gap: 8 }}>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: '#1E293B', display: 'flex', alignItems: 'center', gap: 6 }}>
+                          🔒 Trade Portal Account Setup (Required)
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowInlineLogin(!showInlineLogin);
+                            setPasswordError('');
+                            setLoginError('');
+                          }}
+                          style={{ background: 'none', border: 'none', color: '#0E5C63', fontSize: 12, fontWeight: 600, textDecoration: 'underline', cursor: 'pointer', padding: 0 }}
+                        >
+                          {showInlineLogin ? '← Create new account instead' : 'Already have an account? Sign In'}
+                        </button>
+                      </div>
+
+                      <p style={{ fontSize: 12, color: '#64748B', margin: '0 0 14px', lineHeight: 1.5 }}>
+                        {showInlineLogin
+                          ? 'Sign in to link this order inquiry directly to your registered trade account.'
+                          : 'Set a password to create your Trade Portal Account. You will track factory production milestones, message specifiers, and download your formal Proforma Invoice.'}
+                      </p>
+
+                      {showInlineLogin ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                          {loginError && (
+                            <div style={{ background: '#FEE2E2', border: '1px solid #F87171', color: '#991B1B', padding: '8px 12px', borderRadius: 4, fontSize: 12 }}>
+                              {loginError}
+                            </div>
+                          )}
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                            <div>
+                              <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#475569', marginBottom: 4 }}>
+                                Username or Email
+                              </label>
+                              <input
+                                type="text"
+                                placeholder="your@email.com"
+                                value={loginEmail}
+                                onChange={(e) => setLoginEmail(e.target.value)}
+                                style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #CBD5E1', fontSize: 13 }}
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#475569', marginBottom: 4 }}>
+                                Password
+                              </label>
+                              <input
+                                type="password"
+                                placeholder="••••••••"
+                                value={loginPassword}
+                                onChange={(e) => setLoginPassword(e.target.value)}
+                                style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #CBD5E1', fontSize: 13 }}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <button
+                              type="button"
+                              disabled={isLoggingIn}
+                              onClick={handleInlineLogin}
+                              style={{ background: '#0E5C63', color: '#FFFFFF', border: 'none', borderRadius: 6, padding: '8px 16px', fontSize: 12.5, fontWeight: 600, cursor: isLoggingIn ? 'not-allowed' : 'pointer' }}
+                            >
+                              {isLoggingIn ? 'Signing In...' : 'Sign In to Trade Account →'}
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                          {passwordError && (
+                            <div style={{ background: '#FEE2E2', border: '1px solid #F87171', color: '#991B1B', padding: '8px 12px', borderRadius: 4, fontSize: 12 }}>
+                              {passwordError}
+                            </div>
+                          )}
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                            <div>
+                              <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#475569', marginBottom: 4 }}>
+                                Account Password * (Min 6 chars)
+                              </label>
+                              <input
+                                type="password"
+                                required
+                                minLength={6}
+                                placeholder="••••••••"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #CBD5E1', fontSize: 13 }}
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#475569', marginBottom: 4 }}>
+                                Confirm Password *
+                              </label>
+                              <input
+                                type="password"
+                                required
+                                minLength={6}
+                                placeholder="••••••••"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #CBD5E1', fontSize: 13 }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 

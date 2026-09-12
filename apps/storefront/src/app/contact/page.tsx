@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useEnquiry } from '../../context/EnquiryContext';
+import { useAuth } from '../../context/AuthContext';
 
 interface CountryCode {
   country: string;
@@ -33,6 +34,7 @@ const SPAM_KEYWORDS = [
 
 export default function ContactPage() {
   const { enquiry, removeEnquiry, clearEnquiry } = useEnquiry();
+  const { user } = useAuth();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -46,6 +48,15 @@ export default function ContactPage() {
   const [email, setEmail] = useState('');
   const [selectedCountry, setSelectedCountry] = useState<CountryCode>(COUNTRIES[0]);
   const [phone, setPhone] = useState('');
+
+  useEffect(() => {
+    if (user) {
+      if (!fullName) setFullName(`${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username || '');
+      if (!email && user.email) setEmail(user.email);
+      if (!company && user.company) setCompany(user.company);
+      if (!phone && user.phone) setPhone(user.phone);
+    }
+  }, [user]);
 
   // Errors & Ref ID
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -143,6 +154,10 @@ export default function ContactPage() {
       product_name: firstItem ? (enquiry.length === 1 ? firstItem.name : `${enquiry.length} Shortlisted Products`) : '',
       product_image: firstItem?.image || '',
       product_url: firstItemUrl || (typeof window !== 'undefined' ? window.location.href : ''),
+      source_page: typeof window !== 'undefined' ? window.location.pathname : '/contact',
+      source_title: 'Contact Us & Quote Enquiry',
+      user_id: user?.id || 0,
+      account_status: user ? 'Registered Customer' : 'Guest',
       shortlist_items: enquiry.map((i) => ({
         id: i.id,
         name: i.name,

@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useAuth } from '../../context/AuthContext';
 
 export default function DiscussProjectsPage() {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -16,9 +18,63 @@ export default function DiscussProjectsPage() {
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [refId, setRefId] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Prefill if logged in
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        name: prev.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username || '',
+        email: prev.email || user.email || '',
+        company: prev.company || user.company || '',
+        phone: prev.phone || user.phone || '',
+      }));
+    }
+  }, [user]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
+    const formPayload = {
+      form_type: 'discuss_projects',
+      full_name: formData.name,
+      company: formData.company,
+      email: formData.email,
+      phone: formData.phone,
+      project_type: formData.projectType,
+      notes: `Scope: ${formData.scope}\nLocation: ${formData.location}\nTimeline: ${formData.timeline}\n\nProject Brief:\n${formData.message}`,
+      source_page: typeof window !== 'undefined' ? window.location.pathname : '/discuss-projects',
+      source_title: 'Turnkey Consultation (Discuss Projects)',
+      user_id: user?.id || 0,
+      account_status: user ? 'Registered Customer' : 'Guest',
+    };
+
+    let generatedRef = '';
+
+    try {
+      const res = await fetch('/api/wp/forms/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formPayload),
+      });
+
+      const data = await res.json().catch(() => null);
+      if (data && (data.data?.reference_id || data.reference_id)) {
+        generatedRef = data.data?.reference_id || data.reference_id;
+      }
+    } catch (err) {
+      console.warn('Error submitting discuss-projects inquiry:', err);
+    }
+
+    if (!generatedRef) {
+      generatedRef = 'PRJ-' + Math.floor(100000 + Math.random() * 900000);
+    }
+
+    setRefId(generatedRef);
+    setIsSubmitting(false);
     setSubmitted(true);
   };
 
@@ -136,12 +192,20 @@ export default function DiscussProjectsPage() {
               <div style={{ textAlign: 'center', padding: '48px 16px' }}>
                 <div style={{ fontSize: 44, marginBottom: 16 }}>✓</div>
                 <h3 style={{ fontSize: 24, fontWeight: 600, marginBottom: 12 }}>Project Brief Received</h3>
+                {refId && (
+                  <div style={{ display: 'inline-block', background: '#F3F4F6', border: '1px solid #D1D5DB', borderRadius: 4, padding: '4px 12px', fontSize: 13, fontWeight: 700, color: '#1F2937', marginBottom: 16 }}>
+                    Reference ID: <code>{refId}</code>
+                  </div>
+                )}
                 <p style={{ fontSize: 15, color: '#555555', lineHeight: 1.6, maxWidth: '42ch', margin: '0 auto 24px' }}>
                   Thank you for submitting your project specifications. A dedicated contract manager will review your brief and reach out within 24 hours with drawings &amp; initial estimates.
                 </p>
                 <button
                   type="button"
-                  onClick={() => setSubmitted(false)}
+                  onClick={() => {
+                    setSubmitted(false);
+                    setRefId('');
+                  }}
                   style={{
                     background: '#111111',
                     color: '#FFFFFF',
@@ -303,6 +367,7 @@ export default function DiscussProjectsPage() {
 
                 <button
                   type="submit"
+                  disabled={isSubmitting}
                   style={{
                     background: '#111111',
                     color: '#FFFFFF',
@@ -311,12 +376,12 @@ export default function DiscussProjectsPage() {
                     padding: '14px 24px',
                     fontSize: 14.5,
                     fontWeight: 600,
-                    cursor: 'pointer',
+                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
                     transition: 'background 0.2s ease',
                     marginTop: 6,
                   }}
                 >
-                  Send Project Specifications →
+                  {isSubmitting ? 'Sending Project Specifications...' : 'Send Project Specifications →'}
                 </button>
               </form>
             )}
