@@ -249,7 +249,9 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
     if (!selectedBooking || !newQueryMessage.trim()) return;
 
     setIsSendingMessage(true);
-    const clientNameStr = user?.firstName ? `${user.firstName} (Client)` : 'You (Client)';
+    const clientNameStr = user?.firstName
+      ? `${user.firstName} (Client)`
+      : (selectedBooking.clientName ? `${selectedBooking.clientName} (Client)` : 'You (Client)');
     const textToSend = newQueryMessage.trim();
     const updated = appendMessageToBooking(selectedBooking.id, textToSend, 'client', clientNameStr);
     
@@ -260,11 +262,36 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
       setSelectedBooking({ ...updated });
       refreshBookings();
 
-      // Desk response acknowledgment after 1.2s for interactive transparency
+      // Open WhatsApp directly with pre-filled order context & client query
+      const orderRef = selectedBooking.id || 'Commercial Order';
+      const companyStr = selectedBooking.companyName || user?.company || '';
+      const clientStr = selectedBooking.clientName || user?.firstName || 'Client';
+      const projectStr = selectedBooking.projectName || '';
+
+      const lines = [
+        `*Commercial Order Query: ${orderRef}*`,
+        ``,
+        `*Client:* ${clientStr}${companyStr ? ` (${companyStr})` : ''}`,
+        `*Order Ref:* ${orderRef}`,
+        ...(projectStr ? [`*Project:* ${projectStr}`] : []),
+        `*Query:* ${textToSend}`,
+        ``,
+        `_Sent from Orbit Expo Crafts Customer Portal_`
+      ];
+
+      const waUrl = `https://wa.me/919928022151?text=${encodeURIComponent(lines.join('\n'))}`;
+
+      try {
+        window.open(waUrl, '_blank', 'noopener,noreferrer');
+      } catch (err) {
+        console.error('Failed to open WhatsApp window:', err);
+      }
+
+      // Desk response acknowledgment in portal thread
       setTimeout(() => {
         const deskReply = appendMessageToBooking(
           selectedBooking.id,
-          `Namaste! Your note regarding "${textToSend.slice(0, 32)}..." has been logged by Senior Technical Specifier Rajeev Sharma. Our Rajasthan factory desk is reviewing this for your project specifications.`,
+          `Namaste! Your query regarding "${textToSend.slice(0, 36)}${textToSend.length > 36 ? '...' : ''}" has been opened directly on WhatsApp (+91 99280 22151) and logged with Senior Technical Specifier Rajeev Sharma. We are active on WhatsApp to assist you directly.`,
           'concierge',
           'Orbit Technical Desk'
         );
@@ -272,7 +299,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
           setSelectedBooking({ ...deskReply });
           refreshBookings();
         }
-      }, 1200);
+      }, 700);
     }
   };
 
@@ -1808,7 +1835,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                 {inspectorTab === 'conversation' && (
                   <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 480, background: '#FFFFFF', border: '1px solid var(--line)', borderRadius: 'var(--r-md)', overflow: 'hidden' }}>
                     {/* CHAT HEADER */}
-                    <div style={{ padding: '16px 20px', background: '#FAF9F5', borderBottom: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ padding: '14px 20px', background: '#FAF9F5', borderBottom: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#2E7D32' }} />
                         <div>
@@ -1816,9 +1843,31 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                           <div style={{ fontSize: 12, color: '#666666' }}>Dedicated Specifier: Rajeev Sharma (Lead Furniture Engineer)</div>
                         </div>
                       </div>
-                      <span style={{ fontSize: 12, background: '#E8F5E9', color: '#2E7D32', padding: '3px 8px', borderRadius: 4, fontWeight: 600 }}>
-                        Live Thread Synced
-                      </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <span style={{ fontSize: 12, background: '#E8F5E9', color: '#2E7D32', padding: '4px 8px', borderRadius: 4, fontWeight: 600 }}>
+                          Live Thread Synced
+                        </span>
+                        <a
+                          href={`https://wa.me/919928022151?text=${encodeURIComponent(`*Hello Orbit Technical Desk*\n\nI am inquiring about Commercial Order *${selectedBooking.id}*.\nClient: ${user?.firstName || selectedBooking.clientName || 'Client'}`)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 6,
+                            fontSize: 12,
+                            background: '#25D366',
+                            color: '#FFFFFF',
+                            padding: '5px 12px',
+                            borderRadius: 4,
+                            fontWeight: 600,
+                            textDecoration: 'none',
+                            boxShadow: '0 1px 4px rgba(37,211,102,0.3)',
+                          }}
+                        >
+                          <span>💬</span> WhatsApp Direct (+91 99280 22151)
+                        </a>
+                      </div>
                     </div>
 
                     {/* MESSAGES LIST */}
@@ -1862,7 +1911,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                     </div>
 
                     {/* QUERY COMPOSER */}
-                    <form onSubmit={handleSendMessage} style={{ padding: 16, background: '#FFFFFF', borderTop: '1px solid var(--line)', display: 'flex', gap: 12 }}>
+                    <form onSubmit={handleSendMessage} style={{ padding: 16, background: '#FFFFFF', borderTop: '1px solid var(--line)', display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
                       <input
                         type="text"
                         value={newQueryMessage}
@@ -1870,6 +1919,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                         placeholder="Type query regarding CAD revisions, timber swatches, or delivery schedule..."
                         style={{
                           flex: 1,
+                          minWidth: 260,
                           padding: '12px 16px',
                           borderRadius: 6,
                           border: '1px solid #CCCCCC',
@@ -1881,7 +1931,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                         type="submit"
                         disabled={isSendingMessage || !newQueryMessage.trim()}
                         style={{
-                          background: '#111111',
+                          background: '#25D366',
                           color: '#FFFFFF',
                           border: 'none',
                           borderRadius: 6,
@@ -1891,9 +1941,14 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                           cursor: isSendingMessage || !newQueryMessage.trim() ? 'not-allowed' : 'pointer',
                           opacity: isSendingMessage || !newQueryMessage.trim() ? 0.6 : 1,
                           whiteSpace: 'nowrap',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 8,
+                          boxShadow: '0 2px 8px rgba(37,211,102,0.35)',
                         }}
                       >
-                        {isSendingMessage ? 'Sending...' : 'Send Query →'}
+                        <span style={{ fontSize: 16 }}>💬</span>
+                        {isSendingMessage ? 'Opening WhatsApp...' : 'Send & Chat on WhatsApp →'}
                       </button>
                     </form>
                   </div>
