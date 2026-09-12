@@ -2,8 +2,7 @@ import Metadata from 'next';
 import { fetchWpStorefrontData, decodeHtmlEntities, getCategorySeoPath } from '../../../lib/wpCommerce';
 import CollectionsClient from '../CollectionsClient';
 
-export const revalidate = 0;
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 interface CollectionsPageProps {
   params: Promise<{

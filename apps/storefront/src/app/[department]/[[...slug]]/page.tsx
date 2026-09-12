@@ -4,8 +4,7 @@ import { fetchWpStorefrontData, decodeHtmlEntities } from '../../../lib/wpCommer
 import { isKnownDepartment, resolveTaxonomyPath } from '../../../lib/categoryTaxonomy';
 import CollectionsClient from '../../collections/CollectionsClient';
 
-export const revalidate = 0;
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 interface DepartmentPageProps {
   params: Promise<{

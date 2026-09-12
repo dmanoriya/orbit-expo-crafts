@@ -127,7 +127,14 @@ export default function ProductClientView({
                 {product.badge}
               </span>
             )}
-            <img src={activeImage || product.image} alt={product.name} />
+            <img
+              src={activeImage || product.image}
+              alt={product.name}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = product.cat ? `/categories/${product.cat}.jpg` : '/fallback-product.svg';
+              }}
+            />
           </div>
 
           {/* RIGHT SPECS & QUOTE ACTION */}
@@ -311,7 +318,14 @@ export default function ProductClientView({
                   className={activeImage === img ? 'on' : ''}
                   onClick={() => setActiveImage(img)}
                 >
-                  <img src={img} alt={`${product.name} view ${idx + 1}`} />
+                  <img
+                    src={img}
+                    alt={`${product.name} view ${idx + 1}`}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = product.cat ? `/categories/${product.cat}.jpg` : '/fallback-product.svg';
+                    }}
+                  />
                 </button>
               ))}
           </div>
@@ -328,7 +342,7 @@ export default function ProductClientView({
             <div className="pdp-trust-card">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="1" y="3" width="15" height="13" />
-                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                <polygon points="16 8 20 8 23 11 23 16 16 16 8" />
                 <circle cx="5.5" cy="18.5" r="2.5" />
                 <circle cx="18.5" cy="18.5" r="2.5" />
               </svg>
@@ -386,7 +400,15 @@ export default function ProductClientView({
                       </span>
                     )}
                     <Link href={`/product/${getProductSlug(p)}`}>
-                      <img src={p.image || '/fallback-product.svg'} alt={p.name} loading="lazy" />
+                      <img
+                        src={p.image || '/fallback-product.svg'}
+                        alt={p.name}
+                        loading="lazy"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = p.cat ? `/categories/${p.cat}.jpg` : '/fallback-product.svg';
+                        }}
+                      />
                     </Link>
                     <div className="acts">
                       <Link href={`/product/${getProductSlug(p)}`} className="btn btn-soft btn-sm">

@@ -1247,7 +1247,15 @@ export default function CollectionsClient({
                         </svg>
                       </button>
                       <Link href={`/product/${getProductSlug(p)}`}>
-                        <img src={(p as any).img || p.image || '/fallback-product.svg'} alt={p.name} loading="lazy" />
+                        <img
+                          src={(p as any).img || p.image || '/fallback-product.svg'}
+                          alt={p.name}
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = (p as any).cat ? `/categories/${(p as any).cat}.jpg` : '/fallback-product.svg';
+                          }}
+                        />
                       </Link>
                       <div className="acts">
                         <Link href={`/product/${getProductSlug(p)}`} className="btn btn-soft btn-sm">

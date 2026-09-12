@@ -133,9 +133,62 @@ export function decodeHtmlEntities(str: string): string {
     .replace(/&#39;/g, "'");
 }
 
+export function normalizeCommerceImageUrl(rawUrl?: string | null, catSlug?: string): string {
+  if (!rawUrl || typeof rawUrl !== 'string') {
+    if (catSlug && CATEGORIES.some((c) => c.id === catSlug.toLowerCase())) {
+      return `/categories/${catSlug.toLowerCase()}.jpg`;
+    }
+    return '/fallback-product.svg';
+  }
+
+  let clean = rawUrl.trim();
+  if (!clean || clean === '/fallback-product.svg') {
+    if (catSlug && CATEGORIES.some((c) => c.id === catSlug.toLowerCase())) {
+      return `/categories/${catSlug.toLowerCase()}.jpg`;
+    }
+    return '/fallback-product.svg';
+  }
+
+  // Normalize JSON escaped slashes
+  clean = clean.replace(/\\\//g, '/');
+
+  const lower = clean.toLowerCase();
+
+  // 1. Map known category placeholders directly to fast local static files
+  const knownCategories = [
+    'beds', 'benches', 'decor', 'fitout', 'lighting',
+    'outdoor', 'seating', 'sofas', 'storage', 'tables'
+  ];
+
+  for (const cat of knownCategories) {
+    if (
+      lower.includes(`category-${cat}`) ||
+      lower.includes(`/categories/${cat}.jpg`) ||
+      lower.endsWith(`/${cat}.jpg`) ||
+      lower.endsWith(`/${cat}.webp`)
+    ) {
+      return `/categories/${cat}.jpg`;
+    }
+  }
+
+  // 2. Relative URLs are already local
+  if (clean.startsWith('/') && !clean.startsWith('//')) {
+    return clean;
+  }
+
+  // 3. For any WordPress uploads (/wp-content/uploads/...), convert to relative path so Next.js proxies it without DNS or cross-origin issues
+  if (lower.includes('/wp-content/')) {
+    const wpIdx = clean.indexOf('/wp-content/');
+    return clean.slice(wpIdx);
+  }
+
+  return clean;
+}
+
 const productCacheMap = new Map<string, ProductItem>();
 let cachedStorefrontData: StorefrontDataResult | null = null;
 let lastCacheTime = 0;
+let activeStorefrontFetchPromise: Promise<StorefrontDataResult> | null = null;
 
 export function getSynchronousProduct(slug?: string): ProductItem | null {
   if (!slug) return null;
@@ -202,25 +255,28 @@ export function clearWpDataCache() {
 }
 
 export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
-  const isDev = process.env.NODE_ENV === 'development';
-  const cacheTtlMs = isDev ? 5000 : 30000; // 5s in development for instant local reflection, 30s in production
+  const cacheTtlMs = 60000; // 60s cache for ultra-fast page transitions and navigation
   const now = Date.now();
 
   if (cachedStorefrontData && (now - lastCacheTime < cacheTtlMs)) {
     return cachedStorefrontData;
   }
 
-  try {
-    const fetchOpts = (tag: string): RequestInit => ({
-      next: { tags: [tag], revalidate: isDev ? 0 : 30 },
-      ...(isDev ? { cache: 'no-store' as RequestCache } : {}),
-    });
+  if (activeStorefrontFetchPromise) {
+    return activeStorefrontFetchPromise;
+  }
 
-    const [resProd, resCat, resAttr] = await Promise.all([
-      fetch(getWpEndpoint('/products?per_page=-1'), fetchOpts('wp-products')).catch(() => null),
-      fetch(getWpEndpoint('/categories'), fetchOpts('wp-categories')).catch(() => null),
-      fetch(getWpEndpoint('/attributes'), fetchOpts('wp-attributes')).catch(() => null),
-    ]);
+  activeStorefrontFetchPromise = (async () => {
+    try {
+      const fetchOpts = (tag: string): RequestInit => ({
+        next: { tags: [tag], revalidate: 60 },
+      });
+
+      const [resProd, resCat, resAttr] = await Promise.all([
+        fetch(getWpEndpoint('/products?per_page=-1'), fetchOpts('wp-products')).catch(() => null),
+        fetch(getWpEndpoint('/categories'), fetchOpts('wp-categories')).catch(() => null),
+        fetch(getWpEndpoint('/attributes'), fetchOpts('wp-attributes')).catch(() => null),
+      ]);
 
     let wpProducts: ProductItem[] = [];
     let wpCategories: WpCategoryItem[] = [];
@@ -285,7 +341,7 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
             level: c.level !== undefined && c.level !== null ? Number(c.level) : undefined,
             count: c.count || 0,
             description: decodeHtmlEntities(c.description || ''),
-            image: c.image || '',
+            image: normalizeCommerceImageUrl(c.image, c.slug),
             facets: c.facets || '',
             styles: c.styles || '',
             room: c.room || '',
@@ -409,7 +465,12 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
             availableColors: Array.isArray(p.availableColors) && p.availableColors.length > 0
               ? p.availableColors.map(decodeHtmlEntities)
               : (Array.isArray(p.attributes?.pa_color) ? p.attributes.pa_color.map(decodeHtmlEntities) : [decodeHtmlEntities(p.color || 'Natural Oil')]),
-            variations: Array.isArray(p.variations) ? p.variations : [],
+            variations: Array.isArray(p.variations)
+              ? p.variations.map((v: any) => ({
+                  ...v,
+                  image: normalizeCommerceImageUrl(v.image, catSlug),
+                }))
+              : [],
             attributes: p.attributes || {},
             moq: p.moq || 1,
             lead: p.leadTime || 21,
@@ -423,10 +484,10 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
             is_new: (p.badge && String(p.badge).trim().toLowerCase() === 'new') || Boolean((p as any).is_new),
             onSale: Boolean(p.onSale),
             dateCreated: p.dateCreated || p.date_created || '',
-            image: p.image || '/fallback-product.svg',
+            image: normalizeCommerceImageUrl(p.image, catSlug),
             shortDescription: decodeHtmlEntities(p.shortDescription || ''),
             description: decodeHtmlEntities(p.description || ''),
-            gallery: Array.isArray(p.gallery) ? p.gallery : [],
+            gallery: Array.isArray(p.gallery) ? p.gallery.map((g: string) => normalizeCommerceImageUrl(g, catSlug)) : [],
           };
         });
 
@@ -588,7 +649,12 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
       types: ['Dining Chair', 'Arm Chair', 'Bar Stool', 'Dining Table', 'Coffee Table', 'Console Table', 'King Bed', 'Sideboard', 'Wall Panel'],
       isWpConnected: false,
     };
+  } finally {
+    activeStorefrontFetchPromise = null;
   }
+})();
+
+return activeStorefrontFetchPromise;
 }
 
 export async function fetchWpProductBySlug(slug: string): Promise<{ product: ProductItem | null; gallery: string[]; isWpConnected: boolean }> {
@@ -637,7 +703,12 @@ export async function fetchWpProductBySlug(slug: string): Promise<{ product: Pro
           availableColors: Array.isArray(p.availableColors) && p.availableColors.length > 0
             ? p.availableColors.map(decodeHtmlEntities)
             : (Array.isArray(p.attributes?.pa_color) ? p.attributes.pa_color.map(decodeHtmlEntities) : [decodeHtmlEntities(p.color || 'Natural Oil')]),
-          variations: Array.isArray(p.variations) ? p.variations : [],
+          variations: Array.isArray(p.variations)
+            ? p.variations.map((v: any) => ({
+                ...v,
+                image: normalizeCommerceImageUrl(v.image, catSlug),
+              }))
+            : [],
           attributes: p.attributes || {},
           moq: p.moq || 1,
           lead: p.leadTime || 21,
@@ -648,10 +719,10 @@ export async function fetchWpProductBySlug(slug: string): Promise<{ product: Pro
           badge: (p.badge && !['none', 'null', ''].includes(String(p.badge).toLowerCase().trim()))
             ? (decodeHtmlEntities(p.badge) as any)
             : (p.onSale ? 'Best Seller' : null),
-          image: p.image || '/fallback-product.svg',
+          image: normalizeCommerceImageUrl(p.image, catSlug),
           shortDescription: decodeHtmlEntities(p.shortDescription || ''),
           description: decodeHtmlEntities(p.description || ''),
-          gallery: Array.isArray(p.gallery) ? p.gallery : [],
+          gallery: Array.isArray(p.gallery) ? p.gallery.map((g: string) => normalizeCommerceImageUrl(g, catSlug)) : [],
           seo: p.seo || undefined,
         };
         productCacheMap.set(cleanSlug, productItem);
@@ -661,7 +732,7 @@ export async function fetchWpProductBySlug(slug: string): Promise<{ product: Pro
             sessionStorage.setItem(`p_cache_${cleanSlug}`, JSON.stringify(productItem));
           } catch (e) {}
         }
-        const gallery = [productItem.image, ...(p.gallery || [])].filter(Boolean) as string[];
+        const gallery = [productItem.image, ...(p.gallery || []).map((g: string) => normalizeCommerceImageUrl(g, catSlug))].filter(Boolean) as string[];
         return { product: productItem, gallery, isWpConnected: true };
       }
     }
@@ -1045,7 +1116,7 @@ export async function fetchWpBlogPosts(): Promise<WpBlogPostItem[]> {
           date: p.date ? new Date(p.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '',
           author: p.author || 'Orbit Expo Crafts Team',
           category: mainCat ? decodeHtmlEntities(mainCat.name) : 'Manufacturing Insights',
-          image: p.image || getCategoryFallbackImage(mainCat?.slug),
+          image: normalizeCommerceImageUrl(p.image, mainCat?.slug),
           readTime: `${Math.max(4, Math.ceil(((p.content || '') + (p.excerpt || '')).split(/\s+/).length / 150))} min read`,
           seo: p.seo || undefined,
         };
@@ -1082,7 +1153,7 @@ export async function fetchWpBlogPostBySlug(slug: string): Promise<WpBlogPostIte
           date: p.date ? new Date(p.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '',
           author: p.author || 'Orbit Expo Crafts Team',
           category: mainCat ? decodeHtmlEntities(mainCat.name) : 'Manufacturing Insights',
-          image: p.image || getCategoryFallbackImage(mainCat?.slug),
+          image: normalizeCommerceImageUrl(p.image, mainCat?.slug),
           readTime: `${Math.max(4, Math.ceil(((p.content || '') + (p.excerpt || '')).split(/\s+/).length / 150))} min read`,
           seo: p.seo || undefined,
         };

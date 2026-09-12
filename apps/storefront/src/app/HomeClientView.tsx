@@ -552,7 +552,15 @@ export default function HomeClientView({
                     </svg>
                   </button>
                   <Link href={`/product/${getProductSlug(p)}`}>
-                    <img src={p.image || `/categories/${p.cat || 'seating'}.jpg`} alt={p.name} loading="lazy" />
+                    <img
+                      src={p.image || `/categories/${p.cat || 'seating'}.jpg`}
+                      alt={p.name}
+                      loading="lazy"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = p.cat ? `/categories/${p.cat}.jpg` : '/fallback-product.svg';
+                      }}
+                    />
                   </Link>
                   <div className="acts">
                     <Link href={`/product/${getProductSlug(p)}`} className="btn btn-soft btn-sm">
@@ -716,7 +724,15 @@ export default function HomeClientView({
                     </svg>
                   </button>
                   <Link href={`/product/${getProductSlug(p)}`}>
-                    <img src={p.image || `/categories/${p.cat || 'seating'}.jpg`} alt={p.name} loading="lazy" />
+                    <img
+                      src={p.image || `/categories/${p.cat || 'seating'}.jpg`}
+                      alt={p.name}
+                      loading="lazy"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = p.cat ? `/categories/${p.cat}.jpg` : '/fallback-product.svg';
+                      }}
+                    />
                   </Link>
                   <div className="acts">
                     <Link href={`/product/${getProductSlug(p)}`} className="btn btn-soft btn-sm">

@@ -12,12 +12,21 @@ const nextConfig = {
     '@company/commerce-graphql',
     '@company/commerce-seo',
   ],
+  allowedDevOrigins: ['*'],
   async rewrites() {
     let wpBase = (process.env.NEXT_PUBLIC_WORDPRESS_URL || process.env.WORDPRESS_URL || (process.env.NODE_ENV === 'development' ? 'http://woo-catalog-nextjs.local' : 'https://admin.orbitexpocrafts.com')).replace(/\/$/, '');
     return [
       {
         source: '/api/wp/:path*',
         destination: `${wpBase}/wp-json/hcc/v1/:path*`,
+      },
+      {
+        source: '/wp-content/:path*',
+        destination: `${wpBase}/wp-content/:path*`,
+      },
+      {
+        source: '/wp-includes/:path*',
+        destination: `${wpBase}/wp-includes/:path*`,
       },
     ];
   },

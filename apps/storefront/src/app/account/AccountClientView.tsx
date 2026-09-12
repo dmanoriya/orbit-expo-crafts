@@ -902,6 +902,10 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                         src={item.image || '/categories/tables.jpg'}
                         alt={item.name}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = '/categories/tables.jpg';
+                        }}
                       />
                     </Link>
 
@@ -1265,6 +1269,10 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                                       src={it.image}
                                       alt={it.name}
                                       style={{ width: 54, height: 54, objectFit: 'cover', borderRadius: 4, border: '1px solid #ECE7DE', flexShrink: 0 }}
+                                      onError={(e) => {
+                                        e.currentTarget.onerror = null;
+                                        e.currentTarget.src = '/fallback-product.svg';
+                                      }}
                                     />
                                   )}
                                   <div>
@@ -1315,6 +1323,10 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                                 src={it.image}
                                 alt={it.name}
                                 style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 6, border: '1px solid #ECE7DE', flexShrink: 0 }}
+                                onError={(e) => {
+                                  e.currentTarget.onerror = null;
+                                  e.currentTarget.src = '/fallback-product.svg';
+                                }}
                               />
                             )}
                             <div style={{ flex: 1 }}>
