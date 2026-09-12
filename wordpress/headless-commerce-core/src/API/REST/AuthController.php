@@ -38,6 +38,12 @@ class AuthController extends RestController {
 			'permission_callback' => array( $this, 'check_authenticated' ),
 		) );
 
+		register_rest_route( $this->namespace, '/customers/profile', array(
+			'methods'             => \WP_REST_Server::CREATABLE,
+			'callback'            => array( $this, 'update_profile' ),
+			'permission_callback' => '__return_true',
+		) );
+
 		register_rest_route( $this->namespace, '/customers/favorites', array(
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
@@ -79,6 +85,14 @@ class AuthController extends RestController {
 			return $this->error_response( 'hcc_missing_credentials', 'Username and password are required.', 400 );
 		}
 
+		// Support logging in via email directly
+		if ( is_email( $username ) ) {
+			$user_by_email = get_user_by( 'email', $username );
+			if ( $user_by_email ) {
+				$username = $user_by_email->user_login;
+			}
+		}
+
 		$user = wp_authenticate( $username, $password );
 
 		if ( is_wp_error( $user ) ) {
@@ -90,11 +104,62 @@ class AuthController extends RestController {
 
 		$first_name = '';
 		$last_name  = '';
+		$company    = '';
+		$phone      = '';
 
 		if ( class_exists( 'WC_Customer' ) ) {
-			$customer   = new \WC_Customer( $user->ID );
-			$first_name = $customer->get_first_name();
-			$last_name  = $customer->get_last_name();
+			try {
+				$customer   = new \WC_Customer( $user->ID );
+				$first_name = $customer->get_first_name();
+				$last_name  = $customer->get_last_name();
+				$company    = $customer->get_billing_company();
+				$phone      = $customer->get_billing_phone();
+			} catch ( \Exception $e ) {}
+		}
+
+		if ( empty( $first_name ) ) {
+			$first_name = get_user_meta( $user->ID, 'first_name', true );
+		}
+		if ( empty( $first_name ) ) {
+			$first_name = get_user_meta( $user->ID, 'billing_first_name', true );
+		}
+		if ( empty( $last_name ) ) {
+			$last_name = get_user_meta( $user->ID, 'last_name', true );
+		}
+		if ( empty( $last_name ) ) {
+			$last_name = get_user_meta( $user->ID, 'billing_last_name', true );
+		}
+		if ( empty( $company ) ) {
+			$company = get_user_meta( $user->ID, 'billing_company', true );
+		}
+		if ( empty( $phone ) ) {
+			$phone = get_user_meta( $user->ID, 'billing_phone', true );
+		}
+
+		// Cross-reference form submissions table if company/phone/name are still empty
+		global $wpdb;
+		$entries_tbl = FormEntriesManager::get_table_name();
+		if ( empty( $company ) || empty( $phone ) || empty( $first_name ) ) {
+			$latest_form = $wpdb->get_row( $wpdb->prepare(
+				"SELECT full_name, company, phone FROM {$entries_tbl} WHERE user_id = %d OR email = %s ORDER BY id DESC LIMIT 1",
+				$user->ID,
+				$user->user_email
+			) );
+			if ( $latest_form ) {
+				if ( empty( $first_name ) && ! empty( $latest_form->full_name ) ) {
+					$parts = explode( ' ', trim( $latest_form->full_name ), 2 );
+					$first_name = $parts[0] ?? '';
+					if ( empty( $last_name ) ) {
+						$last_name = $parts[1] ?? '';
+					}
+				}
+				if ( empty( $company ) && ! empty( $latest_form->company ) ) {
+					$company = $latest_form->company;
+				}
+				if ( empty( $phone ) && ! empty( $latest_form->phone ) ) {
+					$phone = $latest_form->phone;
+				}
+			}
 		}
 
 		$favs = get_user_meta( $user->ID, '_orbit_favorites', true );
@@ -108,6 +173,8 @@ class AuthController extends RestController {
 			'email'     => $user->user_email,
 			'firstName' => $first_name,
 			'lastName'  => $last_name,
+			'company'   => $company,
+			'phone'     => $phone,
 			'favorites' => $favs,
 		) );
 	}
@@ -204,6 +271,47 @@ class AuthController extends RestController {
 			}
 		}
 
+		if ( empty( $first_name ) ) {
+			$first_name = get_user_meta( $user_id, 'first_name', true );
+		}
+		if ( empty( $first_name ) ) {
+			$first_name = get_user_meta( $user_id, 'billing_first_name', true );
+		}
+		if ( empty( $last_name ) ) {
+			$last_name = get_user_meta( $user_id, 'last_name', true );
+		}
+		if ( empty( $last_name ) ) {
+			$last_name = get_user_meta( $user_id, 'billing_last_name', true );
+		}
+		$company = get_user_meta( $user_id, 'billing_company', true );
+		$phone   = get_user_meta( $user_id, 'billing_phone', true );
+
+		// Cross-reference form submissions table if company/phone/name are still empty
+		global $wpdb;
+		$entries_tbl = FormEntriesManager::get_table_name();
+		if ( empty( $company ) || empty( $phone ) || empty( $first_name ) ) {
+			$latest_form = $wpdb->get_row( $wpdb->prepare(
+				"SELECT full_name, company, phone FROM {$entries_tbl} WHERE user_id = %d OR email = %s ORDER BY id DESC LIMIT 1",
+				$user_id,
+				$user->user_email
+			) );
+			if ( $latest_form ) {
+				if ( empty( $first_name ) && ! empty( $latest_form->full_name ) ) {
+					$parts = explode( ' ', trim( $latest_form->full_name ), 2 );
+					$first_name = $parts[0] ?? '';
+					if ( empty( $last_name ) ) {
+						$last_name = $parts[1] ?? '';
+					}
+				}
+				if ( empty( $company ) && ! empty( $latest_form->company ) ) {
+					$company = $latest_form->company;
+				}
+				if ( empty( $phone ) && ! empty( $latest_form->phone ) ) {
+					$phone = $latest_form->phone;
+				}
+			}
+		}
+
 		$favs = get_user_meta( $user_id, '_orbit_favorites', true );
 		if ( ! is_array( $favs ) ) {
 			$favs = array();
@@ -215,10 +323,85 @@ class AuthController extends RestController {
 			'email'     => $user->user_email,
 			'firstName' => $first_name,
 			'lastName'  => $last_name,
+			'company'   => $company,
+			'phone'     => $phone,
 			'billing'   => $billing,
 			'shipping'  => $shipping,
 			'orders'    => $orders,
 			'favorites' => $favs,
+		) );
+	}
+
+	public function update_profile( $request ) {
+		$user_id = get_current_user_id();
+		$email   = sanitize_email( $request->get_param( 'email' ) );
+
+		if ( ! $user_id && ! empty( $email ) ) {
+			$chk = get_user_by( 'email', $email );
+			if ( $chk ) {
+				$user_id = $chk->ID;
+			}
+		}
+
+		if ( ! $user_id ) {
+			return $this->error_response( 'hcc_unauthorized', 'User not authenticated.', 401 );
+		}
+
+		$first_name = sanitize_text_field( $request->get_param( 'firstName' ) ?? '' );
+		$last_name  = sanitize_text_field( $request->get_param( 'lastName' ) ?? '' );
+		$company    = sanitize_text_field( $request->get_param( 'company' ) ?? '' );
+		$phone      = sanitize_text_field( $request->get_param( 'phone' ) ?? '' );
+
+		if ( ! empty( $first_name ) ) {
+			update_user_meta( $user_id, 'first_name', $first_name );
+			update_user_meta( $user_id, 'billing_first_name', $first_name );
+		}
+		if ( ! empty( $last_name ) ) {
+			update_user_meta( $user_id, 'last_name', $last_name );
+			update_user_meta( $user_id, 'billing_last_name', $last_name );
+		}
+		if ( ! empty( $first_name ) || ! empty( $last_name ) ) {
+			wp_update_user( array(
+				'ID'           => $user_id,
+				'display_name' => trim( $first_name . ' ' . $last_name ),
+				'first_name'   => $first_name,
+				'last_name'    => $last_name,
+			) );
+		}
+		if ( ! empty( $company ) ) {
+			update_user_meta( $user_id, 'billing_company', $company );
+		}
+		if ( ! empty( $phone ) ) {
+			update_user_meta( $user_id, 'billing_phone', $phone );
+		}
+
+		if ( class_exists( 'WC_Customer' ) ) {
+			try {
+				$cust = new \WC_Customer( $user_id );
+				if ( ! empty( $first_name ) ) {
+					$cust->set_first_name( $first_name );
+					$cust->set_billing_first_name( $first_name );
+				}
+				if ( ! empty( $last_name ) ) {
+					$cust->set_last_name( $last_name );
+					$cust->set_billing_last_name( $last_name );
+				}
+				if ( ! empty( $company ) ) {
+					$cust->set_billing_company( $company );
+				}
+				if ( ! empty( $phone ) ) {
+					$cust->set_billing_phone( $phone );
+				}
+				$cust->save();
+			} catch ( \Exception $e ) {}
+		}
+
+		return $this->success_response( array(
+			'message'   => 'Profile updated successfully.',
+			'firstName' => $first_name,
+			'lastName'  => $last_name,
+			'company'   => $company,
+			'phone'     => $phone,
 		) );
 	}
 

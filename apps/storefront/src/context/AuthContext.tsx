@@ -21,7 +21,11 @@ interface AuthContextType {
   user: CustomerUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (emailOrUsername: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  login: (
+    emailOrUsername: string,
+    password: string,
+    profileFallback?: { firstName?: string; lastName?: string; company?: string; phone?: string }
+  ) => Promise<{ success: boolean; error?: string }>;
   register: (data: {
     email: string;
     password: string;
@@ -57,7 +61,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const login = async (emailOrUsername: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const login = async (
+    emailOrUsername: string,
+    password: string,
+    profileFallback?: { firstName?: string; lastName?: string; company?: string; phone?: string }
+  ): Promise<{ success: boolean; error?: string }> => {
     if (!emailOrUsername || !password) {
       return { success: false, error: 'Please provide both username/email and password.' };
     }
@@ -73,16 +81,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (res.ok) {
         const json = await res.json();
         if (json && (json.id || json.data?.id)) {
+          const u = json.data || json;
           const userData: CustomerUser = {
-            id: json.id || json.data?.id,
-            username: json.username || json.data?.username || emailOrUsername,
-            email: json.email || json.data?.email || emailOrUsername,
-            firstName: json.firstName || json.data?.firstName || '',
-            lastName: json.lastName || json.data?.lastName || '',
-            company: json.company || json.data?.company || '',
-            phone: json.phone || json.data?.phone || '',
-            orders: json.orders || json.data?.orders || [],
-            favorites: json.favorites || json.data?.favorites || [],
+            id: u.id,
+            username: u.username || emailOrUsername,
+            email: u.email || emailOrUsername,
+            firstName: u.firstName || profileFallback?.firstName || '',
+            lastName: u.lastName || profileFallback?.lastName || '',
+            company: u.company || profileFallback?.company || '',
+            phone: u.phone || profileFallback?.phone || '',
+            orders: u.orders || [],
+            favorites: u.favorites || [],
           };
           setUser(userData);
           localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(userData));
@@ -98,8 +107,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Check local registered users fallback
         const localUser = checkLocalCredentials(emailOrUsername, password);
         if (localUser) {
-          setUser(localUser);
-          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localUser));
+          const mergedUser: CustomerUser = {
+            ...localUser,
+            firstName: localUser.firstName || profileFallback?.firstName || '',
+            lastName: localUser.lastName || profileFallback?.lastName || '',
+            company: localUser.company || profileFallback?.company || '',
+            phone: localUser.phone || profileFallback?.phone || '',
+          };
+          setUser(mergedUser);
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(mergedUser));
           return { success: true };
         }
         return { success: false, error: errMsg };
@@ -111,8 +127,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // 2. Fallback: check local registration database (resilient when local WP is offline)
     const localUser = checkLocalCredentials(emailOrUsername, password);
     if (localUser) {
-      setUser(localUser);
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(localUser));
+      const mergedUser: CustomerUser = {
+        ...localUser,
+        firstName: localUser.firstName || profileFallback?.firstName || '',
+        lastName: localUser.lastName || profileFallback?.lastName || '',
+        company: localUser.company || profileFallback?.company || '',
+        phone: localUser.phone || profileFallback?.phone || '',
+      };
+      setUser(mergedUser);
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(mergedUser));
       return { success: true };
     }
 
@@ -121,9 +144,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       id: 'usr_' + Date.now().toString().slice(-6),
       username: emailOrUsername.split('@')[0],
       email: emailOrUsername,
-      firstName: emailOrUsername.split('@')[0].charAt(0).toUpperCase() + emailOrUsername.split('@')[0].slice(1),
-      lastName: '',
-      company: 'Architectural Specifier',
+      firstName: profileFallback?.firstName || (emailOrUsername.split('@')[0].charAt(0).toUpperCase() + emailOrUsername.split('@')[0].slice(1)),
+      lastName: profileFallback?.lastName || '',
+      company: profileFallback?.company || 'Architectural Specifier',
+      phone: profileFallback?.phone || '',
       role: 'Trade Client',
       orders: [
         {
@@ -230,6 +254,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const updated = { ...user, ...data };
     setUser(updated);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+
+    // Also sync to WordPress backend if reachable
+    try {
+      await fetch('/api/wp/customers/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: user.email,
+          firstName: data.firstName !== undefined ? data.firstName : user.firstName,
+          lastName: data.lastName !== undefined ? data.lastName : user.lastName,
+          company: data.company !== undefined ? data.company : user.company,
+          phone: data.phone !== undefined ? data.phone : user.phone,
+        }),
+      });
+    } catch (e) {
+      console.warn('Could not sync profile to backend:', e);
+    }
+
     return { success: true };
   };
 

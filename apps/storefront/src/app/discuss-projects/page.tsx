@@ -33,7 +33,7 @@ export default function DiscussProjectsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [refId, setRefId] = useState('');
 
-  // Prefill if logged in
+  // Prefill if logged in or from previous submission
   useEffect(() => {
     if (user) {
       setFormData((prev) => ({
@@ -43,6 +43,20 @@ export default function DiscussProjectsPage() {
         company: prev.company || user.company || '',
         phone: prev.phone || user.phone || '',
       }));
+    } else {
+      try {
+        const cachedStr = localStorage.getItem('orbit_last_submitted_profile');
+        if (cachedStr) {
+          const cached = JSON.parse(cachedStr);
+          setFormData((prev) => ({
+            ...prev,
+            name: prev.name || cached.fullName || '',
+            email: prev.email || cached.email || '',
+            company: prev.company || cached.company || '',
+            phone: prev.phone || cached.phone || '',
+          }));
+        }
+      } catch (e) {}
     }
   }, [user]);
 
@@ -109,9 +123,33 @@ export default function DiscussProjectsPage() {
       if (subRes.referenceId) {
         generatedRef = subRes.referenceId;
       }
+      // Save submitted profile to localStorage for instant cross-tab / portal hydration
+      const nameParts = (formData.name || '').trim().split(' ');
+      const fName = nameParts[0] || 'Trade';
+      const lName = nameParts.slice(1).join(' ') || 'Client';
+
+      try {
+        localStorage.setItem(
+          'orbit_last_submitted_profile',
+          JSON.stringify({
+            fullName: (formData.name || '').trim(),
+            firstName: fName,
+            lastName: lName,
+            company: (formData.company || '').trim(),
+            phone: (formData.phone || '').trim(),
+            email: (formData.email || '').trim(),
+          })
+        );
+      } catch (e) {}
+
       if (!user && password && formData.email) {
         try {
-          await login(formData.email, password);
+          await login(formData.email.trim(), password, {
+            firstName: fName,
+            lastName: lName,
+            company: (formData.company || '').trim(),
+            phone: (formData.phone || '').trim(),
+          });
         } catch (loginErr) {
           console.warn('Auto-login post submission:', loginErr);
         }

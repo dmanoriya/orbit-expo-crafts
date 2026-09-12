@@ -52,36 +52,111 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
   const [profilePhone, setProfilePhone] = useState('');
   const [profileCompany, setProfileCompany] = useState('');
 
-  // Handle URL query parameter ?tab=favorites or ?mode=register or ?bookingId=...
+  // Tab Switcher with URL synchronization and browser history support
+  const handleTabChange = (tab: 'overview' | 'favorites' | 'orders' | 'profile', bookingId?: string) => {
+    setActiveTab(tab);
+    if (typeof window !== 'undefined') {
+      if (window.location.pathname === '/favorites' && tab !== 'favorites') {
+        const target = `/account?tab=${tab}${bookingId ? '&bookingId=' + bookingId : ''}`;
+        router.push(target);
+        return;
+      }
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', tab);
+      if (bookingId) {
+        url.searchParams.set('bookingId', bookingId);
+      } else {
+        url.searchParams.delete('bookingId');
+      }
+      window.history.pushState(null, '', url.pathname + url.search);
+    }
+  };
+
+  // Handle URL query parameter ?tab=... or ?mode=... or ?bookingId=... & popstate
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const params = new URLSearchParams(window.location.search);
-    const tabParam = params.get('tab');
-    if (tabParam === 'favorites' || tabParam === 'orders' || tabParam === 'profile' || tabParam === 'overview') {
-      setActiveTab(tabParam);
-    }
-    const modeParam = params.get('mode');
-    if (modeParam === 'register') {
-      setAuthMode('register');
-    }
-    const bookingParam = params.get('bookingId');
-    if (bookingParam) {
-      const all = getStoredBookings();
-      const match = all.find((b) => b.id === bookingParam || b.invoice?.invoiceNumber === bookingParam);
-      if (match) {
-        setSelectedBooking(match);
-        setActiveTab('orders');
+    const readUrlState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab');
+      if (tabParam === 'favorites' || tabParam === 'orders' || tabParam === 'profile' || tabParam === 'overview') {
+        setActiveTab(tabParam);
+      } else {
+        setActiveTab(initialTab);
       }
-    }
-  }, []);
+      const modeParam = params.get('mode');
+      if (modeParam === 'register') {
+        setAuthMode('register');
+      }
+      const bookingParam = params.get('bookingId');
+      if (bookingParam) {
+        const all = getStoredBookings();
+        const match = all.find((b) => b.id === bookingParam || b.invoice?.invoiceNumber === bookingParam);
+        if (match) {
+          setSelectedBooking(match);
+          setActiveTab('orders');
+        }
+      }
+    };
 
-  // Sync profile form when user logs in
+    readUrlState();
+    window.addEventListener('popstate', readUrlState);
+    return () => window.removeEventListener('popstate', readUrlState);
+  }, [initialTab]);
+
+  // Sync profile form when user logs in with deep fallback & auto-healing
   useEffect(() => {
     if (user) {
-      setProfileFirstName(user.firstName || '');
-      setProfileLastName(user.lastName || '');
-      setProfilePhone(user.phone || '');
-      setProfileCompany(user.company || '');
+      let fName = user.firstName || '';
+      let lName = user.lastName || '';
+      let phone = user.phone || '';
+      let comp = user.company || '';
+
+      // Check fallback cached in localStorage if any field is missing
+      if (!fName || !lName || !comp || !phone) {
+        try {
+          const cachedProfileStr = localStorage.getItem('orbit_last_submitted_profile');
+          if (cachedProfileStr) {
+            const cached = JSON.parse(cachedProfileStr);
+            if (!fName && cached.firstName) fName = cached.firstName;
+            if (!lName && cached.lastName) lName = cached.lastName;
+            if (!comp && cached.company) comp = cached.company;
+            if (!phone && cached.phone) phone = cached.phone;
+          }
+        } catch (e) {}
+
+        if (!fName || !lName || !comp || !phone) {
+          const allBookings = getStoredBookings(user.email);
+          const withClient = allBookings.find((b) => b.clientName || b.phone || b.companyName);
+          if (withClient) {
+            if (!fName && withClient.clientName) {
+              const parts = withClient.clientName.trim().split(/\s+/);
+              fName = parts[0] || '';
+              if (!lName && parts.length > 1) lName = parts.slice(1).join(' ');
+            }
+            if (!comp && withClient.companyName) comp = withClient.companyName;
+            if (!phone && withClient.phone) phone = withClient.phone;
+          }
+        }
+
+        // Auto-heal user profile across auth context and backend if missing data was discovered
+        const hasNewFName = fName && !user.firstName;
+        const hasNewLName = lName && !user.lastName;
+        const hasNewComp = comp && !user.company;
+        const hasNewPhone = phone && !user.phone;
+        if (hasNewFName || hasNewLName || hasNewComp || hasNewPhone) {
+          updateProfile({
+            firstName: fName || user.firstName,
+            lastName: lName || user.lastName,
+            company: comp || user.company,
+            phone: phone || user.phone,
+          });
+        }
+      }
+
+      setProfileFirstName(fName);
+      setProfileLastName(lName);
+      setProfilePhone(phone);
+      setProfileCompany(comp);
     }
   }, [user]);
 
@@ -170,6 +245,19 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
       phone: profilePhone,
       company: profileCompany,
     });
+    try {
+      localStorage.setItem(
+        'orbit_last_submitted_profile',
+        JSON.stringify({
+          fullName: `${profileFirstName} ${profileLastName}`.trim(),
+          firstName: profileFirstName,
+          lastName: profileLastName,
+          company: profileCompany,
+          phone: profilePhone,
+          email: user?.email || '',
+        })
+      );
+    } catch (e) {}
     setProfileSuccess(true);
     setTimeout(() => setProfileSuccess(false), 2500);
   };
@@ -435,7 +523,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
               <h1 className="disp" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', fontWeight: 400, color: '#111111', margin: 0 }}>
-                Welcome, {user.firstName || user.username}
+                Welcome, {profileFirstName || user.firstName || user.username}
               </h1>
               <span
                 style={{
@@ -453,7 +541,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
               </span>
             </div>
             <p style={{ fontSize: 14.5, color: '#666666', margin: 0 }}>
-              {user.company ? `${user.company} • ` : ''}{user.email}
+              {(profileCompany || user.company) ? `${profileCompany || user.company} • ` : ''}{user.email}
             </p>
           </div>
 
@@ -496,7 +584,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
         <div style={{ display: 'flex', gap: 8, borderBottom: '1px solid var(--line)', marginBottom: 32, overflowX: 'auto' }}>
           <button
             type="button"
-            onClick={() => setActiveTab('overview')}
+            onClick={() => handleTabChange('overview')}
             style={{
               padding: '12px 20px',
               background: 'transparent',
@@ -516,7 +604,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
 
           <button
             type="button"
-            onClick={() => setActiveTab('favorites')}
+            onClick={() => handleTabChange('favorites')}
             style={{
               padding: '12px 20px',
               background: 'transparent',
@@ -551,7 +639,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
 
           <button
             type="button"
-            onClick={() => setActiveTab('orders')}
+            onClick={() => handleTabChange('orders')}
             style={{
               padding: '12px 20px',
               background: 'transparent',
@@ -588,7 +676,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
 
           <button
             type="button"
-            onClick={() => setActiveTab('profile')}
+            onClick={() => handleTabChange('profile')}
             style={{
               padding: '12px 20px',
               background: 'transparent',
@@ -621,7 +709,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                 </div>
                 <button
                   type="button"
-                  onClick={() => setActiveTab('favorites')}
+                  onClick={() => handleTabChange('favorites')}
                   style={{ background: 'none', border: 'none', color: 'var(--brand)', padding: 0, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
                 >
                   View Favourites →
@@ -637,7 +725,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                 </div>
                 <button
                   type="button"
-                  onClick={() => setActiveTab('orders')}
+                  onClick={() => handleTabChange('orders')}
                   style={{ background: 'none', border: 'none', color: 'var(--brand)', padding: 0, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
                 >
                   View Bookings →
@@ -713,7 +801,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                   </div>
                   <button
                     type="button"
-                    onClick={() => setActiveTab('orders')}
+                    onClick={() => handleTabChange('orders')}
                     style={{ background: 'none', border: 'none', color: 'var(--brand)', fontSize: 13.5, fontWeight: 600, cursor: 'pointer' }}
                   >
                     View All ({bookings.length}) →
@@ -763,8 +851,8 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                           type="button"
                           onClick={() => {
                             setSelectedBooking(bk);
-                            setActiveTab('orders');
                             setInspectorTab('timeline');
+                            handleTabChange('orders', bk.id);
                           }}
                           style={{
                             background: '#111111',
@@ -783,8 +871,8 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                           type="button"
                           onClick={() => {
                             setSelectedBooking(bk);
-                            setActiveTab('orders');
                             setInspectorTab('conversation');
+                            handleTabChange('orders', bk.id);
                           }}
                           style={{
                             background: '#FFFFFF',

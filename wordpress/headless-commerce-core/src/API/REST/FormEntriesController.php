@@ -99,12 +99,55 @@ class FormEntriesController extends RestController {
 					) );
 				}
 			}
+		}
 
-			if ( $user_id && ! empty( $params['company'] ) ) {
+		// Ensure customer metadata (name, company, phone) is synchronized whenever user is linked
+		if ( $user_id ) {
+			$name_parts = explode( ' ', trim( $full_name ), 2 );
+			$f_name     = $name_parts[0] ?? '';
+			$l_name     = $name_parts[1] ?? '';
+
+			if ( ! empty( $f_name ) && 'Trade' !== $f_name ) {
+				update_user_meta( $user_id, 'first_name', $f_name );
+				update_user_meta( $user_id, 'billing_first_name', $f_name );
+				if ( ! empty( $l_name ) ) {
+					update_user_meta( $user_id, 'last_name', $l_name );
+					update_user_meta( $user_id, 'billing_last_name', $l_name );
+				}
+				wp_update_user( array(
+					'ID'           => $user_id,
+					'display_name' => trim( $full_name ),
+					'first_name'   => $f_name,
+					'last_name'    => $l_name,
+				) );
+			}
+
+			if ( ! empty( $params['company'] ) ) {
 				update_user_meta( $user_id, 'billing_company', sanitize_text_field( $params['company'] ) );
 			}
-			if ( $user_id && ! empty( $phone ) ) {
+			if ( ! empty( $phone ) ) {
 				update_user_meta( $user_id, 'billing_phone', sanitize_text_field( $phone ) );
+			}
+
+			if ( class_exists( 'WC_Customer' ) ) {
+				try {
+					$wc_cust = new \WC_Customer( $user_id );
+					if ( ! empty( $f_name ) && 'Trade' !== $f_name ) {
+						$wc_cust->set_first_name( $f_name );
+						$wc_cust->set_billing_first_name( $f_name );
+						if ( ! empty( $l_name ) ) {
+							$wc_cust->set_last_name( $l_name );
+							$wc_cust->set_billing_last_name( $l_name );
+						}
+					}
+					if ( ! empty( $params['company'] ) ) {
+						$wc_cust->set_billing_company( sanitize_text_field( $params['company'] ) );
+					}
+					if ( ! empty( $phone ) ) {
+						$wc_cust->set_billing_phone( sanitize_text_field( $phone ) );
+					}
+					$wc_cust->save();
+				} catch ( \Exception $e ) {}
 			}
 		}
 
@@ -145,6 +188,14 @@ class FormEntriesController extends RestController {
 			'reference_id'   => $saved['reference_id'],
 			'user_id'        => $params['user_id'],
 			'account_status' => $params['account_status'],
+			'user'           => $user_id ? array(
+				'id'        => $user_id,
+				'email'     => $email,
+				'firstName' => $f_name ?? '',
+				'lastName'  => $l_name ?? '',
+				'company'   => $params['company'] ?? '',
+				'phone'     => $phone,
+			) : null,
 		) );
 	}
 

@@ -44,7 +44,7 @@ export const CheckoutClientView: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedBooking, setSubmittedBooking] = useState<BookingRecord | null>(null);
 
-  // Auto-fill from authenticated user profile
+  // Auto-fill from authenticated user profile or fallback
   useEffect(() => {
     if (user) {
       if (user.company) setCompanyName(user.company);
@@ -53,6 +53,17 @@ export const CheckoutClientView: React.FC = () => {
       }
       if (user.email) setEmail(user.email);
       if (user.phone) setPhone(user.phone);
+    } else {
+      try {
+        const cachedStr = localStorage.getItem('orbit_last_submitted_profile');
+        if (cachedStr) {
+          const cached = JSON.parse(cachedStr);
+          if (cached.company) setCompanyName(cached.company);
+          if (cached.fullName) setClientName(cached.fullName);
+          if (cached.email) setEmail(cached.email);
+          if (cached.phone) setPhone(cached.phone);
+        }
+      } catch (e) {}
     }
   }, [user]);
 
@@ -255,6 +266,25 @@ export const CheckoutClientView: React.FC = () => {
     } catch (wpErr) {
       console.warn('Error recording submission:', wpErr);
     }
+
+    // Save submitted profile to localStorage for instant cross-tab / portal hydration
+    const nameParts = (clientName || '').trim().split(' ');
+    const fName = nameParts[0] || 'Trade';
+    const lName = nameParts.slice(1).join(' ') || 'Client';
+
+    try {
+      localStorage.setItem(
+        'orbit_last_submitted_profile',
+        JSON.stringify({
+          fullName: (clientName || '').trim(),
+          firstName: fName,
+          lastName: lName,
+          company: (companyName || '').trim(),
+          phone: (phone || '').trim(),
+          email: (email || '').trim(),
+        })
+      );
+    } catch (e) {}
 
     saveBooking(newBooking);
     clearEnquiry();

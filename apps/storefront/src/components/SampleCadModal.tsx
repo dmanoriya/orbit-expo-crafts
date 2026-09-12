@@ -77,15 +77,51 @@ export default function SampleCadModal({
   const [loginError, setLoginError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  // Auto-fill from user profile
+  // Helper to parse phone number and country code cleanly
+  const parsePhoneAndCountry = (rawPhone: string) => {
+    if (!rawPhone) return { country: COUNTRIES[0], digits: '' };
+    const trimmed = rawPhone.trim();
+    const matchedCountry = COUNTRIES.find((c) => trimmed.startsWith(c.code));
+    if (matchedCountry) {
+      const localDigits = trimmed.slice(matchedCountry.code.length).replace(/\D/g, '');
+      return { country: matchedCountry, digits: localDigits };
+    }
+    const digits = trimmed.replace(/\D/g, '');
+    if (digits.length > 10 && digits.startsWith('91')) {
+      return { country: COUNTRIES[0], digits: digits.slice(2) };
+    }
+    return { country: COUNTRIES[0], digits };
+  };
+
+  // Auto-fill from user profile or last submitted profile
   useEffect(() => {
     if (user) {
-      if (!fullName) setFullName(`${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username || '');
+      const name = `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username || '';
+      if (!fullName && name) setFullName(name);
       if (!email && user.email) setEmail(user.email);
       if (!company && user.company) setCompany(user.company);
-      if (!phone && user.phone) setPhone(user.phone);
+      if (!phone && user.phone) {
+        const { country, digits } = parsePhoneAndCountry(user.phone);
+        if (country) setSelectedCountry(country);
+        setPhone(digits);
+      }
+    } else {
+      try {
+        const cachedStr = localStorage.getItem('orbit_last_submitted_profile');
+        if (cachedStr) {
+          const cached = JSON.parse(cachedStr);
+          if (!fullName && cached.fullName) setFullName(cached.fullName);
+          if (!email && cached.email) setEmail(cached.email);
+          if (!company && cached.company) setCompany(cached.company);
+          if (!phone && cached.phone) {
+            const { country, digits } = parsePhoneAndCountry(cached.phone);
+            if (country) setSelectedCountry(country);
+            setPhone(digits);
+          }
+        }
+      } catch (e) {}
     }
-  }, [user]);
+  }, [user, isOpen]);
 
   // Errors & Submission
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -234,10 +270,35 @@ export default function SampleCadModal({
       if (subRes.referenceId) {
         generatedRef = subRes.referenceId;
       }
-      // If newly registered, automatically login to synchronize session
+      // Save submitted profile to localStorage for instant cross-tab / portal hydration
+      const nameParts = fullName.trim().split(' ');
+      const fName = nameParts[0] || 'Trade';
+      const lName = nameParts.slice(1).join(' ') || 'Client';
+      const formattedPhone = `${safeCountry.code} ${phone}`.trim();
+
+      try {
+        localStorage.setItem(
+          'orbit_last_submitted_profile',
+          JSON.stringify({
+            fullName: fullName.trim(),
+            firstName: fName,
+            lastName: lName,
+            company: company.trim(),
+            phone: formattedPhone,
+            email: email.trim(),
+          })
+        );
+      } catch (e) {}
+
+      // If newly registered, automatically login to synchronize session with profile fallback
       if (!user && password && email) {
         try {
-          await login(email, password);
+          await login(email.trim(), password, {
+            firstName: fName,
+            lastName: lName,
+            company: company.trim(),
+            phone: formattedPhone,
+          });
         } catch (loginErr) {
           console.warn('Auto-login post submission:', loginErr);
         }
