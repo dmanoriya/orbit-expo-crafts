@@ -95,47 +95,73 @@ export default function HomeClientView({
   const track1Points = parsePoints(hpData.track1_points);
   const track2Points = parsePoints(hpData.track2_points);
 
-  // Fallback 10 categories matching prototype
+  // Fallback 10 categories matching prototype & Image 2 (5 cols x 2 rows)
   const fallbackCategories = [
-    { id: 'seating', slug: 'seating', name: 'Seating & Chairs', count: 42, desc: 'Dining, lounge & accent chairs', image: '/categories/seating.jpg' },
-    { id: 'tables', slug: 'tables', name: 'Tables & Dining', count: 28, desc: 'Dining, coffee & side tables', image: '/categories/tables.jpg' },
-    { id: 'sofas', slug: 'sofas', name: 'Sofas & Lounges', count: 18, desc: 'Contract sofas & banquettes', image: '/categories/sofas.jpg' },
-    { id: 'beds', slug: 'beds', name: 'Beds & Nightstands', count: 15, desc: 'Headboards, platforms & nightstands', image: '/categories/beds.jpg' },
-    { id: 'storage', slug: 'storage', name: 'Credenzas & Storage', count: 22, desc: 'Sideboards, dressers & wardrobes', image: '/categories/storage.jpg' },
-    { id: 'outdoor', slug: 'outdoor', name: 'Outdoor & Patio', count: 12, desc: 'Weather-resistant teak & metal', image: '/categories/outdoor.jpg' },
-    { id: 'lighting', slug: 'lighting', name: 'Lighting', count: 16, desc: 'Pendants, floor & table lamps', image: '/categories/lighting.jpg' },
-    { id: 'decor', slug: 'decor', name: 'Decor & Objects', count: 25, desc: 'Artifacts, mirrors & accessories', image: '/categories/decor.jpg' },
-    { id: 'benches', slug: 'benches', name: 'Benches & Ottomans', count: 10, desc: 'Custom hallway & footrest benches', image: '/categories/benches.jpg' },
-    { id: 'fitout', slug: 'fitout', name: 'Fit-out & Counters', count: 14, desc: 'Bar stools & counter units', image: '/categories/fitout.jpg' },
+    { id: 'furniture', slug: 'furniture', name: 'Furniture', image: '/categories/every-room/furniture.webp' },
+    { id: 'home-decor', slug: 'home-decor', name: 'Home Décor', image: '/categories/every-room/home-decor.webp' },
+    { id: 'wall-decor-and-mirrors', slug: 'wall-decor-and-mirrors', name: 'Wall Décor & Mirrors', image: '/categories/every-room/wall-decor-mirrors.webp' },
+    { id: 'lighting', slug: 'lighting', name: 'Lighting', image: '/categories/every-room/lighting.webp' },
+    { id: 'rugs-and-floor-coverings', slug: 'rugs-and-floor-coverings', name: 'Rugs & Floor Coverings', image: '/categories/every-room/rugs-floor-coverings.webp' },
+    { id: 'storage-and-organization', slug: 'storage-and-organization', name: 'Storage & Organization', image: '/categories/every-room/storage-organization.webp' },
+    { id: 'kitchen-and-tabletop', slug: 'kitchen-and-tabletop', name: 'Kitchen & Tabletop', image: '/categories/every-room/kitchen-tabletop.webp' },
+    { id: 'outdoor-and-garden', slug: 'outdoor-and-garden', name: 'Outdoor & Garden', image: '/categories/every-room/outdoor-garden.webp' },
+    { id: 'kids-and-baby-home', slug: 'kids-and-baby-home', name: 'Kids & Baby Home', image: '/categories/every-room/kids-baby-home.webp' },
+    { id: 'pet-home', slug: 'pet-home', name: 'Pet Home', image: '/categories/every-room/pet-home.webp' },
   ];
 
   const FALLBACK_DEPT_IMAGES: Record<string, string> = {
-    'furniture': '/categories/tables.jpg',
-    'home-decor': '/categories/decor.jpg',
-    'wall-decor-and-mirrors': '/categories/decor.jpg',
-    'lighting': '/categories/lighting.jpg',
-    'rugs-and-floor-coverings': '/categories/decor.jpg',
-    'storage-and-organization': '/categories/storage.jpg',
-    'kitchen-and-tabletop': '/categories/tables.jpg',
-    'outdoor-and-garden': '/categories/outdoor.jpg',
-    'kids-and-baby-home': '/categories/beds.jpg',
-    'pet-home': '/categories/benches.jpg',
-    'seating': '/categories/seating.jpg',
-    'tables': '/categories/tables.jpg',
-    'sofas': '/categories/sofas.jpg',
-    'beds': '/categories/beds.jpg',
-    'storage': '/categories/storage.jpg',
-    'outdoor': '/categories/outdoor.jpg',
-    'decor': '/categories/decor.jpg',
-    'benches': '/categories/benches.jpg',
-    'fitout': '/categories/fitout.jpg',
+    'furniture': '/categories/every-room/furniture.webp',
+    'home-decor': '/categories/every-room/home-decor.webp',
+    'wall-decor-and-mirrors': '/categories/every-room/wall-decor-mirrors.webp',
+    'lighting': '/categories/every-room/lighting.webp',
+    'rugs-and-floor-coverings': '/categories/every-room/rugs-floor-coverings.webp',
+    'storage-and-organization': '/categories/every-room/storage-organization.webp',
+    'kitchen-and-tabletop': '/categories/every-room/kitchen-tabletop.webp',
+    'outdoor-and-garden': '/categories/every-room/outdoor-garden.webp',
+    'kids-and-baby-home': '/categories/every-room/kids-baby-home.webp',
+    'pet-home': '/categories/every-room/pet-home.webp',
+  };
+
+  const DEPT_ORDER = [
+    'furniture',
+    'home-decor',
+    'wall-decor-and-mirrors',
+    'lighting',
+    'rugs-and-floor-coverings',
+    'storage-and-organization',
+    'kitchen-and-tabletop',
+    'outdoor-and-garden',
+    'kids-and-baby-home',
+    'pet-home',
+  ];
+
+  const DEPT_DISPLAY_NAMES: Record<string, string> = {
+    'furniture': 'Furniture',
+    'home-decor': 'Home Décor',
+    'wall-decor-and-mirrors': 'Wall Décor & Mirrors',
+    'lighting': 'Lighting',
+    'rugs-and-floor-coverings': 'Rugs & Floor Coverings',
+    'storage-and-organization': 'Storage & Organization',
+    'kitchen-and-tabletop': 'Kitchen & Tabletop',
+    'outdoor-and-garden': 'Outdoor & Garden',
+    'kids-and-baby-home': 'Kids & Baby Home',
+    'pet-home': 'Pet Home',
   };
 
   const displayCategories = React.useMemo(() => {
     if (categories && categories.length > 0) {
-      const mainDepts = categories.filter((c) => !c.parent || c.parent === 0 || c.level === 0);
+      const mainDepts = categories.filter(
+        (c) => (!c.parent || c.parent === 0 || c.level === 0) && c.slug !== 'uncategorized'
+      );
       if (mainDepts.length > 0) {
-        return mainDepts;
+        return [...mainDepts].sort((a, b) => {
+          const idxA = DEPT_ORDER.indexOf(a.slug);
+          const idxB = DEPT_ORDER.indexOf(b.slug);
+          if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+          if (idxA !== -1) return -1;
+          if (idxB !== -1) return 1;
+          return a.name.localeCompare(b.name);
+        });
       }
     }
     return fallbackCategories;
@@ -382,19 +408,19 @@ export default function HomeClientView({
               const catImg =
                 c.image && c.image.trim() !== ''
                   ? c.image
-                  : FALLBACK_DEPT_IMAGES[catSlug] || `/categories/${c.id}.jpg` || '/categories/tables.jpg';
+                  : FALLBACK_DEPT_IMAGES[catSlug] || `/categories/every-room/${catSlug}.webp` || '/categories/every-room/furniture.webp';
               const cardHref = isKnownDepartment(catSlug) ? `/${catSlug}` : `/collections/${catSlug}`;
+              const displayName = DEPT_DISPLAY_NAMES[catSlug] || c.name;
 
               return (
                 <Link href={cardHref} key={c.id || catSlug} className="cat-card">
                   <div className="cat-card-art">
-                    <img src={catImg} alt={c.name} loading="lazy" />
+                    <img src={catImg} alt={displayName} loading="lazy" />
                   </div>
                   <div className="info">
-                    <h3>{c.name}</h3>
-                    <p>{(c as any).description || (c as any).desc || `${c.count || 20}+ baseline specs`}</p>
+                    <h3>{displayName}</h3>
                     <span className="link-arrow">
-                      Explore range <span className="arrow-icon">→</span>
+                      Explore collection <span className="arrow-icon">→</span>
                     </span>
                   </div>
                 </Link>
