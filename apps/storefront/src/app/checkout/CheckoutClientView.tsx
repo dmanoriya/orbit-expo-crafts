@@ -390,11 +390,11 @@ export const CheckoutClientView: React.FC = () => {
         </div>
 
         <form onSubmit={handleSubmitBooking}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 36, alignItems: 'start' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 36, alignItems: 'start' }}>
             {/* LEFT COLUMN: FORM DETAILS */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
               {/* 1. CLIENT & PROJECT DETAILS */}
-              <div style={{ background: '#FFFFFF', border: '1px solid var(--line)', borderRadius: 'var(--r-md)', padding: '28px', boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ background: '#FFFFFF', border: '1px solid var(--line)', borderRadius: 'var(--r-md)', padding: 'clamp(18px, 4vw, 28px)', boxShadow: 'var(--shadow-sm)' }}>
                 <h3 style={{ fontSize: 18, fontWeight: 600, color: '#111111', margin: '0 0 18px', display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span>1. Project &amp; Client Information</span>
                 </h3>
@@ -414,7 +414,7 @@ export const CheckoutClientView: React.FC = () => {
                     />
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>
                     <div>
                       <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6, color: '#333333' }}>
                         Studio / Company Name
@@ -441,7 +441,7 @@ export const CheckoutClientView: React.FC = () => {
                     </div>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>
                     <div>
                       <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6, color: '#333333' }}>
                         Contact Person Name *
@@ -486,24 +486,53 @@ export const CheckoutClientView: React.FC = () => {
 
                   {/* TRADE PORTAL ACCOUNT & AUTHENTICATION SECTION */}
                   {user ? (
-                    <div style={{ background: '#E8F5E9', border: '1px solid #A5D6A7', borderRadius: 6, padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, marginTop: 6 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#1B5E20' }}>
-                        <span style={{ fontSize: 18 }}>👤</span>
-                        <div>
-                          <strong>{user.firstName || user.username} {user.lastName || ''}</strong> ({user.email})
-                          <div style={{ fontSize: 11.5, color: '#2E7D32' }}>Commercial booking will be linked to your portal account.</div>
-                        </div>
+                    <div
+                      style={{
+                        background: '#F0F7F4',
+                        border: '1px solid #C2E0D4',
+                        borderRadius: 8,
+                        padding: '12px 16px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        gap: 8,
+                        marginTop: 4,
+                      }}
+                    >
+                      <div style={{ fontSize: 13, color: '#1B5E20', display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span>👤</span>
+                        <span>
+                          Signed in as <strong>{user.firstName || user.username} {user.lastName || ''}</strong> ({user.email})
+                        </span>
                       </div>
-                      <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', background: '#2E7D32', color: '#FFF', padding: '4px 10px', borderRadius: 4 }}>
-                        Account Active
+                      <span style={{ fontSize: 11, fontWeight: 700, color: '#2E7D32', background: '#DCEFE6', padding: '3px 8px', borderRadius: 4 }}>
+                        ✓ Account Linked
                       </span>
                     </div>
                   ) : (
-                    <div style={{ background: '#F8FAFC', border: '1.5px solid #CBD5E1', borderRadius: 8, padding: '18px 20px', marginTop: 8 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, flexWrap: 'wrap', gap: 8 }}>
-                        <span style={{ fontSize: 13, fontWeight: 700, color: '#1E293B', display: 'flex', alignItems: 'center', gap: 6 }}>
-                          🔒 Trade Portal Account Setup (Required)
-                        </span>
+                    <div
+                      style={{
+                        background: '#F9F8F5',
+                        border: '1px solid #E5E0D8',
+                        borderRadius: 8,
+                        padding: '16px 18px',
+                        marginTop: 8,
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          marginBottom: 12,
+                          flexWrap: 'wrap',
+                          gap: 8,
+                        }}
+                      >
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#111111' }}>
+                          {showInlineLogin ? 'Sign In to Trade Account' : 'Trade Account Setup'}
+                        </div>
                         <button
                           type="button"
                           onClick={() => {
@@ -511,17 +540,20 @@ export const CheckoutClientView: React.FC = () => {
                             setPasswordError('');
                             setLoginError('');
                           }}
-                          style={{ background: 'none', border: 'none', color: '#0E5C63', fontSize: 12, fontWeight: 600, textDecoration: 'underline', cursor: 'pointer', padding: 0 }}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: '#0E5C63',
+                            fontSize: 12,
+                            fontWeight: 600,
+                            textDecoration: 'underline',
+                            cursor: 'pointer',
+                            padding: 0,
+                          }}
                         >
-                          {showInlineLogin ? '← Create new account instead' : 'Already have an account? Sign In'}
+                          {showInlineLogin ? '← Set password instead' : 'Already registered? Sign In'}
                         </button>
                       </div>
-
-                      <p style={{ fontSize: 12, color: '#64748B', margin: '0 0 14px', lineHeight: 1.5 }}>
-                        {showInlineLogin
-                          ? 'Sign in to link this order inquiry directly to your registered trade account.'
-                          : 'Set a password to create your Trade Portal Account. You will track factory production milestones, message specifiers, and download your formal Proforma Invoice.'}
-                      </p>
 
                       {showInlineLogin ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -530,29 +562,35 @@ export const CheckoutClientView: React.FC = () => {
                               {loginError}
                             </div>
                           )}
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                          <div
+                            style={{
+                              display: 'grid',
+                              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                              gap: 12,
+                            }}
+                          >
                             <div>
-                              <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#475569', marginBottom: 4 }}>
-                                Username or Email
+                              <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
+                                Email or Username *
                               </label>
                               <input
                                 type="text"
                                 placeholder="your@email.com"
                                 value={loginEmail}
                                 onChange={(e) => setLoginEmail(e.target.value)}
-                                style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #CBD5E1', fontSize: 13 }}
+                                style={{ width: '100%', padding: '9px 12px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13.5, background: '#FFFFFF' }}
                               />
                             </div>
                             <div>
-                              <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#475569', marginBottom: 4 }}>
-                                Password
+                              <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
+                                Password *
                               </label>
                               <input
                                 type="password"
                                 placeholder="••••••••"
                                 value={loginPassword}
                                 onChange={(e) => setLoginPassword(e.target.value)}
-                                style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #CBD5E1', fontSize: 13 }}
+                                style={{ width: '100%', padding: '9px 12px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13.5, background: '#FFFFFF' }}
                               />
                             </div>
                           </div>
@@ -561,9 +599,18 @@ export const CheckoutClientView: React.FC = () => {
                               type="button"
                               disabled={isLoggingIn}
                               onClick={handleInlineLogin}
-                              style={{ background: '#0E5C63', color: '#FFFFFF', border: 'none', borderRadius: 6, padding: '8px 16px', fontSize: 12.5, fontWeight: 600, cursor: isLoggingIn ? 'not-allowed' : 'pointer' }}
+                              style={{
+                                background: '#111111',
+                                color: '#FFFFFF',
+                                border: 'none',
+                                borderRadius: 6,
+                                padding: '9px 18px',
+                                fontSize: 13,
+                                fontWeight: 600,
+                                cursor: isLoggingIn ? 'not-allowed' : 'pointer',
+                              }}
                             >
-                              {isLoggingIn ? 'Signing In...' : 'Sign In to Trade Account →'}
+                              {isLoggingIn ? 'Signing In...' : 'Sign In →'}
                             </button>
                           </div>
                         </div>
@@ -574,33 +621,39 @@ export const CheckoutClientView: React.FC = () => {
                               {passwordError}
                             </div>
                           )}
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                          <div
+                            style={{
+                              display: 'grid',
+                              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                              gap: 12,
+                            }}
+                          >
                             <div>
-                              <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#475569', marginBottom: 4 }}>
-                                Account Password * (Min 6 chars)
+                              <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
+                                Account Password *
                               </label>
                               <input
                                 type="password"
                                 required
                                 minLength={6}
-                                placeholder="••••••••"
+                                placeholder="Min 6 characters"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #CBD5E1', fontSize: 13 }}
+                                style={{ width: '100%', padding: '9px 12px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13.5, background: '#FFFFFF' }}
                               />
                             </div>
                             <div>
-                              <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#475569', marginBottom: 4 }}>
+                              <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
                                 Confirm Password *
                               </label>
                               <input
                                 type="password"
                                 required
                                 minLength={6}
-                                placeholder="••••••••"
+                                placeholder="Re-enter password"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                style={{ width: '100%', padding: '8px 12px', borderRadius: 6, border: '1px solid #CBD5E1', fontSize: 13 }}
+                                style={{ width: '100%', padding: '9px 12px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13.5, background: '#FFFFFF' }}
                               />
                             </div>
                           </div>
@@ -612,7 +665,7 @@ export const CheckoutClientView: React.FC = () => {
               </div>
 
               {/* 2. SHIPPING & SITE LOGISTICS */}
-              <div style={{ background: '#FFFFFF', border: '1px solid var(--line)', borderRadius: 'var(--r-md)', padding: '28px', boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ background: '#FFFFFF', border: '1px solid var(--line)', borderRadius: 'var(--r-md)', padding: 'clamp(18px, 4vw, 28px)', boxShadow: 'var(--shadow-sm)' }}>
                 <h3 style={{ fontSize: 18, fontWeight: 600, color: '#111111', margin: '0 0 18px' }}>
                   2. Consignee Project Site &amp; Freight Destination
                 </h3>
@@ -632,7 +685,7 @@ export const CheckoutClientView: React.FC = () => {
                     />
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 14 }}>
                     <div>
                       <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6, color: '#333333' }}>
                         City *
@@ -673,7 +726,7 @@ export const CheckoutClientView: React.FC = () => {
                     </div>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>
                     <div>
                       <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6, color: '#333333' }}>
                         Country *
@@ -716,7 +769,7 @@ export const CheckoutClientView: React.FC = () => {
               </div>
 
               {/* 3. FABRICATION & SPECIAL NOTES */}
-              <div style={{ background: '#FFFFFF', border: '1px solid var(--line)', borderRadius: 'var(--r-md)', padding: '28px', boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ background: '#FFFFFF', border: '1px solid var(--line)', borderRadius: 'var(--r-md)', padding: 'clamp(18px, 4vw, 28px)', boxShadow: 'var(--shadow-sm)' }}>
                 <h3 style={{ fontSize: 18, fontWeight: 600, color: '#111111', margin: '0 0 14px' }}>
                   3. Special Fabrication &amp; Engineering Notes
                 </h3>
@@ -731,7 +784,7 @@ export const CheckoutClientView: React.FC = () => {
             </div>
 
             {/* RIGHT COLUMN: BOOKING ORDER SUMMARY & TERMS */}
-            <div style={{ background: '#FFFFFF', border: '1px solid var(--line)', borderRadius: 'var(--r-md)', padding: 28, boxShadow: 'var(--shadow-sm)', position: 'sticky', top: 90 }}>
+            <div style={{ background: '#FFFFFF', border: '1px solid var(--line)', borderRadius: 'var(--r-md)', padding: 'clamp(18px, 4vw, 28px)', boxShadow: 'var(--shadow-sm)', position: 'sticky', top: 90 }}>
               <span className="mono" style={{ fontSize: 11, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--brand)', display: 'block', marginBottom: 6, fontWeight: 700 }}>
                 SUMMARY &bull; {enquiry.length} SPECIFICATIONS
               </span>
