@@ -31,6 +31,39 @@ const NAV_CATEGORIES: NavCategory[] = [
   { name: 'Kids & Pet Home', slug: 'kids-and-pet-home', hasSubmenu: true },
 ];
 
+interface DrillStep {
+  level: 0 | 1 | 2 | 3;
+  title: string;
+  deptName?: string;
+  deptSlug?: string;
+  deptKey?: string;
+  l1Name?: string;
+  l1Slug?: string;
+  l2Name?: string;
+  l2Slug?: string;
+}
+
+const ROOT_STEP: DrillStep = { level: 0, title: 'Menu' };
+
+interface MobileDept {
+  name: string;
+  slug: string;
+  deptKey: string;
+}
+
+const MOBILE_DEPARTMENTS: MobileDept[] = [
+  { name: 'Furniture', slug: 'furniture', deptKey: 'Furniture' },
+  { name: 'Home Decor', slug: 'home-decor', deptKey: 'Home Decor' },
+  { name: 'Wall Decor & Mirrors', slug: 'wall-decor-and-mirrors', deptKey: 'Wall Decor & Mirrors' },
+  { name: 'Lighting', slug: 'lighting', deptKey: 'Lighting' },
+  { name: 'Rugs & Floor Coverings', slug: 'rugs-and-floor-coverings', deptKey: 'Rugs & Floor Coverings' },
+  { name: 'Storage & Organization', slug: 'storage-and-organization', deptKey: 'Storage & Organization' },
+  { name: 'Kitchen & Tabletop', slug: 'kitchen-and-tabletop', deptKey: 'Kitchen & Tabletop' },
+  { name: 'Outdoor & Garden', slug: 'outdoor-and-garden', deptKey: 'Outdoor & Garden' },
+  { name: 'Kids & Baby Home', slug: 'kids-and-baby-home', deptKey: 'Kids & Baby Home' },
+  { name: 'Pet Home', slug: 'pet-home', deptKey: 'Pet Home' },
+];
+
 export const Header: React.FC = () => {
   const pathname = usePathname();
   const { enquiry, openDrawer } = useEnquiry();
@@ -40,7 +73,72 @@ export const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [openMobSec, setOpenMobSec] = useState<string | null>(null);
+  const [drillStack, setDrillStack] = useState<DrillStep[]>([ROOT_STEP]);
+  const currentStep = drillStack[drillStack.length - 1] || ROOT_STEP;
+
+  const closeMobileDrawer = () => {
+    setIsMobileOpen(false);
+    setDrillStack([ROOT_STEP]);
+  };
+
+  const handleGoBack = () => {
+    if (drillStack.length > 1) {
+      setDrillStack((prev) => prev.slice(0, -1));
+    }
+  };
+
+  const handleJumpToLevel = (stepIndex: number) => {
+    if (stepIndex >= 0 && stepIndex < drillStack.length) {
+      setDrillStack((prev) => prev.slice(0, stepIndex + 1));
+    }
+  };
+
+  const handleOpenDept = (deptName: string, deptSlug: string, deptKey: string) => {
+    setDrillStack((prev) => [
+      ...prev,
+      {
+        level: 1,
+        title: deptName,
+        deptName,
+        deptSlug,
+        deptKey,
+      },
+    ]);
+  };
+
+  const handleOpenL1 = (l1Name: string, l1Slug: string) => {
+    if (!currentStep.deptKey || !currentStep.deptSlug) return;
+    setDrillStack((prev) => [
+      ...prev,
+      {
+        level: 2,
+        title: l1Name,
+        deptName: currentStep.deptName,
+        deptSlug: currentStep.deptSlug,
+        deptKey: currentStep.deptKey,
+        l1Name,
+        l1Slug,
+      },
+    ]);
+  };
+
+  const handleOpenL2 = (l2Name: string, l2Slug: string) => {
+    if (!currentStep.deptKey || !currentStep.deptSlug || !currentStep.l1Name || !currentStep.l1Slug) return;
+    setDrillStack((prev) => [
+      ...prev,
+      {
+        level: 3,
+        title: l2Name,
+        deptName: currentStep.deptName,
+        deptSlug: currentStep.deptSlug,
+        deptKey: currentStep.deptKey,
+        l1Name: currentStep.l1Name,
+        l1Slug: currentStep.l1Slug,
+        l2Name,
+        l2Slug,
+      },
+    ]);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,7 +162,7 @@ export const Header: React.FC = () => {
 
   // Close mobile drawer on route change
   useEffect(() => {
-    setIsMobileOpen(false);
+    closeMobileDrawer();
   }, [pathname]);
 
   // Lock body scroll when mobile drawer is open
@@ -82,7 +180,7 @@ export const Header: React.FC = () => {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isMobileOpen) {
-        setIsMobileOpen(false);
+        closeMobileDrawer();
       }
     };
     window.addEventListener('keydown', handleEscape);
@@ -386,7 +484,7 @@ export const Header: React.FC = () => {
         <div>
           <div
             className={`mobile-menu-scrim ${isMobileOpen ? 'open' : ''}`}
-            onClick={() => setIsMobileOpen(false)}
+            onClick={closeMobileDrawer}
             aria-hidden={!isMobileOpen}
           />
 
@@ -396,14 +494,35 @@ export const Header: React.FC = () => {
             aria-hidden={!isMobileOpen}
           >
             {/* DRAWER TOP HEADER */}
-            <div className="mobile-drawer-header">
-              <Link href="/" onClick={() => setIsMobileOpen(false)} aria-label="Orbit Expo Crafts Home" className="mobile-drawer-logo">
-                <img src="/logo.webp" alt="Orbit Expo Crafts" style={{ height: 46, width: 'auto', objectFit: 'contain' }} />
-              </Link>
+            <div className={`mobile-drawer-header ${currentStep.level > 0 ? 'drill-header' : ''}`}>
+              {currentStep.level === 0 ? (
+                <Link href="/" onClick={closeMobileDrawer} aria-label="Orbit Expo Crafts Home" className="mobile-drawer-logo">
+                  <img src="/logo.webp" alt="Orbit Expo Crafts" style={{ height: 46, width: 'auto', objectFit: 'contain' }} />
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  className="mobile-drawer-back-btn"
+                  onClick={handleGoBack}
+                  aria-label="Go back to previous level"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                  <span>Back</span>
+                </button>
+              )}
+
+              {currentStep.level > 0 && (
+                <div className="mobile-drawer-title-label" title={currentStep.title}>
+                  {currentStep.title}
+                </div>
+              )}
+
               <button
                 type="button"
                 className="mobile-drawer-close-btn"
-                onClick={() => setIsMobileOpen(false)}
+                onClick={closeMobileDrawer}
                 aria-label="Close Menu"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -412,215 +531,318 @@ export const Header: React.FC = () => {
               </button>
             </div>
 
+            {/* BREADCRUMB TRAIL WHEN DRILLED DOWN */}
+            {currentStep.level > 0 && (
+              <div className="mobile-drill-breadcrumbs">
+                {drillStack.map((step, idx) => {
+                  const isLast = idx === drillStack.length - 1;
+                  return (
+                    <React.Fragment key={idx}>
+                      {idx > 0 && <span className="crumb-sep">›</span>}
+                      <button
+                        type="button"
+                        className={`crumb-btn ${isLast ? 'crumb-current' : ''}`}
+                        onClick={() => handleJumpToLevel(idx)}
+                        disabled={isLast}
+                        title={step.title}
+                      >
+                        {step.level === 0 ? 'All' : step.title}
+                      </button>
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+            )}
+
             {/* DRAWER SCROLLABLE CONTENT */}
             <div className="mobile-drawer-content">
-              {/* SEARCH TRIGGER */}
-              <div
-                className="mobile-search-trigger"
-                onClick={() => { setIsMobileOpen(false); setIsSearchOpen(true); }}
-                role="button"
-                tabIndex={0}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.5-4.5" />
-                </svg>
-                <span>Search products, materials...</span>
-                <kbd>⌘K</kbd>
-              </div>
+              {/* STEP 0: ROOT VIEW */}
+              {currentStep.level === 0 && (
+                <div className="mobile-drill-view">
+                  {/* SEARCH TRIGGER */}
+                  <div
+                    className="mobile-search-trigger"
+                    onClick={() => { closeMobileDrawer(); setIsSearchOpen(true); }}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.5-4.5" />
+                    </svg>
+                    <span>Search products, materials...</span>
+                    <kbd>⌘K</kbd>
+                  </div>
 
-              {/* QUICK LINKS 2x2 GRID */}
-              <div className="mobile-quick-links">
-                <Link href="/best-sellers" onClick={() => setIsMobileOpen(false)} className="mobile-quick-link">
-                  Best sellers
-                </Link>
-                <Link href="/discuss-projects" onClick={() => setIsMobileOpen(false)} className="mobile-quick-link">
-                  Discuss Projects
-                </Link>
-                <Link href="/interior-designers" onClick={() => setIsMobileOpen(false)} className="mobile-quick-link">
-                  Interior Designers
-                </Link>
-                <Link href="/journals" onClick={() => setIsMobileOpen(false)} className="mobile-quick-link">
-                  Journals
-                </Link>
-              </div>
+                  {/* QUICK LINKS 2x2 GRID */}
+                  <div className="mobile-quick-links">
+                    <Link href="/best-sellers" onClick={closeMobileDrawer} className="mobile-quick-link">
+                      Best sellers
+                    </Link>
+                    <Link href="/discuss-projects" onClick={closeMobileDrawer} className="mobile-quick-link">
+                      Discuss Projects
+                    </Link>
+                    <Link href="/interior-designers" onClick={closeMobileDrawer} className="mobile-quick-link">
+                      Interior Designers
+                    </Link>
+                    <Link href="/journal" onClick={closeMobileDrawer} className="mobile-quick-link">
+                      Journal
+                    </Link>
+                  </div>
 
-              {/* SECTION DIVIDER */}
-              <div className="mobile-menu-divider-label">
-                EXPLORE COLLECTIONS
-              </div>
+                  {/* SECTION DIVIDER */}
+                  <div className="mobile-menu-divider-label">
+                    ALL DEPARTMENTS (10)
+                  </div>
 
-              {/* ACCORDION CATEGORY NAVIGATION */}
-              <nav className="mobile-accordion-list" aria-label="Mobile Categories">
-                {NAV_CATEGORIES.map((cat) => {
-                  const subData = cat.deptKey ? (megaTaxonomyData as Record<string, any>)[cat.deptKey] : null;
-                  const isOpen = openMobSec === cat.name;
-                  const href = cat.slug === 'new-arrivals'
-                    ? '/collections?badge=new'
-                    : cat.isTurnkey
-                    ? '/turnkey'
-                    : isKnownDepartment(cat.slug)
-                    ? `/${cat.slug}`
-                    : `/collections/${cat.slug}`;
+                  {/* NEW ARRIVALS DIRECT ROW */}
+                  <Link
+                    href="/collections?badge=new"
+                    onClick={closeMobileDrawer}
+                    className="mobile-drill-row mobile-drill-featured-row"
+                  >
+                    <span className="row-label-wrap">
+                      <span className="row-sparkle">✨</span>
+                      <span className="row-title">New Arrivals</span>
+                    </span>
+                    <span className="row-badge">Fresh Styles</span>
+                    <svg className="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                      <path d="M9 18l6-6-6-6" />
+                    </svg>
+                  </Link>
 
-                  return (
-                    <div key={cat.slug} className={`mobile-acc-item ${isOpen ? 'expanded' : ''}`}>
-                      <div className="mobile-acc-header-row">
-                        <Link
-                          href={href}
-                          onClick={() => setIsMobileOpen(false)}
-                          className="mobile-acc-title"
+                  {/* 10 DEPARTMENTS DRILL LIST */}
+                  <div className="mobile-drill-list">
+                    {MOBILE_DEPARTMENTS.map((dept) => {
+                      const subData = (megaTaxonomyData as Record<string, any>)[dept.deptKey] || {};
+                      const l1Count = Object.keys(subData).length;
+
+                      return (
+                        <button
+                          key={dept.slug}
+                          type="button"
+                          className="mobile-drill-row"
+                          onClick={() => handleOpenDept(dept.name, dept.slug, dept.deptKey)}
                         >
-                          {cat.name}
-                        </Link>
-                        {cat.hasSubmenu && subData && (
+                          <span className="row-title">{dept.name}</span>
+                          <span className="row-badge">{l1Count} Categories</span>
+                          <svg className="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                            <path d="M9 18l6-6-6-6" />
+                          </svg>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* DIRECT EXTRA LINKS */}
+                  <div className="mobile-extra-links">
+                    <Link href="/craft" onClick={closeMobileDrawer} className="mobile-extra-link">
+                      <span>Craft & Materials</span>
+                      <span className="arrow">→</span>
+                    </Link>
+                    <Link href="/catalogue" onClick={closeMobileDrawer} className="mobile-extra-link">
+                      <span>Full Trade Catalogue</span>
+                      <span className="arrow">→</span>
+                    </Link>
+                    <Link href="/contact" onClick={closeMobileDrawer} className="mobile-extra-link">
+                      <span>Contact & Factory Visit</span>
+                      <span className="arrow">→</span>
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 1: DEPARTMENT LEVEL (e.g. Furniture) */}
+              {currentStep.level === 1 && currentStep.deptKey && (
+                <div className="mobile-drill-view">
+                  {/* HERO CARD - VIEW ALL DEPARTMENT */}
+                  <Link
+                    href={`/${currentStep.deptSlug}`}
+                    onClick={closeMobileDrawer}
+                    className="mobile-drill-hero-card"
+                  >
+                    <div className="hero-card-texts">
+                      <span className="hero-card-sub">Department Overview</span>
+                      <strong className="hero-card-title">Explore All {currentStep.deptName}</strong>
+                    </div>
+                    <span className="hero-card-arrow">→</span>
+                  </Link>
+
+                  {/* SECTION LABEL */}
+                  <div className="mobile-menu-divider-label">
+                    CATEGORIES IN {currentStep.deptName?.toUpperCase()}
+                  </div>
+
+                  {/* LIST OF L1 ITEMS */}
+                  <div className="mobile-drill-list">
+                    {(() => {
+                      const subData = (megaTaxonomyData as Record<string, any>)[currentStep.deptKey] || {};
+                      const l1Keys = Object.keys(subData);
+
+                      return l1Keys.map((l1Name) => {
+                        const l1Slug = slugifyCategory(l1Name);
+                        const l2Map = subData[l1Name] || {};
+                        const l2Count = Object.keys(l2Map).length;
+
+                        return (
                           <button
+                            key={l1Name}
                             type="button"
-                            className={`mobile-acc-toggle-btn ${isOpen ? 'active' : ''}`}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setOpenMobSec(isOpen ? null : cat.name);
-                            }}
-                            aria-expanded={isOpen}
-                            aria-label={`Toggle ${cat.name} submenu`}
+                            className="mobile-drill-row"
+                            onClick={() => handleOpenL1(l1Name, l1Slug)}
                           >
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2.2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              style={{
-                                transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                                transition: 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)',
-                              }}
-                            >
-                              <path d="M6 9l6 6 6-6" />
+                            <span className="row-title">{l1Name}</span>
+                            <span className="row-badge">{l2Count} Sub-groups</span>
+                            <svg className="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                              <path d="M9 18l6-6-6-6" />
                             </svg>
                           </button>
-                        )}
-                      </div>
+                        );
+                      });
+                    })()}
+                  </div>
+                </div>
+              )}
 
-                      {/* ACCORDION SUBMENU PANEL */}
-                      {isOpen && subData && (
-                        <div className="mobile-acc-submenu">
-                          {Object.keys(subData).map((l1Name) => {
-                            const l1Slug = slugifyCategory(l1Name);
-                            const l2Map = subData[l1Name] || {};
-                            const l2Names = Object.keys(l2Map);
+              {/* STEP 2: SUBCATEGORY L1 (e.g. Living Room Furniture) */}
+              {currentStep.level === 2 && currentStep.deptKey && currentStep.l1Name && (
+                <div className="mobile-drill-view">
+                  {/* HERO CARD - VIEW ALL L1 */}
+                  <Link
+                    href={`/${currentStep.deptSlug}/${currentStep.l1Slug}`}
+                    onClick={closeMobileDrawer}
+                    className="mobile-drill-hero-card"
+                  >
+                    <div className="hero-card-texts">
+                      <span className="hero-card-sub">Category Overview</span>
+                      <strong className="hero-card-title">Explore All {currentStep.l1Name}</strong>
+                    </div>
+                    <span className="hero-card-arrow">→</span>
+                  </Link>
+
+                  {/* SECTION LABEL */}
+                  <div className="mobile-menu-divider-label">
+                    SUB-CATEGORIES
+                  </div>
+
+                  {/* LIST OF L2 ITEMS */}
+                  <div className="mobile-drill-list">
+                    {(() => {
+                      const subData = (megaTaxonomyData as Record<string, any>)[currentStep.deptKey] || {};
+                      const l2Map = subData[currentStep.l1Name] || {};
+                      const l2Keys = Object.keys(l2Map);
+
+                      return l2Keys.map((l2Name) => {
+                        const l2Slug = slugifyCategory(l2Name);
+                        const l3List = l2Map[l2Name] || [];
+                        const l3Count = l3List.length;
+
+                        return (
+                          <button
+                            key={l2Name}
+                            type="button"
+                            className="mobile-drill-row"
+                            onClick={() => handleOpenL2(l2Name, l2Slug)}
+                          >
+                            <span className="row-title">{l2Name}</span>
+                            <span className="row-badge">{l3Count} Items</span>
+                            <svg className="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                              <path d="M9 18l6-6-6-6" />
+                            </svg>
+                          </button>
+                        );
+                      });
+                    })()}
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 3: LEAF GROUP L2 (e.g. Sofas & Seating) */}
+              {currentStep.level === 3 && currentStep.deptKey && currentStep.l1Name && currentStep.l2Name && (
+                <div className="mobile-drill-view">
+                  {/* HERO CARD - VIEW ALL L2 */}
+                  <Link
+                    href={`/${currentStep.deptSlug}/${currentStep.l1Slug}/${currentStep.l2Slug}`}
+                    onClick={closeMobileDrawer}
+                    className="mobile-drill-hero-card"
+                  >
+                    <div className="hero-card-texts">
+                      <span className="hero-card-sub">Sub-category Overview</span>
+                      <strong className="hero-card-title">Explore All {currentStep.l2Name}</strong>
+                    </div>
+                    <span className="hero-card-arrow">→</span>
+                  </Link>
+
+                  {(() => {
+                    const subData = (megaTaxonomyData as Record<string, any>)[currentStep.deptKey] || {};
+                    const l2Map = subData[currentStep.l1Name] || {};
+                    const l3List: string[] = l2Map[currentStep.l2Name] || [];
+
+                    return (
+                      <>
+                        <div className="mobile-menu-divider-label">
+                          ALL ITEMS ({l3List.length})
+                        </div>
+
+                        <div className="mobile-drill-leaves-list">
+                          {l3List.map((l3Name) => {
+                            const l3Slug = slugifyCategory(l3Name);
+                            const leafHref = `/${currentStep.deptSlug}/${currentStep.l1Slug}/${currentStep.l2Slug}/${l3Slug}`;
 
                             return (
-                              <div key={l1Name} className="mobile-sub-l1-group">
-                                <Link
-                                  href={`/${cat.slug}/${l1Slug}`}
-                                  onClick={() => setIsMobileOpen(false)}
-                                  className="mobile-sub-l1-title"
-                                >
-                                  {l1Name}
-                                </Link>
-
-                                {l2Names.length > 0 && (
-                                  <div className="mobile-sub-l2-list">
-                                    {l2Names.map((l2Name) => {
-                                      const l2Slug = slugifyCategory(l2Name);
-                                      const l3Items = l2Map[l2Name] || [];
-
-                                      return (
-                                        <div key={l2Name} className="mobile-sub-l2-block">
-                                          <Link
-                                            href={`/${cat.slug}/${l1Slug}/${l2Slug}`}
-                                            onClick={() => setIsMobileOpen(false)}
-                                            className="mobile-sub-l2-title"
-                                          >
-                                            {l2Name}
-                                          </Link>
-                                          {l3Items.length > 0 && (
-                                            <div className="mobile-sub-l3-list">
-                                              {l3Items.map((l3Name: string) => {
-                                                const l3Slug = slugifyCategory(l3Name);
-                                                return (
-                                                  <Link
-                                                    key={l3Name}
-                                                    href={`/${cat.slug}/${l1Slug}/${l2Slug}/${l3Slug}`}
-                                                    onClick={() => setIsMobileOpen(false)}
-                                                    className="mobile-sub-l3-link"
-                                                  >
-                                                    {l3Name}
-                                                  </Link>
-                                                );
-                                              })}
-                                            </div>
-                                          )}
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                )}
-                              </div>
+                              <Link
+                                key={l3Name}
+                                href={leafHref}
+                                onClick={closeMobileDrawer}
+                                className="mobile-drill-leaf-row"
+                              >
+                                <span className="leaf-name">{l3Name}</span>
+                                <span className="leaf-arrow">→</span>
+                              </Link>
                             );
                           })}
                         </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </nav>
-
-              {/* CRAFT & MATERIAL & TURNKEY DIRECT LINKS */}
-              <div className="mobile-extra-links">
-                <Link href="/craft" onClick={() => setIsMobileOpen(false)} className="mobile-extra-link">
-                  <span>Craft & Materials</span>
-                  <span className="arrow">→</span>
-                </Link>
-                <Link href="/catalogue" onClick={() => setIsMobileOpen(false)} className="mobile-extra-link">
-                  <span>Full Trade Catalogue</span>
-                  <span className="arrow">→</span>
-                </Link>
-                <Link href="/contact" onClick={() => setIsMobileOpen(false)} className="mobile-extra-link">
-                  <span>Contact & Factory Visit</span>
-                  <span className="arrow">→</span>
-                </Link>
-              </div>
+                      </>
+                    );
+                  })()}
+                </div>
+              )}
             </div>
 
             {/* DRAWER FOOTER / ACCOUNT & ACTIONS */}
             <div className="mobile-drawer-footer">
               <Link
                 href="/account"
-                onClick={() => setIsMobileOpen(false)}
+                onClick={closeMobileDrawer}
                 className="mobile-footer-action"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                   <circle cx="12" cy="7" r="4" />
                 </svg>
                 <span>{isAuthenticated ? (user?.firstName ? `Hi, ${user.firstName}` : 'My Account') : 'Sign In / Register'}</span>
               </Link>
 
               <Link
-                href="/favorites"
-                onClick={() => setIsMobileOpen(false)}
+                href="/account?tab=favorites"
+                onClick={closeMobileDrawer}
                 className="mobile-footer-action"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill={favorites.length > 0 ? '#B85735' : 'none'} stroke={favorites.length > 0 ? '#B85735' : 'currentColor'} strokeWidth="1.8">
-                  <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                 </svg>
                 <span>Favourites ({favorites.length})</span>
               </Link>
 
               <button
                 type="button"
-                onClick={() => { setIsMobileOpen(false); openDrawer(); }}
+                onClick={() => { closeMobileDrawer(); openDrawer(); }}
                 className="mobile-footer-action"
                 style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                  <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
                   <line x1="3" y1="6" x2="21" y2="6" />
-                  <path d="M16 10a4 4 0 01-8 0" />
+                  <path d="M16 10a4 4 0 0 1-8 0" />
                 </svg>
                 <span>Cart ({enquiry.length})</span>
               </button>

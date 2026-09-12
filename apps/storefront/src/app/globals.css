@@ -4068,121 +4068,305 @@ section.blk.tight { padding: 72px 0; }
   margin-bottom: -4px;
 }
 
-.mobile-accordion-list {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.mobile-acc-item {
-  border-bottom: 1px solid #F0EDE6;
-}
-
-.mobile-acc-item:last-child {
-  border-bottom: none;
-}
-
-.mobile-acc-header-row {
-  display: flex;
+/* Mobile Drawer Header with Back Button */
+.mobile-drawer-header.drill-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
 }
 
-.mobile-acc-title {
-  flex: 1;
-  padding: 12px 4px;
-  font-size: 14.5px;
+.mobile-drawer-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  font-size: 13.5px;
   font-weight: 600;
   color: #111111;
-  text-decoration: none;
+  cursor: pointer;
+  padding: 6px 0;
+  justify-self: start;
   transition: color 0.15s ease;
 }
 
-.mobile-acc-title:hover {
+.mobile-drawer-back-btn:hover,
+.mobile-drawer-back-btn:active {
   color: var(--brand, #B85735);
 }
 
-.mobile-acc-toggle-btn {
-  width: 38px;
-  height: 38px;
+.mobile-drawer-title-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111111;
+  max-width: 170px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  justify-self: center;
+  letter-spacing: -0.01em;
+}
+
+.mobile-drawer-header.drill-header .mobile-drawer-close-btn {
+  justify-self: end;
+}
+
+/* Breadcrumbs bar beneath header */
+.mobile-drill-breadcrumbs {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 6px;
+  padding: 9px 18px;
+  background: #F8F6F2;
+  border-bottom: 1px solid #ECE7DE;
+  overflow-x: auto;
+  white-space: nowrap;
+  font-size: 11.5px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+
+.mobile-drill-breadcrumbs::-webkit-scrollbar {
+  display: none;
+}
+
+.crumb-btn {
   background: transparent;
   border: none;
-  color: #555555;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #7A756E;
   cursor: pointer;
-  border-radius: 4px;
   padding: 0;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+  font-family: inherit;
 }
 
-.mobile-acc-toggle-btn:hover {
-  background: #F4F2EB;
+.crumb-btn:hover:not(:disabled) {
   color: #111111;
+  text-decoration: underline;
 }
 
-.mobile-acc-submenu {
-  padding: 8px 12px 14px 12px;
+.crumb-btn.crumb-current {
+  color: var(--brand, #B85735);
+  font-weight: 700;
+  cursor: default;
+}
+
+.crumb-sep {
+  color: #BDB7AB;
+  font-size: 11px;
+}
+
+/* Drill View Container & Animation */
+.mobile-drill-view {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: mobileDrillSlide 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes mobileDrillSlide {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Hero Action Card (e.g. Explore All Furniture) */
+.mobile-drill-hero-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #1C1917 0%, #2E2926 100%);
+  color: #FFFFFF;
+  padding: 13px 15px;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.mobile-drill-hero-card:active {
+  transform: scale(0.99);
+}
+
+.hero-card-texts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hero-card-sub {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #E7C9A5;
+  font-weight: 600;
+}
+
+.hero-card-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: -0.01em;
+}
+
+.hero-card-arrow {
+  font-size: 17px;
+  font-weight: 600;
+  color: #E7C9A5;
+  margin-left: 8px;
+  transition: transform 0.15s ease;
+}
+
+.mobile-drill-hero-card:hover .hero-card-arrow {
+  transform: translateX(3px);
+}
+
+/* Drill-Down List & Rows */
+.mobile-drill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.mobile-drill-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 14px;
   background: #FAF8F5;
-  border-radius: 6px;
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  border: 1px solid #ECE7DE;
+  border-radius: 8px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  gap: 10px;
+  font-family: inherit;
 }
 
-.mobile-sub-l1-group {
+.mobile-drill-row:hover,
+.mobile-drill-row:active {
+  background: #F3EFE8;
+  border-color: #DDD6C8;
+}
+
+.mobile-drill-row .row-title {
+  flex: 1;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1C1917;
+  line-height: 1.35;
+}
+
+.mobile-drill-row .row-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: #78716C;
+  background: #FFFFFF;
+  border: 1px solid #E5E1D8;
+  padding: 3px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.mobile-drill-row .row-chevron {
+  color: #A8A29E;
+  flex-shrink: 0;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.mobile-drill-row:hover .row-chevron {
+  color: #111111;
+  transform: translateX(2px);
+}
+
+/* Featured / New Arrivals row */
+.mobile-drill-featured-row {
+  background: #FDF9F5;
+  border: 1px solid #F3E3D7;
+  text-decoration: none;
+}
+
+.mobile-drill-featured-row:hover {
+  background: #FBF2E9;
+  border-color: #EAC9B5;
+}
+
+.mobile-drill-featured-row .row-label-wrap {
+  flex: 1;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 6px;
 }
 
-.mobile-sub-l1-title {
-  font-size: 13.5px;
+.mobile-drill-featured-row .row-sparkle {
+  font-size: 14px;
+}
+
+.mobile-drill-featured-row .row-title {
   font-weight: 700;
-  color: #111111;
-  text-decoration: none;
-  display: block;
-}
-
-.mobile-sub-l2-list {
-  padding-left: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.mobile-sub-l2-block {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.mobile-sub-l2-title {
-  font-size: 11px;
-  font-weight: 700;
-  color: #7A756E;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  text-decoration: none;
-}
-
-.mobile-sub-l3-list {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding-left: 8px;
-}
-
-.mobile-sub-l3-link {
-  font-size: 12.5px;
-  color: #4A4640;
-  text-decoration: none;
-  padding: 2px 0;
-}
-
-.mobile-sub-l3-link:hover {
   color: var(--brand, #B85735);
+}
+
+.mobile-drill-featured-row .row-badge {
+  background: var(--brand, #B85735);
+  color: #FFFFFF;
+  border-color: var(--brand, #B85735);
+}
+
+/* Leaf Level Items (L3 list) */
+.mobile-drill-leaves-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.mobile-drill-leaf-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  background: #FAF8F5;
+  border: 1px solid #ECE7DE;
+  border-radius: 7px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: #292524;
+  transition: all 0.15s ease;
+}
+
+.mobile-drill-leaf-row:hover,
+.mobile-drill-leaf-row:active {
+  background: #1C1917;
+  color: #FFFFFF;
+  border-color: #1C1917;
+}
+
+.mobile-drill-leaf-row .leaf-name {
+  flex: 1;
+}
+
+.mobile-drill-leaf-row .leaf-arrow {
+  color: #A8A29E;
+  font-size: 14px;
+  font-weight: 600;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.mobile-drill-leaf-row:hover .leaf-arrow {
+  color: #E7C9A5;
+  transform: translateX(2px);
 }
 
 .mobile-extra-links {
