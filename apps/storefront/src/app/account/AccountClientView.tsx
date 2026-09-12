@@ -45,6 +45,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
   const [inspectorTab, setInspectorTab] = useState<'timeline' | 'items' | 'invoice' | 'conversation'>('timeline');
   const [newQueryMessage, setNewQueryMessage] = useState('');
   const [isSendingMessage, setIsSendingMessage] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   // Profile Form State
   const [profileFirstName, setProfileFirstName] = useState('');
@@ -160,46 +161,88 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
     }
   }, [user]);
 
-  // Refresh bookings on mount & when user changes, plus fetch live updates from WordPress
+  // Refresh bookings on mount & when user changes, plus fetch live updates from WordPress with zero delay
   const refreshBookings = async () => {
-    const list = getStoredBookings(user?.email);
-    setBookings(list);
-    if (selectedBooking) {
-      const updated = list.find((b) => b.id === selectedBooking.id);
-      if (updated) setSelectedBooking(updated);
-    } else if (list.length > 0) {
-      setSelectedBooking(list[0]);
+    // 1. Instantly populate from local storage so the page is immediately responsive
+    const localList = getStoredBookings();
+    if (localList.length > 0) {
+      setBookings((prev) => (prev.length === 0 ? localList : prev));
+      setSelectedBooking((prev) => prev || localList[0]);
     }
 
-    // Query backend to sync live updates made by website owner in WordPress Admin
-    const queryEmail = user?.email || (list.length > 0 ? list[0].email : '');
-    if (queryEmail) {
-      try {
-        const res = await fetch(`/api/wp/customers/bookings?email=${encodeURIComponent(queryEmail)}`);
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data?.bookings) && json.data.bookings.length > 0) {
-          const serverBookings: BookingRecord[] = json.data.bookings;
-          serverBookings.forEach((sb) => {
-            saveBooking(sb);
-          });
-          const merged = getStoredBookings(queryEmail);
-          setBookings(merged);
-          if (selectedBooking) {
-            const up = merged.find((b) => b.id === selectedBooking.id);
-            if (up) setSelectedBooking(up);
-          } else if (merged.length > 0) {
-            setSelectedBooking(merged[0]);
-          }
-        }
-      } catch (e) {
-        // Offline or backend unavailable, local bookings preserved
+    // 2. Fetch live updates from WordPress backend
+    setIsSyncing(true);
+    try {
+      const params = new URLSearchParams();
+      if (user?.email) {
+        params.set('email', user.email);
       }
+      if (localList.length > 0) {
+        const ids = localList.map((b) => b.id).filter(Boolean).join(',');
+        if (ids) params.set('ids', ids);
+      }
+      const qs = params.toString();
+      const res = await fetch(`/api/wp/customers/bookings${qs ? `?${qs}` : ''}`, {
+        cache: 'no-store',
+      });
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data?.bookings) && json.data.bookings.length > 0) {
+        const serverBookings: BookingRecord[] = json.data.bookings;
+        // Direct React state update - ZERO DELAY!
+        setBookings(serverBookings);
+        setSelectedBooking((prev) => {
+          if (prev) {
+            const matched = serverBookings.find((b) => b.id === prev.id);
+            if (matched) return matched;
+          }
+          return serverBookings[0];
+        });
+
+        // Silently update localStorage cache without triggering secondary POST fetches
+        try {
+          localStorage.setItem('orbit_customer_bookings', JSON.stringify(serverBookings));
+        } catch (e) {}
+      }
+    } catch (e) {
+      // Offline or network glitch, local state is retained
+    } finally {
+      setIsSyncing(false);
     }
   };
 
+  // Multi-trigger zero-delay synchronization:
   useEffect(() => {
     refreshBookings();
-  }, [user]);
+
+    // 1. Instant sync when browser tab or window gains focus
+    const handleFocus = () => {
+      refreshBookings();
+    };
+
+    // 2. Instant sync when page becomes visible
+    const handleVisibility = () => {
+      if (!document.hidden) {
+        refreshBookings();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    // 3. Active 3-second heartbeat polling when on the Orders tab
+    let interval: NodeJS.Timeout | null = null;
+    if (activeTab === 'orders') {
+      interval = setInterval(() => {
+        refreshBookings();
+      }, 3000);
+    }
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      if (interval) clearInterval(interval);
+    };
+  }, [user, activeTab]);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -1288,7 +1331,40 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                           Real-time factory floor & customs export lifecycle tracking.
                         </p>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                        <button
+                          type="button"
+                          onClick={() => refreshBookings()}
+                          disabled={isSyncing}
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 6,
+                            background: isSyncing ? '#EAE6DF' : '#FAF9F5',
+                            color: '#0E5C63',
+                            border: '1.5px solid #0E5C63',
+                            borderRadius: 20,
+                            padding: '6px 14px',
+                            fontSize: 12,
+                            fontWeight: 600,
+                            cursor: isSyncing ? 'not-allowed' : 'pointer',
+                            boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                            transition: 'all 0.15s ease',
+                          }}
+                          title="Instant sync latest production milestone and freight status from factory floor"
+                        >
+                          <span
+                            style={{
+                              display: 'inline-block',
+                              fontSize: 13,
+                              transform: isSyncing ? 'rotate(180deg)' : 'none',
+                              transition: 'transform 0.5s ease',
+                            }}
+                          >
+                            ⟳
+                          </span>
+                          {isSyncing ? 'Syncing...' : 'Sync Live Status'}
+                        </button>
                         <span
                           style={{
                             display: 'inline-flex',

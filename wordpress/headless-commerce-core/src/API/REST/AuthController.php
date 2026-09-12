@@ -429,8 +429,10 @@ class AuthController extends RestController {
 
 	public function get_bookings( $request ) {
 		global $wpdb;
-		$user_id = get_current_user_id();
-		$email   = sanitize_email( $request->get_param( 'email' ) );
+		$user_id   = get_current_user_id();
+		$email     = sanitize_email( $request->get_param( 'email' ) );
+		$id_param  = sanitize_text_field( $request->get_param( 'id' ) );
+		$ids_param = sanitize_text_field( $request->get_param( 'ids' ) );
 
 		if ( ! $user_id && ! empty( $email ) ) {
 			$user = get_user_by( 'email', $email );
@@ -441,7 +443,7 @@ class AuthController extends RestController {
 
 		$bookings = array();
 
-		// Primary source: check wp_hcc_form_entries table directly so admin edits reflect immediately
+		// Primary source: check wp_hcc_form_entries table directly
 		$entries_tbl = FormEntriesManager::get_table_name();
 		$where       = array();
 		if ( $user_id ) {
@@ -450,17 +452,35 @@ class AuthController extends RestController {
 		if ( ! empty( $email ) ) {
 			$where[] = $wpdb->prepare( 'email = %s', $email );
 		}
+		if ( ! empty( $id_param ) ) {
+			$where[] = $wpdb->prepare( 'reference_id = %s', $id_param );
+		}
+		if ( ! empty( $ids_param ) ) {
+			$id_list = array_filter( array_map( 'trim', explode( ',', $ids_param ) ) );
+			if ( ! empty( $id_list ) ) {
+				$escaped_ids = array();
+				foreach ( $id_list as $single_id ) {
+					$escaped_ids[] = $wpdb->prepare( '%s', $single_id );
+				}
+				$where[] = 'reference_id IN (' . implode( ',', $escaped_ids ) . ')';
+			}
+		}
 
+		$where_clause = '';
 		if ( ! empty( $where ) ) {
-			$where_sql = implode( ' OR ', $where );
-			$rows      = $wpdb->get_results( "SELECT booking_data FROM {$entries_tbl} WHERE form_type = 'commercial_booking' AND ({$where_sql}) ORDER BY id DESC" );
-			if ( ! empty( $rows ) ) {
-				foreach ( $rows as $row ) {
-					if ( ! empty( $row->booking_data ) ) {
-						$decoded = json_decode( $row->booking_data, true );
-						if ( is_array( $decoded ) && ! empty( $decoded['id'] ) ) {
-							$bookings[] = $decoded;
+			$where_clause = ' AND (' . implode( ' OR ', $where ) . ')';
+		}
+
+		$rows = $wpdb->get_results( "SELECT reference_id, booking_data, status, created_at FROM {$entries_tbl} WHERE booking_data IS NOT NULL AND booking_data != '' {$where_clause} ORDER BY id DESC LIMIT 50" );
+		if ( ! empty( $rows ) ) {
+			foreach ( $rows as $row ) {
+				if ( ! empty( $row->booking_data ) ) {
+					$decoded = json_decode( $row->booking_data, true );
+					if ( is_array( $decoded ) ) {
+						if ( empty( $decoded['id'] ) ) {
+							$decoded['id'] = $row->reference_id;
 						}
+						$bookings[] = $decoded;
 					}
 				}
 			}
