@@ -133,26 +133,65 @@ export function decodeHtmlEntities(str: string): string {
     .replace(/&#39;/g, "'");
 }
 
+export const DEPARTMENT_FALLBACK_IMAGES: Record<string, string> = {
+  'furniture': '/categories/every-room/furniture.webp',
+  'home-decor': '/categories/every-room/home-decor.webp',
+  'wall-decor-and-mirrors': '/categories/every-room/wall-decor-and-mirrors.webp',
+  'wall-decor-mirrors': '/categories/every-room/wall-decor-mirrors.webp',
+  'lighting': '/categories/every-room/lighting.webp',
+  'rugs-and-floor-coverings': '/categories/every-room/rugs-and-floor-coverings.webp',
+  'rugs-floor-coverings': '/categories/every-room/rugs-floor-coverings.webp',
+  'storage-and-organization': '/categories/every-room/storage-and-organization.webp',
+  'storage-organization': '/categories/every-room/storage-organization.webp',
+  'kitchen-and-tabletop': '/categories/every-room/kitchen-and-tabletop.webp',
+  'kitchen-tabletop': '/categories/every-room/kitchen-tabletop.webp',
+  'outdoor-and-garden': '/categories/every-room/outdoor-and-garden.webp',
+  'outdoor-garden': '/categories/every-room/outdoor-garden.webp',
+  'kids-and-baby-home': '/categories/every-room/kids-and-baby-home.webp',
+  'kids-baby-home': '/categories/every-room/kids-baby-home.webp',
+  'pet-home': '/categories/every-room/pet-home.webp',
+};
+
+export function getCategorySlugFallbackImage(catSlug?: string): string | null {
+  if (!catSlug) return null;
+  const slug = catSlug.toLowerCase().trim();
+  if (DEPARTMENT_FALLBACK_IMAGES[slug]) {
+    return DEPARTMENT_FALLBACK_IMAGES[slug];
+  }
+  const strippedSlug = slug.replace(/-and-/g, '-');
+  if (DEPARTMENT_FALLBACK_IMAGES[strippedSlug]) {
+    return DEPARTMENT_FALLBACK_IMAGES[strippedSlug];
+  }
+  if (CATEGORIES.some((c) => c.id === slug)) {
+    return `/categories/${slug}.jpg`;
+  }
+  if (slug === 'chair' || slug === 'chairs') {
+    return '/categories/chair.jpg';
+  }
+  return null;
+}
+
 export function normalizeCommerceImageUrl(rawUrl?: string | null, catSlug?: string): string {
+  const slugFallback = getCategorySlugFallbackImage(catSlug);
+
   if (!rawUrl || typeof rawUrl !== 'string') {
-    if (catSlug && CATEGORIES.some((c) => c.id === catSlug.toLowerCase())) {
-      return `/categories/${catSlug.toLowerCase()}.jpg`;
-    }
-    return '/fallback-product.svg';
+    return slugFallback || '/fallback-product.svg';
   }
 
   let clean = rawUrl.trim();
-  if (!clean || clean === '/fallback-product.svg') {
-    if (catSlug && CATEGORIES.some((c) => c.id === catSlug.toLowerCase())) {
-      return `/categories/${catSlug.toLowerCase()}.jpg`;
-    }
-    return '/fallback-product.svg';
+  if (!clean || clean === '/fallback-product.svg' || clean.includes('fallback-product')) {
+    return slugFallback || '/fallback-product.svg';
   }
 
   // Normalize JSON escaped slashes
   clean = clean.replace(/\\\//g, '/');
 
   const lower = clean.toLowerCase();
+
+  // If WordPress sent a generic placeholder or svg, prefer the high-res department fallback if available
+  if (slugFallback && (lower.includes('placeholder') || lower.endsWith('.svg') || lower.endsWith('.svg?'))) {
+    return slugFallback;
+  }
 
   // 1. Map known category placeholders directly to fast local static files
   const knownCategories = [
@@ -184,6 +223,7 @@ export function normalizeCommerceImageUrl(rawUrl?: string | null, catSlug?: stri
 
   return clean;
 }
+
 
 const productCacheMap = new Map<string, ProductItem>();
 let cachedStorefrontData: StorefrontDataResult | null = null;

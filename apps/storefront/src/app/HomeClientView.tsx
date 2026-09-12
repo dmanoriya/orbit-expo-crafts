@@ -112,13 +112,19 @@ export default function HomeClientView({
   const FALLBACK_DEPT_IMAGES: Record<string, string> = {
     'furniture': '/categories/every-room/furniture.webp',
     'home-decor': '/categories/every-room/home-decor.webp',
-    'wall-decor-and-mirrors': '/categories/every-room/wall-decor-mirrors.webp',
+    'wall-decor-and-mirrors': '/categories/every-room/wall-decor-and-mirrors.webp',
+    'wall-decor-mirrors': '/categories/every-room/wall-decor-mirrors.webp',
     'lighting': '/categories/every-room/lighting.webp',
-    'rugs-and-floor-coverings': '/categories/every-room/rugs-floor-coverings.webp',
-    'storage-and-organization': '/categories/every-room/storage-organization.webp',
-    'kitchen-and-tabletop': '/categories/every-room/kitchen-tabletop.webp',
-    'outdoor-and-garden': '/categories/every-room/outdoor-garden.webp',
-    'kids-and-baby-home': '/categories/every-room/kids-baby-home.webp',
+    'rugs-and-floor-coverings': '/categories/every-room/rugs-and-floor-coverings.webp',
+    'rugs-floor-coverings': '/categories/every-room/rugs-floor-coverings.webp',
+    'storage-and-organization': '/categories/every-room/storage-and-organization.webp',
+    'storage-organization': '/categories/every-room/storage-organization.webp',
+    'kitchen-and-tabletop': '/categories/every-room/kitchen-and-tabletop.webp',
+    'kitchen-tabletop': '/categories/every-room/kitchen-tabletop.webp',
+    'outdoor-and-garden': '/categories/every-room/outdoor-and-garden.webp',
+    'outdoor-garden': '/categories/every-room/outdoor-garden.webp',
+    'kids-and-baby-home': '/categories/every-room/kids-and-baby-home.webp',
+    'kids-baby-home': '/categories/every-room/kids-baby-home.webp',
     'pet-home': '/categories/every-room/pet-home.webp',
   };
 
@@ -413,18 +419,34 @@ export default function HomeClientView({
 
           <div className="cat-grid">
             {displayCategories.map((c) => {
-              const catSlug = c.slug || c.id;
-              const catImg =
-                c.image && c.image.trim() !== ''
-                  ? c.image
-                  : FALLBACK_DEPT_IMAGES[catSlug] || `/categories/every-room/${catSlug}.webp` || '/categories/every-room/furniture.webp';
+              const catSlug = (c.slug || c.id || '').toLowerCase();
+              const isPlaceholderSvg =
+                !c.image ||
+                c.image.trim() === '' ||
+                c.image === '/fallback-product.svg' ||
+                c.image.includes('fallback-product');
+              const fallbackImg =
+                FALLBACK_DEPT_IMAGES[catSlug] ||
+                FALLBACK_DEPT_IMAGES[catSlug.replace(/-and-/g, '-')] ||
+                `/categories/every-room/${catSlug}.webp` ||
+                '/categories/every-room/furniture.webp';
+              const catImg = !isPlaceholderSvg ? c.image : fallbackImg;
               const cardHref = isKnownDepartment(catSlug) ? `/${catSlug}` : `/collections/${catSlug}`;
               const displayName = DEPT_DISPLAY_NAMES[catSlug] || c.name;
 
               return (
                 <Link href={cardHref} key={c.id || catSlug} className="cat-card">
                   <div className="cat-card-art">
-                    <img src={catImg} alt={displayName} loading="lazy" />
+                    <img
+                      src={catImg}
+                      alt={displayName}
+                      loading="lazy"
+                      onError={(e) => {
+                        if (fallbackImg && e.currentTarget.src !== fallbackImg) {
+                          e.currentTarget.src = fallbackImg;
+                        }
+                      }}
+                    />
                   </div>
                   <div className="info">
                     <h3>{displayName}</h3>
