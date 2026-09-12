@@ -62,6 +62,33 @@ export const Header: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Close mobile drawer on route change
+  useEffect(() => {
+    setIsMobileOpen(false);
+  }, [pathname]);
+
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (isMobileOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [isMobileOpen]);
+
+  // Close mobile drawer on Escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isMobileOpen) {
+        setIsMobileOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isMobileOpen]);
+
   const handleScrollActive = (e: React.UIEvent<HTMLUListElement>) => {
     const el = e.currentTarget;
     el.classList.add('is-scrolling');
@@ -218,8 +245,9 @@ export const Header: React.FC = () => {
               <button
                 type="button"
                 className="mobile-burger-btn"
-                onClick={() => setIsMobileOpen(!isMobileOpen)}
+                onClick={() => setIsMobileOpen((prev) => !prev)}
                 aria-label="Toggle Mobile Menu"
+                aria-expanded={isMobileOpen}
               >
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   {isMobileOpen ? (
@@ -353,216 +381,251 @@ export const Header: React.FC = () => {
         </nav>
       </header>
 
-      {/* MOBILE DRAWER OVERLAY */}
+      {/* MOBILE NAVIGATION DRAWER & BACKDROP */}
       {isMobileOpen && (
-        <div className="mobile-nav-panel">
-          <div className="mobile-drawer-header">
-            <div className="drawer-title-row">
-              <Link href="/" onClick={() => setIsMobileOpen(false)} aria-label="Orbit Expo Crafts Home">
-                <img src="/logo.webp" alt="Orbit Expo Crafts" style={{ height: 52, width: 'auto', objectFit: 'contain' }} />
+        <div>
+          <div
+            className={`mobile-menu-scrim ${isMobileOpen ? 'open' : ''}`}
+            onClick={() => setIsMobileOpen(false)}
+            aria-hidden={!isMobileOpen}
+          />
+
+          <aside
+            className={`mobile-nav-drawer ${isMobileOpen ? 'open' : ''}`}
+            aria-label="Mobile Navigation Menu"
+            aria-hidden={!isMobileOpen}
+          >
+            {/* DRAWER TOP HEADER */}
+            <div className="mobile-drawer-header">
+              <Link href="/" onClick={() => setIsMobileOpen(false)} aria-label="Orbit Expo Crafts Home" className="mobile-drawer-logo">
+                <img src="/logo.webp" alt="Orbit Expo Crafts" style={{ height: 46, width: 'auto', objectFit: 'contain' }} />
               </Link>
               <button
                 type="button"
-                className="mobile-close-btn"
+                className="mobile-drawer-close-btn"
                 onClick={() => setIsMobileOpen(false)}
                 aria-label="Close Menu"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
-                <span>CLOSE</span>
               </button>
             </div>
-            <div
-              className="header-pill-search"
-              style={{ maxWidth: '100%', marginTop: 12 }}
-              onClick={() => { setIsMobileOpen(false); setIsSearchOpen(true); }}
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.5-4.5" />
-              </svg>
-              <span>Search products, materials, ...</span>
-              <kbd className="search-shortcut">⌘K</kbd>
-            </div>
 
-            {/* Quick Links for 4 Key Pages */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 14 }}>
-              <Link
-                href="/best-sellers"
-                onClick={() => setIsMobileOpen(false)}
-                style={{
-                  fontSize: 12.5,
-                  fontWeight: 600,
-                  color: '#111111',
-                  padding: '9px 12px',
-                  background: '#F4F2EB',
-                  borderRadius: 6,
-                  textDecoration: 'none',
-                  textAlign: 'center',
-                }}
+            {/* DRAWER SCROLLABLE CONTENT */}
+            <div className="mobile-drawer-content">
+              {/* SEARCH TRIGGER */}
+              <div
+                className="mobile-search-trigger"
+                onClick={() => { setIsMobileOpen(false); setIsSearchOpen(true); }}
+                role="button"
+                tabIndex={0}
               >
-                Best sellers
-              </Link>
-              <Link
-                href="/discuss-projects"
-                onClick={() => setIsMobileOpen(false)}
-                style={{
-                  fontSize: 12.5,
-                  fontWeight: 600,
-                  color: '#111111',
-                  padding: '9px 12px',
-                  background: '#F4F2EB',
-                  borderRadius: 6,
-                  textDecoration: 'none',
-                  textAlign: 'center',
-                }}
-              >
-                Discuss Projects
-              </Link>
-              <Link
-                href="/interior-designers"
-                onClick={() => setIsMobileOpen(false)}
-                style={{
-                  fontSize: 12.5,
-                  fontWeight: 600,
-                  color: '#111111',
-                  padding: '9px 12px',
-                  background: '#F4F2EB',
-                  borderRadius: 6,
-                  textDecoration: 'none',
-                  textAlign: 'center',
-                }}
-              >
-                Interior Designers
-              </Link>
-              <Link
-                href="/journal"
-                onClick={() => setIsMobileOpen(false)}
-                style={{
-                  fontSize: 12.5,
-                  fontWeight: 600,
-                  color: '#111111',
-                  padding: '9px 12px',
-                  background: '#F4F2EB',
-                  borderRadius: 6,
-                  textDecoration: 'none',
-                  textAlign: 'center',
-                }}
-              >
-                Journal
-              </Link>
-            </div>
-          </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.5-4.5" />
+                </svg>
+                <span>Search products, materials...</span>
+                <kbd>⌘K</kbd>
+              </div>
 
-          <div className="mob-accordion-tree">
-            {NAV_CATEGORIES.map((cat) => {
-              const subData = cat.deptKey ? (megaTaxonomyData as Record<string, any>)[cat.deptKey] : null;
-              const isOpen = openMobSec === cat.name;
+              {/* QUICK LINKS 2x2 GRID */}
+              <div className="mobile-quick-links">
+                <Link href="/best-sellers" onClick={() => setIsMobileOpen(false)} className="mobile-quick-link">
+                  Best sellers
+                </Link>
+                <Link href="/discuss-projects" onClick={() => setIsMobileOpen(false)} className="mobile-quick-link">
+                  Discuss Projects
+                </Link>
+                <Link href="/interior-designers" onClick={() => setIsMobileOpen(false)} className="mobile-quick-link">
+                  Interior Designers
+                </Link>
+                <Link href="/journals" onClick={() => setIsMobileOpen(false)} className="mobile-quick-link">
+                  Journals
+                </Link>
+              </div>
 
-              return (
-                <div key={cat.slug} className="mob-accordion-item">
-                  <button
-                    type="button"
-                    className={`mob-accordion-btn ${isOpen ? 'open' : ''}`}
-                    onClick={() => {
-                      if (cat.hasSubmenu) {
-                        setOpenMobSec(isOpen ? null : cat.name);
-                      } else {
-                        setIsMobileOpen(false);
-                      }
-                    }}
-                  >
-                    <Link
-                      href={cat.isTurnkey ? '/turnkey' : isKnownDepartment(cat.slug) ? `/${cat.slug}` : `/collections/${cat.slug}`}
-                      onClick={(e) => {
-                        if (cat.hasSubmenu) e.stopPropagation();
-                        setIsMobileOpen(false);
-                      }}
-                      style={{ color: 'inherit', textDecoration: 'none' }}
-                    >
-                      {cat.name}
-                    </Link>
-                    {cat.hasSubmenu && (
-                      <svg width="12" height="7" viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="1.8">
-                        <path d="M1 1l4 4 4-4" />
-                      </svg>
-                    )}
-                  </button>
+              {/* SECTION DIVIDER */}
+              <div className="mobile-menu-divider-label">
+                EXPLORE COLLECTIONS
+              </div>
 
-                  {isOpen && subData && (
-                    <div className="mob-accordion-panel">
-                      {Object.keys(subData).map((l1Name) => {
-                        const l1Slug = slugifyCategory(l1Name);
-                        const l2Map = subData[l1Name] || {};
-                        const l2Names = Object.keys(l2Map);
+              {/* ACCORDION CATEGORY NAVIGATION */}
+              <nav className="mobile-accordion-list" aria-label="Mobile Categories">
+                {NAV_CATEGORIES.map((cat) => {
+                  const subData = cat.deptKey ? (megaTaxonomyData as Record<string, any>)[cat.deptKey] : null;
+                  const isOpen = openMobSec === cat.name;
+                  const href = cat.slug === 'new-arrivals'
+                    ? '/collections?badge=new'
+                    : cat.isTurnkey
+                    ? '/turnkey'
+                    : isKnownDepartment(cat.slug)
+                    ? `/${cat.slug}`
+                    : `/collections/${cat.slug}`;
 
-                        return (
-                          <div key={l1Name} className="mob-l1-item">
-                            <Link
-                              href={`/${cat.slug}/${l1Slug}`}
-                              onClick={() => setIsMobileOpen(false)}
-                              className="mob-l1-title"
-                              style={{ textDecoration: 'none', color: 'inherit', display: 'block', fontWeight: 600 }}
+                  return (
+                    <div key={cat.slug} className={`mobile-acc-item ${isOpen ? 'expanded' : ''}`}>
+                      <div className="mobile-acc-header-row">
+                        <Link
+                          href={href}
+                          onClick={() => setIsMobileOpen(false)}
+                          className="mobile-acc-title"
+                        >
+                          {cat.name}
+                        </Link>
+                        {cat.hasSubmenu && subData && (
+                          <button
+                            type="button"
+                            className={`mobile-acc-toggle-btn ${isOpen ? 'active' : ''}`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setOpenMobSec(isOpen ? null : cat.name);
+                            }}
+                            aria-expanded={isOpen}
+                            aria-label={`Toggle ${cat.name} submenu`}
+                          >
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              style={{
+                                transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                                transition: 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)',
+                              }}
                             >
-                              {l1Name}
-                            </Link>
+                              <path d="M6 9l6 6 6-6" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
 
-                            <div className="mob-l2-wrapper" style={{ paddingLeft: '12px', marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                              {l2Names.map((l2Name) => {
-                                const l2Slug = slugifyCategory(l2Name);
-                                const l3Items = l2Map[l2Name] || [];
+                      {/* ACCORDION SUBMENU PANEL */}
+                      {isOpen && subData && (
+                        <div className="mobile-acc-submenu">
+                          {Object.keys(subData).map((l1Name) => {
+                            const l1Slug = slugifyCategory(l1Name);
+                            const l2Map = subData[l1Name] || {};
+                            const l2Names = Object.keys(l2Map);
 
-                                return (
-                                  <div key={l2Name} className="mob-l2-block">
-                                    <Link
-                                      href={`/${cat.slug}/${l1Slug}/${l2Slug}`}
-                                      onClick={() => setIsMobileOpen(false)}
-                                      style={{
-                                        fontSize: '11.5px',
-                                        fontWeight: 700,
-                                        color: '#7A756E',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.06em',
-                                        textDecoration: 'none',
-                                        display: 'block',
-                                        marginBottom: '4px',
-                                      }}
-                                    >
-                                      {l2Name}
-                                    </Link>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingLeft: '8px' }}>
-                                      {l3Items.map((l3Name: string) => {
-                                        const l3Slug = slugifyCategory(l3Name);
-                                        return (
+                            return (
+                              <div key={l1Name} className="mobile-sub-l1-group">
+                                <Link
+                                  href={`/${cat.slug}/${l1Slug}`}
+                                  onClick={() => setIsMobileOpen(false)}
+                                  className="mobile-sub-l1-title"
+                                >
+                                  {l1Name}
+                                </Link>
+
+                                {l2Names.length > 0 && (
+                                  <div className="mobile-sub-l2-list">
+                                    {l2Names.map((l2Name) => {
+                                      const l2Slug = slugifyCategory(l2Name);
+                                      const l3Items = l2Map[l2Name] || [];
+
+                                      return (
+                                        <div key={l2Name} className="mobile-sub-l2-block">
                                           <Link
-                                            key={l3Name}
-                                            href={`/${cat.slug}/${l1Slug}/${l2Slug}/${l3Slug}`}
+                                            href={`/${cat.slug}/${l1Slug}/${l2Slug}`}
                                             onClick={() => setIsMobileOpen(false)}
-                                            style={{
-                                              fontSize: '12px',
-                                              color: '#4A4640',
-                                              textDecoration: 'none',
-                                              padding: '2px 0',
-                                            }}
+                                            className="mobile-sub-l2-title"
                                           >
-                                            {l3Name}
+                                            {l2Name}
                                           </Link>
-                                        );
-                                      })}
-                                    </div>
+                                          {l3Items.length > 0 && (
+                                            <div className="mobile-sub-l3-list">
+                                              {l3Items.map((l3Name: string) => {
+                                                const l3Slug = slugifyCategory(l3Name);
+                                                return (
+                                                  <Link
+                                                    key={l3Name}
+                                                    href={`/${cat.slug}/${l1Slug}/${l2Slug}/${l3Slug}`}
+                                                    onClick={() => setIsMobileOpen(false)}
+                                                    className="mobile-sub-l3-link"
+                                                  >
+                                                    {l3Name}
+                                                  </Link>
+                                                );
+                                              })}
+                                            </div>
+                                          )}
+                                        </div>
+                                      );
+                                    })}
                                   </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        );
-                      })}
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                  );
+                })}
+              </nav>
+
+              {/* CRAFT & MATERIAL & TURNKEY DIRECT LINKS */}
+              <div className="mobile-extra-links">
+                <Link href="/craft" onClick={() => setIsMobileOpen(false)} className="mobile-extra-link">
+                  <span>Craft & Materials</span>
+                  <span className="arrow">→</span>
+                </Link>
+                <Link href="/catalogue" onClick={() => setIsMobileOpen(false)} className="mobile-extra-link">
+                  <span>Full Trade Catalogue</span>
+                  <span className="arrow">→</span>
+                </Link>
+                <Link href="/contact" onClick={() => setIsMobileOpen(false)} className="mobile-extra-link">
+                  <span>Contact & Factory Visit</span>
+                  <span className="arrow">→</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* DRAWER FOOTER / ACCOUNT & ACTIONS */}
+            <div className="mobile-drawer-footer">
+              <Link
+                href="/account"
+                onClick={() => setIsMobileOpen(false)}
+                className="mobile-footer-action"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span>{isAuthenticated ? (user?.firstName ? `Hi, ${user.firstName}` : 'My Account') : 'Sign In / Register'}</span>
+              </Link>
+
+              <Link
+                href="/favorites"
+                onClick={() => setIsMobileOpen(false)}
+                className="mobile-footer-action"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill={favorites.length > 0 ? '#B85735' : 'none'} stroke={favorites.length > 0 ? '#B85735' : 'currentColor'} strokeWidth="1.8">
+                  <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+                </svg>
+                <span>Favourites ({favorites.length})</span>
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => { setIsMobileOpen(false); openDrawer(); }}
+                className="mobile-footer-action"
+                style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 01-8 0" />
+                </svg>
+                <span>Cart ({enquiry.length})</span>
+              </button>
+            </div>
+          </aside>
         </div>
       )}
 
