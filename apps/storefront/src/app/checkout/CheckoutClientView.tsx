@@ -229,6 +229,7 @@ export const CheckoutClientView: React.FC = () => {
       },
       booking_data: newBooking,
       notes: specialNotes,
+      product_image: enquiry[0]?.image || '',
       shortlist_items: enquiry.map((i) => ({
         id: i.id,
         name: i.name,

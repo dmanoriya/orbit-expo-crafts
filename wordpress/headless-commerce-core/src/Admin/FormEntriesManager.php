@@ -144,6 +144,15 @@ class FormEntriesManager {
 			$booking_data = is_array( $data['booking_data'] ) ? wp_json_encode( $data['booking_data'] ) : ( is_string( $data['booking_data'] ) ? $data['booking_data'] : '' );
 		}
 
+		// Fallback product_image from shortlist or booking items if not explicitly provided
+		$product_image = $data['product_image'] ?? '';
+		if ( empty( $product_image ) && ! empty( $data['shortlist_items'] ) ) {
+			$items_test = is_array( $data['shortlist_items'] ) ? $data['shortlist_items'] : json_decode( (string) $data['shortlist_items'], true );
+			if ( is_array( $items_test ) && ! empty( $items_test[0]['image'] ) ) {
+				$product_image = $items_test[0]['image'];
+			}
+		}
+
 		$insert_data = array(
 			'reference_id'      => $ref_id,
 			'form_type'         => $form_type,
@@ -157,7 +166,7 @@ class FormEntriesManager {
 			'product_name'      => sanitize_text_field( $data['product_name'] ?? '' ),
 			'product_sku'       => sanitize_text_field( $data['product_sku'] ?? '' ),
 			'product_url'       => esc_url_raw( $data['product_url'] ?? '' ),
-			'product_image'     => esc_url_raw( $data['product_image'] ?? '' ),
+			'product_image'     => esc_url_raw( $product_image ),
 			'source_page'       => sanitize_text_field( $data['source_page'] ?? '' ),
 			'source_title'      => sanitize_text_field( $data['source_title'] ?? '' ),
 			'user_id'           => intval( $data['user_id'] ?? 0 ),
@@ -265,6 +274,63 @@ class FormEntriesManager {
 		}
 
 		fclose( $output );
+	}
+
+	/**
+	 * Helper: Resolve product image URL to a valid, displayable absolute URL.
+	 * Handles relative paths (/categories/..., /wp-content/...), storefront URLs, and local fallback.
+	 *
+	 * @param string $image_path Raw image path or URL.
+	 * @return string Displayable absolute image URL.
+	 */
+	public static function resolve_product_image_url( $image_path ) {
+		if ( empty( $image_path ) ) {
+			return plugins_url( 'assets/fallback-product.svg', dirname( __DIR__, 2 ) . '/headless-commerce-core.php' );
+		}
+
+		$image_path = trim( (string) $image_path );
+
+		// If it points to fallback-product.svg (relative or absolute)
+		if ( false !== strpos( $image_path, 'fallback-product.svg' ) ) {
+			return plugins_url( 'assets/fallback-product.svg', dirname( __DIR__, 2 ) . '/headless-commerce-core.php' );
+		}
+
+		// If it contains /categories/... anywhere (in storefront URL or relative path)
+		if ( preg_match( '#/categories/(.+\.(?:jpe?g|png|webp|svg))#i', $image_path, $matches ) ) {
+			$category_file = 'assets/categories/' . $matches[1];
+			$file_fs       = dirname( __DIR__, 2 ) . '/' . $category_file;
+			if ( file_exists( $file_fs ) ) {
+				return plugins_url( $category_file, dirname( __DIR__, 2 ) . '/headless-commerce-core.php' );
+			}
+		}
+
+		// If it starts with /categories/ or categories/
+		if ( 0 === strpos( $image_path, '/categories/' ) || 0 === strpos( $image_path, 'categories/' ) ) {
+			$rel = ltrim( $image_path, '/' );
+			return plugins_url( 'assets/' . $rel, dirname( __DIR__, 2 ) . '/headless-commerce-core.php' );
+		}
+
+		// If it's an absolute URL
+		if ( preg_match( '#^https?://#i', $image_path ) ) {
+			return $image_path;
+		}
+
+		// If it's a WordPress relative path
+		if ( 0 === strpos( $image_path, '/wp-content/' ) || 0 === strpos( $image_path, '/wp-includes/' ) ) {
+			return site_url( $image_path );
+		}
+
+		// Check if it exists in plugin assets
+		if ( 0 === strpos( $image_path, '/' ) ) {
+			$plugin_asset_rel = 'assets' . $image_path;
+			$plugin_asset_fs  = dirname( __DIR__, 2 ) . '/' . $plugin_asset_rel;
+			if ( file_exists( $plugin_asset_fs ) ) {
+				return plugins_url( $plugin_asset_rel, dirname( __DIR__, 2 ) . '/headless-commerce-core.php' );
+			}
+			return site_url( $image_path );
+		}
+
+		return plugins_url( 'assets/fallback-product.svg', dirname( __DIR__, 2 ) . '/headless-commerce-core.php' );
 	}
 
 	public static function render_form_submissions_page() {
@@ -479,8 +545,28 @@ class FormEntriesManager {
 								</td>
 								<td>
 									<div style="display:flex; gap:10px; align-items:flex-start;">
-										<?php if ( ! empty( $entry->product_image ) ) : ?>
-											<img src="<?php echo esc_url( $entry->product_image ); ?>" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #ccc; flex-shrink:0;" />
+										<?php
+										$resolved_thumb = '';
+										if ( ! empty( $entry->product_image ) ) {
+											$resolved_thumb = self::resolve_product_image_url( $entry->product_image );
+										} elseif ( ! empty( $shortlist ) && is_array( $shortlist ) ) {
+											foreach ( $shortlist as $s_item ) {
+												if ( is_array( $s_item ) && ! empty( $s_item['image'] ) ) {
+													$resolved_thumb = self::resolve_product_image_url( $s_item['image'] );
+													break;
+												}
+											}
+										}
+										if ( empty( $resolved_thumb ) && ( ! empty( $entry->product_name ) || ! empty( $shortlist ) ) ) {
+											$resolved_thumb = self::resolve_product_image_url( '' );
+										}
+										$entry->resolved_product_image = $resolved_thumb;
+										?>
+										<?php if ( ! empty( $resolved_thumb ) ) : ?>
+											<img src="<?php echo esc_url( $resolved_thumb ); ?>" 
+											     alt="<?php echo esc_attr( $entry->product_name ?? 'Product Preview' ); ?>"
+											     onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%3E%3Crect%20width%3D%2240%22%20height%3D%2240%22%20fill%3D%22%23f4f4f4%22%20rx%3D%224%22%2F%3E%3Cpath%20d%3D%22M12%2028l5-6%204%205%205-7%206%208H12z%22%20fill%3D%22%230e5c63%22%20opacity%3D%220.35%22%2F%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%223%22%20fill%3D%22%230e5c63%22%20opacity%3D%220.35%22%2F%3E%3C%2Fsvg%3E';"
+											     style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #ccc; flex-shrink:0; background:#f4f4f4;" />
 										<?php endif; ?>
 										<div>
 											<?php if ( $entry->form_type === 'commercial_booking' ) : ?>
@@ -572,6 +658,21 @@ class FormEntriesManager {
 		</div>
 
 		<script>
+		var fallbackSvgData = 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%220%200%2040%2040%22%3E%3Crect%20width%3D%2240%22%20height%3D%2240%22%20fill%3D%22%23f4f4f4%22%20rx%3D%224%22%2F%3E%3Cpath%20d%3D%22M12%2028l5-6%204%205%205-7%206%208H12z%22%20fill%3D%22%230e5c63%22%20opacity%3D%220.35%22%2F%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%223%22%20fill%3D%22%230e5c63%22%20opacity%3D%220.35%22%2F%3E%3C%2Fsvg%3E';
+		var pluginCategoriesUrl = '<?php echo esc_js( plugins_url( "assets/categories/", dirname( __DIR__, 2 ) . "/headless-commerce-core.php" ) ); ?>';
+		var pluginFallbackUrl = '<?php echo esc_js( plugins_url( "assets/fallback-product.svg", dirname( __DIR__, 2 ) . "/headless-commerce-core.php" ) ); ?>';
+
+		function hccResolveImg(url) {
+			if (!url) return pluginFallbackUrl;
+			if (url.indexOf('/categories/') !== -1) {
+				return pluginCategoriesUrl + url.substring(url.indexOf('/categories/') + 12);
+			}
+			if (url.indexOf('fallback-product.svg') !== -1) {
+				return pluginFallbackUrl;
+			}
+			return url;
+		}
+
 		function hccShowDetails(entry) {
 			var modal = document.getElementById('hcc-detail-modal-overlay');
 			var title = document.getElementById('hcc-modal-title');
@@ -640,9 +741,12 @@ class FormEntriesManager {
 
 						if (Array.isArray(bData.items) && bData.items.length > 0) {
 							html += '<h4 style="margin:12px 0 6px;">Ordered Items (' + bData.items.length + ')</h4>';
-							html += '<table class="widefat striped" style="margin-bottom:16px;"><thead><tr><th>Item</th><th style="width:90px;">Specs</th><th style="width:70px;">Qty</th><th style="width:90px;">Valuation</th></tr></thead><tbody>';
+							html += '<table class="widefat striped" style="margin-bottom:16px;"><thead><tr><th style="width:50px;">Preview</th><th>Item</th><th style="width:90px;">Specs</th><th style="width:70px;">Qty</th><th style="width:90px;">Valuation</th></tr></thead><tbody>';
 							bData.items.forEach(function(item) {
-								html += '<tr><td><strong>' + (item.name || item.id) + '</strong></td>';
+								var itemImg = hccResolveImg(item.image);
+								html += '<tr>';
+								html += '<td><img src="' + itemImg + '" onerror="this.onerror=null; this.src=\'' + fallbackSvgData + '\';" style="width:36px; height:36px; object-fit:cover; border-radius:4px; border:1px solid #ccc; display:block; background:#f4f4f4;" /></td>';
+								html += '<td><strong>' + (item.name || item.id) + '</strong></td>';
 								html += '<td style="font-size:11.5px;">' + (item.material || 'Solid Wood') + '<br>' + (item.finish || '') + '</td>';
 								html += '<td><strong>' + (item.quantity || 1) + '</strong></td>';
 								html += '<td>$' + (item.totalPrice ? Number(item.totalPrice).toLocaleString() : '-') + '</td></tr>';
@@ -656,12 +760,21 @@ class FormEntriesManager {
 			// Single Target Product
 			if (entry.product_name && !entry.booking_data) {
 				html += '<h3 style="margin-top:16px; margin-bottom:8px; font-size:15px; border-bottom:1px solid #ccc; padding-bottom:4px;">Target Product &amp; Specifications</h3>';
+				var modalImg = entry.resolved_product_image ? entry.resolved_product_image : hccResolveImg(entry.product_image);
+				if (modalImg) {
+					html += '<div style="display:flex; gap:16px; align-items:center; margin-bottom:16px; background:#f9f9f9; padding:12px; border-radius:6px; border:1px solid #e2e8f0;">';
+					html += '<img src="' + modalImg + '" onerror="this.onerror=null; this.src=\'' + fallbackSvgData + '\';" style="width:64px; height:64px; object-fit:cover; border-radius:4px; border:1px solid #cbd5e1; flex-shrink:0; background:#fff;" />';
+					html += '<div>';
+					html += '<strong style="font-size:15px; color:#0f172a;">' + entry.product_name + '</strong>';
+					if (entry.product_sku) html += '<span style="font-size:12px; color:#64748b; margin-left:8px;">SKU: <code>' + entry.product_sku + '</code></span>';
+					if (entry.product_url) html += '<br><a href="' + entry.product_url + '" target="_blank" style="font-size:12px; color:#0E5C63; font-weight:600;">🔗 View Product Page ↗</a>';
+					html += '</div></div>';
+				}
 				html += '<table class="widefat striped" style="margin-bottom:16px;">';
-				html += '<tr><td style="width:160px; font-weight:600;">Product Name:</td><td><strong>' + entry.product_name + '</strong></td></tr>';
-				if (entry.product_sku) html += '<tr><td style="font-weight:600;">Product SKU:</td><td><code>' + entry.product_sku + '</code></td></tr>';
-				if (entry.finish_preference) html += '<tr><td style="font-weight:600;">Finish Preference:</td><td>' + entry.finish_preference + '</td></tr>';
-				if (entry.quantity) html += '<tr><td style="font-weight:600;">Quantity:</td><td><strong>' + entry.quantity + ' units</strong></td></tr>';
-				if (entry.project_type) html += '<tr><td style="font-weight:600;">Project Domain:</td><td>' + entry.project_type + '</td></tr>';
+				if (!modalImg) html += '<tr><td style="width:160px; font-weight:600;">Product Name:</td><td><strong>' + entry.product_name + '</strong></td></tr>';
+				if (entry.finish_preference) html += '<tr><td style="width:160px; font-weight:600;">Finish Preference:</td><td>' + entry.finish_preference + '</td></tr>';
+				if (entry.quantity) html += '<tr><td style="width:160px; font-weight:600;">Quantity:</td><td><strong>' + entry.quantity + ' units</strong></td></tr>';
+				if (entry.project_type) html += '<tr><td style="width:160px; font-weight:600;">Project Domain:</td><td>' + entry.project_type + '</td></tr>';
 				html += '</table>';
 			}
 
@@ -675,10 +788,13 @@ class FormEntriesManager {
 					var items = typeof entry.shortlist_items === 'string' ? JSON.parse(entry.shortlist_items) : entry.shortlist_items;
 					if (Array.isArray(items) && items.length > 0) {
 						html += '<h3 style="margin-top:16px; margin-bottom:8px; font-size:15px; border-bottom:1px solid #ccc; padding-bottom:4px;">Shortlisted Products (' + items.length + ')</h3>';
-						html += '<table class="widefat striped"><thead><tr><th>Product Name &amp; Direct Link</th><th style="width:80px;">Qty</th></tr></thead><tbody>';
+						html += '<table class="widefat striped"><thead><tr><th style="width:50px;">Preview</th><th>Product Name &amp; Direct Link</th><th style="width:80px;">Qty</th></tr></thead><tbody>';
 						items.forEach(function(item) {
 							var itemUrl = item.url || (item.id ? ('https://orbitexpocrafts.com/product/' + item.id) : '');
-							html += '<tr><td><strong>' + (item.name || item.id) + '</strong>';
+							var itemImg = hccResolveImg(item.image);
+							html += '<tr>';
+							html += '<td><img src="' + itemImg + '" onerror="this.onerror=null; this.src=\'' + fallbackSvgData + '\';" style="width:36px; height:36px; object-fit:cover; border-radius:4px; border:1px solid #ccc; display:block; background:#f4f4f4;" /></td>';
+							html += '<td><strong>' + (item.name || item.id) + '</strong>';
 							if (itemUrl) {
 								html += '<br><a href="' + itemUrl + '" target="_blank" style="font-size:11.5px; color:#0E5C63; font-weight:600;">🔗 View Product Page ↗</a>';
 							}
