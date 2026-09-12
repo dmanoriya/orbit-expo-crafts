@@ -141,31 +141,31 @@ export default function HomeClientView({
     return fallbackCategories;
   }, [categories]);
 
-  // Project domain spaces matching prototype
+  // Project domain spaces matching prototype (dynamically customizable from WordPress backend)
   const projectSpaces = [
     {
       id: 'hotel-guestrooms',
-      name: 'Hotel Guestrooms',
-      image: '/project-categories/hotel-guestrooms.webp',
-      url: '/collections?seg=Hotel%20Guestrooms',
+      name: hpData.seg1_name || 'Hotel Guestrooms',
+      image: hpData.seg1_image || '/project-categories/hotel-guestrooms.webp',
+      url: hpData.seg1_url || '/collections?seg=Hotel%20Guestrooms',
     },
     {
       id: 'hotel-lobby',
-      name: 'Hotel Lobby',
-      image: '/project-categories/hotel-lobby.webp',
-      url: '/collections?seg=Hotel%20Lobby',
+      name: hpData.seg2_name || 'Hotel Lobby',
+      image: hpData.seg2_image || '/project-categories/hotel-lobby.webp',
+      url: hpData.seg2_url || '/collections?seg=Hotel%20Lobby',
     },
     {
       id: 'restaurant',
-      name: 'Restaurant',
-      image: '/project-categories/restaurant.webp',
-      url: '/collections?seg=Restaurant',
+      name: hpData.seg3_name || 'Restaurant',
+      image: hpData.seg3_image || '/project-categories/restaurant.webp',
+      url: hpData.seg3_url || '/collections?seg=Restaurant',
     },
     {
       id: 'cafe-bistro',
-      name: 'Café & Bistro',
-      image: '/project-categories/cafe-bistro.webp',
-      url: '/collections?seg=Caf%C3%A9%20%26%20Bistro',
+      name: hpData.seg4_name || 'Café & Bistro',
+      image: hpData.seg4_image || '/project-categories/cafe-bistro.webp',
+      url: hpData.seg4_url || '/collections?seg=Caf%C3%A9%20%26%20Bistro',
     },
   ];
 

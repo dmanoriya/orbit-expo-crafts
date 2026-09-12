@@ -88,6 +88,18 @@ class HomepageManager {
 			'seg_eyebrow'       => 'PROJECT DOMAINS',
 			'seg_title'         => 'Shop the way a project actually gets specified.',
 			'seg_desc'          => 'Furniture engineered for commercial spaces with heavy contract use standards.',
+			'seg1_name'         => 'Hotel Guestrooms',
+			'seg1_image'        => '/project-categories/hotel-guestrooms.webp',
+			'seg1_url'          => '/collections?seg=Hotel%20Guestrooms',
+			'seg2_name'         => 'Hotel Lobby',
+			'seg2_image'        => '/project-categories/hotel-lobby.webp',
+			'seg2_url'          => '/collections?seg=Hotel%20Lobby',
+			'seg3_name'         => 'Restaurant',
+			'seg3_image'        => '/project-categories/restaurant.webp',
+			'seg3_url'          => '/collections?seg=Restaurant',
+			'seg4_name'         => 'Café & Bistro',
+			'seg4_image'        => '/project-categories/cafe-bistro.webp',
+			'seg4_url'          => '/collections?seg=Caf%C3%A9%20%26%20Bistro',
 
 			// Featured Designs
 			'feat_eyebrow'      => '',
@@ -395,12 +407,89 @@ class HomepageManager {
 							</div>
 						</div>
 					</div>
+				<!-- SECTION: PROJECT DOMAINS / CATEGORIES (4 CARDS) -->
+				<div class="postbox" style="padding:20px; margin-bottom:24px; background:#fff; border:1px solid #c3c4c7; border-radius:6px;">
+					<h2 style="font-size:18px; font-weight:700; border-bottom:1px solid #eee; padding-bottom:10px; margin-top:0; color:#0E5C63;">
+						4. Project Category Cards (4 Homepage Project Domains)
+					</h2>
+					<p style="color:#666; font-size:13px; margin-bottom:16px;">
+						Customize the title, destination URL, and image for each of the 4 project category spaces shown on the homepage. You can paste any image URL from your WordPress Media Library (e.g. <code>https://yourdomain.com/wp-content/uploads/...</code>) or use a local path.
+					</p>
+					<div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:16px;">
+						<!-- CARD 1 -->
+						<div style="background:#f9f9f9; padding:14px; border-radius:6px; border:1px solid #e5e5e5;">
+							<h3 style="margin-top:0; font-size:14px; color:#0E5C63;">Card 1: Hotel Guestrooms</h3>
+							<div style="margin-bottom:8px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Card Title:</label>
+								<input type="text" name="hcc_homepage_options[seg1_name]" value="<?php echo esc_attr( $data['seg1_name'] ?? 'Hotel Guestrooms' ); ?>" style="width:100%;" />
+							</div>
+							<div style="margin-bottom:8px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Target URL:</label>
+								<input type="text" name="hcc_homepage_options[seg1_url]" value="<?php echo esc_attr( $data['seg1_url'] ?? '/collections?seg=Hotel%20Guestrooms' ); ?>" style="width:100%;" />
+							</div>
+							<div>
+								<label style="font-size:12px; font-weight:600; display:block;">Image URL (WordPress Media):</label>
+								<input type="text" name="hcc_homepage_options[seg1_image]" value="<?php echo esc_attr( $data['seg1_image'] ?? '/project-categories/hotel-guestrooms.webp' ); ?>" style="width:100%;" placeholder="/project-categories/hotel-guestrooms.webp" />
+							</div>
+						</div>
+
+						<!-- CARD 2 -->
+						<div style="background:#f9f9f9; padding:14px; border-radius:6px; border:1px solid #e5e5e5;">
+							<h3 style="margin-top:0; font-size:14px; color:#0E5C63;">Card 2: Hotel Lobby</h3>
+							<div style="margin-bottom:8px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Card Title:</label>
+								<input type="text" name="hcc_homepage_options[seg2_name]" value="<?php echo esc_attr( $data['seg2_name'] ?? 'Hotel Lobby' ); ?>" style="width:100%;" />
+							</div>
+							<div style="margin-bottom:8px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Target URL:</label>
+								<input type="text" name="hcc_homepage_options[seg2_url]" value="<?php echo esc_attr( $data['seg2_url'] ?? '/collections?seg=Hotel%20Lobby' ); ?>" style="width:100%;" />
+							</div>
+							<div>
+								<label style="font-size:12px; font-weight:600; display:block;">Image URL (WordPress Media):</label>
+								<input type="text" name="hcc_homepage_options[seg2_image]" value="<?php echo esc_attr( $data['seg2_image'] ?? '/project-categories/hotel-lobby.webp' ); ?>" style="width:100%;" placeholder="/project-categories/hotel-lobby.webp" />
+							</div>
+						</div>
+
+						<!-- CARD 3 -->
+						<div style="background:#f9f9f9; padding:14px; border-radius:6px; border:1px solid #e5e5e5;">
+							<h3 style="margin-top:0; font-size:14px; color:#0E5C63;">Card 3: Restaurant</h3>
+							<div style="margin-bottom:8px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Card Title:</label>
+								<input type="text" name="hcc_homepage_options[seg3_name]" value="<?php echo esc_attr( $data['seg3_name'] ?? 'Restaurant' ); ?>" style="width:100%;" />
+							</div>
+							<div style="margin-bottom:8px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Target URL:</label>
+								<input type="text" name="hcc_homepage_options[seg3_url]" value="<?php echo esc_attr( $data['seg3_url'] ?? '/collections?seg=Restaurant' ); ?>" style="width:100%;" />
+							</div>
+							<div>
+								<label style="font-size:12px; font-weight:600; display:block;">Image URL (WordPress Media):</label>
+								<input type="text" name="hcc_homepage_options[seg3_image]" value="<?php echo esc_attr( $data['seg3_image'] ?? '/project-categories/restaurant.webp' ); ?>" style="width:100%;" placeholder="/project-categories/restaurant.webp" />
+							</div>
+						</div>
+
+						<!-- CARD 4 -->
+						<div style="background:#f9f9f9; padding:14px; border-radius:6px; border:1px solid #e5e5e5;">
+							<h3 style="margin-top:0; font-size:14px; color:#0E5C63;">Card 4: Café & Bistro</h3>
+							<div style="margin-bottom:8px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Card Title:</label>
+								<input type="text" name="hcc_homepage_options[seg4_name]" value="<?php echo esc_attr( $data['seg4_name'] ?? 'Café & Bistro' ); ?>" style="width:100%;" />
+							</div>
+							<div style="margin-bottom:8px;">
+								<label style="font-size:12px; font-weight:600; display:block;">Target URL:</label>
+								<input type="text" name="hcc_homepage_options[seg4_url]" value="<?php echo esc_attr( $data['seg4_url'] ?? '/collections?seg=Caf%C3%A9%20%26%20Bistro' ); ?>" style="width:100%;" />
+							</div>
+							<div>
+								<label style="font-size:12px; font-weight:600; display:block;">Image URL (WordPress Media):</label>
+								<input type="text" name="hcc_homepage_options[seg4_image]" value="<?php echo esc_attr( $data['seg4_image'] ?? '/project-categories/cafe-bistro.webp' ); ?>" style="width:100%;" placeholder="/project-categories/cafe-bistro.webp" />
+							</div>
+						</div>
+					</div>
 				</div>
 
 				<!-- SECTION: 5 STEPS & BOTTOM CTA -->
 				<div class="postbox" style="padding:20px; margin-bottom:24px; background:#fff; border:1px solid #c3c4c7; border-radius:6px;">
 					<h2 style="font-size:18px; font-weight:700; border-bottom:1px solid #eee; padding-bottom:10px; margin-top:0; color:#0E5C63;">
-						4. Factory 5-Step Process & Bottom Banner Callout
+						5. Factory 5-Step Process & Bottom Banner Callout
 					</h2>
 					<div style="margin-top:14px;">
 						<label style="font-weight:600; font-size:12px;">5-Step Process Heading:</label>

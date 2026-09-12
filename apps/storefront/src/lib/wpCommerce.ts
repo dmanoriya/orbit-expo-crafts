@@ -772,6 +772,18 @@ export interface HomepageData {
   new_arrivals_desc?: string;
   new_arrivals_cta?: string;
   new_arrivals_url?: string;
+  seg1_name?: string;
+  seg1_image?: string;
+  seg1_url?: string;
+  seg2_name?: string;
+  seg2_image?: string;
+  seg2_url?: string;
+  seg3_name?: string;
+  seg3_image?: string;
+  seg3_url?: string;
+  seg4_name?: string;
+  seg4_image?: string;
+  seg4_url?: string;
 }
 
 export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
@@ -820,6 +832,18 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
   seg_eyebrow: 'PROJECT DOMAINS',
   seg_title: 'Shop the way a project actually gets specified.',
   seg_desc: 'Furniture engineered for commercial spaces with heavy contract use standards.',
+  seg1_name: 'Hotel Guestrooms',
+  seg1_image: '/project-categories/hotel-guestrooms.webp',
+  seg1_url: '/collections?seg=Hotel%20Guestrooms',
+  seg2_name: 'Hotel Lobby',
+  seg2_image: '/project-categories/hotel-lobby.webp',
+  seg2_url: '/collections?seg=Hotel%20Lobby',
+  seg3_name: 'Restaurant',
+  seg3_image: '/project-categories/restaurant.webp',
+  seg3_url: '/collections?seg=Restaurant',
+  seg4_name: 'Café & Bistro',
+  seg4_image: '/project-categories/cafe-bistro.webp',
+  seg4_url: '/collections?seg=Caf%C3%A9%20%26%20Bistro',
   feat_eyebrow: '',
   feat_title: 'A few we are proud of this season.',
   feat_desc: 'Popular baseline designs ready for customization to your project’s material, fabric, and dimensional specifications.',
