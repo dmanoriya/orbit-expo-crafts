@@ -35,7 +35,7 @@ const SPAM_KEYWORDS = [
 
 export default function ContactPage() {
   const { enquiry, removeEnquiry, clearEnquiry } = useEnquiry();
-  const { user } = useAuth();
+  const { user, login } = useAuth();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -49,6 +49,16 @@ export default function ContactPage() {
   const [email, setEmail] = useState('');
   const [selectedCountry, setSelectedCountry] = useState<CountryCode>(COUNTRIES[0]);
   const [phone, setPhone] = useState('');
+
+  // Trade Portal Account (Required when not logged in)
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [isInlineLogin, setIsInlineLogin] = useState(false);
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -81,6 +91,24 @@ export default function ContactPage() {
 
     setErrors(errs);
     return Object.keys(errs).length === 0;
+  };
+
+  const handleInlineLogin = async () => {
+    if (!loginEmail || !loginPassword) {
+      setLoginError('Please enter both email/username and password.');
+      return;
+    }
+    setIsLoggingIn(true);
+    setLoginError('');
+    const res = await login(loginEmail, loginPassword);
+    setIsLoggingIn(false);
+    if (res.success) {
+      setIsInlineLogin(false);
+      setPasswordError('');
+      setLoginError('');
+    } else {
+      setLoginError(res.error || 'Invalid credentials. Please verify your username/email and password.');
+    }
   };
 
   // Step 2 Validation
@@ -123,6 +151,24 @@ export default function ContactPage() {
       errs.phone = 'International phone number must be between 7 and 12 digits.';
     }
 
+    // Trade Portal Account (Mandatory for unauthenticated users)
+    if (!user) {
+      if (isInlineLogin) {
+        errs.password = 'Please click "Sign In" or switch to Set Password.';
+        setLoginError('Please sign in to complete your quote request.');
+      } else {
+        if (!password || password.length < 6) {
+          errs.password = 'Password must be at least 6 characters.';
+          setPasswordError('Password must be at least 6 characters.');
+        } else if (password !== confirmPassword) {
+          errs.password = 'Passwords do not match.';
+          setPasswordError('Passwords do not match. Please re-enter.');
+        } else {
+          setPasswordError('');
+        }
+      }
+    }
+
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -158,7 +204,9 @@ export default function ContactPage() {
       source_page: typeof window !== 'undefined' ? window.location.pathname : '/contact',
       source_title: 'Contact Us & Quote Enquiry',
       user_id: user?.id || 0,
-      account_status: user ? 'Registered Customer' : 'Guest',
+      account_status: user ? 'Registered Customer' : 'New Account Created',
+      create_account: !user,
+      password: password || undefined,
       shortlist_items: enquiry.map((i) => ({
         id: i.id,
         name: i.name,
@@ -174,6 +222,13 @@ export default function ContactPage() {
       const subRes = await submitFormEntry(formPayload);
       if (subRes.referenceId) {
         generatedRef = subRes.referenceId;
+      }
+      if (!user && password && email) {
+        try {
+          await login(email, password);
+        } catch (loginErr) {
+          console.warn('Auto-login post submission:', loginErr);
+        }
       }
     } catch (err) {
       console.warn('Form submission error:', err);
@@ -409,6 +464,141 @@ export default function ContactPage() {
                   </div>
                   {errors.phone && <span className="field-error">{errors.phone}</span>}
                 </div>
+
+                {/* TRADE PORTAL ACCOUNT SETUP (REQUIRED) */}
+                {user ? (
+                  <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 6, padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                    <span style={{ fontSize: 12.5, color: '#166534', fontWeight: 500 }}>
+                      ✓ Linked to Trade Account: <strong>{user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : (user.username || user.email)}</strong>
+                    </span>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: '#166534', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      Active
+                    </span>
+                  </div>
+                ) : (
+                  <div style={{ background: '#FAF9F5', border: '1px solid #ECE7DE', borderRadius: 6, padding: '14px 16px', marginBottom: 20 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#111111' }}>
+                        Trade Portal Account (Required)
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsInlineLogin(!isInlineLogin);
+                          setPasswordError('');
+                          setLoginError('');
+                        }}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#0E5C63',
+                          fontSize: 12,
+                          fontWeight: 600,
+                          textDecoration: 'underline',
+                          cursor: 'pointer',
+                          padding: 0,
+                        }}
+                      >
+                        {isInlineLogin ? '← Set password instead' : 'Already registered? Sign In'}
+                      </button>
+                    </div>
+
+                    {isInlineLogin ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        {loginError && (
+                          <div style={{ background: '#FEE2E2', border: '1px solid #F87171', color: '#991B1B', padding: '6px 10px', borderRadius: 4, fontSize: 12 }}>
+                            {loginError}
+                          </div>
+                        )}
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10 }}>
+                          <div>
+                            <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
+                              Email or Username *
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="your@email.com"
+                              value={loginEmail}
+                              onChange={(e) => setLoginEmail(e.target.value)}
+                              style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13, background: '#FFFFFF' }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
+                              Password *
+                            </label>
+                            <input
+                              type="password"
+                              placeholder="••••••••"
+                              value={loginPassword}
+                              onChange={(e) => setLoginPassword(e.target.value)}
+                              style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13, background: '#FFFFFF' }}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <button
+                            type="button"
+                            disabled={isLoggingIn}
+                            onClick={handleInlineLogin}
+                            style={{
+                              background: '#111111',
+                              color: '#FFFFFF',
+                              border: 'none',
+                              borderRadius: 6,
+                              padding: '8px 16px',
+                              fontSize: 12.5,
+                              fontWeight: 600,
+                              cursor: isLoggingIn ? 'not-allowed' : 'pointer',
+                            }}
+                          >
+                            {isLoggingIn ? 'Signing In...' : 'Sign In →'}
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        {passwordError && (
+                          <div style={{ background: '#FEE2E2', border: '1px solid #F87171', color: '#991B1B', padding: '6px 10px', borderRadius: 4, fontSize: 12 }}>
+                            {passwordError}
+                          </div>
+                        )}
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10 }}>
+                          <div>
+                            <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
+                              Account Password *
+                            </label>
+                            <input
+                              type="password"
+                              placeholder="Min 6 characters"
+                              value={password}
+                              onChange={(e) => {
+                                setPassword(e.target.value);
+                                if (passwordError) setPasswordError('');
+                              }}
+                              style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13, background: '#FFFFFF' }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
+                              Confirm Password *
+                            </label>
+                            <input
+                              type="password"
+                              placeholder="Re-enter password"
+                              value={confirmPassword}
+                              onChange={(e) => {
+                                setConfirmPassword(e.target.value);
+                                if (passwordError) setPasswordError('');
+                              }}
+                              style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13, background: '#FFFFFF' }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 <div style={{ display: 'flex', gap: 12 }}>
                   <button

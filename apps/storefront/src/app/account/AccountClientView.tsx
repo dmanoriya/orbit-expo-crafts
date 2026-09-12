@@ -1450,8 +1450,8 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                       </div>
                     </div>
 
-                    {/* TABLE */}
-                    <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', border: '1px solid #ECE7DE', borderRadius: 'var(--r-md)', marginBottom: 28 }}>
+                    {/* TABLE (DESKTOP) */}
+                    <div className="portal-desktop-only portal-table-scroll">
                       <table style={{ width: '100%', minWidth: 600, borderCollapse: 'collapse', textAlign: 'left' }}>
                         <thead>
                           <tr style={{ background: '#111111', color: '#FFFFFF' }}>
@@ -1483,6 +1483,46 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                           ))}
                         </tbody>
                       </table>
+                    </div>
+
+                    {/* ITEMS LIST (MOBILE CARDS) */}
+                    <div className="portal-mobile-only" style={{ marginBottom: 24 }}>
+                      {(selectedBooking.items || []).map((it, idx) => (
+                        <div
+                          key={it.id || idx}
+                          style={{
+                            background: '#FFFFFF',
+                            border: '1px solid var(--line)',
+                            borderRadius: 'var(--r-md)',
+                            padding: '14px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 10,
+                            boxShadow: 'var(--shadow-sm)',
+                          }}
+                        >
+                          <div>
+                            <div style={{ fontSize: 11, color: '#888888', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                              Item #{idx + 1} &bull; HSN 94036000
+                            </div>
+                            <div style={{ fontWeight: 700, fontSize: 14.5, color: '#111111', marginTop: 3 }}>
+                              {it.name}
+                            </div>
+                            <div style={{ fontSize: 12, color: '#666666', marginTop: 2 }}>
+                              {it.material || 'Solid Teak Wood'} &bull; {it.dimensions || 'CAD Specs'}
+                            </div>
+                          </div>
+
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 8, borderTop: '1px solid #ECE7DE', fontSize: 13 }}>
+                            <span style={{ color: '#555555' }}>
+                              Qty: <strong>{it.quantity} pcs</strong> &times; ${(it.unitPrice || 320).toLocaleString()}
+                            </span>
+                            <span style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--brand)' }}>
+                              ${((it.totalPrice || (it.quantity * (it.unitPrice || 320)))).toLocaleString()} {selectedBooking.invoice?.currency}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
 
                     {/* FINANCIAL TOTALS */}

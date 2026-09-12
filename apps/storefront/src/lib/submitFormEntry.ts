@@ -36,6 +36,8 @@ export interface FormSubmissionResult {
   success: boolean;
   referenceId?: string;
   entryId?: number;
+  userId?: number | string;
+  accountStatus?: string;
   message?: string;
   error?: string;
 }
@@ -67,6 +69,8 @@ export async function submitFormEntry(payload: FormSubmissionPayload): Promise<F
           success: true,
           referenceId: data.data?.reference_id || data.reference_id || payload.reference_id,
           entryId: data.data?.entry_id || data.entry_id,
+          userId: data.data?.user_id || data.user_id || payload.user_id,
+          accountStatus: data.data?.account_status || data.account_status || payload.account_status,
           message: data.data?.message || data.message || 'Form submitted successfully',
         };
       }
@@ -94,6 +98,8 @@ export async function submitFormEntry(payload: FormSubmissionPayload): Promise<F
           success: true,
           referenceId: data.data?.reference_id || data.reference_id || payload.reference_id,
           entryId: data.data?.entry_id || data.entry_id,
+          userId: data.data?.user_id || data.user_id || payload.user_id,
+          accountStatus: data.data?.account_status || data.account_status || payload.account_status,
           message: data.data?.message || data.message || 'Form submitted successfully',
         };
       }
@@ -120,6 +126,8 @@ export async function submitFormEntry(payload: FormSubmissionPayload): Promise<F
           success: true,
           referenceId: data.data?.reference_id || data.reference_id || payload.reference_id,
           entryId: data.data?.entry_id || data.entry_id,
+          userId: data.data?.user_id || data.user_id || payload.user_id,
+          accountStatus: data.data?.account_status || data.account_status || payload.account_status,
           message: data.data?.message || data.message || 'Form submitted successfully',
         };
       }

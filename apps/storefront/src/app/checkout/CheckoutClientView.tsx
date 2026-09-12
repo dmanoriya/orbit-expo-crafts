@@ -567,7 +567,7 @@ export const CheckoutClientView: React.FC = () => {
                           <div
                             style={{
                               display: 'grid',
-                              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
                               gap: 12,
                             }}
                           >
@@ -626,7 +626,7 @@ export const CheckoutClientView: React.FC = () => {
                           <div
                             style={{
                               display: 'grid',
-                              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
                               gap: 12,
                             }}
                           >
