@@ -7,11 +7,28 @@ echo "🚀 Building Orbit Expo Crafts Hostinger Production Package in $ROOT_DIR.
 cd "$ROOT_DIR"
 
 # 1. Build Next.js Storefront App
-echo "📦 Step 1/5: Building Next.js Storefront..."
+echo "📦 Step 1/5: Building Next.js Storefront for Hostinger Production..."
+# Temporarily move .env.local so local WP URL is not baked into the build
+if [ -f "$ROOT_DIR/apps/storefront/.env.local" ]; then
+  mv "$ROOT_DIR/apps/storefront/.env.local" "$ROOT_DIR/apps/storefront/.env.local.bak"
+fi
+
+# Set production env vars during build
+export NODE_ENV=production
+export NEXT_PUBLIC_WORDPRESS_URL="https://admin.orbitexpocrafts.com"
+export WORDPRESS_URL="https://admin.orbitexpocrafts.com"
+export NEXT_PUBLIC_SITE_URL="https://orbitexpocrafts.com"
+export NEXT_PUBLIC_STORE_NAME="Orbit Expo Crafts"
+
 if [ -f "$ROOT_DIR/apps/storefront/node_modules/.bin/next" ]; then
   (cd "$ROOT_DIR/apps/storefront" && ./node_modules/.bin/next build)
 else
   pnpm --filter storefront build
+fi
+
+# Restore .env.local for local development
+if [ -f "$ROOT_DIR/apps/storefront/.env.local.bak" ]; then
+  mv "$ROOT_DIR/apps/storefront/.env.local.bak" "$ROOT_DIR/apps/storefront/.env.local"
 fi
 
 # 2. Prepare Clean dist-hostinger Directory
@@ -34,6 +51,22 @@ if [ -d "$ROOT_DIR/apps/storefront/public" ]; then
   cp -rL "$ROOT_DIR/apps/storefront/public" "$ROOT_DIR/dist-hostinger/public"
 fi
 
+# Generate production .env configuration for Hostinger
+cat << 'EOF' > "$ROOT_DIR/dist-hostinger/.env"
+NODE_ENV=production
+PORT=3000
+NEXT_PUBLIC_WORDPRESS_URL=https://admin.orbitexpocrafts.com
+WORDPRESS_URL=https://admin.orbitexpocrafts.com
+NEXT_PUBLIC_SITE_URL=https://orbitexpocrafts.com
+NEXT_PUBLIC_STORE_NAME=Orbit Expo Crafts
+REVALIDATE_SECRET=orbit_expo_crafts_secret_key_2026
+EOF
+
+cp "$ROOT_DIR/dist-hostinger/.env" "$ROOT_DIR/dist-hostinger/.env.production"
+mkdir -p "$ROOT_DIR/dist-hostinger/apps/storefront"
+cp "$ROOT_DIR/dist-hostinger/.env" "$ROOT_DIR/dist-hostinger/apps/storefront/.env"
+cp "$ROOT_DIR/dist-hostinger/.env" "$ROOT_DIR/dist-hostinger/apps/storefront/.env.production"
+
 # Create Fail-Safe Root package.json for Hostinger Production
 cat << 'EOF' > "$ROOT_DIR/dist-hostinger/package.json"
 {
@@ -51,10 +84,38 @@ cat << 'EOF' > "$ROOT_DIR/dist-hostinger/package.json"
 }
 EOF
 
-# Create Universal Root server.js Entrypoint with Multi-Path Fallbacks
+# Create Universal Root server.js Entrypoint with Multi-Path Fallbacks & Env Loader
 cat << 'EOF' > "$ROOT_DIR/dist-hostinger/server.js"
 const path = require('path');
 const fs = require('fs');
+
+// Auto-load .env if available
+try {
+  const envFile = path.join(__dirname, '.env');
+  if (fs.existsSync(envFile)) {
+    const lines = fs.readFileSync(envFile, 'utf8').split('\n');
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
+        const [k, ...v] = trimmed.split('=');
+        if (!process.env[k.trim()]) {
+          process.env[k.trim()] = v.join('=').trim();
+        }
+      }
+    }
+  }
+} catch (e) {}
+
+// Production Fallbacks
+if (!process.env.NEXT_PUBLIC_WORDPRESS_URL || process.env.NEXT_PUBLIC_WORDPRESS_URL.includes('.local') || process.env.NEXT_PUBLIC_WORDPRESS_URL.includes('localhost')) {
+  process.env.NEXT_PUBLIC_WORDPRESS_URL = 'https://admin.orbitexpocrafts.com';
+}
+if (!process.env.WORDPRESS_URL || process.env.WORDPRESS_URL.includes('.local') || process.env.WORDPRESS_URL.includes('localhost')) {
+  process.env.WORDPRESS_URL = 'https://admin.orbitexpocrafts.com';
+}
+if (!process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_SITE_URL.includes('.local') || process.env.NEXT_PUBLIC_SITE_URL.includes('localhost')) {
+  process.env.NEXT_PUBLIC_SITE_URL = 'https://orbitexpocrafts.com';
+}
 
 process.env.PORT = process.env.PORT || process.env.PORT_APP || 3000;
 process.env.HOSTNAME = process.env.HOSTNAME || '0.0.0.0';
@@ -88,6 +149,8 @@ cp -rL "$ROOT_DIR/dist-hostinger/apps" "$ROOT_DIR/dist-hostinger/nodejs/" 2>/dev
 cp -rL "$ROOT_DIR/dist-hostinger/node_modules" "$ROOT_DIR/dist-hostinger/nodejs/" 2>/dev/null || true
 cp -rL "$ROOT_DIR/dist-hostinger/.next" "$ROOT_DIR/dist-hostinger/nodejs/" 2>/dev/null || true
 cp -rL "$ROOT_DIR/dist-hostinger/package.json" "$ROOT_DIR/dist-hostinger/nodejs/package.json" 2>/dev/null || true
+cp -rL "$ROOT_DIR/dist-hostinger/.env" "$ROOT_DIR/dist-hostinger/nodejs/.env" 2>/dev/null || true
+cp -rL "$ROOT_DIR/dist-hostinger/.env.production" "$ROOT_DIR/dist-hostinger/nodejs/.env.production" 2>/dev/null || true
 
 if [ -d "$ROOT_DIR/dist-hostinger/public" ]; then
   cp -rL "$ROOT_DIR/dist-hostinger/public" "$ROOT_DIR/dist-hostinger/nodejs/public"
@@ -96,6 +159,34 @@ fi
 cat << 'EOF' > "$ROOT_DIR/dist-hostinger/nodejs/server.js"
 const path = require('path');
 const fs = require('fs');
+
+// Auto-load .env if available
+try {
+  const envFile = path.join(__dirname, '.env');
+  if (fs.existsSync(envFile)) {
+    const lines = fs.readFileSync(envFile, 'utf8').split('\n');
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
+        const [k, ...v] = trimmed.split('=');
+        if (!process.env[k.trim()]) {
+          process.env[k.trim()] = v.join('=').trim();
+        }
+      }
+    }
+  }
+} catch (e) {}
+
+// Production Fallbacks
+if (!process.env.NEXT_PUBLIC_WORDPRESS_URL || process.env.NEXT_PUBLIC_WORDPRESS_URL.includes('.local') || process.env.NEXT_PUBLIC_WORDPRESS_URL.includes('localhost')) {
+  process.env.NEXT_PUBLIC_WORDPRESS_URL = 'https://admin.orbitexpocrafts.com';
+}
+if (!process.env.WORDPRESS_URL || process.env.WORDPRESS_URL.includes('.local') || process.env.WORDPRESS_URL.includes('localhost')) {
+  process.env.WORDPRESS_URL = 'https://admin.orbitexpocrafts.com';
+}
+if (!process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_SITE_URL.includes('.local') || process.env.NEXT_PUBLIC_SITE_URL.includes('localhost')) {
+  process.env.NEXT_PUBLIC_SITE_URL = 'https://orbitexpocrafts.com';
+}
 
 process.env.PORT = process.env.PORT || process.env.PORT_APP || 3000;
 process.env.HOSTNAME = process.env.HOSTNAME || '0.0.0.0';

@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  const wpBaseUrl = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.orbitexpocrafts.com';
+  let wpBaseUrl = process.env.WORDPRESS_URL || process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.orbitexpocrafts.com';
+  if (process.env.NODE_ENV === 'production' && (wpBaseUrl.includes('.local') || wpBaseUrl.includes('localhost'))) {
+    wpBaseUrl = 'https://admin.orbitexpocrafts.com';
+  }
   try {
     const res = await fetch(`${wpBaseUrl.replace(/\/$/, '')}/wp-json/hcc/v1/attributes`, {
       next: { tags: ['wp-attributes'], revalidate: 60 },

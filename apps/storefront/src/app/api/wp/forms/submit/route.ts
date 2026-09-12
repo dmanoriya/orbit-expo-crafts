@@ -1,12 +1,19 @@
 import { NextResponse } from 'next/server';
 
-const WP_API_URL = (process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.orbitexpocrafts.com').replace(/\/$/, '');
+function getWpApiUrl(): string {
+  let url = process.env.WORDPRESS_URL || process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.orbitexpocrafts.com';
+  if (process.env.NODE_ENV === 'production' && (url.includes('.local') || url.includes('localhost'))) {
+    url = 'https://admin.orbitexpocrafts.com';
+  }
+  return url.replace(/\/$/, '');
+}
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    const wpBase = getWpApiUrl();
 
-    const res = await fetch(`${WP_API_URL}/index.php?rest_route=/hcc/v1/forms/submit`, {
+    const res = await fetch(`${wpBase}/index.php?rest_route=/hcc/v1/forms/submit`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

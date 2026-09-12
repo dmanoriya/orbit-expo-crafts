@@ -1,13 +1,16 @@
 # Dependencies
 node_modules/
+**/node_modules/
 .pnpm-store/
 
 # Next.js & Turbo build outputs
 .next/
+**/.next/
 dist/
 dist-hostinger/
 build/
 .turbo/
+**/.turbo/
 out/
 
 # Environment files

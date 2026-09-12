@@ -1,10 +1,17 @@
 import { NextResponse } from 'next/server';
 
-const WP_API_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.orbitexpocrafts.com';
+function getWpApiUrl(): string {
+  let url = process.env.WORDPRESS_URL || process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://admin.orbitexpocrafts.com';
+  if (process.env.NODE_ENV === 'production' && (url.includes('.local') || url.includes('localhost'))) {
+    url = 'https://admin.orbitexpocrafts.com';
+  }
+  return url.replace(/\/$/, '');
+}
 
 export async function GET() {
   try {
-    const res = await fetch(`${WP_API_URL.replace(/\/$/, '')}/wp-json/hcc/v1/homepage`, {
+    const wpBase = getWpApiUrl();
+    const res = await fetch(`${wpBase}/wp-json/hcc/v1/homepage`, {
       cache: 'no-store',
     });
 

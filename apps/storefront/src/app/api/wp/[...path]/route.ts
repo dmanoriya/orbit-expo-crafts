@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 function getWpBaseUrl(): string {
-  if (process.env.NEXT_PUBLIC_WORDPRESS_URL) {
-    return process.env.NEXT_PUBLIC_WORDPRESS_URL.replace(/\/$/, '');
+  let url = process.env.WORDPRESS_URL || process.env.NEXT_PUBLIC_WORDPRESS_URL;
+  if (process.env.NODE_ENV === 'production' || !process.env.NODE_ENV) {
+    if (!url || url.includes('.local') || url.includes('localhost')) {
+      return 'https://admin.orbitexpocrafts.com';
+    }
   }
-  if (process.env.WORDPRESS_URL) {
-    return process.env.WORDPRESS_URL.replace(/\/$/, '');
+  if (url) {
+    return url.replace(/\/$/, '');
   }
   if (process.env.NODE_ENV === 'development') {
     return 'http://woo-catalog-nextjs.local';
