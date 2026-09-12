@@ -236,7 +236,7 @@ export default function DiscussProjectsPage() {
               </div>
               <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
                 <a
-                  href="https://wa.me/919829000000?text=Hi,%20I%20would%20like%20to%20discuss%20a%20turnkey%20furniture%20project"
+                  href="https://wa.me/919928022151?text=Hi,%20I%20would%20like%20to%20discuss%20a%20turnkey%20furniture%20project"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{

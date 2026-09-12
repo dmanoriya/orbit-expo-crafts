@@ -20,13 +20,13 @@ let cachedFooterData: any = null;
 const defaultFooterData: FooterData = {
   footer_tagline: 'Thoughtfully made furniture and décor for considered spaces.',
   footer_address: 'E-243, RIICO Industrial Area, Phase II, Udaipur, Rajasthan 313001, India',
-  footer_phone: '+91 98290 00000',
+  footer_phone: '+91 99280 22151',
   footer_email: 'trade@orbitexpocrafts.com',
   social_instagram: 'https://instagram.com/orbitexpocrafts',
   social_linkedin: 'https://linkedin.com/company/orbitexpocrafts',
   social_pinterest: 'https://pinterest.com/orbitexpocrafts',
   social_facebook: 'https://facebook.com/orbitexpocrafts',
-  social_whatsapp: 'https://wa.me/919829000000',
+  social_whatsapp: 'https://wa.me/919928022151',
 };
 
 export const Footer: React.FC = () => {
@@ -179,7 +179,7 @@ export const Footer: React.FC = () => {
               {/* WHATSAPP & PHONE */}
               <div className="footer-whatsapp-row">
                 <a
-                  href={data.social_whatsapp || 'https://wa.me/919829000000'}
+                  href={data.social_whatsapp || 'https://wa.me/919928022151'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="footer-whatsapp-link"
@@ -187,7 +187,7 @@ export const Footer: React.FC = () => {
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="footer-wa-icon">
                     <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
                   </svg>
-                  <span className="footer-phone-text">{data.footer_phone || '+91 98290 00000'}</span>
+                  <span className="footer-phone-text">{data.footer_phone || '+91 99280 22151'}</span>
                   <span className="footer-wa-divider">|</span>
                   <span className="footer-wa-chat">CHAT</span>
                 </a>

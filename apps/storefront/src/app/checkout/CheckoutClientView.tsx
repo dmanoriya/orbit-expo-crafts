@@ -510,7 +510,7 @@ export const CheckoutClientView: React.FC = () => {
                     <input
                       type="tel"
                       required
-                      placeholder="+91 98290 00000 / +1 555 0192"
+                      placeholder="+91 99280 22151 / +1 555 0192"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14 }}

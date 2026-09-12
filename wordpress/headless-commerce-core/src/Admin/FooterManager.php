@@ -33,7 +33,7 @@ class FooterManager {
 			// Company Info
 			'footer_tagline'   => 'Bespoke contract & trade furniture handcrafted in Udaipur & Jodhpur for luxury resorts, boutique hotels and specifiers worldwide.',
 			'footer_address'   => 'E-243, RIICO Industrial Area, Phase II, Udaipur, Rajasthan 313001, India',
-			'footer_phone'     => '+91 98290 00000',
+			'footer_phone'     => '+91 99280 22151',
 			'footer_email'     => 'trade@orbitexpocrafts.com',
 
 			// Social Links
@@ -41,7 +41,7 @@ class FooterManager {
 			'social_linkedin'  => 'https://linkedin.com/company/orbitexpocrafts',
 			'social_pinterest' => 'https://pinterest.com/orbitexpocrafts',
 			'social_facebook'  => 'https://facebook.com/orbitexpocrafts',
-			'social_whatsapp'  => 'https://wa.me/919829000000',
+			'social_whatsapp'  => 'https://wa.me/919928022151',
 
 			// Legal Policy Contents
 			'policy_privacy'   => '<h3>1. Information Collection & Usage</h3><p>Orbit Expo Crafts respects the privacy of our architectural, design, and trade partners. We collect contact details strictly to process trade enquiries, finish sample dispatches, and CAD/3D block requests.</p><h3>2. Data Security</h3><p>Your trade details and custom project drawings are never sold, rented, or shared with third parties.</p>',
@@ -51,7 +51,14 @@ class FooterManager {
 		);
 
 		$saved = get_option( 'hcc_footer_options', array() );
-		return wp_parse_args( is_array( $saved ) ? $saved : array(), $defaults );
+		$data  = wp_parse_args( is_array( $saved ) ? $saved : array(), $defaults );
+		if ( empty( $data['footer_phone'] ) || '+91 98290 00000' === $data['footer_phone'] ) {
+			$data['footer_phone'] = '+91 99280 22151';
+		}
+		if ( empty( $data['social_whatsapp'] ) || 'https://wa.me/919829000000' === $data['social_whatsapp'] ) {
+			$data['social_whatsapp'] = 'https://wa.me/919928022151';
+		}
+		return $data;
 	}
 
 	public static function render_footer_manager_page() {

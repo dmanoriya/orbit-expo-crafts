@@ -755,7 +755,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                   Senior Technical Specifier (Rajasthan HQ)
                 </div>
                 <a
-                  href="https://wa.me/919829000000"
+                  href="https://wa.me/919928022151"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ color: '#25D366', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}
@@ -1146,7 +1146,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                       🖨️ Print Proforma Invoice
                     </button>
                     <a
-                      href={`https://wa.me/919829000000?text=Hello%2C%20I%20have%20an%20inquiry%20regarding%20Booking%20${selectedBooking.id}%20(${selectedBooking.projectName})`}
+                      href={`https://wa.me/919928022151?text=Hello%2C%20I%20have%20an%20inquiry%20regarding%20Booking%20${selectedBooking.id}%20(${selectedBooking.projectName})`}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
@@ -1494,7 +1494,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                           RIICO Industrial Area, Phase II, Basni<br />
                           Jodhpur 342005, Rajasthan, India<br />
                           GSTIN: 08AAECO4928M1Z4 &bull; IEC Code: 0514028912<br />
-                          Email: trade@orbitexpocrafts.com &bull; Tel: +91 98290 00000
+                          Email: trade@orbitexpocrafts.com &bull; Tel: +91 99280 22151
                         </div>
                       </div>
 
