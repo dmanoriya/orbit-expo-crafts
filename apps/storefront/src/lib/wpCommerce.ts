@@ -1,4 +1,5 @@
 import { ProductItem, WpSeoData, MOCK_PRODUCTS, CATEGORIES, SEGMENTS, MATERIALS, FINISHES, getProductSlug } from '../data/catalogData';
+import { isKnownDepartment } from './categoryTaxonomy';
 
 export type { WpSeoData };
 
@@ -78,6 +79,10 @@ export function getCategorySeoPath(cat: WpCategoryItem | null | undefined, categ
     }
   }
 
+  if (pathSlugs.length > 0 && isKnownDepartment(pathSlugs[0])) {
+    return `/${pathSlugs.join('/')}`;
+  }
+
   return `/collections/${pathSlugs.join('/')}`;
 }
 
@@ -102,7 +107,10 @@ export function getCategoryBreadcrumbs(cat: WpCategoryItem | null | undefined, c
     }
   }
 
-  let accumulatedPath = '/collections';
+  const isDept = chain.length > 0 && isKnownDepartment(chain[0].slug);
+  let accumulatedPath = isDept ? '' : '/collections';
+  crumbs.length = 0;
+  crumbs.push({ name: 'Home', url: '/' });
   chain.forEach((item) => {
     accumulatedPath += `/${item.slug}`;
     crumbs.push({ name: item.name, url: accumulatedPath });

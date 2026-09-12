@@ -232,6 +232,15 @@ export default function HomeClientView({
       >
         <div className="hero-gallery-overlay" />
         <div className="wrap hero-gallery-container">
+          {/* Mobile-dedicated hero media to showcase full photography without heavy text wash */}
+          <div className="hero-gallery-mobile-media">
+            <img
+              src={heroBgImage}
+              alt={hpData.hero_title || 'The Living Gallery'}
+              className="hero-gallery-mobile-img"
+            />
+          </div>
+
           <div className="hero-gallery-content">
             <span className="hero-gallery-eyebrow">
               {hpData.hero_eyebrow || 'THE LIVING GALLERY'}

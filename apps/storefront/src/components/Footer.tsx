@@ -81,41 +81,38 @@ export const Footer: React.FC = () => {
 
           {/* NAVIGATION & CONNECT COLUMNS */}
           <div className="footer-nav-columns">
-            {/* COLUMN 1: COLLECTIONS */}
+            {/* COLUMN 1: BUSINESS */}
             <div className="footer-col">
-              <h4 className="footer-col-header">COLLECTIONS</h4>
+              <h4 className="footer-col-header">BUSINESS</h4>
               <span className="footer-header-underline" aria-hidden="true" />
               <ul className="footer-menu-list">
-                <li><Link href="/collections/seating">Seating & Sofas</Link></li>
-                <li><Link href="/collections/tables">Tables & Desks</Link></li>
-                <li><Link href="/collections/storage">Storage & Casegoods</Link></li>
-                <li><Link href="/collections/lighting">Lighting & Decor</Link></li>
-                <li><Link href="/collections">Explore All Range</Link></li>
+                <li><Link href="/contact?subject=Suppliers%20%26%20Vendors">Suppliers &amp; Vendors</Link></li>
+                <li><Link href="/interior-designers">Architects &amp; Interior Designers</Link></li>
+                <li><Link href="/contact?subject=Influencers%20%26%20Marketing">Influencers &amp; Marketing</Link></li>
+                <li><Link href="/contact?subject=Furniture%20%26%20Decor%20Designers">Furniture &amp; Decor Designers</Link></li>
               </ul>
             </div>
 
-            {/* COLUMN 2: PROJECTS & TRADE */}
+            {/* COLUMN 2: TRADE */}
             <div className="footer-col">
               <h4 className="footer-col-header">TRADE</h4>
               <span className="footer-header-underline" aria-hidden="true" />
               <ul className="footer-menu-list">
-                <li><Link href="/discuss-projects">Project & Trade</Link></li>
-                <li><Link href="/turnkey">Turnkey Packages</Link></li>
-                <li><Link href="/interior-designers">Interior Designers</Link></li>
-                <li><Link href="/craft">Material & Crafts</Link></li>
+                <li><Link href="/discuss-projects">Project &amp; Trade</Link></li>
                 <li><Link href="/contact">Request a Quote</Link></li>
+                <li><Link href="/craft">Material &amp; Crafts</Link></li>
+                <li><Link href="/journal">Journal</Link></li>
               </ul>
             </div>
 
-            {/* COLUMN 3: CUSTOMER CARE / COMPANY */}
+            {/* COLUMN 3: CUSTOMER CARE */}
             <div className="footer-col">
               <h4 className="footer-col-header">CUSTOMER CARE</h4>
               <span className="footer-header-underline" aria-hidden="true" />
               <ul className="footer-menu-list">
-                <li><Link href="/about">About Orbit</Link></li>
-                <li><Link href="/shipping-policy">Shipping & Delivery</Link></li>
-                <li><Link href="/warranty-policy">Care & Warranty</Link></li>
-                <li><Link href="/journal">Design Journal</Link></li>
+                <li><Link href="/shipping-policy">Shipping &amp; Delivery</Link></li>
+                <li><Link href="/warranty-policy">Care Guide</Link></li>
+                <li><Link href="/contact#faqs">FAQs</Link></li>
                 <li><Link href="/contact">Contact Us</Link></li>
               </ul>
             </div>
