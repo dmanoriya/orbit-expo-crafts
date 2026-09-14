@@ -56,6 +56,7 @@ export default function ProductClientView({
   );
   const [selectedFinish, setSelectedFinish] = useState(FINISHES[0].n);
   const [quantity, setQuantity] = useState(initialProduct.moq || 1);
+  const [activePrice, setActivePrice] = useState<number | undefined>(initialProduct.price);
 
   // Dynamically resolve product colors from WooCommerce backend payload
   const activeColorList = (product as any).availableColors && (product as any).availableColors.length > 0
@@ -83,6 +84,13 @@ export default function ProductClientView({
       if (matchedVar.sku) {
         setActiveSku(matchedVar.sku);
       }
+      if (typeof matchedVar.price === 'number' && matchedVar.price > 0) {
+        setActivePrice(matchedVar.price);
+      } else {
+        setActivePrice(product.price);
+      }
+    } else {
+      setActivePrice(product.price);
     }
   };
 
@@ -203,9 +211,11 @@ export default function ProductClientView({
                   <td>{product.packing || 'Export-grade carton, knock-down where possible'}</td>
                 </tr>
                 <tr>
-                  <td>PRICE</td>
+                  <td>INDICATIVE PRICE</td>
                   <td style={{ color: 'var(--brand)', fontWeight: 700 }}>
-                    {product.priceNote || 'Quoted to your spec & quantity'}
+                    {activePrice && activePrice > 0
+                      ? `${product.currencySymbol || '$'}${activePrice.toLocaleString()} ${product.currency || 'USD'} / unit`
+                      : (product.priceNote || 'Quoted to your spec & quantity')}
                   </td>
                 </tr>
               </tbody>
@@ -246,12 +256,19 @@ export default function ProductClientView({
                   className="btn btn-primary pdp-enquiry-btn"
                   onClick={() =>
                     addEnquiry({
-                      id: product.id,
+                      id: activeSku || product.id,
                       name: `${product.name} (${selectedFinish})`,
                       catName: product.catName,
                       q: quantity,
                       image: activeImage || product.image,
                       moq: product.moq,
+                      material: product.material,
+                      finish: selectedFinish,
+                      dims: Array.isArray(product.dims) ? product.dims.join(' × ') + ' cm' : product.dims,
+                      unitPrice: activePrice || product.price || 0,
+                      currency: product.currency || 'USD',
+                      currencySymbol: product.currencySymbol || '$',
+                      slug: product.slug,
                     })
                   }
                 >

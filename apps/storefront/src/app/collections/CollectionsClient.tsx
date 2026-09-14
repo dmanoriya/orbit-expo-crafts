@@ -1271,6 +1271,12 @@ export default function CollectionsClient({
                               q: p.moq || 1,
                               image: (p as any).img || p.image || '/fallback-product.svg',
                               moq: p.moq || 1,
+                              unitPrice: p.price || 0,
+                              currency: p.currency || 'USD',
+                              currencySymbol: p.currencySymbol || '$',
+                              material: p.material,
+                              finish: p.color,
+                              slug: p.slug,
                             })
                           }
                         >

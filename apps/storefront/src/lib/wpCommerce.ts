@@ -478,6 +478,11 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
             packing: decodeHtmlEntities(p.packing || 'Export-grade carton, knock-down where possible'),
             leadTimeText: decodeHtmlEntities(p.leadTimeText || `${p.leadTime || 30} working days after sample approval`),
             priceNote: decodeHtmlEntities(p.priceNote || 'Quoted to your spec & quantity'),
+            price: typeof p.price === 'number' ? p.price : (p.price ? parseFloat(String(p.price)) : 0),
+            regularPrice: typeof p.regularPrice === 'number' ? p.regularPrice : (p.regularPrice ? parseFloat(String(p.regularPrice)) : undefined),
+            salePrice: typeof p.salePrice === 'number' ? p.salePrice : (p.salePrice ? parseFloat(String(p.salePrice)) : undefined),
+            currency: p.currency || 'USD',
+            currencySymbol: p.currencySymbol || '$',
             badge: (p.badge && !['none', 'null', ''].includes(String(p.badge).toLowerCase().trim()))
               ? (decodeHtmlEntities(p.badge) as any)
               : (p.onSale ? 'Best Seller' : null),
@@ -716,6 +721,11 @@ export async function fetchWpProductBySlug(slug: string): Promise<{ product: Pro
           packing: decodeHtmlEntities(p.packing || 'Export-grade carton, knock-down where possible'),
           leadTimeText: decodeHtmlEntities(p.leadTimeText || `${p.leadTime || 30} working days after sample approval`),
           priceNote: decodeHtmlEntities(p.priceNote || 'Quoted to your spec & quantity'),
+          price: typeof p.price === 'number' ? p.price : (p.price ? parseFloat(String(p.price)) : 0),
+          regularPrice: typeof p.regularPrice === 'number' ? p.regularPrice : (p.regularPrice ? parseFloat(String(p.regularPrice)) : undefined),
+          salePrice: typeof p.salePrice === 'number' ? p.salePrice : (p.salePrice ? parseFloat(String(p.salePrice)) : undefined),
+          currency: p.currency || 'USD',
+          currencySymbol: p.currencySymbol || '$',
           badge: (p.badge && !['none', 'null', ''].includes(String(p.badge).toLowerCase().trim()))
             ? (decodeHtmlEntities(p.badge) as any)
             : (p.onSale ? 'Best Seller' : null),

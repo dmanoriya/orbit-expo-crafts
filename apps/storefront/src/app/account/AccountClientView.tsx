@@ -13,6 +13,15 @@ interface AccountClientViewProps {
   initialTab?: 'overview' | 'favorites' | 'orders' | 'profile';
 }
 
+function getCurrencySymbol(cur?: string): string {
+  const c = (cur || 'USD').toUpperCase();
+  if (c === 'INR') return '₹';
+  if (c === 'EUR') return '€';
+  if (c === 'GBP') return '£';
+  if (c === 'AED') return 'AED ';
+  return '$';
+}
+
 export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab = 'overview' }) => {
   const router = useRouter();
   const { user, isAuthenticated, isLoading, login, register, logout, updateProfile } = useAuth();
@@ -1495,7 +1504,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                       <div style={{ padding: 18, background: '#FAF9F5', borderRadius: 'var(--r-md)', border: '1px solid var(--line)' }}>
                         <div style={{ fontSize: 12, color: '#777', textTransform: 'uppercase', fontWeight: 600, marginBottom: 4 }}>Commercial Value (Ex-Factory)</div>
                         <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--brand)' }}>
-                          ${selectedBooking.invoice?.totalAmount.toLocaleString()} {selectedBooking.invoice?.currency}
+                          {getCurrencySymbol(selectedBooking.invoice?.currency)}{(selectedBooking.invoice?.totalAmount || 0).toLocaleString()} {selectedBooking.invoice?.currency || 'USD'}
                         </div>
                       </div>
                     </div>
@@ -1509,7 +1518,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                             <th style={{ padding: '14px 18px', fontSize: 12.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Material & Finish</th>
                             <th style={{ padding: '14px 18px', fontSize: 12.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Dimensions</th>
                             <th style={{ padding: '14px 18px', fontSize: 12.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'center' }}>Quantity</th>
-                            <th style={{ padding: '14px 18px', fontSize: 12.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right' }}>Total (USD)</th>
+                            <th style={{ padding: '14px 18px', fontSize: 12.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right' }}>Total ({selectedBooking.invoice?.currency || 'USD'})</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1547,7 +1556,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                                 {it.quantity} pcs
                               </td>
                               <td style={{ padding: '16px 18px', textAlign: 'right', fontSize: 14, fontWeight: 700 }}>
-                                ${((it.totalPrice || (it.quantity * (it.unitPrice || 320)))).toLocaleString()}
+                                {getCurrencySymbol(selectedBooking.invoice?.currency)}{((it.totalPrice || (it.quantity * (it.unitPrice || 0)))).toLocaleString()}
                               </td>
                             </tr>
                           ))}
@@ -1601,7 +1610,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                               Quantity: <strong>{it.quantity} pcs</strong>
                             </span>
                             <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--brand)' }}>
-                              ${((it.totalPrice || (it.quantity * (it.unitPrice || 320)))).toLocaleString()} USD
+                              {getCurrencySymbol(selectedBooking.invoice?.currency)}{((it.totalPrice || (it.quantity * (it.unitPrice || 0)))).toLocaleString()} {selectedBooking.invoice?.currency || 'USD'}
                             </span>
                           </div>
                         </div>
@@ -1728,9 +1737,9 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                               </td>
                               <td style={{ padding: '12px 14px', fontSize: 12.5, fontFamily: 'monospace' }}>94036000</td>
                               <td style={{ padding: '12px 14px', fontSize: 13, textAlign: 'center', fontWeight: 600 }}>{it.quantity}</td>
-                              <td style={{ padding: '12px 14px', fontSize: 13, textAlign: 'right' }}>${(it.unitPrice || 320).toLocaleString()}</td>
+                              <td style={{ padding: '12px 14px', fontSize: 13, textAlign: 'right' }}>{getCurrencySymbol(selectedBooking.invoice?.currency)}{(it.unitPrice || 0).toLocaleString()}</td>
                               <td style={{ padding: '12px 14px', fontSize: 13, textAlign: 'right', fontWeight: 600 }}>
-                                ${((it.totalPrice || (it.quantity * (it.unitPrice || 320)))).toLocaleString()}
+                                {getCurrencySymbol(selectedBooking.invoice?.currency)}{((it.totalPrice || (it.quantity * (it.unitPrice || 0)))).toLocaleString()}
                               </td>
                             </tr>
                           ))}
@@ -1768,10 +1777,10 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
 
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 8, borderTop: '1px solid #ECE7DE', fontSize: 13 }}>
                             <span style={{ color: '#555555' }}>
-                              Qty: <strong>{it.quantity} pcs</strong> &times; ${(it.unitPrice || 320).toLocaleString()}
+                              Qty: <strong>{it.quantity} pcs</strong> &times; {getCurrencySymbol(selectedBooking.invoice?.currency)}{(it.unitPrice || 0).toLocaleString()}
                             </span>
                             <span style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--brand)' }}>
-                              ${((it.totalPrice || (it.quantity * (it.unitPrice || 320)))).toLocaleString()} {selectedBooking.invoice?.currency}
+                              {getCurrencySymbol(selectedBooking.invoice?.currency)}{((it.totalPrice || (it.quantity * (it.unitPrice || 0)))).toLocaleString()} {selectedBooking.invoice?.currency || 'USD'}
                             </span>
                           </div>
                         </div>
@@ -1783,19 +1792,19 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                       <div style={{ width: '100%', maxWidth: 360, fontSize: 13.5 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #ECE7DE' }}>
                           <span style={{ color: '#666666' }}>Subtotal Ex-Factory:</span>
-                          <strong>${selectedBooking.invoice?.subtotal.toLocaleString()}</strong>
+                          <strong>{getCurrencySymbol(selectedBooking.invoice?.currency)}{(selectedBooking.invoice?.subtotal || 0).toLocaleString()}</strong>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #ECE7DE' }}>
                           <span style={{ color: '#666666' }}>Export Crating & Palletizing:</span>
-                          <strong>${selectedBooking.invoice?.packingAndCrating.toLocaleString()}</strong>
+                          <strong>{getCurrencySymbol(selectedBooking.invoice?.currency)}{(selectedBooking.invoice?.packingAndCrating || 0).toLocaleString()}</strong>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #ECE7DE' }}>
                           <span style={{ color: '#666666' }}>Port Freight & Handling Provision:</span>
-                          <strong>${selectedBooking.invoice?.estimatedFreight.toLocaleString()}</strong>
+                          <strong>{getCurrencySymbol(selectedBooking.invoice?.currency)}{(selectedBooking.invoice?.estimatedFreight || 0).toLocaleString()}</strong>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', fontSize: 17, fontWeight: 800, color: '#111111', borderTop: '2px solid #111111', marginTop: 4 }}>
                           <span>Total Invoice Value:</span>
-                          <span style={{ color: 'var(--brand)' }}>${selectedBooking.invoice?.totalAmount.toLocaleString()} {selectedBooking.invoice?.currency}</span>
+                          <span style={{ color: 'var(--brand)' }}>{getCurrencySymbol(selectedBooking.invoice?.currency)}{(selectedBooking.invoice?.totalAmount || 0).toLocaleString()} {selectedBooking.invoice?.currency || 'USD'}</span>
                         </div>
                       </div>
                     </div>
@@ -2132,7 +2141,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                             <div style={{ fontSize: 12, color: '#444444', marginTop: 6, display: 'flex', flexWrap: 'wrap', gap: 10 }}>
                               <span>📦 <strong>{bk.totalPieces} pcs</strong></span>
                               <span>📐 <strong>{bk.estimatedCbm} CBM</strong></span>
-                              {bk.invoice && <span>💵 <strong>${bk.invoice.totalAmount.toLocaleString()} USD</strong></span>}
+                              {bk.invoice && <span>💵 <strong>{getCurrencySymbol(bk.invoice.currency)}{(bk.invoice.totalAmount || 0).toLocaleString()} {bk.invoice.currency || 'USD'}</strong></span>}
                             </div>
                           </div>
 

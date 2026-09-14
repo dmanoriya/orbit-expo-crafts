@@ -49,6 +49,12 @@ export const BestSellersClient: React.FC<BestSellersClientProps> = ({ products }
       q: p.moq || 1,
       image: p.image,
       moq: p.moq,
+      unitPrice: p.price || 0,
+      currency: p.currency || 'USD',
+      currencySymbol: p.currencySymbol || '$',
+      material: p.material,
+      finish: p.color,
+      slug: p.slug,
     });
     setAddedId(p.id);
     setTimeout(() => setAddedId(null), 1800);

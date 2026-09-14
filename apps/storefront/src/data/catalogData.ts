@@ -87,6 +87,11 @@ export interface ProductItem {
   packing?: string;
   leadTimeText?: string;
   priceNote?: string;
+  price?: number;
+  regularPrice?: number;
+  salePrice?: number;
+  currency?: string;
+  currencySymbol?: string;
   badge?: 'New' | 'Best Seller' | 'Export Ready' | null;
   is_new?: boolean;
   onSale?: boolean;

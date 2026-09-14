@@ -140,6 +140,8 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         q: item.moq || 1,
         image: item.image,
         moq: item.moq,
+        unitPrice: item.price || 0,
+        slug: item.slug,
       });
     });
 

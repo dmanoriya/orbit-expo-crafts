@@ -1105,6 +1105,12 @@ export default function CatalogueClient({
                               q: p.moq,
                               image: (p as any).img || p.image || '/fallback-product.svg',
                               moq: p.moq,
+                              unitPrice: p.price || 0,
+                              currency: p.currency || 'USD',
+                              currencySymbol: p.currencySymbol || '$',
+                              material: p.material,
+                              finish: p.color,
+                              slug: p.slug,
                             })
                           }
                         >

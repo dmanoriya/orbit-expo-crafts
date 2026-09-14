@@ -270,7 +270,7 @@ class FormEntriesManager {
 	/**
 	 * Update milestone progression, logistics, and sync to user meta
 	 */
-	public static function update_booking_milestone_and_sync( $entry_id, $stage_index, $milestone_note = '', $logistics = array(), $db_status_override = '' ) {
+	public static function update_booking_milestone_and_sync( $entry_id, $stage_index, $milestone_note = '', $logistics = array(), $db_status_override = '', $pricing = array() ) {
 		global $wpdb;
 		$table_name = self::get_table_name();
 
@@ -360,6 +360,47 @@ class FormEntriesManager {
 		}
 		if ( ! empty( $logistics['estimatedDelivery'] ) ) {
 			$b_data['logistics']['estimatedDelivery'] = sanitize_text_field( $logistics['estimatedDelivery'] );
+		}
+
+		// Commercial Invoice & Pricing Updates
+		if ( ! empty( $pricing ) && is_array( $pricing ) ) {
+			if ( ! isset( $b_data['invoice'] ) || ! is_array( $b_data['invoice'] ) ) {
+				$b_data['invoice'] = array();
+			}
+			if ( ! empty( $pricing['currency'] ) ) {
+				$b_data['invoice']['currency'] = sanitize_text_field( $pricing['currency'] );
+			}
+			if ( isset( $pricing['subtotal'] ) ) {
+				$b_data['invoice']['subtotal'] = floatval( $pricing['subtotal'] );
+			}
+			if ( isset( $pricing['packingAndCrating'] ) ) {
+				$b_data['invoice']['packingAndCrating'] = floatval( $pricing['packingAndCrating'] );
+			}
+			if ( isset( $pricing['estimatedFreight'] ) ) {
+				$b_data['invoice']['estimatedFreight'] = floatval( $pricing['estimatedFreight'] );
+			}
+			if ( isset( $pricing['totalAmount'] ) ) {
+				$b_data['invoice']['totalAmount'] = floatval( $pricing['totalAmount'] );
+			}
+			if ( ! empty( $pricing['invoiceNumber'] ) ) {
+				$b_data['invoice']['invoiceNumber'] = sanitize_text_field( $pricing['invoiceNumber'] );
+			}
+			if ( ! empty( $pricing['paymentTerms'] ) ) {
+				$b_data['invoice']['paymentTerms'] = sanitize_textarea_field( $pricing['paymentTerms'] );
+			}
+
+			// Update individual item unit prices and recalculate line totals
+			if ( ! empty( $pricing['item_prices'] ) && is_array( $pricing['item_prices'] ) && isset( $b_data['items'] ) && is_array( $b_data['items'] ) ) {
+				foreach ( $b_data['items'] as $ik => $it ) {
+					$it_id = ! empty( $it['id'] ) ? $it['id'] : (string) $ik;
+					if ( isset( $pricing['item_prices'][ $it_id ] ) ) {
+						$new_u_price = floatval( $pricing['item_prices'][ $it_id ] );
+						$it_qty      = isset( $it['quantity'] ) ? intval( $it['quantity'] ) : 1;
+						$b_data['items'][ $ik ]['unitPrice']  = $new_u_price;
+						$b_data['items'][ $ik ]['totalPrice'] = $new_u_price * $it_qty;
+					}
+				}
+			}
 		}
 
 		$final_db_status = ! empty( $db_status_override ) ? $db_status_override : $active_def['db_status'];
@@ -467,7 +508,7 @@ class FormEntriesManager {
 			exit;
 		}
 
-		// Handle Dedicated Milestone Progression Update Form from Details Modal
+		// Handle Dedicated Milestone Progression & Commercial Pricing Update Form from Details Modal
 		if ( isset( $_POST['hcc_update_milestones'] ) && isset( $_POST['entry_id'] ) && check_admin_referer( 'hcc_milestone_nonce' ) ) {
 			$entry_id    = intval( $_POST['entry_id'] );
 			$stage_index = isset( $_POST['milestone_stage'] ) ? intval( $_POST['milestone_stage'] ) : 1;
@@ -481,7 +522,21 @@ class FormEntriesManager {
 				'estimatedDelivery' => sanitize_text_field( $_POST['estimated_delivery'] ?? '' ),
 			);
 
-			self::update_booking_milestone_and_sync( $entry_id, $stage_index, $stage_note, $logistics );
+			$pricing = array();
+			if ( isset( $_POST['invoice_total'] ) || isset( $_POST['invoice_currency'] ) ) {
+				$pricing = array(
+					'currency'          => sanitize_text_field( $_POST['invoice_currency'] ?? 'USD' ),
+					'subtotal'          => floatval( $_POST['invoice_subtotal'] ?? 0 ),
+					'packingAndCrating' => floatval( $_POST['invoice_packing'] ?? 0 ),
+					'estimatedFreight'  => floatval( $_POST['invoice_freight'] ?? 0 ),
+					'totalAmount'       => floatval( $_POST['invoice_total'] ?? 0 ),
+					'invoiceNumber'     => sanitize_text_field( $_POST['invoice_number'] ?? '' ),
+					'paymentTerms'      => sanitize_textarea_field( $_POST['invoice_terms'] ?? '' ),
+					'item_prices'       => isset( $_POST['item_unit_prices'] ) && is_array( $_POST['item_unit_prices'] ) ? $_POST['item_unit_prices'] : array(),
+				);
+			}
+
+			self::update_booking_milestone_and_sync( $entry_id, $stage_index, $stage_note, $logistics, '', $pricing );
 
 			wp_safe_redirect( admin_url( 'admin.php?page=hcc-form-submissions&milestone_updated=1' ) );
 			exit;
@@ -952,6 +1007,62 @@ class FormEntriesManager {
 			return url;
 		}
 
+		function hccGetCurSym(cur) {
+			cur = (cur || 'USD').toUpperCase();
+			if (cur === 'INR') return '₹';
+			if (cur === 'EUR') return '€';
+			if (cur === 'GBP') return '£';
+			if (cur === 'AED') return 'AED ';
+			return '$';
+		}
+
+		window.hccRecalcPricing = function() {
+			var curSelect = document.getElementById('hcc_invoice_currency');
+			var cur = (curSelect ? curSelect.value : 'USD').toUpperCase();
+			var sym = hccGetCurSym(cur);
+			var symEls = document.querySelectorAll('.hcc-cur-sym');
+			for (var i = 0; i < symEls.length; i++) {
+				symEls[i].textContent = sym;
+			}
+
+			var subtotal = 0;
+			var unitInputs = document.querySelectorAll('.hcc-unit-price-input');
+			for (var j = 0; j < unitInputs.length; j++) {
+				var inp = unitInputs[j];
+				var qty = parseFloat(inp.getAttribute('data-qty')) || 1;
+				var uPrice = parseFloat(inp.value) || 0;
+				var lineTotal = qty * uPrice;
+				subtotal += lineTotal;
+				var lineEl = document.getElementById('hcc_line_total_' + inp.getAttribute('data-item-id'));
+				if (lineEl) {
+					lineEl.textContent = sym + lineTotal.toLocaleString();
+				}
+			}
+
+			var subtotalInp = document.getElementById('hcc_invoice_subtotal');
+			if (subtotalInp && !subtotalInp.dataset.manual) {
+				subtotalInp.value = Math.round(subtotal);
+			}
+			var curSub = parseFloat(subtotalInp ? subtotalInp.value : subtotal) || 0;
+
+			var packingInp = document.getElementById('hcc_invoice_packing');
+			if (packingInp && !packingInp.dataset.manual) {
+				packingInp.value = Math.round(curSub * 0.05);
+			}
+			var curPack = parseFloat(packingInp ? packingInp.value : 0) || 0;
+
+			var freightInp = document.getElementById('hcc_invoice_freight');
+			if (freightInp && !freightInp.dataset.manual) {
+				freightInp.value = Math.round(curSub * 0.08);
+			}
+			var curFreight = parseFloat(freightInp ? freightInp.value : 0) || 0;
+
+			var totalInp = document.getElementById('hcc_invoice_total');
+			if (totalInp) {
+				totalInp.value = Math.round(curSub + curPack + curFreight);
+			}
+		};
+
 		function hccShowDetails(entry) {
 			var modal = document.getElementById('hcc-detail-modal-overlay');
 			var title = document.getElementById('hcc-modal-title');
@@ -1012,26 +1123,16 @@ class FormEntriesManager {
 						if (bData.projectName) html += '<tr><td style="width:160px; font-weight:600;">Project Name:</td><td><strong>' + bData.projectName + '</strong></td></tr>';
 						if (bData.totalPieces) html += '<tr><td style="font-weight:600;">Total Pieces:</td><td>' + bData.totalPieces + ' units (~' + (bData.estimatedCbm || '0.00') + ' CBM)</td></tr>';
 						if (bData.targetDeliveryDate) html += '<tr><td style="font-weight:600;">Target Handover:</td><td>' + bData.targetDeliveryDate + '</td></tr>';
-						if (bData.invoice) {
-							html += '<tr><td style="font-weight:600;">Proforma Invoice:</td><td><strong>#' + (bData.invoice.invoiceNumber || '-') + '</strong> &bull; Total Valuation: <strong>$' + (bData.invoice.totalAmount ? Number(bData.invoice.totalAmount).toLocaleString() : '0') + ' USD</strong></td></tr>';
-							html += '<tr><td style="font-weight:600;">Payment Terms:</td><td style="font-size:12px;">' + (bData.invoice.paymentTerms || 'Commercial SWIFT/Wire') + '</td></tr>';
-						}
 						html += '</table>';
 
-						if (Array.isArray(bData.items) && bData.items.length > 0) {
-							html += '<h4 style="margin:12px 0 6px;">Ordered Items (' + bData.items.length + ')</h4>';
-							html += '<table class="widefat striped" style="margin-bottom:16px;"><thead><tr><th style="width:50px;">Preview</th><th>Item</th><th style="width:90px;">Specs</th><th style="width:70px;">Qty</th><th style="width:90px;">Valuation</th></tr></thead><tbody>';
-							bData.items.forEach(function(item) {
-								var itemImg = hccResolveImg(item.image);
-								html += '<tr>';
-								html += '<td><img src="' + itemImg + '" onerror="this.onerror=null; this.src=\'' + fallbackSvgData + '\';" style="width:36px; height:36px; object-fit:cover; border-radius:4px; border:1px solid #ccc; display:block; background:#f4f4f4;" /></td>';
-								html += '<td><strong>' + (item.name || item.id) + '</strong></td>';
-								html += '<td style="font-size:11.5px;">' + (item.material || 'Solid Wood') + '<br>' + (item.finish || '') + '</td>';
-								html += '<td><strong>' + (item.quantity || 1) + '</strong></td>';
-								html += '<td>$' + (item.totalPrice ? Number(item.totalPrice).toLocaleString() : '-') + '</td></tr>';
-							});
-							html += '</tbody></table>';
-						}
+						var curCurrency = (bData.invoice && bData.invoice.currency) ? bData.invoice.currency.toUpperCase() : 'USD';
+						var curSym = hccGetCurSym(curCurrency);
+						var curInvoiceNum = (bData.invoice && bData.invoice.invoiceNumber) ? bData.invoice.invoiceNumber : 'PI-2026-' + (entry.reference_id ? entry.reference_id.replace(/\D/g, '').slice(-4) : '8675');
+						var curSubtotal = (bData.invoice && typeof bData.invoice.subtotal === 'number') ? bData.invoice.subtotal : (bData.totalPieces ? bData.totalPieces * 320 : 0);
+						var curPacking = (bData.invoice && typeof bData.invoice.packingAndCrating === 'number') ? bData.invoice.packingAndCrating : Math.round(curSubtotal * 0.05);
+						var curFreight = (bData.invoice && typeof bData.invoice.estimatedFreight === 'number') ? bData.invoice.estimatedFreight : Math.round(curSubtotal * 0.08);
+						var curTotal = (bData.invoice && typeof bData.invoice.totalAmount === 'number') ? bData.invoice.totalAmount : (curSubtotal + curPacking + curFreight);
+						var curTerms = (bData.invoice && bData.invoice.paymentTerms) ? bData.invoice.paymentTerms : '50% Advance via Bank Wire / SWIFT upon CAD sign-off, 50% balance against Bill of Lading copy.';
 
 						// MILESTONE & LOGISTICS MANAGEMENT CARD FOR WEBSITE OWNER / ADMIN
 						var activeStage = 1;
@@ -1055,17 +1156,101 @@ class FormEntriesManager {
 						var nonceEl = document.getElementById('hcc_milestone_nonce_field');
 						var nonceVal = nonceEl ? nonceEl.value : '';
 
+						html += '<form method="post" action="admin.php?page=hcc-form-submissions">';
+						html += '<input type="hidden" name="_wpnonce" value="' + nonceVal + '" />';
+						html += '<input type="hidden" name="hcc_update_milestones" value="1" />';
+						html += '<input type="hidden" name="entry_id" value="' + entry.id + '" />';
+
+						// 1. COMMERCIAL VALUATION & QUOTATION CARD
+						html += '<div style="margin-top:20px; background:#FFFFFF; border:1.5px solid #0284C7; border-radius:8px; padding:18px; box-shadow:0 2px 6px rgba(2,132,199,0.08); margin-bottom:20px;">';
+						html += '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">';
+						html += '<h3 style="margin:0; font-size:16px; color:#0369A1; display:flex; align-items:center; gap:8px;"><span>💰</span> Commercial Valuation &amp; Proforma Invoice Quote</h3>';
+						html += '<span style="background:#0284C7; color:#fff; font-size:11px; padding:3px 8px; border-radius:4px; font-weight:600;">Website Owner Pricing Control</span>';
+						html += '</div>';
+						html += '<p style="margin:0 0 14px; font-size:12.5px; color:#475569;">Specify individual item unit prices, commercial currency, crating, freight, and terms. Changes synchronize to the client\'s Order Tracking and Proforma Invoice portal.</p>';
+
+						// Invoice # and Currency Row
+						html += '<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; background:#F0F9FF; padding:12px; border-radius:6px; border:1px solid #BAE6FD;">';
+						html += '<div>';
+						html += '<label style="display:block; font-size:12px; font-weight:700; color:#0369A1; margin-bottom:4px;">Commercial Currency</label>';
+						html += '<select name="invoice_currency" id="hcc_invoice_currency" onchange="hccRecalcPricing()" style="width:100%; font-size:13px; font-weight:700; padding:5px 8px; border-radius:4px; border:1px solid #7DD3FC;">';
+						var currencies = [
+							{ code: 'USD', label: 'USD ($ - US Dollar)' },
+							{ code: 'INR', label: 'INR (₹ - Indian Rupee)' },
+							{ code: 'EUR', label: 'EUR (€ - Euro)' },
+							{ code: 'GBP', label: 'GBP (£ - British Pound)' },
+							{ code: 'AED', label: 'AED (AED - UAE Dirham)' }
+						];
+						currencies.forEach(function(c) {
+							html += '<option value="' + c.code + '"' + (curCurrency === c.code ? ' selected' : '') + '>' + c.label + '</option>';
+						});
+						html += '</select>';
+						html += '</div>';
+
+						html += '<div>';
+						html += '<label style="display:block; font-size:12px; font-weight:700; color:#0369A1; margin-bottom:4px;">Proforma Invoice Number</label>';
+						html += '<input type="text" name="invoice_number" value="' + curInvoiceNum + '" style="width:100%; font-family:monospace; font-weight:700; font-size:13px;" />';
+						html += '</div>';
+						html += '</div>';
+
+						// Ordered Items Table with Editable Unit Prices
+						if (Array.isArray(bData.items) && bData.items.length > 0) {
+							html += '<label style="display:block; font-size:13px; font-weight:700; color:#0F172A; margin-bottom:6px;">Line Item Quotation &amp; Piece Pricing (' + bData.items.length + ' Items):</label>';
+							html += '<table class="widefat striped" style="margin-bottom:14px;"><thead><tr><th style="width:40px;">Img</th><th>Item Specification</th><th style="width:60px; text-align:center;">Qty</th><th style="width:120px;">Unit Price (<span class="hcc-cur-sym">' + curSym + '</span>)</th><th style="width:120px; text-align:right;">Line Total</th></tr></thead><tbody>';
+							bData.items.forEach(function(item, idx) {
+								var itemImg = hccResolveImg(item.image);
+								var itemId = item.id ? String(item.id) : String(idx);
+								var itemQty = item.quantity || 1;
+								var itemUnitPrice = (typeof item.unitPrice === 'number') ? item.unitPrice : 320;
+								var itemLineTotal = (typeof item.totalPrice === 'number') ? item.totalPrice : (itemQty * itemUnitPrice);
+								html += '<tr>';
+								html += '<td><img src="' + itemImg + '" onerror="this.onerror=null; this.src=\'' + fallbackSvgData + '\';" style="width:32px; height:32px; object-fit:cover; border-radius:4px; border:1px solid #ccc; display:block; background:#f4f4f4;" /></td>';
+								html += '<td><strong>' + (item.name || item.id) + '</strong><br><span style="font-size:11px; color:#64748B;">' + (item.material || 'Solid Wood') + (item.finish ? ' &bull; ' + item.finish : '') + '</span></td>';
+								html += '<td style="text-align:center; font-weight:700;">' + itemQty + '</td>';
+								html += '<td><input type="number" step="any" class="hcc-unit-price-input" name="item_unit_prices[' + itemId + ']" data-qty="' + itemQty + '" data-item-id="' + itemId + '" value="' + itemUnitPrice + '" oninput="hccRecalcPricing()" style="width:100%; font-size:12.5px; font-weight:700; padding:4px 6px;" /></td>';
+								html += '<td style="text-align:right; font-weight:700;" id="hcc_line_total_' + itemId + '">' + curSym + itemLineTotal.toLocaleString() + '</td>';
+								html += '</tr>';
+							});
+							html += '</tbody></table>';
+						}
+
+						// Financial Breakdown Inputs
+						html += '<div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:10px; margin-bottom:14px; background:#F8FAFC; padding:12px; border-radius:6px; border:1px solid #E2E8F0;">';
+						html += '<div>';
+						html += '<label style="display:block; font-size:11.5px; font-weight:600; color:#475569; margin-bottom:3px;">Subtotal (<span class="hcc-cur-sym">' + curSym + '</span>)</label>';
+						html += '<input type="number" step="any" name="invoice_subtotal" id="hcc_invoice_subtotal" value="' + curSubtotal + '" oninput="this.dataset.manual=\'1\'; hccRecalcPricing();" style="width:100%; font-size:13px; font-weight:600;" />';
+						html += '</div>';
+
+						html += '<div>';
+						html += '<label style="display:block; font-size:11.5px; font-weight:600; color:#475569; margin-bottom:3px;">Crating 5% (<span class="hcc-cur-sym">' + curSym + '</span>)</label>';
+						html += '<input type="number" step="any" name="invoice_packing" id="hcc_invoice_packing" value="' + curPacking + '" oninput="this.dataset.manual=\'1\'; hccRecalcPricing();" style="width:100%; font-size:13px;" />';
+						html += '</div>';
+
+						html += '<div>';
+						html += '<label style="display:block; font-size:11.5px; font-weight:600; color:#475569; margin-bottom:3px;">Freight 8% (<span class="hcc-cur-sym">' + curSym + '</span>)</label>';
+						html += '<input type="number" step="any" name="invoice_freight" id="hcc_invoice_freight" value="' + curFreight + '" oninput="this.dataset.manual=\'1\'; hccRecalcPricing();" style="width:100%; font-size:13px;" />';
+						html += '</div>';
+
+						html += '<div>';
+						html += '<label style="display:block; font-size:11.5px; font-weight:700; color:#0369A1; margin-bottom:3px;">Total Valuation (<span class="hcc-cur-sym">' + curSym + '</span>)</label>';
+						html += '<input type="number" step="any" name="invoice_total" id="hcc_invoice_total" value="' + curTotal + '" style="width:100%; font-size:14px; font-weight:800; color:#0369A1;" />';
+						html += '</div>';
+						html += '</div>';
+
+						// Commercial Payment Terms
+						html += '<div style="margin-bottom:8px;">';
+						html += '<label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:3px;">Commercial Payment Terms:</label>';
+						html += '<textarea name="invoice_terms" rows="2" style="width:100%; font-size:12.5px; padding:6px 8px; border-radius:4px; border:1px solid #CBD5E1;">' + curTerms + '</textarea>';
+						html += '</div>';
+						html += '</div>';
+
+						// 2. PRODUCTION & EXPORT MILESTONE CONTROL CARD
 						html += '<div style="margin-top:20px; background:#F8FAFC; border:1.5px solid #0E5C63; border-radius:8px; padding:18px; box-shadow:0 2px 6px rgba(14,92,99,0.08);">';
 						html += '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">';
 						html += '<h3 style="margin:0; font-size:16px; color:#0E5C63; display:flex; align-items:center; gap:8px;"><span>🏭</span> Production &amp; Export Milestone Control</h3>';
 						html += '<span style="background:#0E5C63; color:#fff; font-size:11px; padding:3px 8px; border-radius:4px; font-weight:600;">Live Customer Portal Sync</span>';
 						html += '</div>';
 						html += '<p style="margin:0 0 16px; font-size:12.5px; color:#475569;">Update manufacturing stage, factory floor notes, and ocean logistics. Changes immediately synchronize to the customer\'s order tracking portal.</p>';
-
-						html += '<form method="post" action="admin.php?page=hcc-form-submissions">';
-						html += '<input type="hidden" name="_wpnonce" value="' + nonceVal + '" />';
-						html += '<input type="hidden" name="hcc_update_milestones" value="1" />';
-						html += '<input type="hidden" name="entry_id" value="' + entry.id + '" />';
 
 						// STAGE SELECTOR
 						html += '<div style="margin-bottom:14px;">';
@@ -1119,11 +1304,11 @@ class FormEntriesManager {
 						html += '</div>';
 						html += '</div>';
 
-						html += '<button type="submit" class="button button-primary" style="background:#0E5C63; border-color:#0E5C63; font-weight:600; padding:6px 18px; font-size:13px; height:auto;">';
-						html += '💾 Update Production Milestone &amp; Synchronize to Customer Portal';
+						html += '<button type="submit" class="button button-primary" style="background:#0E5C63; border-color:#0E5C63; font-weight:700; padding:8px 22px; font-size:13.5px; height:auto; display:flex; align-items:center; gap:8px;">';
+						html += '💾 Save Commercial Valuation, Milestones &amp; Sync to Customer Portal';
 						html += '</button>';
-						html += '</form>';
 						html += '</div>';
+						html += '</form>';
 					}
 				} catch(e) {}
 			}

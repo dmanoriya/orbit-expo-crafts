@@ -137,8 +137,14 @@ export const CheckoutClientView: React.FC = () => {
       minute: '2-digit',
     });
 
-    // Estimate indicative valuation based on units
-    const subtotal = totalPieces * 320;
+    // Determine currency from items (e.g. if WooCommerce is INR or USD), default USD
+    const resolvedCurrency = enquiry.find((it) => it.currency)?.currency || 'USD';
+
+    // Calculate valuation based on actual product prices from WooCommerce, with baseline fallback
+    const subtotal = enquiry.reduce((acc, item) => {
+      const uPrice = (typeof item.unitPrice === 'number' && item.unitPrice > 0) ? item.unitPrice : 320;
+      return acc + (item.q || 1) * uPrice;
+    }, 0);
     const packingAndCrating = Math.round(subtotal * 0.05);
     const estimatedFreight = Math.round(subtotal * 0.08);
     const totalAmount = subtotal + packingAndCrating + estimatedFreight;
@@ -162,18 +168,21 @@ export const CheckoutClientView: React.FC = () => {
       },
       targetDeliveryDate: targetDeliveryDate || '45-60 working days from drawing signoff',
       specialNotes,
-      items: enquiry.map((item) => ({
-        id: item.id,
-        name: item.name,
-        catName: item.catName,
-        quantity: item.q || 1,
-        image: item.image,
-        material: item.material || 'Kiln-Dried Solid Hardwood',
-        finish: item.finish || 'Custom Architectural Stain',
-        dimensions: typeof item.dims === 'string' ? item.dims : 'Per CAD specification',
-        unitPrice: 320,
-        totalPrice: (item.q || 1) * 320,
-      })),
+      items: enquiry.map((item) => {
+        const uPrice = (typeof item.unitPrice === 'number' && item.unitPrice > 0) ? item.unitPrice : 320;
+        return {
+          id: item.id,
+          name: item.name,
+          catName: item.catName,
+          quantity: item.q || 1,
+          image: item.image,
+          material: item.material || 'Kiln-Dried Solid Hardwood',
+          finish: item.finish || 'Custom Architectural Stain',
+          dimensions: typeof item.dims === 'string' ? item.dims : 'Per CAD specification',
+          unitPrice: uPrice,
+          totalPrice: (item.q || 1) * uPrice,
+        };
+      }),
       totalPieces,
       estimatedCbm,
       status: 'Booking Received',
@@ -193,7 +202,7 @@ export const CheckoutClientView: React.FC = () => {
         packingAndCrating,
         estimatedFreight,
         totalAmount,
-        currency: 'USD',
+        currency: resolvedCurrency,
         paymentTerms: '50% Advance via Bank Wire / SWIFT upon CAD sign-off, 50% balance against Bill of Lading copy.',
         bankDetails: {
           accountName: 'ORBIT EXPO CRAFTS PRIVATE LIMITED',

@@ -13,6 +13,8 @@ export interface EnquiryItem {
   finish?: string;
   dims?: string | number[];
   unitPrice?: number;
+  currency?: string;
+  currencySymbol?: string;
   slug?: string;
 }
 
