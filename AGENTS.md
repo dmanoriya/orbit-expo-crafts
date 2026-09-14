@@ -8,5 +8,6 @@
 ## 2. Environment & Execution
 - **Next.js CLI**: The binary is located at `./apps/storefront/node_modules/.bin/next`.
 - **Dev Server**: Run via `./apps/storefront/node_modules/.bin/next dev -p 3000` inside `apps/storefront` or at workspace root.
-- **Production Package**: Run `./scripts/build-hostinger-zip.sh` to compile the standalone Next.js build and assemble `hostinger-nextjs-storefront.zip` and `wordpress/headless-commerce-core.zip`.
+- **Production Package**: Only run `./scripts/build-hostinger-zip.sh` when explicitly requested by the user. Do not build zip packages automatically.
+- **Git Push Policy**: Automatically commit and push to GitHub (`git push origin main`) whenever updates/features are tested and ready.
 - **Sandbox Boundary**: Git commits and writes to `.git/` require `BypassSandbox: true` to avoid macOS sandbox permission blocks.
