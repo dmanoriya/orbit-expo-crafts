@@ -120,6 +120,8 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
           setSelectedBooking(match);
           setActiveTab('orders');
         }
+      } else {
+        setSelectedBooking(null);
       }
     };
 
@@ -191,9 +193,15 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
   const refreshBookings = async () => {
     // 1. Instantly populate from local storage so the page is immediately responsive
     const localList = getStoredBookings();
+    const urlBookingParam = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('bookingId') : null;
     if (localList.length > 0) {
       setBookings((prev) => (prev.length === 0 ? localList : prev));
-      setSelectedBooking((prev) => prev || localList[0]);
+      if (urlBookingParam) {
+        const match = localList.find((b) => b.id === urlBookingParam || b.invoice?.invoiceNumber === urlBookingParam);
+        if (match) {
+          setSelectedBooking((prev) => prev || match);
+        }
+      }
     }
 
     // 2. Fetch live updates from WordPress backend
@@ -216,12 +224,20 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
         const serverBookings: BookingRecord[] = json.data.bookings;
         // Direct React state update - ZERO DELAY!
         setBookings(serverBookings);
+
+        const currentParam = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('bookingId') : null;
+
         setSelectedBooking((prev) => {
+          if (currentParam) {
+            const matchedParam = serverBookings.find((b) => b.id === currentParam || b.invoice?.invoiceNumber === currentParam);
+            if (matchedParam) return matchedParam;
+          }
           if (prev) {
             const matched = serverBookings.find((b) => b.id === prev.id);
             if (matched) return matched;
+            return prev;
           }
-          return serverBookings[0];
+          return null;
         });
 
         // Silently update localStorage cache without triggering secondary POST fetches
@@ -1330,7 +1346,10 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                   <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                     <button
                       type="button"
-                      onClick={() => setSelectedBooking(null)}
+                      onClick={() => {
+                        setSelectedBooking(null);
+                        handleTabChange('orders');
+                      }}
                       style={{
                         background: '#FAF9F5',
                         border: '1px solid var(--line)',
@@ -2202,6 +2221,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                                     onClick={() => {
                                       setSelectedBooking(bk);
                                       setInspectorTab('timeline');
+                                      handleTabChange('orders', bk.id);
                                     }}
                                     style={{
                                       background: '#111111',
@@ -2221,6 +2241,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                                     onClick={() => {
                                       setSelectedBooking(bk);
                                       setInspectorTab('conversation');
+                                      handleTabChange('orders', bk.id);
                                     }}
                                     style={{
                                       background: '#FAF9F5',
@@ -2300,6 +2321,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                               onClick={() => {
                                 setSelectedBooking(bk);
                                 setInspectorTab('timeline');
+                                handleTabChange('orders', bk.id);
                               }}
                               style={{
                                 background: '#111111',
@@ -2320,6 +2342,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                               onClick={() => {
                                 setSelectedBooking(bk);
                                 setInspectorTab('conversation');
+                                handleTabChange('orders', bk.id);
                               }}
                               style={{
                                 background: '#FAF9F5',
