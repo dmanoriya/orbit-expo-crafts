@@ -214,7 +214,7 @@ export default function ProductClientView({
                   <td>INDICATIVE PRICE</td>
                   <td style={{ color: 'var(--brand)', fontWeight: 700 }}>
                     {activePrice && activePrice > 0
-                      ? `${product.currencySymbol || '$'}${activePrice.toLocaleString()} ${product.currency || 'USD'} / unit`
+                      ? `${product.currencySymbol || '₹'}${activePrice.toLocaleString()} ${product.currency || 'INR'} / unit`
                       : (product.priceNote || 'Quoted to your spec & quantity')}
                   </td>
                 </tr>
@@ -266,8 +266,8 @@ export default function ProductClientView({
                       finish: selectedFinish,
                       dims: Array.isArray(product.dims) ? product.dims.join(' × ') + ' cm' : product.dims,
                       unitPrice: activePrice || product.price || 0,
-                      currency: product.currency || 'USD',
-                      currencySymbol: product.currencySymbol || '$',
+                      currency: product.currency || 'INR',
+                      currencySymbol: product.currencySymbol || '₹',
                       slug: product.slug,
                     })
                   }

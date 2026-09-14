@@ -8,6 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 import { BookingRecord } from '../../types/booking';
 import { saveBooking, generateDefaultMilestones } from '../../lib/bookingStore';
 import { submitFormEntry } from '../../lib/submitFormEntry';
+import PhoneInputField, { CountryCode, PHONE_COUNTRIES } from '../../components/PhoneInputField';
 
 export const CheckoutClientView: React.FC = () => {
   const router = useRouter();
@@ -20,6 +21,9 @@ export const CheckoutClientView: React.FC = () => {
   const [clientName, setClientName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [phoneDigits, setPhoneDigits] = useState('');
+  const [phoneCountry, setPhoneCountry] = useState<CountryCode>(PHONE_COUNTRIES[0]);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [gstOrTaxId, setGstOrTaxId] = useState('');
 
   // Account creation & inline login state
@@ -44,6 +48,21 @@ export const CheckoutClientView: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedBooking, setSubmittedBooking] = useState<BookingRecord | null>(null);
 
+  // Helper to sync phone digits and country from string
+  const syncPhoneFromString = (rawPhone?: string) => {
+    if (!rawPhone) return;
+    setPhone(rawPhone);
+    const matchedCountry = PHONE_COUNTRIES.find((c) => rawPhone.startsWith(c.code));
+    if (matchedCountry) {
+      setPhoneCountry(matchedCountry);
+      const digits = rawPhone.replace(matchedCountry.code, '').replace(/\D/g, '');
+      setPhoneDigits(digits);
+    } else {
+      const digits = rawPhone.replace(/\D/g, '');
+      setPhoneDigits(digits.slice(0, 10));
+    }
+  };
+
   // Auto-fill from authenticated user profile or fallback
   useEffect(() => {
     if (user) {
@@ -52,7 +71,7 @@ export const CheckoutClientView: React.FC = () => {
         setClientName(`${user.firstName || ''} ${user.lastName || ''}`.trim());
       }
       if (user.email) setEmail(user.email);
-      if (user.phone) setPhone(user.phone);
+      if (user.phone) syncPhoneFromString(user.phone);
     } else {
       try {
         const cachedStr = localStorage.getItem('orbit_last_submitted_profile');
@@ -61,7 +80,7 @@ export const CheckoutClientView: React.FC = () => {
           if (cached.company) setCompanyName(cached.company);
           if (cached.fullName) setClientName(cached.fullName);
           if (cached.email) setEmail(cached.email);
-          if (cached.phone) setPhone(cached.phone);
+          if (cached.phone) syncPhoneFromString(cached.phone);
         }
       } catch (e) {}
     }
@@ -93,19 +112,73 @@ export const CheckoutClientView: React.FC = () => {
     if (enquiry.length === 0) return;
     setPasswordError('');
 
+    const errors: Record<string, string> = {};
+    const cleanName = clientName.trim();
+    if (!cleanName || cleanName.length < 2) {
+      errors.clientName = 'Please enter your full contact name (min 2 letters).';
+    } else if (/^\d+$/.test(cleanName)) {
+      errors.clientName = 'Name cannot be numbers only.';
+    }
+
+    const cleanEmail = email.trim();
+    const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!cleanEmail) {
+      errors.email = 'Work email address is required.';
+    } else if (!EMAIL_REGEX.test(cleanEmail)) {
+      errors.email = 'Please enter a valid work email address (e.g. name@company.com).';
+    }
+
+    if (!phoneDigits) {
+      errors.phone = 'Phone / WhatsApp number is required.';
+    } else if (phoneCountry.code === '+91') {
+      if (phoneDigits.length !== 10) {
+        errors.phone = 'Please enter a valid 10-digit Indian mobile number.';
+      } else if (!/^[6-9]\d{9}$/.test(phoneDigits)) {
+        errors.phone = 'Indian mobile numbers must start with 6, 7, 8, or 9.';
+      }
+    } else if (phoneDigits.length < 7 || phoneDigits.length > 15) {
+      errors.phone = 'Please enter a valid phone number (7 to 15 digits).';
+    }
+
+    const isIndia = country.trim().toLowerCase() === 'india' || phoneCountry.code === '+91';
+    const cleanPostal = postalCode.trim();
+    if (!cleanPostal) {
+      errors.postalCode = 'Postal / ZIP code is required.';
+    } else if (isIndia && !/^\d{6}$/.test(cleanPostal)) {
+      errors.postalCode = 'Please enter a valid 6-digit Indian PIN code (e.g. 313001).';
+    } else if (!isIndia && (cleanPostal.length < 3 || cleanPostal.length > 10)) {
+      errors.postalCode = 'Please enter a valid postal code (3-10 characters).';
+    }
+
+    if (!street.trim()) {
+      errors.street = 'Street address is required.';
+    }
+    if (!city.trim()) {
+      errors.city = 'City is required.';
+    }
+
     // If guest, validate account creation fields
     if (!user) {
       if (!password || password.length < 6) {
         setPasswordError('Password must be at least 6 characters to create your Trade Portal account.');
-        return;
+        errors.password = 'Password must be at least 6 characters.';
       }
       if (password !== confirmPassword) {
         setPasswordError('Passwords do not match. Please re-enter your password.');
-        return;
+        errors.confirmPassword = 'Passwords do not match.';
       }
     }
 
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
+    setFieldErrors({});
+
     setIsSubmitting(true);
+
+    // Full international phone string
+    const fullPhone = phoneDigits ? `${phoneCountry.code} ${phoneDigits}` : phone;
 
     // If guest, create customer account via auth provider
     if (!user) {
@@ -120,7 +193,7 @@ export const CheckoutClientView: React.FC = () => {
           firstName: fName,
           lastName: lName,
           company: companyName,
-          phone,
+          phone: fullPhone,
         });
       } catch (err) {
         console.warn('Account registration client error:', err);
@@ -137,8 +210,8 @@ export const CheckoutClientView: React.FC = () => {
       minute: '2-digit',
     });
 
-    // Determine currency from items (e.g. if WooCommerce is INR or USD), default USD
-    const resolvedCurrency = enquiry.find((it) => it.currency)?.currency || 'USD';
+    // Determine currency from items (e.g. if WooCommerce is INR or USD), default INR
+    const resolvedCurrency = enquiry.find((it) => it.currency)?.currency || 'INR';
 
     // Calculate valuation based on actual product prices from WooCommerce, with baseline fallback
     const subtotal = enquiry.reduce((acc, item) => {
@@ -493,9 +566,13 @@ export const CheckoutClientView: React.FC = () => {
                         required
                         placeholder="e.g. David Miller"
                         value={clientName}
-                        onChange={(e) => setClientName(e.target.value)}
-                        style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14 }}
+                        onChange={(e) => {
+                          setClientName(e.target.value);
+                          if (fieldErrors.clientName) setFieldErrors((prev) => ({ ...prev, clientName: '' }));
+                        }}
+                        style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: `1px solid ${fieldErrors.clientName ? '#D9534F' : '#CCC'}`, fontSize: 14 }}
                       />
+                      {fieldErrors.clientName && <span className="field-error">{fieldErrors.clientName}</span>}
                     </div>
                     <div>
                       <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6, color: '#333333' }}>
@@ -506,23 +583,35 @@ export const CheckoutClientView: React.FC = () => {
                         required
                         placeholder="david@miller.com"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14 }}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          if (fieldErrors.email) setFieldErrors((prev) => ({ ...prev, email: '' }));
+                        }}
+                        style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: `1px solid ${fieldErrors.email ? '#D9534F' : '#CCC'}`, fontSize: 14 }}
                       />
+                      {fieldErrors.email && <span className="field-error">{fieldErrors.email}</span>}
                     </div>
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6, color: '#333333' }}>
-                      Phone / WhatsApp (for freight &amp; CAD dispatch updates) *
-                    </label>
-                    <input
-                      type="tel"
+                    <PhoneInputField
+                      label="Phone / WhatsApp (for freight & CAD dispatch updates)"
+                      value={phoneDigits}
+                      countryCode={phoneCountry.code}
+                      onChange={(digits, fullNumber, countryObj) => {
+                        setPhoneDigits(digits);
+                        setPhone(fullNumber);
+                        setPhoneCountry(countryObj);
+                        if (fieldErrors.phone) setFieldErrors((prev) => ({ ...prev, phone: '' }));
+                      }}
+                      onCountryChange={(c) => {
+                        setPhoneCountry(c);
+                        if (c.country && (!country || country === 'India' || country === 'United States')) {
+                          setCountry(c.country);
+                        }
+                      }}
+                      error={fieldErrors.phone}
                       required
-                      placeholder="+91 99280 22151 / +1 555 0192"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14 }}
                     />
                   </div>
 
@@ -722,9 +811,13 @@ export const CheckoutClientView: React.FC = () => {
                       required
                       placeholder="e.g. 14 Lake Palace Road, Suite 400"
                       value={street}
-                      onChange={(e) => setStreet(e.target.value)}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14 }}
+                      onChange={(e) => {
+                        setStreet(e.target.value);
+                        if (fieldErrors.street) setFieldErrors((prev) => ({ ...prev, street: '' }));
+                      }}
+                      style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: `1px solid ${fieldErrors.street ? '#D9534F' : '#CCC'}`, fontSize: 14 }}
                     />
+                    {fieldErrors.street && <span className="field-error">{fieldErrors.street}</span>}
                   </div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 14 }}>
@@ -737,9 +830,13 @@ export const CheckoutClientView: React.FC = () => {
                         required
                         placeholder="e.g. Udaipur"
                         value={city}
-                        onChange={(e) => setCity(e.target.value)}
-                        style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14 }}
+                        onChange={(e) => {
+                          setCity(e.target.value);
+                          if (fieldErrors.city) setFieldErrors((prev) => ({ ...prev, city: '' }));
+                        }}
+                        style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: `1px solid ${fieldErrors.city ? '#D9534F' : '#CCC'}`, fontSize: 14 }}
                       />
+                      {fieldErrors.city && <span className="field-error">{fieldErrors.city}</span>}
                     </div>
                     <div>
                       <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6, color: '#333333' }}>
@@ -760,11 +857,21 @@ export const CheckoutClientView: React.FC = () => {
                       <input
                         type="text"
                         required
-                        placeholder="e.g. 313001"
+                        inputMode={country.trim().toLowerCase() === 'india' || phoneCountry.code === '+91' ? 'numeric' : 'text'}
+                        placeholder={country.trim().toLowerCase() === 'india' || phoneCountry.code === '+91' ? 'e.g. 313001 (6 digits)' : 'e.g. 10001 / SW1A 1AA'}
                         value={postalCode}
-                        onChange={(e) => setPostalCode(e.target.value)}
-                        style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14 }}
+                        onChange={(e) => {
+                          const isIndia = country.trim().toLowerCase() === 'india' || phoneCountry.code === '+91';
+                          if (isIndia) {
+                            setPostalCode(e.target.value.replace(/\D/g, '').slice(0, 6));
+                          } else {
+                            setPostalCode(e.target.value.toUpperCase().replace(/[^A-Z0-9 -]/g, '').slice(0, 10));
+                          }
+                          if (fieldErrors.postalCode) setFieldErrors((prev) => ({ ...prev, postalCode: '' }));
+                        }}
+                        style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: `1px solid ${fieldErrors.postalCode ? '#D9534F' : '#CCC'}`, fontSize: 14 }}
                       />
+                      {fieldErrors.postalCode && <span className="field-error">{fieldErrors.postalCode}</span>}
                     </div>
                   </div>
 
@@ -871,7 +978,7 @@ export const CheckoutClientView: React.FC = () => {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: '#666666' }}>Online Payment Due Today</span>
-                  <span style={{ fontWeight: 700, color: '#2E7D32' }}>$0.00 (Zero Online)</span>
+                  <span style={{ fontWeight: 700, color: '#2E7D32' }}>₹0.00 (Zero Online Charge)</span>
                 </div>
               </div>
 
@@ -882,6 +989,13 @@ export const CheckoutClientView: React.FC = () => {
                 </strong>
                 Submitting books your order in our factory schedule. An itemized <b>Proforma Invoice</b> with RTGS / Bank Wire / SWIFT details will be linked to your portal account. Payment is scheduled as 50% Advance upon CAD sign-off and 50% against Bill of Lading.
               </div>
+
+              {/* VALIDATION ERROR BANNER */}
+              {Object.keys(fieldErrors).length > 0 && (
+                <div style={{ background: '#FEF2F2', border: '1px solid #F87171', borderRadius: 6, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#B91C1C' }}>
+                  ⚠️ Please correct the fields marked in red above before confirming your booking.
+                </div>
+              )}
 
               {/* SUBMIT BUTTON */}
               <button

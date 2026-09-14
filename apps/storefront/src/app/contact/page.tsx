@@ -181,10 +181,14 @@ export default function ContactPage() {
 
     if (!cleanPhone) {
       errs.phone = 'Phone / WhatsApp number is required.';
-    } else if (isIndia && cleanPhone.length !== 10) {
-      errs.phone = 'Indian phone number must be exactly 10 digits (e.g. 9876543210).';
-    } else if (!isIndia && (cleanPhone.length < 7 || cleanPhone.length > 12)) {
-      errs.phone = 'International phone number must be between 7 and 12 digits.';
+    } else if (isIndia) {
+      if (cleanPhone.length !== 10) {
+        errs.phone = 'Indian phone number must be exactly 10 digits.';
+      } else if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
+        errs.phone = 'Indian phone numbers must start with 6, 7, 8, or 9.';
+      }
+    } else if (!isIndia && (cleanPhone.length < 7 || cleanPhone.length > 15)) {
+      errs.phone = 'International phone number must be between 7 and 15 digits.';
     }
 
     // Trade Portal Account (Mandatory for unauthenticated users)
@@ -513,11 +517,11 @@ export default function ContactPage() {
                     </div>
                     <input
                       type="tel"
-                      maxLength={selectedCountry.code === '+91' ? 10 : 12}
+                      maxLength={selectedCountry.code === '+91' ? 10 : 15}
                       placeholder={selectedCountry.code === '+91' ? '98765 43210 (10 digits)' : 'Phone number'}
                       value={phone}
                       onChange={(e) => {
-                        const maxDigits = selectedCountry.code === '+91' ? 10 : 12;
+                        const maxDigits = selectedCountry.code === '+91' ? 10 : 15;
                         const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, maxDigits);
                         setPhone(digitsOnly);
                       }}

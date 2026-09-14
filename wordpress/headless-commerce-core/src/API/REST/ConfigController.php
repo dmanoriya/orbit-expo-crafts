@@ -45,7 +45,7 @@ class ConfigController extends RestController {
 			'purchasingEnabled' => StoreMode::is_purchasing_enabled(),
 			'isHeadless'        => StoreMode::is_headless(),
 			'currency'          => function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : 'INR',
-			'currencySymbol'    => function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '₹',
+			'currencySymbol'    => function_exists( 'get_woocommerce_currency_symbol' ) ? html_entity_decode( get_woocommerce_currency_symbol(), ENT_QUOTES, 'UTF-8' ) : '₹',
 			'version'           => HCC_VERSION,
 			'fonts'             => array(
 				'fontHeading' => $typo['font_heading'],

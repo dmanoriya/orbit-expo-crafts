@@ -8,18 +8,29 @@ import { useFavorites } from '../../context/FavoritesContext';
 import { useEnquiry } from '../../context/EnquiryContext';
 import { BookingRecord, BookingMessage } from '../../types/booking';
 import { getStoredBookings, saveBooking, appendMessageToBooking, generateDefaultMilestones } from '../../lib/bookingStore';
+import PhoneInputField, { CountryCode, PHONE_COUNTRIES } from '../../components/PhoneInputField';
 
 interface AccountClientViewProps {
   initialTab?: 'overview' | 'favorites' | 'orders' | 'profile';
 }
 
 function getCurrencySymbol(cur?: string): string {
-  const c = (cur || 'USD').toUpperCase();
+  const c = (cur || 'INR').toUpperCase();
   if (c === 'INR') return '₹';
   if (c === 'EUR') return '€';
   if (c === 'GBP') return '£';
   if (c === 'AED') return 'AED ';
-  return '$';
+  if (c === 'USD') return '$';
+  return '₹';
+}
+
+function parsePhone(rawPhone?: string): { country: CountryCode; digits: string } {
+  if (!rawPhone) return { country: PHONE_COUNTRIES[0], digits: '' };
+  const matched = PHONE_COUNTRIES.find((c) => rawPhone.startsWith(c.code));
+  if (matched) {
+    return { country: matched, digits: rawPhone.replace(matched.code, '').replace(/\D/g, '') };
+  }
+  return { country: PHONE_COUNTRIES[0], digits: rawPhone.replace(/\D/g, '').slice(0, 10) };
 }
 
 export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab = 'overview' }) => {
@@ -37,8 +48,10 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
   const [regLastName, setRegLastName] = useState('');
   const [regCompany, setRegCompany] = useState('');
   const [regEmail, setRegEmail] = useState('');
-  const [regPhone, setRegPhone] = useState('');
+  const [regPhoneDigits, setRegPhoneDigits] = useState('');
+  const [regPhoneCountry, setRegPhoneCountry] = useState<CountryCode>(PHONE_COUNTRIES[0]);
   const [regPassword, setRegPassword] = useState('');
+  const [regFieldErrors, setRegFieldErrors] = useState<Record<string, string>>({});
 
   const [authError, setAuthError] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(false);
@@ -59,8 +72,10 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
   // Profile Form State
   const [profileFirstName, setProfileFirstName] = useState('');
   const [profileLastName, setProfileLastName] = useState('');
-  const [profilePhone, setProfilePhone] = useState('');
+  const [profilePhoneDigits, setProfilePhoneDigits] = useState('');
+  const [profilePhoneCountry, setProfilePhoneCountry] = useState<CountryCode>(PHONE_COUNTRIES[0]);
   const [profileCompany, setProfileCompany] = useState('');
+  const [profileFieldErrors, setProfileFieldErrors] = useState<Record<string, string>>({});
 
   // Tab Switcher with URL synchronization and browser history support
   const handleTabChange = (tab: 'overview' | 'favorites' | 'orders' | 'profile', bookingId?: string) => {
@@ -165,7 +180,9 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
 
       setProfileFirstName(fName);
       setProfileLastName(lName);
-      setProfilePhone(phone);
+      const parsedP = parsePhone(phone);
+      setProfilePhoneCountry(parsedP.country);
+      setProfilePhoneDigits(parsedP.digits);
       setProfileCompany(comp);
     }
   }, [user]);
@@ -326,15 +343,61 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const errors: Record<string, string> = {};
+    const cleanFName = regFirstName.trim();
+    if (!cleanFName || cleanFName.length < 2) {
+      errors.firstName = 'First name is required (min 2 letters).';
+    } else if (/^\d+$/.test(cleanFName)) {
+      errors.firstName = 'Name cannot contain only numbers.';
+    }
+
+    const cleanLName = regLastName.trim();
+    if (!cleanLName || cleanLName.length < 2) {
+      errors.lastName = 'Last name is required (min 2 letters).';
+    } else if (/^\d+$/.test(cleanLName)) {
+      errors.lastName = 'Name cannot contain only numbers.';
+    }
+
+    const cleanEmail = regEmail.trim();
+    const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!cleanEmail) {
+      errors.email = 'Work email is required.';
+    } else if (!EMAIL_REGEX.test(cleanEmail)) {
+      errors.email = 'Please enter a valid work email address.';
+    }
+
+    if (regPhoneDigits) {
+      if (regPhoneCountry.code === '+91') {
+        if (regPhoneDigits.length !== 10) {
+          errors.phone = 'Please enter a valid 10-digit Indian mobile number.';
+        } else if (!/^[6-9]\d{9}$/.test(regPhoneDigits)) {
+          errors.phone = 'Indian mobile numbers must start with 6, 7, 8, or 9.';
+        }
+      } else if (regPhoneDigits.length < 7 || regPhoneDigits.length > 15) {
+        errors.phone = 'Please enter a valid phone number (7 to 15 digits).';
+      }
+    }
+
+    if (!regPassword || regPassword.length < 6) {
+      errors.password = 'Password must be at least 6 characters.';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setRegFieldErrors(errors);
+      return;
+    }
+    setRegFieldErrors({});
     setAuthError(null);
     setAuthLoading(true);
 
+    const fullRegPhone = regPhoneDigits ? `${regPhoneCountry.code} ${regPhoneDigits}` : '';
     const res = await register({
-      firstName: regFirstName,
-      lastName: regLastName,
-      company: regCompany,
-      email: regEmail,
-      phone: regPhone,
+      firstName: cleanFName,
+      lastName: cleanLName,
+      company: regCompany.trim(),
+      email: cleanEmail,
+      phone: fullRegPhone,
       password: regPassword,
     });
     setAuthLoading(false);
@@ -345,21 +408,49 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
 
   const handleProfileSave = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const errors: Record<string, string> = {};
+    const cleanFName = profileFirstName.trim();
+    if (!cleanFName || cleanFName.length < 2) {
+      errors.firstName = 'First name is required (min 2 letters).';
+    } else if (/^\d+$/.test(cleanFName)) {
+      errors.firstName = 'Name cannot contain only numbers.';
+    }
+
+    if (profilePhoneDigits) {
+      if (profilePhoneCountry.code === '+91') {
+        if (profilePhoneDigits.length !== 10) {
+          errors.phone = 'Please enter a valid 10-digit Indian mobile number.';
+        } else if (!/^[6-9]\d{9}$/.test(profilePhoneDigits)) {
+          errors.phone = 'Indian mobile numbers must start with 6, 7, 8, or 9.';
+        }
+      } else if (profilePhoneDigits.length < 7 || profilePhoneDigits.length > 15) {
+        errors.phone = 'Please enter a valid phone number (7 to 15 digits).';
+      }
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setProfileFieldErrors(errors);
+      return;
+    }
+    setProfileFieldErrors({});
+
+    const fullProfilePhone = profilePhoneDigits ? `${profilePhoneCountry.code} ${profilePhoneDigits}` : '';
     await updateProfile({
-      firstName: profileFirstName,
-      lastName: profileLastName,
-      phone: profilePhone,
-      company: profileCompany,
+      firstName: cleanFName,
+      lastName: profileLastName.trim(),
+      phone: fullProfilePhone,
+      company: profileCompany.trim(),
     });
     try {
       localStorage.setItem(
         'orbit_last_submitted_profile',
         JSON.stringify({
-          fullName: `${profileFirstName} ${profileLastName}`.trim(),
-          firstName: profileFirstName,
-          lastName: profileLastName,
-          company: profileCompany,
-          phone: profilePhone,
+          fullName: `${cleanFName} ${profileLastName}`.trim(),
+          firstName: cleanFName,
+          lastName: profileLastName.trim(),
+          company: profileCompany.trim(),
+          phone: fullProfilePhone,
           email: user?.email || '',
         })
       );
@@ -519,9 +610,23 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                       required
                       placeholder="e.g. David"
                       value={regFirstName}
-                      onChange={(e) => setRegFirstName(e.target.value)}
-                      style={{ width: '100%', padding: '9px 12px', borderRadius: 6, border: '1px solid #CCC', fontSize: 13.5 }}
+                      onChange={(e) => {
+                        setRegFirstName(e.target.value);
+                        if (regFieldErrors.firstName) setRegFieldErrors((prev) => ({ ...prev, firstName: '' }));
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '9px 12px',
+                        borderRadius: 6,
+                        border: regFieldErrors.firstName ? '1px solid #DC2626' : '1px solid #CCC',
+                        fontSize: 13.5,
+                      }}
                     />
+                    {regFieldErrors.firstName && (
+                      <span style={{ display: 'block', color: '#DC2626', fontSize: 11.5, marginTop: 4 }}>
+                        {regFieldErrors.firstName}
+                      </span>
+                    )}
                   </div>
                   <div>
                     <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 5 }}>
@@ -532,9 +637,23 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                       required
                       placeholder="e.g. Miller"
                       value={regLastName}
-                      onChange={(e) => setRegLastName(e.target.value)}
-                      style={{ width: '100%', padding: '9px 12px', borderRadius: 6, border: '1px solid #CCC', fontSize: 13.5 }}
+                      onChange={(e) => {
+                        setRegLastName(e.target.value);
+                        if (regFieldErrors.lastName) setRegFieldErrors((prev) => ({ ...prev, lastName: '' }));
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '9px 12px',
+                        borderRadius: 6,
+                        border: regFieldErrors.lastName ? '1px solid #DC2626' : '1px solid #CCC',
+                        fontSize: 13.5,
+                      }}
                     />
+                    {regFieldErrors.lastName && (
+                      <span style={{ display: 'block', color: '#DC2626', fontSize: 11.5, marginTop: 4 }}>
+                        {regFieldErrors.lastName}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -561,20 +680,36 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                       required
                       placeholder="Enter your work email"
                       value={regEmail}
-                      onChange={(e) => setRegEmail(e.target.value)}
-                      style={{ width: '100%', padding: '9px 12px', borderRadius: 6, border: '1px solid #CCC', fontSize: 13.5 }}
+                      onChange={(e) => {
+                        setRegEmail(e.target.value);
+                        if (regFieldErrors.email) setRegFieldErrors((prev) => ({ ...prev, email: '' }));
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '9px 12px',
+                        borderRadius: 6,
+                        border: regFieldErrors.email ? '1px solid #DC2626' : '1px solid #CCC',
+                        fontSize: 13.5,
+                      }}
                     />
+                    {regFieldErrors.email && (
+                      <span style={{ display: 'block', color: '#DC2626', fontSize: 11.5, marginTop: 4 }}>
+                        {regFieldErrors.email}
+                      </span>
+                    )}
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 5 }}>
-                      Phone / WhatsApp
-                    </label>
-                    <input
-                      type="tel"
-                      placeholder="+1 555-0192"
-                      value={regPhone}
-                      onChange={(e) => setRegPhone(e.target.value)}
-                      style={{ width: '100%', padding: '9px 12px', borderRadius: 6, border: '1px solid #CCC', fontSize: 13.5 }}
+                    <PhoneInputField
+                      label="Phone / WhatsApp"
+                      value={regPhoneDigits}
+                      countryCode={regPhoneCountry.code}
+                      onChange={(digits, _fullNumber, countryObj) => {
+                        setRegPhoneDigits(digits);
+                        setRegPhoneCountry(countryObj);
+                        if (regFieldErrors.phone) setRegFieldErrors((prev) => ({ ...prev, phone: '' }));
+                      }}
+                      onCountryChange={setRegPhoneCountry}
+                      error={regFieldErrors.phone}
                     />
                   </div>
                 </div>
@@ -588,9 +723,23 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                     required
                     placeholder="Minimum 6 characters"
                     value={regPassword}
-                    onChange={(e) => setRegPassword(e.target.value)}
-                    style={{ width: '100%', padding: '9px 12px', borderRadius: 6, border: '1px solid #CCC', fontSize: 13.5 }}
+                    onChange={(e) => {
+                      setRegPassword(e.target.value);
+                      if (regFieldErrors.password) setRegFieldErrors((prev) => ({ ...prev, password: '' }));
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '9px 12px',
+                      borderRadius: 6,
+                      border: regFieldErrors.password ? '1px solid #DC2626' : '1px solid #CCC',
+                      fontSize: 13.5,
+                    }}
                   />
+                  {regFieldErrors.password && (
+                    <span style={{ display: 'block', color: '#DC2626', fontSize: 11.5, marginTop: 4 }}>
+                      {regFieldErrors.password}
+                    </span>
+                  )}
                 </div>
 
                 <button
@@ -1504,7 +1653,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                       <div style={{ padding: 18, background: '#FAF9F5', borderRadius: 'var(--r-md)', border: '1px solid var(--line)' }}>
                         <div style={{ fontSize: 12, color: '#777', textTransform: 'uppercase', fontWeight: 600, marginBottom: 4 }}>Commercial Value (Ex-Factory)</div>
                         <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--brand)' }}>
-                          {getCurrencySymbol(selectedBooking.invoice?.currency)}{(selectedBooking.invoice?.totalAmount || 0).toLocaleString()} {selectedBooking.invoice?.currency || 'USD'}
+                          {getCurrencySymbol(selectedBooking.invoice?.currency)}{(selectedBooking.invoice?.totalAmount || 0).toLocaleString()} {selectedBooking.invoice?.currency || 'INR'}
                         </div>
                       </div>
                     </div>
@@ -1518,7 +1667,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                             <th style={{ padding: '14px 18px', fontSize: 12.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Material & Finish</th>
                             <th style={{ padding: '14px 18px', fontSize: 12.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Dimensions</th>
                             <th style={{ padding: '14px 18px', fontSize: 12.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'center' }}>Quantity</th>
-                            <th style={{ padding: '14px 18px', fontSize: 12.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right' }}>Total ({selectedBooking.invoice?.currency || 'USD'})</th>
+                            <th style={{ padding: '14px 18px', fontSize: 12.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right' }}>Total ({selectedBooking.invoice?.currency || 'INR'})</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1610,7 +1759,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                               Quantity: <strong>{it.quantity} pcs</strong>
                             </span>
                             <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--brand)' }}>
-                              {getCurrencySymbol(selectedBooking.invoice?.currency)}{((it.totalPrice || (it.quantity * (it.unitPrice || 0)))).toLocaleString()} {selectedBooking.invoice?.currency || 'USD'}
+                              {getCurrencySymbol(selectedBooking.invoice?.currency)}{((it.totalPrice || (it.quantity * (it.unitPrice || 0)))).toLocaleString()} {selectedBooking.invoice?.currency || 'INR'}
                             </span>
                           </div>
                         </div>
@@ -1780,7 +1929,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                               Qty: <strong>{it.quantity} pcs</strong> &times; {getCurrencySymbol(selectedBooking.invoice?.currency)}{(it.unitPrice || 0).toLocaleString()}
                             </span>
                             <span style={{ fontSize: 14.5, fontWeight: 700, color: 'var(--brand)' }}>
-                              {getCurrencySymbol(selectedBooking.invoice?.currency)}{((it.totalPrice || (it.quantity * (it.unitPrice || 0)))).toLocaleString()} {selectedBooking.invoice?.currency || 'USD'}
+                              {getCurrencySymbol(selectedBooking.invoice?.currency)}{((it.totalPrice || (it.quantity * (it.unitPrice || 0)))).toLocaleString()} {selectedBooking.invoice?.currency || 'INR'}
                             </span>
                           </div>
                         </div>
@@ -1804,7 +1953,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', fontSize: 17, fontWeight: 800, color: '#111111', borderTop: '2px solid #111111', marginTop: 4 }}>
                           <span>Total Invoice Value:</span>
-                          <span style={{ color: 'var(--brand)' }}>{getCurrencySymbol(selectedBooking.invoice?.currency)}{(selectedBooking.invoice?.totalAmount || 0).toLocaleString()} {selectedBooking.invoice?.currency || 'USD'}</span>
+                          <span style={{ color: 'var(--brand)' }}>{getCurrencySymbol(selectedBooking.invoice?.currency)}{(selectedBooking.invoice?.totalAmount || 0).toLocaleString()} {selectedBooking.invoice?.currency || 'INR'}</span>
                         </div>
                       </div>
                     </div>
@@ -2141,7 +2290,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                             <div style={{ fontSize: 12, color: '#444444', marginTop: 6, display: 'flex', flexWrap: 'wrap', gap: 10 }}>
                               <span>📦 <strong>{bk.totalPieces} pcs</strong></span>
                               <span>📐 <strong>{bk.estimatedCbm} CBM</strong></span>
-                              {bk.invoice && <span>💵 <strong>{getCurrencySymbol(bk.invoice.currency)}{(bk.invoice.totalAmount || 0).toLocaleString()} {bk.invoice.currency || 'USD'}</strong></span>}
+                              {bk.invoice && <span>💵 <strong>{getCurrencySymbol(bk.invoice.currency)}{(bk.invoice.totalAmount || 0).toLocaleString()} {bk.invoice.currency || 'INR'}</strong></span>}
                             </div>
                           </div>
 
@@ -2237,14 +2386,29 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
                 <div>
                   <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6 }}>
-                    First Name
+                    First Name *
                   </label>
                   <input
                     type="text"
+                    required
                     value={profileFirstName}
-                    onChange={(e) => setProfileFirstName(e.target.value)}
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14 }}
+                    onChange={(e) => {
+                      setProfileFirstName(e.target.value);
+                      if (profileFieldErrors.firstName) setProfileFieldErrors((prev) => ({ ...prev, firstName: '' }));
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '10px 14px',
+                      borderRadius: 6,
+                      border: profileFieldErrors.firstName ? '1px solid #DC2626' : '1px solid #CCC',
+                      fontSize: 14,
+                    }}
                   />
+                  {profileFieldErrors.firstName && (
+                    <span style={{ display: 'block', color: '#DC2626', fontSize: 11.5, marginTop: 4 }}>
+                      {profileFieldErrors.firstName}
+                    </span>
+                  )}
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6 }}>
@@ -2284,14 +2448,17 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6 }}>
-                    Phone / WhatsApp Number
-                  </label>
-                  <input
-                    type="tel"
-                    value={profilePhone}
-                    onChange={(e) => setProfilePhone(e.target.value)}
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14 }}
+                  <PhoneInputField
+                    label="Phone / WhatsApp Number"
+                    value={profilePhoneDigits}
+                    countryCode={profilePhoneCountry.code}
+                    onChange={(digits, _fullNumber, countryObj) => {
+                      setProfilePhoneDigits(digits);
+                      setProfilePhoneCountry(countryObj);
+                      if (profileFieldErrors.phone) setProfileFieldErrors((prev) => ({ ...prev, phone: '' }));
+                    }}
+                    onCountryChange={setProfilePhoneCountry}
+                    error={profileFieldErrors.phone}
                   />
                 </div>
               </div>

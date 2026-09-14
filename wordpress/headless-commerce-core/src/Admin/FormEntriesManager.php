@@ -1007,8 +1007,10 @@ class FormEntriesManager {
 			return url;
 		}
 
+		var defaultStoreCurrency = '<?php echo esc_js( function_exists( "get_woocommerce_currency" ) ? get_woocommerce_currency() : "INR" ); ?>';
+
 		function hccGetCurSym(cur) {
-			cur = (cur || 'USD').toUpperCase();
+			cur = (cur || defaultStoreCurrency).toUpperCase();
 			if (cur === 'INR') return '₹';
 			if (cur === 'EUR') return '€';
 			if (cur === 'GBP') return '£';
@@ -1018,7 +1020,7 @@ class FormEntriesManager {
 
 		window.hccRecalcPricing = function() {
 			var curSelect = document.getElementById('hcc_invoice_currency');
-			var cur = (curSelect ? curSelect.value : 'USD').toUpperCase();
+			var cur = (curSelect ? curSelect.value : defaultStoreCurrency).toUpperCase();
 			var sym = hccGetCurSym(cur);
 			var symEls = document.querySelectorAll('.hcc-cur-sym');
 			for (var i = 0; i < symEls.length; i++) {
@@ -1125,10 +1127,16 @@ class FormEntriesManager {
 						if (bData.targetDeliveryDate) html += '<tr><td style="font-weight:600;">Target Handover:</td><td>' + bData.targetDeliveryDate + '</td></tr>';
 						html += '</table>';
 
-						var curCurrency = (bData.invoice && bData.invoice.currency) ? bData.invoice.currency.toUpperCase() : 'USD';
+						var curCurrency = (bData.invoice && bData.invoice.currency) ? bData.invoice.currency.toUpperCase() : defaultStoreCurrency;
 						var curSym = hccGetCurSym(curCurrency);
 						var curInvoiceNum = (bData.invoice && bData.invoice.invoiceNumber) ? bData.invoice.invoiceNumber : 'PI-2026-' + (entry.reference_id ? entry.reference_id.replace(/\D/g, '').slice(-4) : '8675');
-						var curSubtotal = (bData.invoice && typeof bData.invoice.subtotal === 'number') ? bData.invoice.subtotal : (bData.totalPieces ? bData.totalPieces * 320 : 0);
+						var initialSubtotal = 0;
+						if (Array.isArray(bData.items) && bData.items.length > 0) {
+							bData.items.forEach(function(it) {
+								initialSubtotal += (it.quantity || 1) * ((typeof it.unitPrice === 'number') ? it.unitPrice : 0);
+							});
+						}
+						var curSubtotal = (bData.invoice && typeof bData.invoice.subtotal === 'number') ? bData.invoice.subtotal : initialSubtotal;
 						var curPacking = (bData.invoice && typeof bData.invoice.packingAndCrating === 'number') ? bData.invoice.packingAndCrating : Math.round(curSubtotal * 0.05);
 						var curFreight = (bData.invoice && typeof bData.invoice.estimatedFreight === 'number') ? bData.invoice.estimatedFreight : Math.round(curSubtotal * 0.08);
 						var curTotal = (bData.invoice && typeof bData.invoice.totalAmount === 'number') ? bData.invoice.totalAmount : (curSubtotal + curPacking + curFreight);
@@ -1201,7 +1209,7 @@ class FormEntriesManager {
 								var itemImg = hccResolveImg(item.image);
 								var itemId = item.id ? String(item.id) : String(idx);
 								var itemQty = item.quantity || 1;
-								var itemUnitPrice = (typeof item.unitPrice === 'number') ? item.unitPrice : 320;
+								var itemUnitPrice = (typeof item.unitPrice === 'number') ? item.unitPrice : 0;
 								var itemLineTotal = (typeof item.totalPrice === 'number') ? item.totalPrice : (itemQty * itemUnitPrice);
 								html += '<tr>';
 								html += '<td><img src="' + itemImg + '" onerror="this.onerror=null; this.src=\'' + fallbackSvgData + '\';" style="width:32px; height:32px; object-fit:cover; border-radius:4px; border:1px solid #ccc; display:block; background:#f4f4f4;" /></td>';

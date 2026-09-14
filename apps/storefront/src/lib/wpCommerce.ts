@@ -1,5 +1,6 @@
 import { ProductItem, WpSeoData, MOCK_PRODUCTS, CATEGORIES, SEGMENTS, MATERIALS, FINISHES, getProductSlug } from '../data/catalogData';
 import { isKnownDepartment } from './categoryTaxonomy';
+import { storeConfig } from '../../store.config';
 
 export type { WpSeoData };
 
@@ -130,7 +131,21 @@ export function decodeHtmlEntities(str: string): string {
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
     .replace(/&#039;/g, "'")
-    .replace(/&#39;/g, "'");
+    .replace(/&#39;/g, "'")
+    .replace(/&#(\d+);/g, (_, dec) => {
+      try {
+        return String.fromCharCode(parseInt(dec, 10));
+      } catch (e) {
+        return _;
+      }
+    })
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => {
+      try {
+        return String.fromCharCode(parseInt(hex, 16));
+      } catch (e) {
+        return _;
+      }
+    });
 }
 
 export function normalizeCommerceImageUrl(rawUrl?: string | null, catSlug?: string): string {
@@ -481,8 +496,8 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
             price: typeof p.price === 'number' ? p.price : (p.price ? parseFloat(String(p.price)) : 0),
             regularPrice: typeof p.regularPrice === 'number' ? p.regularPrice : (p.regularPrice ? parseFloat(String(p.regularPrice)) : undefined),
             salePrice: typeof p.salePrice === 'number' ? p.salePrice : (p.salePrice ? parseFloat(String(p.salePrice)) : undefined),
-            currency: p.currency || 'USD',
-            currencySymbol: p.currencySymbol || '$',
+            currency: p.currency || storeConfig.currency || 'INR',
+            currencySymbol: p.currencySymbol ? decodeHtmlEntities(p.currencySymbol) : (storeConfig.currencySymbol || '₹'),
             badge: (p.badge && !['none', 'null', ''].includes(String(p.badge).toLowerCase().trim()))
               ? (decodeHtmlEntities(p.badge) as any)
               : (p.onSale ? 'Best Seller' : null),
@@ -724,8 +739,8 @@ export async function fetchWpProductBySlug(slug: string): Promise<{ product: Pro
           price: typeof p.price === 'number' ? p.price : (p.price ? parseFloat(String(p.price)) : 0),
           regularPrice: typeof p.regularPrice === 'number' ? p.regularPrice : (p.regularPrice ? parseFloat(String(p.regularPrice)) : undefined),
           salePrice: typeof p.salePrice === 'number' ? p.salePrice : (p.salePrice ? parseFloat(String(p.salePrice)) : undefined),
-          currency: p.currency || 'USD',
-          currencySymbol: p.currencySymbol || '$',
+          currency: p.currency || storeConfig.currency || 'INR',
+          currencySymbol: p.currencySymbol ? decodeHtmlEntities(p.currencySymbol) : (storeConfig.currencySymbol || '₹'),
           badge: (p.badge && !['none', 'null', ''].includes(String(p.badge).toLowerCase().trim()))
             ? (decodeHtmlEntities(p.badge) as any)
             : (p.onSale ? 'Best Seller' : null),

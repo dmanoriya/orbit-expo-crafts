@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../../context/AuthContext';
 import { submitFormEntry } from '../../lib/submitFormEntry';
+import PhoneInputField, { CountryCode, PHONE_COUNTRIES } from '../../components/PhoneInputField';
 
 export default function DiscussProjectsPage() {
   const { user, login } = useAuth();
@@ -19,6 +20,10 @@ export default function DiscussProjectsPage() {
     message: '',
   });
 
+  const [phoneDigits, setPhoneDigits] = useState('');
+  const [phoneCountry, setPhoneCountry] = useState<CountryCode>(PHONE_COUNTRIES[0]);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
   // Trade Portal Account (Required when not logged in)
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -33,6 +38,19 @@ export default function DiscussProjectsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [refId, setRefId] = useState('');
 
+  const syncPhoneFromString = (rawPhone?: string) => {
+    if (!rawPhone) return;
+    const matchedCountry = PHONE_COUNTRIES.find((c) => rawPhone.startsWith(c.code));
+    if (matchedCountry) {
+      setPhoneCountry(matchedCountry);
+      const digits = rawPhone.replace(matchedCountry.code, '').replace(/\D/g, '');
+      setPhoneDigits(digits);
+    } else {
+      const digits = rawPhone.replace(/\D/g, '');
+      setPhoneDigits(digits.slice(0, 10));
+    }
+  };
+
   // Prefill if logged in or from previous submission
   useEffect(() => {
     if (user) {
@@ -43,6 +61,7 @@ export default function DiscussProjectsPage() {
         company: prev.company || user.company || '',
         phone: prev.phone || user.phone || '',
       }));
+      if (user.phone) syncPhoneFromString(user.phone);
     } else {
       try {
         const cachedStr = localStorage.getItem('orbit_last_submitted_profile');
@@ -55,6 +74,7 @@ export default function DiscussProjectsPage() {
             company: prev.company || cached.company || '',
             phone: prev.phone || cached.phone || '',
           }));
+          if (cached.phone) syncPhoneFromString(cached.phone);
         }
       } catch (e) {}
     }
@@ -81,6 +101,38 @@ export default function DiscussProjectsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const errors: Record<string, string> = {};
+    const cleanName = formData.name.trim();
+    if (!cleanName || cleanName.length < 2) {
+      errors.name = 'Please enter your full name (min 2 letters).';
+    } else if (/^\d+$/.test(cleanName)) {
+      errors.name = 'Name cannot contain only numbers.';
+    }
+
+    if (!formData.company.trim()) {
+      errors.company = 'Company / Studio name is required.';
+    }
+
+    const cleanEmail = formData.email.trim();
+    const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!cleanEmail) {
+      errors.email = 'Business email is required.';
+    } else if (!EMAIL_REGEX.test(cleanEmail)) {
+      errors.email = 'Please enter a valid business email address (e.g. name@studio.com).';
+    }
+
+    if (!phoneDigits) {
+      errors.phone = 'Phone / WhatsApp number is required.';
+    } else if (phoneCountry.code === '+91') {
+      if (phoneDigits.length !== 10) {
+        errors.phone = 'Please enter a valid 10-digit Indian mobile number.';
+      } else if (!/^[6-9]\d{9}$/.test(phoneDigits)) {
+        errors.phone = 'Indian mobile numbers must start with 6, 7, 8, or 9.';
+      }
+    } else if (phoneDigits.length < 7 || phoneDigits.length > 15) {
+      errors.phone = 'Please enter a valid phone number (7 to 15 digits).';
+    }
+
     // Validate account requirement if guest
     if (!user) {
       if (isInlineLogin) {
@@ -89,23 +141,31 @@ export default function DiscussProjectsPage() {
       }
       if (!password || password.length < 6) {
         setPasswordError('Password must be at least 6 characters.');
-        return;
+        errors.password = 'Password must be at least 6 characters.';
       }
       if (password !== confirmPassword) {
         setPasswordError('Passwords do not match. Please re-enter.');
-        return;
+        errors.confirmPassword = 'Passwords do not match.';
       }
     }
 
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
+    setFieldErrors({});
+
     setIsSubmitting(true);
     setPasswordError('');
+
+    const fullPhone = phoneDigits ? `${phoneCountry.code} ${phoneDigits}` : formData.phone;
 
     const formPayload = {
       form_type: 'discuss_projects',
       full_name: formData.name,
       company: formData.company,
       email: formData.email,
-      phone: formData.phone,
+      phone: fullPhone,
       project_type: formData.projectType,
       notes: `Scope: ${formData.scope}\nLocation: ${formData.location}\nTimeline: ${formData.timeline}\n\nProject Brief:\n${formData.message}`,
       source_page: typeof window !== 'undefined' ? window.location.pathname : '/discuss-projects',
@@ -136,7 +196,7 @@ export default function DiscussProjectsPage() {
             firstName: fName,
             lastName: lName,
             company: (formData.company || '').trim(),
-            phone: (formData.phone || '').trim(),
+            phone: fullPhone,
             email: (formData.email || '').trim(),
           })
         );
@@ -148,7 +208,7 @@ export default function DiscussProjectsPage() {
             firstName: fName,
             lastName: lName,
             company: (formData.company || '').trim(),
-            phone: (formData.phone || '').trim(),
+            phone: fullPhone,
           });
         } catch (loginErr) {
           console.warn('Auto-login post submission:', loginErr);
@@ -327,9 +387,23 @@ export default function DiscussProjectsPage() {
                       required
                       placeholder="e.g. Architect Sarah Jenkins"
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14 }}
+                      onChange={(e) => {
+                        setFormData({ ...formData, name: e.target.value });
+                        if (fieldErrors.name) setFieldErrors((prev) => ({ ...prev, name: '' }));
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '10px 14px',
+                        borderRadius: 6,
+                        border: fieldErrors.name ? '1px solid #DC2626' : '1px solid #CCC',
+                        fontSize: 14,
+                      }}
                     />
+                    {fieldErrors.name && (
+                      <span style={{ display: 'block', color: '#DC2626', fontSize: 12, marginTop: 4 }}>
+                        {fieldErrors.name}
+                      </span>
+                    )}
                   </div>
                   <div>
                     <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6 }}>
@@ -340,9 +414,23 @@ export default function DiscussProjectsPage() {
                       required
                       placeholder="e.g. Jenkins Design Associates"
                       value={formData.company}
-                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14 }}
+                      onChange={(e) => {
+                        setFormData({ ...formData, company: e.target.value });
+                        if (fieldErrors.company) setFieldErrors((prev) => ({ ...prev, company: '' }));
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '10px 14px',
+                        borderRadius: 6,
+                        border: fieldErrors.company ? '1px solid #DC2626' : '1px solid #CCC',
+                        fontSize: 14,
+                      }}
                     />
+                    {fieldErrors.company && (
+                      <span style={{ display: 'block', color: '#DC2626', fontSize: 12, marginTop: 4 }}>
+                        {fieldErrors.company}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -356,21 +444,37 @@ export default function DiscussProjectsPage() {
                       required
                       placeholder="sarah@design.com"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14 }}
+                      onChange={(e) => {
+                        setFormData({ ...formData, email: e.target.value });
+                        if (fieldErrors.email) setFieldErrors((prev) => ({ ...prev, email: '' }));
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '10px 14px',
+                        borderRadius: 6,
+                        border: fieldErrors.email ? '1px solid #DC2626' : '1px solid #CCC',
+                        fontSize: 14,
+                      }}
                     />
+                    {fieldErrors.email && (
+                      <span style={{ display: 'block', color: '#DC2626', fontSize: 12, marginTop: 4 }}>
+                        {fieldErrors.email}
+                      </span>
+                    )}
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6 }}>
-                      Phone / WhatsApp *
-                    </label>
-                    <input
-                      type="tel"
+                    <PhoneInputField
+                      label="Phone / WhatsApp"
                       required
-                      placeholder="+1 (555) 000-0000"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14 }}
+                      value={phoneDigits}
+                      countryCode={phoneCountry.code}
+                      onChange={(digits, _fullNumber, countryObj) => {
+                        setPhoneDigits(digits);
+                        setPhoneCountry(countryObj);
+                        if (fieldErrors.phone) setFieldErrors((prev) => ({ ...prev, phone: '' }));
+                      }}
+                      onCountryChange={setPhoneCountry}
+                      error={fieldErrors.phone}
                     />
                   </div>
                 </div>

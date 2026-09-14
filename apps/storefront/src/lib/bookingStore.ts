@@ -8,6 +8,11 @@ export function getStoredBookings(userEmail?: string): BookingRecord[] {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const all: BookingRecord[] = JSON.parse(raw);
+    all.forEach((b) => {
+      if (b.invoice && (!b.invoice.currency || b.invoice.currency === 'USD')) {
+        b.invoice.currency = 'INR';
+      }
+    });
     if (!userEmail) return all;
     return all.filter(
       (b) => !b.email || b.email.toLowerCase() === userEmail.toLowerCase()

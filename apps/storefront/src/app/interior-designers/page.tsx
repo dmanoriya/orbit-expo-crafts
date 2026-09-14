@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../../context/AuthContext';
 import { submitFormEntry } from '../../lib/submitFormEntry';
+import PhoneInputField, { CountryCode, PHONE_COUNTRIES } from '../../components/PhoneInputField';
 
 export default function InteriorDesignersPage() {
   const { user, login } = useAuth();
@@ -20,6 +21,10 @@ export default function InteriorDesignersPage() {
     projectSpecialization: 'Luxury Residential',
   });
 
+  const [phoneDigits, setPhoneDigits] = useState('');
+  const [phoneCountry, setPhoneCountry] = useState<CountryCode>(PHONE_COUNTRIES[0]);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
   // Trade Portal Account (Required when not logged in)
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -34,6 +39,19 @@ export default function InteriorDesignersPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [refId, setRefId] = useState('');
 
+  const syncPhoneFromString = (rawPhone?: string) => {
+    if (!rawPhone) return;
+    const matchedCountry = PHONE_COUNTRIES.find((c) => rawPhone.startsWith(c.code));
+    if (matchedCountry) {
+      setPhoneCountry(matchedCountry);
+      const digits = rawPhone.replace(matchedCountry.code, '').replace(/\D/g, '');
+      setPhoneDigits(digits);
+    } else {
+      const digits = rawPhone.replace(/\D/g, '');
+      setPhoneDigits(digits.slice(0, 10));
+    }
+  };
+
   // Prefill if logged in or from previous submission
   useEffect(() => {
     if (user) {
@@ -44,6 +62,7 @@ export default function InteriorDesignersPage() {
         studioName: prev.studioName || user.company || '',
         phone: prev.phone || user.phone || '',
       }));
+      if (user.phone) syncPhoneFromString(user.phone);
     } else {
       try {
         const cachedStr = localStorage.getItem('orbit_last_submitted_profile');
@@ -56,6 +75,7 @@ export default function InteriorDesignersPage() {
             studioName: prev.studioName || cached.company || '',
             phone: prev.phone || cached.phone || '',
           }));
+          if (cached.phone) syncPhoneFromString(cached.phone);
         }
       } catch (e) {}
     }
@@ -82,6 +102,49 @@ export default function InteriorDesignersPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const errors: Record<string, string> = {};
+    const cleanName = formData.name.trim();
+    if (!cleanName || cleanName.length < 2) {
+      errors.name = 'Please enter your full name (min 2 letters).';
+    } else if (/^\d+$/.test(cleanName)) {
+      errors.name = 'Name cannot contain only numbers.';
+    }
+
+    const cleanEmail = formData.email.trim();
+    const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!cleanEmail) {
+      errors.email = 'Professional email is required.';
+    } else if (!EMAIL_REGEX.test(cleanEmail)) {
+      errors.email = 'Please enter a valid email address (e.g. name@studio.com).';
+    }
+
+    if (!formData.studioName.trim()) {
+      errors.studioName = 'Studio or Business name is required.';
+    }
+
+    const cleanWebsite = formData.website.trim();
+    if (!cleanWebsite) {
+      errors.website = 'Website or portfolio URL is required.';
+    } else if (!/^https?:\/\/.+/i.test(cleanWebsite) && !/^[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/.test(cleanWebsite)) {
+      errors.website = 'Please enter a valid website URL (e.g. https://yourstudio.com).';
+    }
+
+    if (!phoneDigits) {
+      errors.phone = 'Phone / Mobile number is required.';
+    } else if (phoneCountry.code === '+91') {
+      if (phoneDigits.length !== 10) {
+        errors.phone = 'Please enter a valid 10-digit Indian mobile number.';
+      } else if (!/^[6-9]\d{9}$/.test(phoneDigits)) {
+        errors.phone = 'Indian mobile numbers must start with 6, 7, 8, or 9.';
+      }
+    } else if (phoneDigits.length < 7 || phoneDigits.length > 15) {
+      errors.phone = 'Please enter a valid phone number (7 to 15 digits).';
+    }
+
+    if (!formData.cityCountry.trim()) {
+      errors.cityCountry = 'City & Country is required.';
+    }
+
     // Validate account requirement if guest
     if (!user) {
       if (isInlineLogin) {
@@ -90,23 +153,31 @@ export default function InteriorDesignersPage() {
       }
       if (!password || password.length < 6) {
         setPasswordError('Password must be at least 6 characters.');
-        return;
+        errors.password = 'Password must be at least 6 characters.';
       }
       if (password !== confirmPassword) {
         setPasswordError('Passwords do not match. Please re-enter.');
-        return;
+        errors.confirmPassword = 'Passwords do not match.';
       }
     }
 
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
+    setFieldErrors({});
+
     setIsSubmitting(true);
     setPasswordError('');
+
+    const fullPhone = phoneDigits ? `${phoneCountry.code} ${phoneDigits}` : formData.phone;
 
     const formPayload = {
       form_type: 'interior_designer',
       full_name: formData.name,
       company: formData.studioName,
       email: formData.email,
-      phone: formData.phone,
+      phone: fullPhone,
       tax_id: formData.taxId,
       project_type: formData.businessType,
       notes: `Website / Portfolio: ${formData.website}\nSpecialization: ${formData.projectSpecialization}\nCity & Country: ${formData.cityCountry}\nStudio Address: ${formData.address}`,
@@ -138,7 +209,7 @@ export default function InteriorDesignersPage() {
             firstName: fName,
             lastName: lName,
             company: (formData.studioName || '').trim(),
-            phone: (formData.phone || '').trim(),
+            phone: fullPhone,
             email: (formData.email || '').trim(),
           })
         );
@@ -150,7 +221,7 @@ export default function InteriorDesignersPage() {
             firstName: fName,
             lastName: lName,
             company: (formData.studioName || '').trim(),
-            phone: (formData.phone || '').trim(),
+            phone: fullPhone,
           });
         } catch (loginErr) {
           console.warn('Auto-login post submission:', loginErr);
@@ -327,9 +398,23 @@ export default function InteriorDesignersPage() {
                       required
                       placeholder="e.g. David Miller"
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      style={{ width: '100%', padding: '9px 12px', borderRadius: 6, border: '1px solid #CCC', fontSize: 13.5 }}
+                      onChange={(e) => {
+                        setFormData({ ...formData, name: e.target.value });
+                        if (fieldErrors.name) setFieldErrors((prev) => ({ ...prev, name: '' }));
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '9px 12px',
+                        borderRadius: 6,
+                        border: fieldErrors.name ? '1px solid #DC2626' : '1px solid #CCC',
+                        fontSize: 13.5,
+                      }}
                     />
+                    {fieldErrors.name && (
+                      <span style={{ display: 'block', color: '#DC2626', fontSize: 12, marginTop: 4 }}>
+                        {fieldErrors.name}
+                      </span>
+                    )}
                   </div>
                   <div>
                     <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 5 }}>
@@ -340,9 +425,23 @@ export default function InteriorDesignersPage() {
                       required
                       placeholder="david@millerinteriors.com"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      style={{ width: '100%', padding: '9px 12px', borderRadius: 6, border: '1px solid #CCC', fontSize: 13.5 }}
+                      onChange={(e) => {
+                        setFormData({ ...formData, email: e.target.value });
+                        if (fieldErrors.email) setFieldErrors((prev) => ({ ...prev, email: '' }));
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '9px 12px',
+                        borderRadius: 6,
+                        border: fieldErrors.email ? '1px solid #DC2626' : '1px solid #CCC',
+                        fontSize: 13.5,
+                      }}
                     />
+                    {fieldErrors.email && (
+                      <span style={{ display: 'block', color: '#DC2626', fontSize: 12, marginTop: 4 }}>
+                        {fieldErrors.email}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -356,9 +455,23 @@ export default function InteriorDesignersPage() {
                       required
                       placeholder="Miller Interiors Studio"
                       value={formData.studioName}
-                      onChange={(e) => setFormData({ ...formData, studioName: e.target.value })}
-                      style={{ width: '100%', padding: '9px 12px', borderRadius: 6, border: '1px solid #CCC', fontSize: 13.5 }}
+                      onChange={(e) => {
+                        setFormData({ ...formData, studioName: e.target.value });
+                        if (fieldErrors.studioName) setFieldErrors((prev) => ({ ...prev, studioName: '' }));
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '9px 12px',
+                        borderRadius: 6,
+                        border: fieldErrors.studioName ? '1px solid #DC2626' : '1px solid #CCC',
+                        fontSize: 13.5,
+                      }}
                     />
+                    {fieldErrors.studioName && (
+                      <span style={{ display: 'block', color: '#DC2626', fontSize: 12, marginTop: 4 }}>
+                        {fieldErrors.studioName}
+                      </span>
+                    )}
                   </div>
                   <div>
                     <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 5 }}>
@@ -369,9 +482,23 @@ export default function InteriorDesignersPage() {
                       required
                       placeholder="https://millerinteriors.com"
                       value={formData.website}
-                      onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                      style={{ width: '100%', padding: '9px 12px', borderRadius: 6, border: '1px solid #CCC', fontSize: 13.5 }}
+                      onChange={(e) => {
+                        setFormData({ ...formData, website: e.target.value });
+                        if (fieldErrors.website) setFieldErrors((prev) => ({ ...prev, website: '' }));
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '9px 12px',
+                        borderRadius: 6,
+                        border: fieldErrors.website ? '1px solid #DC2626' : '1px solid #CCC',
+                        fontSize: 13.5,
+                      }}
                     />
+                    {fieldErrors.website && (
+                      <span style={{ display: 'block', color: '#DC2626', fontSize: 12, marginTop: 4 }}>
+                        {fieldErrors.website}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -408,16 +535,18 @@ export default function InteriorDesignersPage() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14 }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 5 }}>
-                      Phone / Mobile *
-                    </label>
-                    <input
-                      type="tel"
+                    <PhoneInputField
+                      label="Phone / Mobile"
                       required
-                      placeholder="+1 (555) 234-5678"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      style={{ width: '100%', padding: '9px 12px', borderRadius: 6, border: '1px solid #CCC', fontSize: 13.5 }}
+                      value={phoneDigits}
+                      countryCode={phoneCountry.code}
+                      onChange={(digits, _fullNumber, countryObj) => {
+                        setPhoneDigits(digits);
+                        setPhoneCountry(countryObj);
+                        if (fieldErrors.phone) setFieldErrors((prev) => ({ ...prev, phone: '' }));
+                      }}
+                      onCountryChange={setPhoneCountry}
+                      error={fieldErrors.phone}
                     />
                   </div>
                   <div>
@@ -429,9 +558,23 @@ export default function InteriorDesignersPage() {
                       required
                       placeholder="e.g. New York, USA"
                       value={formData.cityCountry}
-                      onChange={(e) => setFormData({ ...formData, cityCountry: e.target.value })}
-                      style={{ width: '100%', padding: '9px 12px', borderRadius: 6, border: '1px solid #CCC', fontSize: 13.5 }}
+                      onChange={(e) => {
+                        setFormData({ ...formData, cityCountry: e.target.value });
+                        if (fieldErrors.cityCountry) setFieldErrors((prev) => ({ ...prev, cityCountry: '' }));
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '9px 12px',
+                        borderRadius: 6,
+                        border: fieldErrors.cityCountry ? '1px solid #DC2626' : '1px solid #CCC',
+                        fontSize: 13.5,
+                      }}
                     />
+                    {fieldErrors.cityCountry && (
+                      <span style={{ display: 'block', color: '#DC2626', fontSize: 12, marginTop: 4 }}>
+                        {fieldErrors.cityCountry}
+                      </span>
+                    )}
                   </div>
                 </div>
 
