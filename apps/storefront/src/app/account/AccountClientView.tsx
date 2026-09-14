@@ -7,7 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useFavorites } from '../../context/FavoritesContext';
 import { useEnquiry } from '../../context/EnquiryContext';
 import { BookingRecord, BookingMessage } from '../../types/booking';
-import { getStoredBookings, saveBooking, appendMessageToBooking, generateDefaultMilestones } from '../../lib/bookingStore';
+import { getStoredBookings, saveBooking, appendMessageToBooking, generateDefaultMilestones, deduplicateBookings } from '../../lib/bookingStore';
 import PhoneInputField, { CountryCode, PHONE_COUNTRIES } from '../../components/PhoneInputField';
 
 interface AccountClientViewProps {
@@ -192,10 +192,10 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
   // Refresh bookings on mount & when user changes, plus fetch live updates from WordPress with zero delay
   const refreshBookings = async () => {
     // 1. Instantly populate from local storage so the page is immediately responsive
-    const localList = getStoredBookings();
+    const localList = deduplicateBookings(getStoredBookings());
     const urlBookingParam = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('bookingId') : null;
     if (localList.length > 0) {
-      setBookings((prev) => (prev.length === 0 ? localList : prev));
+      setBookings((prev) => (prev.length === 0 ? localList : deduplicateBookings(prev)));
       if (urlBookingParam) {
         const match = localList.find((b) => b.id === urlBookingParam || b.invoice?.invoiceNumber === urlBookingParam);
         if (match) {
@@ -221,7 +221,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
       });
       const json = await res.json();
       if (json.success && Array.isArray(json.data?.bookings) && json.data.bookings.length > 0) {
-        const serverBookings: BookingRecord[] = json.data.bookings;
+        const serverBookings: BookingRecord[] = deduplicateBookings(json.data.bookings);
         // Direct React state update - ZERO DELAY!
         setBookings(serverBookings);
 
@@ -1080,9 +1080,9 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  {bookings.slice(0, 3).map((bk) => (
+                  {bookings.slice(0, 3).map((bk, idx) => (
                     <div
-                      key={bk.id}
+                      key={`ov-${bk.id || idx}-${idx}`}
                       style={{
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -2050,11 +2050,11 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                     {/* MESSAGES LIST */}
                     <div style={{ flex: 1, padding: 20, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 16, background: '#FCFBF8', minHeight: 320 }}>
                       {selectedBooking.messages && selectedBooking.messages.length > 0 ? (
-                        selectedBooking.messages.map((msg) => {
+                        selectedBooking.messages.map((msg, idx) => {
                           const isClient = msg.sender === 'client';
                           return (
                             <div
-                              key={msg.id}
+                              key={`msg-${msg.id || idx}-${idx}`}
                               style={{
                                 alignSelf: isClient ? 'flex-end' : 'flex-start',
                                 maxWidth: '80%',
@@ -2177,8 +2177,8 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                           </tr>
                         </thead>
                         <tbody>
-                          {bookings.map((bk) => (
-                            <tr key={bk.id} style={{ borderBottom: '1px solid #ECE7DE' }}>
+                          {bookings.map((bk, idx) => (
+                            <tr key={`tbl-${bk.id || idx}-${idx}`} style={{ borderBottom: '1px solid #ECE7DE' }}>
                               <td style={{ padding: '16px' }}>
                                 <div style={{ fontWeight: 700, fontSize: 14 }}>{bk.id}</div>
                                 <div style={{ fontSize: 12, color: '#777777', marginTop: 2 }}>
@@ -2267,9 +2267,9 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
 
                     {/* MOBILE CARDS */}
                     <div className="portal-mobile-only" style={{ marginBottom: 28 }}>
-                      {bookings.map((bk) => (
+                      {bookings.map((bk, idx) => (
                         <div
-                          key={bk.id}
+                          key={`mob-${bk.id || idx}-${idx}`}
                           style={{
                             background: '#FFFFFF',
                             border: '1px solid var(--line)',

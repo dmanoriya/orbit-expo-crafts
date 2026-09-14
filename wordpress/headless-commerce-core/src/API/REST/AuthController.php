@@ -473,12 +473,20 @@ class AuthController extends RestController {
 
 		$rows = $wpdb->get_results( "SELECT reference_id, booking_data, status, created_at FROM {$entries_tbl} WHERE booking_data IS NOT NULL AND booking_data != '' {$where_clause} ORDER BY id DESC LIMIT 50" );
 		if ( ! empty( $rows ) ) {
+			$seen_ids = array();
 			foreach ( $rows as $row ) {
 				if ( ! empty( $row->booking_data ) ) {
 					$decoded = json_decode( $row->booking_data, true );
 					if ( is_array( $decoded ) ) {
 						if ( empty( $decoded['id'] ) ) {
 							$decoded['id'] = $row->reference_id;
+						}
+						$b_id = ! empty( $decoded['id'] ) ? (string) $decoded['id'] : (string) $row->reference_id;
+						if ( ! empty( $b_id ) ) {
+							if ( isset( $seen_ids[ $b_id ] ) ) {
+								continue;
+							}
+							$seen_ids[ $b_id ] = true;
 						}
 						$bookings[] = $decoded;
 					}
@@ -501,6 +509,21 @@ class AuthController extends RestController {
 
 		if ( ! is_array( $bookings ) ) {
 			$bookings = array();
+		} else {
+			$unique_bookings = array();
+			$final_seen = array();
+			foreach ( $bookings as $b ) {
+				if ( is_array( $b ) && ! empty( $b['id'] ) ) {
+					$bid = (string) $b['id'];
+					if ( ! isset( $final_seen[ $bid ] ) ) {
+						$final_seen[ $bid ] = true;
+						$unique_bookings[] = $b;
+					}
+				} else {
+					$unique_bookings[] = $b;
+				}
+			}
+			$bookings = $unique_bookings;
 		}
 
 		return $this->success_response( array( 'bookings' => $bookings ) );

@@ -2,12 +2,38 @@ import { BookingRecord, BookingMessage, BookingMilestone } from '../types/bookin
 
 const STORAGE_KEY = 'orbit_customer_bookings';
 
+export function deduplicateBookings(bookings: BookingRecord[]): BookingRecord[] {
+  if (!Array.isArray(bookings)) return [];
+  const seen = new Set<string>();
+  const result: BookingRecord[] = [];
+  for (const b of bookings) {
+    if (!b || !b.id) continue;
+    const key = String(b.id).trim();
+    if (!seen.has(key)) {
+      seen.add(key);
+      result.push(b);
+    }
+  }
+  return result;
+}
+
 export function getStoredBookings(userEmail?: string): BookingRecord[] {
   if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
-    const all: BookingRecord[] = JSON.parse(raw);
+    let all: BookingRecord[] = JSON.parse(raw);
+    if (!Array.isArray(all)) return [];
+
+    // Auto-heal duplicate entries in localStorage
+    const deduplicated = deduplicateBookings(all);
+    if (deduplicated.length !== all.length) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(deduplicated));
+      } catch (e) {}
+    }
+    all = deduplicated;
+
     all.forEach((b) => {
       if (b.invoice && (!b.invoice.currency || b.invoice.currency === 'USD')) {
         b.invoice.currency = 'INR';
@@ -27,7 +53,9 @@ export function saveBooking(booking: BookingRecord): void {
   if (typeof window === 'undefined') return;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    const all: BookingRecord[] = raw ? JSON.parse(raw) : [];
+    let all: BookingRecord[] = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(all)) all = [];
+    all = deduplicateBookings(all);
     const existingIndex = all.findIndex((b) => b.id === booking.id);
     if (existingIndex >= 0) {
       all[existingIndex] = booking;
