@@ -1,0 +1,248 @@
+[
+  {
+    "id": "3",
+    "name": "Color / Finish",
+    "slug": "color",
+    "options": [
+      {
+        "id": 65,
+        "name": "Antique Brass",
+        "slug": "antique-brass"
+      },
+      {
+        "id": 66,
+        "name": "Bone White",
+        "slug": "bone-white"
+      },
+      {
+        "id": 64,
+        "name": "Ebony Matt",
+        "slug": "ebony-matt"
+      },
+      {
+        "id": 67,
+        "name": "Forest Lacquer",
+        "slug": "forest-lacquer"
+      },
+      {
+        "id": 69,
+        "name": "Graphite Metal",
+        "slug": "graphite-metal"
+      },
+      {
+        "id": 62,
+        "name": "Natural Oil",
+        "slug": "natural-oil"
+      },
+      {
+        "id": 68,
+        "name": "Terracotta PU",
+        "slug": "terracotta-pu"
+      },
+      {
+        "id": 63,
+        "name": "Walnut Stain",
+        "slug": "walnut-stain"
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Material / Craft",
+    "slug": "material",
+    "options": [
+      {
+        "id": 49,
+        "name": "Bone Inlay",
+        "slug": "bone-inlay"
+      },
+      {
+        "id": 47,
+        "name": "Brass &amp; Bronze",
+        "slug": "brass-bronze"
+      },
+      {
+        "id": 52,
+        "name": "Cane &amp; Rattan",
+        "slug": "cane-rattan"
+      },
+      {
+        "id": 45,
+        "name": "Engineered Panel",
+        "slug": "engineered-panel"
+      },
+      {
+        "id": 58,
+        "name": "Genuine Leather",
+        "slug": "genuine-leather"
+      },
+      {
+        "id": 60,
+        "name": "Glass",
+        "slug": "glass"
+      },
+      {
+        "id": 56,
+        "name": "Hand Carving",
+        "slug": "hand-carving"
+      },
+      {
+        "id": 50,
+        "name": "Marble &amp; Stone",
+        "slug": "marble-stone"
+      },
+      {
+        "id": 46,
+        "name": "MS / Powder Coated Metal",
+        "slug": "ms-powder-coated-metal"
+      },
+      {
+        "id": 61,
+        "name": "Reclaimed Wood",
+        "slug": "reclaimed-wood"
+      },
+      {
+        "id": 54,
+        "name": "Resin",
+        "slug": "resin"
+      },
+      {
+        "id": 53,
+        "name": "Rope Weave",
+        "slug": "rope-weave"
+      },
+      {
+        "id": 44,
+        "name": "Solid Acacia",
+        "slug": "solid-acacia"
+      },
+      {
+        "id": 43,
+        "name": "Solid Mango",
+        "slug": "solid-mango"
+      },
+      {
+        "id": 41,
+        "name": "Solid Sheesham",
+        "slug": "solid-sheesham"
+      },
+      {
+        "id": 42,
+        "name": "Solid Teak",
+        "slug": "solid-teak"
+      },
+      {
+        "id": 48,
+        "name": "Stainless Steel",
+        "slug": "stainless-steel"
+      },
+      {
+        "id": 51,
+        "name": "Terrazzo",
+        "slug": "terrazzo"
+      },
+      {
+        "id": 55,
+        "name": "Tile Inlay",
+        "slug": "tile-inlay"
+      },
+      {
+        "id": 57,
+        "name": "Upholstery Fabric",
+        "slug": "upholstery-fabric"
+      },
+      {
+        "id": 59,
+        "name": "Vegan Leather",
+        "slug": "vegan-leather"
+      }
+    ]
+  },
+  {
+    "id": "1",
+    "name": "Space / Segment",
+    "slug": "segment",
+    "options": [
+      {
+        "id": 39,
+        "name": "Airport &amp; Transit",
+        "slug": "airport-transit"
+      },
+      {
+        "id": 30,
+        "name": "Banquet &amp; Events",
+        "slug": "banquet-events"
+      },
+      {
+        "id": 29,
+        "name": "Bar &amp; Nightclub",
+        "slug": "bar-nightclub"
+      },
+      {
+        "id": 28,
+        "name": "Café",
+        "slug": "cafe"
+      },
+      {
+        "id": 33,
+        "name": "Co-working",
+        "slug": "co-working"
+      },
+      {
+        "id": 32,
+        "name": "Corporate Office",
+        "slug": "corporate-office"
+      },
+      {
+        "id": 36,
+        "name": "Education",
+        "slug": "education"
+      },
+      {
+        "id": 40,
+        "name": "Export / Wholesale",
+        "slug": "export-wholesale"
+      },
+      {
+        "id": 35,
+        "name": "Healthcare",
+        "slug": "healthcare"
+      },
+      {
+        "id": 25,
+        "name": "Hotel Guestroom",
+        "slug": "hotel-guestroom"
+      },
+      {
+        "id": 26,
+        "name": "Hotel Lobby",
+        "slug": "hotel-lobby"
+      },
+      {
+        "id": 38,
+        "name": "Outdoor &amp; Poolside",
+        "slug": "outdoor-poolside"
+      },
+      {
+        "id": 37,
+        "name": "Residential",
+        "slug": "residential"
+      },
+      {
+        "id": 31,
+        "name": "Resort &amp; Villa",
+        "slug": "resort-villa"
+      },
+      {
+        "id": 27,
+        "name": "Restaurant",
+        "slug": "restaurant"
+      },
+      {
+        "id": 34,
+        "name": "Retail Store",
+        "slug": "retail-store"
+      }
+    ]
+  }
+]

@@ -1,4 +1,7 @@
 import { ProductItem, WpSeoData, MOCK_PRODUCTS, CATEGORIES, SEGMENTS, MATERIALS, FINISHES, getProductSlug } from '../data/catalogData';
+import productsSnapshot from '../data/products-snapshot.json';
+import categoriesSnapshot from '../data/categories-snapshot.json';
+import attributesSnapshot from '../data/attributes-snapshot.json';
 import { isKnownDepartment } from './categoryTaxonomy';
 import { storeConfig } from '../../store.config';
 
@@ -254,13 +257,89 @@ export function getCachedStorefrontData(): StorefrontDataResult | null {
   return cachedStorefrontData;
 }
 
+export function getWpCandidateBases(): string[] {
+  const custom = (process.env.WORDPRESS_URL || process.env.NEXT_PUBLIC_WORDPRESS_URL || '').replace(/\/$/, '');
+  const list: string[] = [];
+
+  if (custom) list.push(custom);
+
+  const defaults = [
+    'http://woo-catalog-nextjs.local',
+    'https://admin.orbitexpocrafts.com',
+  ];
+
+  for (const def of defaults) {
+    if (!list.includes(def)) list.push(def);
+  }
+
+  return list;
+}
+
 export function getWpEndpoint(path: string): string {
   if (typeof window !== 'undefined') {
     return `/api/wp${path}`;
   }
-  const defaultWp = process.env.NODE_ENV === 'development' ? 'http://woo-catalog-nextjs.local' : 'https://admin.orbitexpocrafts.com';
-  let wpBase = (process.env.NEXT_PUBLIC_WORDPRESS_URL || process.env.WORDPRESS_URL || defaultWp).replace(/\/$/, '');
-  return `${wpBase}/wp-json/hcc/v1${path}`;
+  const bases = getWpCandidateBases();
+  return `${bases[0]}/wp-json/hcc/v1${path}`;
+}
+
+export async function fetchWpJsonWithFailover<T = any>(
+  path: string,
+  options?: { tag?: string; revalidate?: number; timeoutMs?: number; fallbackData?: T; cache?: RequestCache }
+): Promise<{ data: T | null; isWpConnected: boolean }> {
+  // If in browser, use proxy /api/wp${path}
+  if (typeof window !== 'undefined') {
+    try {
+      const res = await fetch(`/api/wp${path}`, {
+        cache: 'no-store',
+      });
+      if (res.ok) {
+        const json = await res.json().catch(() => null);
+        if (json && json.success !== false && json.data !== undefined) {
+          return { data: json.data, isWpConnected: !json.offline };
+        }
+      }
+    } catch (err) {
+      console.warn(`Browser fetch failed for /api/wp${path}:`, err);
+    }
+    return { data: options?.fallbackData ?? null, isWpConnected: false };
+  }
+
+  // Server-side: try candidate WordPress origins in priority order
+  const candidates = getWpCandidateBases();
+  const timeoutMs = options?.timeoutMs ?? 5000;
+
+  for (const base of candidates) {
+    try {
+      const targetUrl = `${base}/wp-json/hcc/v1${path}`;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+      const res = await fetch(targetUrl, {
+        headers: { Accept: 'application/json' },
+        next: options?.tag ? { tags: [options.tag], revalidate: options.revalidate ?? 60 } : undefined,
+        ...(options?.cache ? { cache: options.cache } : {}),
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+
+      if (res.ok) {
+        const text = await res.text().catch(() => '');
+        try {
+          const json = JSON.parse(text);
+          if (json && json.success !== false && json.data !== undefined) {
+            return { data: json.data, isWpConnected: true };
+          }
+        } catch {
+          // Try next candidate
+        }
+      }
+    } catch {
+      // Network failure / EPERM / DNS error -> try next candidate
+    }
+  }
+
+  return { data: options?.fallbackData ?? null, isWpConnected: false };
 }
 
 export function clearWpDataCache() {
@@ -283,29 +362,36 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
 
   activeStorefrontFetchPromise = (async () => {
     try {
-      const fetchOpts = (tag: string): RequestInit => ({
-        next: { tags: [tag], revalidate: 60 },
-      });
-
-      const [resProd, resCat, resAttr] = await Promise.all([
-        fetch(getWpEndpoint('/products?per_page=-1'), fetchOpts('wp-products')).catch(() => null),
-        fetch(getWpEndpoint('/categories'), fetchOpts('wp-categories')).catch(() => null),
-        fetch(getWpEndpoint('/attributes'), fetchOpts('wp-attributes')).catch(() => null),
+      const [prodRes, catRes, attrRes] = await Promise.all([
+        fetchWpJsonWithFailover<any>('/products?per_page=-1', {
+          tag: 'wp-products',
+          fallbackData: productsSnapshot,
+        }),
+        fetchWpJsonWithFailover<any[]>('/categories', {
+          tag: 'wp-categories',
+          fallbackData: categoriesSnapshot as any[],
+        }),
+        fetchWpJsonWithFailover<any>('/attributes', {
+          tag: 'wp-attributes',
+          fallbackData: attributesSnapshot,
+        }),
       ]);
 
-    let wpProducts: ProductItem[] = [];
-    let wpCategories: WpCategoryItem[] = [];
-    let wpSegments: string[] = SEGMENTS.map(decodeHtmlEntities);
-    let wpMaterials: string[] = MATERIALS.map(decodeHtmlEntities);
-    let wpColors: WpColorItem[] = FINISHES.map((f) => ({ name: decodeHtmlEntities(f.name), code: f.code }));
-    let isWpConnected = false;
+      const prodData = prodRes.data;
+      const catData = catRes.data;
+      const attrData = attrRes.data;
+      const isWpConnected = prodRes.isWpConnected || catRes.isWpConnected;
 
-    // 1. Process Attributes from WordPress API
-    if (resAttr && resAttr.ok) {
-      const attrJson = await resAttr.json().catch(() => null);
-      if (attrJson && attrJson.success && attrJson.data) {
-        if (Array.isArray(attrJson.data)) {
-          attrJson.data.forEach((attr: any) => {
+      let wpProducts: ProductItem[] = [];
+      let wpCategories: WpCategoryItem[] = [];
+      let wpSegments: string[] = SEGMENTS.map(decodeHtmlEntities);
+      let wpMaterials: string[] = MATERIALS.map(decodeHtmlEntities);
+      let wpColors: WpColorItem[] = FINISHES.map((f) => ({ name: decodeHtmlEntities(f.name), code: f.code }));
+
+      // 1. Process Attributes from WordPress API or Snapshot
+      if (attrData) {
+        if (Array.isArray(attrData)) {
+          attrData.forEach((attr: any) => {
             const slug = (attr.slug || '').toLowerCase();
             const opts = Array.isArray(attr.options)
               ? attr.options
@@ -326,26 +412,23 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
               }
             }
           });
-        } else if (typeof attrJson.data === 'object') {
-          if (Array.isArray(attrJson.data.segments) && attrJson.data.segments.length > 0) {
-            wpSegments = attrJson.data.segments.map(decodeHtmlEntities);
+        } else if (typeof attrData === 'object') {
+          if (Array.isArray(attrData.segments) && attrData.segments.length > 0) {
+            wpSegments = attrData.segments.map(decodeHtmlEntities);
           }
-          if (Array.isArray(attrJson.data.materials) && attrJson.data.materials.length > 0) {
-            wpMaterials = attrJson.data.materials.map(decodeHtmlEntities);
+          if (Array.isArray(attrData.materials) && attrData.materials.length > 0) {
+            wpMaterials = attrData.materials.map(decodeHtmlEntities);
           }
-          if (Array.isArray(attrJson.data.colors) && attrJson.data.colors.length > 0) {
-            wpColors = attrJson.data.colors.map((c: any) => ({ name: decodeHtmlEntities(c.name), code: c.code || '#8A7968' }));
+          if (Array.isArray(attrData.colors) && attrData.colors.length > 0) {
+            wpColors = attrData.colors.map((c: any) => ({ name: decodeHtmlEntities(c.name), code: c.code || '#8A7968' }));
           }
         }
       }
-    }
 
-    // 2. Process Categories from WordPress WooCommerce
-    if (resCat && resCat.ok) {
-      const catJson = await resCat.json().catch(() => null);
-      if (catJson && catJson.success && Array.isArray(catJson.data)) {
-        isWpConnected = true;
-        wpCategories = catJson.data
+      // 2. Process Categories from WordPress WooCommerce or Snapshot
+      const rawCategories = Array.isArray(catData) ? catData : [];
+      if (rawCategories.length > 0) {
+        wpCategories = rawCategories
           .filter((c: any) => c.slug !== 'uncategorized')
           .map((c: any) => ({
             id: c.slug,
@@ -363,14 +446,13 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
             seo: c.seo || undefined,
           }));
       }
-    }
 
-    // 3. Process Products from WordPress WooCommerce
-    if (resProd && resProd.ok) {
-      const prodJson = await resProd.json().catch(() => null);
-      if (prodJson && prodJson.success && Array.isArray(prodJson.data?.products)) {
-        isWpConnected = true;
+      // 3. Process Products from WordPress WooCommerce or Snapshot
+      const rawProductList = Array.isArray(prodData?.products)
+        ? prodData.products
+        : (Array.isArray(prodData) ? prodData : []);
 
+      if (rawProductList.length > 0) {
         // Build category lookup maps for hierarchical ancestor resolution
         const categoryByWpId = new Map<number, WpCategoryItem>();
         const categoryBySlug = new Map<string, WpCategoryItem>();
@@ -427,7 +509,7 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
           return { slug: 'furniture', name: 'Furniture' };
         };
 
-        wpProducts = prodJson.data.products.map((p: any) => {
+        wpProducts = rawProductList.map((p: any) => {
           const rawCats = Array.isArray(p.categories) ? p.categories : [];
           const { slugs: hierarchySlugs, names: hierarchyNames } = resolveHierarchySlugsAndNames(rawCats);
 
@@ -607,24 +689,29 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
         });
         (cachedStorefrontData as any) = null;
       }
-    }
-
-    // FALLBACK ONLY WHEN WORDPRESS IS OFFLINE/DISCONNECTED
-    if (!isWpConnected) {
-      return {
-        products: MOCK_PRODUCTS,
-        categories: [],
-        categoryTree: [],
-        segments: SEGMENTS.map(decodeHtmlEntities),
-        materials: MATERIALS.map(decodeHtmlEntities),
-        colors: FINISHES.map((f) => ({ name: decodeHtmlEntities(f.name), code: f.code })),
-        types: ['Dining Chair', 'Arm Chair', 'Bar Stool', 'Dining Table', 'Coffee Table', 'Console Table', 'King Bed', 'Sideboard', 'Wall Panel'],
-        isWpConnected: false,
-      };
-    }
 
     if (wpProducts.length === 0) {
       wpProducts = MOCK_PRODUCTS;
+    }
+
+    if (wpCategories.length === 0 && Array.isArray(categoriesSnapshot)) {
+      wpCategories = (categoriesSnapshot as any[])
+        .filter((c: any) => c.slug !== 'uncategorized')
+        .map((c: any) => ({
+          id: c.slug,
+          name: decodeHtmlEntities(c.name),
+          slug: c.slug,
+          wpId: c.id,
+          parent: c.parent ? Number(c.parent) : 0,
+          level: c.level !== undefined && c.level !== null ? Number(c.level) : undefined,
+          count: c.count || 0,
+          description: decodeHtmlEntities(c.description || ''),
+          image: normalizeCommerceImageUrl(c.image, c.slug),
+          facets: c.facets || '',
+          styles: c.styles || '',
+          room: c.room || '',
+          seo: c.seo || undefined,
+        }));
     }
 
     // Extract types for final response
@@ -652,17 +739,37 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
       materials: wpMaterials,
       colors: wpColors,
       types: Array.from(finalTypes).sort(),
-      isWpConnected: true,
+      isWpConnected: isWpConnected,
     };
     lastCacheTime = Date.now();
 
     return cachedStorefrontData;
   } catch (err) {
-    console.log('Error fetching WordPress storefront data, using fallback:', err);
+    console.log('Error fetching WordPress storefront data, using snapshot fallback:', err);
+    const fallbackCategories: WpCategoryItem[] = Array.isArray(categoriesSnapshot)
+      ? (categoriesSnapshot as any[])
+          .filter((c: any) => c.slug !== 'uncategorized')
+          .map((c: any) => ({
+            id: c.slug,
+            name: decodeHtmlEntities(c.name),
+            slug: c.slug,
+            wpId: c.id,
+            parent: c.parent ? Number(c.parent) : 0,
+            level: c.level !== undefined && c.level !== null ? Number(c.level) : undefined,
+            count: c.count || 0,
+            description: decodeHtmlEntities(c.description || ''),
+            image: normalizeCommerceImageUrl(c.image, c.slug),
+            facets: c.facets || '',
+            styles: c.styles || '',
+            room: c.room || '',
+            seo: c.seo || undefined,
+          }))
+      : [];
+
     return {
       products: MOCK_PRODUCTS,
-      categories: [],
-      categoryTree: [],
+      categories: fallbackCategories,
+      categoryTree: buildCategoryTree(fallbackCategories),
       segments: SEGMENTS.map(decodeHtmlEntities),
       materials: MATERIALS.map(decodeHtmlEntities),
       colors: FINISHES.map((f) => ({ name: decodeHtmlEntities(f.name), code: f.code })),
@@ -681,16 +788,14 @@ export async function fetchWpProductBySlug(slug: string): Promise<{ product: Pro
   const cleanSlug = decodeURIComponent(slug).toLowerCase();
   const isDev = process.env.NODE_ENV === 'development';
 
-  // 1. Fetch single product from REST endpoint
+  // 1. Fetch single product from REST endpoint with failover
   try {
-    const res = await fetch(getWpEndpoint(`/products/slug/${cleanSlug}`), {
-      next: { tags: ['wp-products', `wp-product-${cleanSlug}`], revalidate: isDev ? 0 : 30 },
-      ...(isDev ? { cache: 'no-store' as RequestCache } : {}),
-    }).catch(() => null);
-    if (res && res.ok) {
-      const json = await res.json().catch(() => null);
-      if (json && json.success && json.data) {
-        const p = json.data;
+    const { data: p, isWpConnected: singleConnected } = await fetchWpJsonWithFailover<any>(`/products/slug/${cleanSlug}`, {
+      tag: `wp-product-${cleanSlug}`,
+      revalidate: isDev ? 0 : 30,
+      cache: isDev ? 'no-store' : undefined,
+    });
+    if (p) {
         const rawCats = Array.isArray(p.categories) ? p.categories : [];
         const catSlugs = rawCats.map((c: any) => c.slug?.toLowerCase()).filter(Boolean);
         const mainCat = rawCats[0];
@@ -758,9 +863,8 @@ export async function fetchWpProductBySlug(slug: string): Promise<{ product: Pro
           } catch (e) {}
         }
         const gallery = [productItem.image, ...(p.gallery || []).map((g: string) => normalizeCommerceImageUrl(g, catSlug))].filter(Boolean) as string[];
-        return { product: productItem, gallery, isWpConnected: true };
+        return { product: productItem, gallery, isWpConnected: singleConnected };
       }
-    }
   } catch (e) {
     console.log('Single product REST fetch bypass:', e);
   }
@@ -980,17 +1084,16 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
 
 export async function fetchWpHomepageData(): Promise<HomepageData> {
   try {
-    const res = await fetch(getWpEndpoint('/homepage'), { cache: 'no-store' }).catch(() => null);
-    if (res && res.ok) {
-      const json = await res.json().catch(() => null);
-      if (json && json.success && json.data) {
-        const raw = json.data;
-        const cleaned: any = {};
-        Object.keys(raw).forEach((k) => {
-          cleaned[k] = typeof raw[k] === 'string' ? decodeHtmlEntities(raw[k]) : raw[k];
-        });
-        return { ...DEFAULT_HOMEPAGE_DATA, ...cleaned };
-      }
+    const { data: raw } = await fetchWpJsonWithFailover<any>('/homepage', {
+      cache: 'no-store',
+      fallbackData: DEFAULT_HOMEPAGE_DATA,
+    });
+    if (raw) {
+      const cleaned: any = {};
+      Object.keys(raw).forEach((k) => {
+        cleaned[k] = typeof raw[k] === 'string' ? decodeHtmlEntities(raw[k]) : raw[k];
+      });
+      return { ...DEFAULT_HOMEPAGE_DATA, ...cleaned };
     }
   } catch (e) {
     console.log('Homepage REST fetch bypass:', e);
@@ -1122,15 +1225,15 @@ function getCategoryFallbackImage(categorySlug?: string): string {
 export async function fetchWpBlogPosts(): Promise<WpBlogPostItem[]> {
   const isDev = process.env.NODE_ENV === 'development';
   try {
-    const res = await fetch(getWpEndpoint('/posts?per_page=20'), {
-      next: { tags: ['wp-posts'], revalidate: isDev ? 0 : 60 },
-      ...(isDev ? { cache: 'no-store' as RequestCache } : {}),
+    const { data } = await fetchWpJsonWithFailover<any>('/posts?per_page=20', {
+      tag: 'wp-posts',
+      revalidate: isDev ? 0 : 60,
+      cache: isDev ? 'no-store' : undefined,
+      fallbackData: { posts: FALLBACK_JOURNAL_ARTICLES },
     });
-    if (!res.ok) return FALLBACK_JOURNAL_ARTICLES;
-
-    const json = await res.json();
-    if (json && json.success && Array.isArray(json.data?.posts) && json.data.posts.length > 0) {
-      return json.data.posts.map((p: any) => {
+    const postsList = Array.isArray(data?.posts) ? data.posts : (Array.isArray(data) ? data : []);
+    if (postsList.length > 0) {
+      return postsList.map((p: any) => {
         const mainCat = p.categories && p.categories.length > 0 ? p.categories[0] : null;
         return {
           id: p.id,
@@ -1159,30 +1262,27 @@ export async function fetchWpBlogPostBySlug(slug: string): Promise<WpBlogPostIte
 
   // 1. Fetch single post by slug from REST endpoint
   try {
-    const res = await fetch(getWpEndpoint(`/posts/slug/${cleanSlug}`), {
-      next: { tags: ['wp-posts', `wp-post-${cleanSlug}`], revalidate: isDev ? 0 : 60 },
-      ...(isDev ? { cache: 'no-store' as RequestCache } : {}),
-    }).catch(() => null);
+    const { data: p } = await fetchWpJsonWithFailover<any>(`/posts/slug/${cleanSlug}`, {
+      tag: `wp-post-${cleanSlug}`,
+      revalidate: isDev ? 0 : 60,
+      cache: isDev ? 'no-store' : undefined,
+    });
 
-    if (res && res.ok) {
-      const json = await res.json().catch(() => null);
-      if (json && json.success && json.data) {
-        const p = json.data;
-        const mainCat = p.categories && p.categories.length > 0 ? p.categories[0] : null;
-        return {
-          id: p.id,
-          title: decodeHtmlEntities(p.title || ''),
-          slug: p.slug,
-          excerpt: decodeHtmlEntities(p.excerpt || '').replace(/<[^>]+>/g, ''),
-          content: p.content || '',
-          date: p.date ? new Date(p.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '',
-          author: p.author || 'Orbit Expo Crafts Team',
-          category: mainCat ? decodeHtmlEntities(mainCat.name) : 'Manufacturing Insights',
-          image: normalizeCommerceImageUrl(p.image, mainCat?.slug),
-          readTime: `${Math.max(4, Math.ceil(((p.content || '') + (p.excerpt || '')).split(/\s+/).length / 150))} min read`,
-          seo: p.seo || undefined,
-        };
-      }
+    if (p) {
+      const mainCat = p.categories && p.categories.length > 0 ? p.categories[0] : null;
+      return {
+        id: p.id,
+        title: decodeHtmlEntities(p.title || ''),
+        slug: p.slug,
+        excerpt: decodeHtmlEntities(p.excerpt || '').replace(/<[^>]+>/g, ''),
+        content: p.content || '',
+        date: p.date ? new Date(p.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '',
+        author: p.author || 'Orbit Expo Crafts Team',
+        category: mainCat ? decodeHtmlEntities(mainCat.name) : 'Manufacturing Insights',
+        image: normalizeCommerceImageUrl(p.image, mainCat?.slug),
+        readTime: `${Math.max(4, Math.ceil(((p.content || '') + (p.excerpt || '')).split(/\s+/).length / 150))} min read`,
+        seo: p.seo || undefined,
+      };
     }
   } catch (err) {
     console.warn('WP Post by slug fetch error:', err);
