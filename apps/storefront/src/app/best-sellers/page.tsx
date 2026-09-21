@@ -3,8 +3,8 @@ import { fetchWpStorefrontData } from '../../lib/wpCommerce';
 import { BestSellersClient } from './BestSellersClient';
 
 export const metadata: Metadata = {
-  title: 'Bestsellers & Contract Icons — ORBIT Expo Crafts',
-  description: 'Explore our most popular and frequently specified contract furniture, bone inlay consoles, teak tables, and handcrafted hospitality pieces.',
+  title: 'The Pieces Everyone Loves — ORBIT Expo Crafts',
+  description: 'A curated selection of our most sought-after furniture and décor. Crafted in solid wood and thoughtfully detailed with natural textures, each piece brings character, warmth and enduring style to contemporary spaces.',
 };
 
 export const revalidate = 60;

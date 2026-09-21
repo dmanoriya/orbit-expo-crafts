@@ -25,9 +25,8 @@ export const BestSellersClient: React.FC<BestSellersClientProps> = ({
   return (
     <CollectionsClient
       basePath="/best-sellers"
-      pageTitle="Bestselling Designs"
-      pageEyebrow="CONTRACT ICONS & SIGNATURE PIECES"
-      pageDescription="Our most specified contract furniture, handcrafted bone inlay consoles, solid timber tables, and architectural seating pieces commissioned for boutique hotels and luxury residences worldwide."
+      pageTitle="The Pieces Everyone Loves"
+      pageDescription="A curated selection of our most sought-after furniture and décor. Crafted in solid wood and thoughtfully detailed with natural textures, each piece brings character, warmth and enduring style to contemporary spaces."
       defaultBadgeFilter="bestseller"
       initialProducts={products}
       initialCategories={categories}
