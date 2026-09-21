@@ -253,35 +253,35 @@ export default function DiscussProjectsPage() {
           {/* LEFT: Capabilities & Direct Connect */}
           <div>
             <h2 style={{ fontSize: 22, fontWeight: 600, marginBottom: 20 }}>
-              How We Partner With You
+              How We Work With You
             </h2>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 24, marginBottom: 40 }}>
               <div style={{ padding: '20px 24px', background: '#F9F8F5', borderRadius: 'var(--r-md)', border: '1px solid #ECE7DE' }}>
-                <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 6 }}>1. CAD Approvals &amp; Shop Drawings</div>
+                <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 6 }}>1. Share Your Furniture Requirements</div>
                 <p style={{ fontSize: 14, color: '#555555', lineHeight: 1.55, margin: 0 }}>
-                  We review your render concepts, elevation drawings, and BOQ sheets to produce technical joinery drawings, timber grain layouts, and Martindale-tested fabric options within 72 hours.
+                  Share your ideas, drawings, reference images, dimensions, and quantities so we can understand your project and custom furniture needs.
                 </p>
               </div>
 
               <div style={{ padding: '20px 24px', background: '#F9F8F5', borderRadius: 'var(--r-md)', border: '1px solid #ECE7DE' }}>
-                <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 6 }}>2. Physical Material &amp; Finish Swatches</div>
+                <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 6 }}>2. Choose Materials &amp; Finishes</div>
                 <p style={{ fontSize: 14, color: '#555555', lineHeight: 1.55, margin: 0 }}>
-                  Kiln-seasoned teak, acacia, sheesham wood blocks, custom PU stains, bone inlay patterns, and antiqued brass hardware samples dispatched directly to your design studio.
+                  Select materials, colours, fabrics, and finishes to suit your design, intended use, and budget.
                 </p>
               </div>
 
               <div style={{ padding: '20px 24px', background: '#F9F8F5', borderRadius: 'var(--r-md)', border: '1px solid #ECE7DE' }}>
-                <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 6 }}>3. Mockup Room &amp; Prototype Delivery</div>
+                <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 6 }}>3. Review &amp; Approve the Design</div>
                 <p style={{ fontSize: 14, color: '#555555', lineHeight: 1.55, margin: 0 }}>
-                  Fast-track sample room prototyping within 21 days for hotel ownership and architectural review before volume batch production.
+                  Confirm furniture specifications, drawings, and any required samples before production begins.
                 </p>
               </div>
 
               <div style={{ padding: '20px 24px', background: '#F9F8F5', borderRadius: 'var(--r-md)', border: '1px solid #ECE7DE' }}>
-                <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 6 }}>4. Containerized Logistics &amp; Installation</div>
+                <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 6 }}>4. Production &amp; Delivery</div>
                 <p style={{ fontSize: 14, color: '#555555', lineHeight: 1.55, margin: 0 }}>
-                  FOB / CIF export to over 24 countries with humidity-sealed protective packaging, container consolidation, and on-site assembly guides.
+                  Once approved, we proceed with manufacturing, quality checks, packaging, and delivery based on the agreed project requirements.
                 </p>
               </div>
             </div>
