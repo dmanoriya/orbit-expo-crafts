@@ -18,7 +18,7 @@ import { resolveTaxonomyPath } from '../../lib/categoryTaxonomy';
 import ProductSkeletonGrid from '../../components/ProductSkeletonGrid';
 import Pagination from '../../components/Pagination';
 
-interface CollectionsClientProps {
+export interface CollectionsClientProps {
   slugArray?: string[];
   initialProducts?: ProductItem[];
   initialCategories?: WpCategoryItem[];
@@ -26,6 +26,11 @@ interface CollectionsClientProps {
   initialMaterials?: string[];
   initialColors?: WpColorItem[];
   isWpConnected?: boolean;
+  basePath?: string;
+  pageTitle?: string;
+  pageDescription?: string;
+  pageEyebrow?: string;
+  defaultBadgeFilter?: string;
 }
 
 const ITEMS_PER_PAGE = 24;
@@ -38,13 +43,21 @@ export default function CollectionsClient({
   initialMaterials,
   initialColors,
   isWpConnected: initialWpConnected,
+  basePath,
+  pageTitle,
+  pageDescription,
+  pageEyebrow,
+  defaultBadgeFilter,
 }: CollectionsClientProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { addEnquiry } = useEnquiry();
   const { isFavorite, toggleFavorite } = useFavorites();
 
-  const activeCategorySlug = slugArray.length > 0 ? decodeURIComponent(slugArray[slugArray.length - 1]).toLowerCase().trim() : 'all';
+  const activeCategorySlug =
+    slugArray.length > 0
+      ? decodeURIComponent(slugArray[slugArray.length - 1]).toLowerCase().trim()
+      : (searchParams.get('cat') || 'all').toLowerCase().trim();
 
   const [typeFilter, setTypeFilter] = useState(searchParams.get('type') || 'all');
   const [segFilter, setSegFilter] = useState(searchParams.get('seg') || 'all');
@@ -52,7 +65,7 @@ export default function CollectionsClient({
   const [colorFilter, setColorFilter] = useState(searchParams.get('color') || 'all');
   const [moqFilter, setMoqFilter] = useState(searchParams.get('moq') || 'all');
   const [leadFilter, setLeadFilter] = useState(searchParams.get('lead') || 'all');
-  const [badgeFilter, setBadgeFilter] = useState(searchParams.get('badge') || 'all');
+  const [badgeFilter, setBadgeFilter] = useState(searchParams.get('badge') || defaultBadgeFilter || 'all');
   const [sortFilter, setSortFilter] = useState(searchParams.get('sort') || 'default');
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || searchParams.get('q') || '');
   const [currentPage, setCurrentPage] = useState(1);
@@ -91,12 +104,12 @@ export default function CollectionsClient({
     setColorFilter(searchParams.get('color') || 'all');
     setMoqFilter(searchParams.get('moq') || 'all');
     setLeadFilter(searchParams.get('lead') || 'all');
-    setBadgeFilter(searchParams.get('badge') || 'all');
+    setBadgeFilter(searchParams.get('badge') || defaultBadgeFilter || 'all');
     setSortFilter(searchParams.get('sort') || 'default');
     setSearchQuery(searchParams.get('search') || searchParams.get('q') || '');
     const p = parseInt(searchParams.get('page') || '1', 10);
     setCurrentPage(isNaN(p) ? 1 : p);
-  }, [searchParams, slugArray]);
+  }, [searchParams, slugArray, defaultBadgeFilter]);
 
   useEffect(() => {
     if (initialProducts && initialProducts.length > 0) {
@@ -148,9 +161,9 @@ export default function CollectionsClient({
 
   // Active category display title (from WooCommerce or master taxonomy tree)
   const activeCategoryName = useMemo(() => {
-    if (slugArray.length === 0 || slugArray[0] === 'all') return null;
     if (activeCategory) return activeCategory.name;
-    return taxonomyInfo.displayName;
+    if (slugArray.length > 0 && slugArray[0] !== 'all') return taxonomyInfo.displayName;
+    return null;
   }, [activeCategory, taxonomyInfo, slugArray]);
 
   // Automatically expand active category's ancestors in the accordion
@@ -387,6 +400,11 @@ export default function CollectionsClient({
     (sortFilter !== 'default' ? 1 : 0) +
     (searchQuery ? 1 : 0);
 
+  const getBasePath = () => {
+    if (basePath) return basePath;
+    return getCategorySeoPath(activeCategory, categories);
+  };
+
   const updateFilter = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     if (value === 'all' || value === 'default' || !value) {
@@ -405,9 +423,9 @@ export default function CollectionsClient({
     if (key === 'badge') setBadgeFilter(value);
     if (key === 'sort') setSortFilter(value);
 
-    const basePath = getCategorySeoPath(activeCategory, categories);
+    const currentBasePath = getBasePath();
     const query = params.toString();
-    router.push(query ? `${basePath}?${query}` : basePath, { scroll: false });
+    router.push(query ? `${currentBasePath}?${query}` : currentBasePath, { scroll: false });
   };
 
   const handleClearAllFilters = () => {
@@ -417,10 +435,10 @@ export default function CollectionsClient({
     setColorFilter('all');
     setMoqFilter('all');
     setLeadFilter('all');
-    setBadgeFilter('all');
+    setBadgeFilter(defaultBadgeFilter || 'all');
     setSortFilter('default');
     setSearchQuery('');
-    router.push('/collections');
+    router.push(basePath || '/collections');
   };
 
   const handleRemoveChip = (key: string) => {
@@ -429,7 +447,9 @@ export default function CollectionsClient({
     params.delete('page');
 
     if (key === 'category') {
-      router.push('/collections');
+      params.delete('cat');
+      const query = params.toString();
+      router.push(basePath ? (query ? `${basePath}?${query}` : basePath) : '/collections');
       return;
     }
     if (key === 'type') setTypeFilter('all');
@@ -438,7 +458,7 @@ export default function CollectionsClient({
     if (key === 'color') setColorFilter('all');
     if (key === 'moq') setMoqFilter('all');
     if (key === 'lead') setLeadFilter('all');
-    if (key === 'badge') setBadgeFilter('all');
+    if (key === 'badge') setBadgeFilter(defaultBadgeFilter || 'all');
     if (key === 'sort') setSortFilter('default');
     if (key === 'search' || key === 'q') {
       params.delete('search');
@@ -446,9 +466,9 @@ export default function CollectionsClient({
       setSearchQuery('');
     }
 
-    const basePath = getCategorySeoPath(activeCategory, categories);
+    const currentBasePath = getBasePath();
     const query = params.toString();
-    router.push(query ? `${basePath}?${query}` : basePath, { scroll: false });
+    router.push(query ? `${currentBasePath}?${query}` : currentBasePath, { scroll: false });
   };
 
   const activeChips = useMemo(() => {
@@ -672,9 +692,9 @@ export default function CollectionsClient({
     if (newPage > 1) params.set('page', String(newPage));
     else params.delete('page');
 
-    const basePath = getCategorySeoPath(activeCategory, categories);
+    const currentBasePath = getBasePath();
     const query = params.toString();
-    router.push(query ? `${basePath}?${query}` : basePath, { scroll: false });
+    router.push(query ? `${currentBasePath}?${query}` : currentBasePath, { scroll: false });
 
     if (gridRef.current) {
       gridRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -687,12 +707,22 @@ export default function CollectionsClient({
   };
 
   const crumbs = useMemo(() => {
+    if (basePath === '/best-sellers') {
+      const list = [
+        { name: 'Home', url: '/' },
+        { name: 'Best Sellers', url: '/best-sellers' },
+      ];
+      if (activeCategory) {
+        list.push({ name: activeCategory.name, url: `/best-sellers?cat=${activeCategory.slug}` });
+      }
+      return list;
+    }
     if (taxonomyInfo && taxonomyInfo.breadcrumbs && taxonomyInfo.breadcrumbs.length > 1) {
       return taxonomyInfo.breadcrumbs;
     }
     const legacy = getCategoryBreadcrumbs(activeCategory, categories);
     return [{ name: 'Home', url: '/' }, ...legacy];
-  }, [taxonomyInfo, activeCategory, categories]);
+  }, [taxonomyInfo, activeCategory, categories, basePath]);
 
   // Organize categories into 4-level tree for sidebar
   const categoryTree = useMemo(() => {
@@ -721,7 +751,9 @@ export default function CollectionsClient({
     const isSelected = activeCategorySlug.toLowerCase() === item.slug.toLowerCase();
     const hasChildren = item.childrenNode && item.childrenNode.length > 0;
     const isExpanded = !!expandedCats[item.slug];
-    const seoUrl = getCategorySeoPath(item, categories);
+    const seoUrl = basePath
+      ? `${basePath}?cat=${encodeURIComponent(item.slug)}`
+      : getCategorySeoPath(item, categories);
 
     return (
       <div key={item.id || item.slug} style={{ marginBottom: 2 }}>
@@ -786,11 +818,18 @@ export default function CollectionsClient({
       {/* COLLECTION HERO HEADER */}
       <div className="cat-hero" style={{ margin: '16px 0 32px' }}>
         <div>
+          {pageEyebrow && (
+            <span className="mono" style={{ fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--ink-3)', display: 'block', marginBottom: 8 }}>
+              {pageEyebrow}
+            </span>
+          )}
           <h1 className="disp" style={{ fontSize: 'clamp(28px, 4vw, 42px)', margin: '0 0 8px', textTransform: 'capitalize' }}>
-            {activeCategoryName ? activeCategoryName : 'All Collections & Architectural Designs'}
+            {activeCategoryName
+              ? (pageTitle ? `${pageTitle} — ${activeCategoryName}` : activeCategoryName)
+              : (pageTitle || 'All Collections & Architectural Designs')}
           </h1>
           <p style={{ maxWidth: 720, color: 'var(--ink-2)', lineHeight: 1.6 }}>
-            {activeCategory?.description ||
+            {pageDescription || activeCategory?.description ||
               (activeCategoryName
                 ? `Explore handcrafted contract-grade ${activeCategoryName.toLowerCase()} engineered for luxury hospitality, commercial fit-outs, and bespoke architectural projects.`
                 : 'Explore handcrafted bespoke furniture, lighting, rugs, and decor elements engineered for luxury hospitality, commercial fit-outs, and high-end residential projects.')}
@@ -845,14 +884,14 @@ export default function CollectionsClient({
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                 <h5>Department / Category</h5>
                 {activeCategorySlug !== 'all' && (
-                  <Link href="/collections" style={{ fontSize: 12, color: 'var(--brand)', textDecoration: 'underline' }}>
+                  <Link href={basePath || "/collections"} style={{ fontSize: 12, color: 'var(--brand)', textDecoration: 'underline' }}>
                     View All
                   </Link>
                 )}
               </div>
 
               <Link
-                href="/collections"
+                href={basePath || "/collections"}
                 className={`fopt ${activeCategorySlug === 'all' ? 'on' : ''}`}
                 style={{ fontWeight: 600, marginBottom: 6 }}
               >
@@ -1369,8 +1408,8 @@ export default function CollectionsClient({
                     Reset All Filters
                   </button>
                 )}
-                <Link href="/collections" className="btn btn-soft" style={{ padding: '12px 24px', fontSize: 13.5 }}>
-                  Explore All Collections
+                <Link href={basePath || "/collections"} className="btn btn-soft" style={{ padding: '12px 24px', fontSize: 13.5 }}>
+                  {basePath === '/best-sellers' ? 'Explore All Bestsellers' : 'Explore All Collections'}
                 </Link>
               </div>
             </div>
