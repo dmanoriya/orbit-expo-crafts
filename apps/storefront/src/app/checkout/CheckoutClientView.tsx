@@ -8,7 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 import { BookingRecord } from '../../types/booking';
 import { saveBooking, generateDefaultMilestones } from '../../lib/bookingStore';
 import { submitFormEntry } from '../../lib/submitFormEntry';
-import PhoneInputField, { CountryCode, PHONE_COUNTRIES } from '../../components/PhoneInputField';
+import PhoneInputField, { CountryCode, PHONE_COUNTRIES, validatePhoneNumber } from '../../components/PhoneInputField';
 
 export const CheckoutClientView: React.FC = () => {
   const router = useRouter();
@@ -128,16 +128,9 @@ export const CheckoutClientView: React.FC = () => {
       errors.email = 'Please enter a valid work email address (e.g. name@company.com).';
     }
 
-    if (!phoneDigits) {
-      errors.phone = 'Phone / WhatsApp number is required.';
-    } else if (phoneCountry.code === '+91') {
-      if (phoneDigits.length !== 10) {
-        errors.phone = 'Please enter a valid 10-digit Indian mobile number.';
-      } else if (!/^[6-9]\d{9}$/.test(phoneDigits)) {
-        errors.phone = 'Indian mobile numbers must start with 6, 7, 8, or 9.';
-      }
-    } else if (phoneDigits.length < 7 || phoneDigits.length > 15) {
-      errors.phone = 'Please enter a valid phone number (7 to 15 digits).';
+    const phoneErr = validatePhoneNumber(phoneDigits, phoneCountry, true);
+    if (phoneErr) {
+      errors.phone = phoneErr;
     }
 
     const isIndia = country.trim().toLowerCase() === 'india' || phoneCountry.code === '+91';
@@ -609,6 +602,10 @@ export const CheckoutClientView: React.FC = () => {
                         if (c.country && (!country || country === 'India' || country === 'United States')) {
                           setCountry(c.country);
                         }
+                      }}
+                      onBlur={() => {
+                        const err = validatePhoneNumber(phoneDigits, phoneCountry, true);
+                        if (err) setFieldErrors((prev) => ({ ...prev, phone: err }));
                       }}
                       error={fieldErrors.phone}
                       required

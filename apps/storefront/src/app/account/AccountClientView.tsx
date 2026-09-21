@@ -8,7 +8,7 @@ import { useFavorites } from '../../context/FavoritesContext';
 import { useEnquiry } from '../../context/EnquiryContext';
 import { BookingRecord, BookingMessage } from '../../types/booking';
 import { getStoredBookings, saveBooking, appendMessageToBooking, generateDefaultMilestones, deduplicateBookings } from '../../lib/bookingStore';
-import PhoneInputField, { CountryCode, PHONE_COUNTRIES } from '../../components/PhoneInputField';
+import PhoneInputField, { CountryCode, PHONE_COUNTRIES, validatePhoneNumber } from '../../components/PhoneInputField';
 
 interface AccountClientViewProps {
   initialTab?: 'overview' | 'favorites' | 'orders' | 'profile';
@@ -384,14 +384,9 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
     }
 
     if (regPhoneDigits) {
-      if (regPhoneCountry.code === '+91') {
-        if (regPhoneDigits.length !== 10) {
-          errors.phone = 'Please enter a valid 10-digit Indian mobile number.';
-        } else if (!/^[6-9]\d{9}$/.test(regPhoneDigits)) {
-          errors.phone = 'Indian mobile numbers must start with 6, 7, 8, or 9.';
-        }
-      } else if (regPhoneDigits.length < 7 || regPhoneDigits.length > 15) {
-        errors.phone = 'Please enter a valid phone number (7 to 15 digits).';
+      const phoneErr = validatePhoneNumber(regPhoneDigits, regPhoneCountry, false);
+      if (phoneErr) {
+        errors.phone = phoneErr;
       }
     }
 
@@ -434,14 +429,9 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
     }
 
     if (profilePhoneDigits) {
-      if (profilePhoneCountry.code === '+91') {
-        if (profilePhoneDigits.length !== 10) {
-          errors.phone = 'Please enter a valid 10-digit Indian mobile number.';
-        } else if (!/^[6-9]\d{9}$/.test(profilePhoneDigits)) {
-          errors.phone = 'Indian mobile numbers must start with 6, 7, 8, or 9.';
-        }
-      } else if (profilePhoneDigits.length < 7 || profilePhoneDigits.length > 15) {
-        errors.phone = 'Please enter a valid phone number (7 to 15 digits).';
+      const phoneErr = validatePhoneNumber(profilePhoneDigits, profilePhoneCountry, false);
+      if (phoneErr) {
+        errors.phone = phoneErr;
       }
     }
 
@@ -725,6 +715,12 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                         if (regFieldErrors.phone) setRegFieldErrors((prev) => ({ ...prev, phone: '' }));
                       }}
                       onCountryChange={setRegPhoneCountry}
+                      onBlur={() => {
+                        if (regPhoneDigits) {
+                          const err = validatePhoneNumber(regPhoneDigits, regPhoneCountry, false);
+                          if (err) setRegFieldErrors((prev) => ({ ...prev, phone: err }));
+                        }
+                      }}
                       error={regFieldErrors.phone}
                     />
                   </div>
@@ -2481,6 +2477,12 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                       if (profileFieldErrors.phone) setProfileFieldErrors((prev) => ({ ...prev, phone: '' }));
                     }}
                     onCountryChange={setProfilePhoneCountry}
+                    onBlur={() => {
+                      if (profilePhoneDigits) {
+                        const err = validatePhoneNumber(profilePhoneDigits, profilePhoneCountry, false);
+                        if (err) setProfileFieldErrors((prev) => ({ ...prev, phone: err }));
+                      }
+                    }}
                     error={profileFieldErrors.phone}
                   />
                 </div>

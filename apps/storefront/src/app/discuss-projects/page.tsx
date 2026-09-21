@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../../context/AuthContext';
 import { submitFormEntry } from '../../lib/submitFormEntry';
-import PhoneInputField, { CountryCode, PHONE_COUNTRIES } from '../../components/PhoneInputField';
+import PhoneInputField, { CountryCode, PHONE_COUNTRIES, validatePhoneNumber } from '../../components/PhoneInputField';
 
 export default function DiscussProjectsPage() {
   const { user, login } = useAuth();
@@ -98,6 +98,32 @@ export default function DiscussProjectsPage() {
     }
   };
 
+  const handleBlur = (field: string) => {
+    setFieldErrors((prev) => {
+      const next = { ...prev };
+      if (field === 'name') {
+        const cleanName = formData.name.trim();
+        if (!cleanName || cleanName.length < 2) next.name = 'Please enter your full name (min 2 letters).';
+        else if (/^\d+$/.test(cleanName)) next.name = 'Name cannot contain only numbers.';
+        else delete next.name;
+      } else if (field === 'company') {
+        if (!formData.company.trim()) next.company = 'Company / Studio name is required.';
+        else delete next.company;
+      } else if (field === 'email') {
+        const cleanEmail = formData.email.trim();
+        const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!cleanEmail) next.email = 'Business email is required.';
+        else if (!EMAIL_REGEX.test(cleanEmail)) next.email = 'Please enter a valid business email address (e.g. name@studio.com).';
+        else delete next.email;
+      } else if (field === 'phone') {
+        const err = validatePhoneNumber(phoneDigits, phoneCountry, true);
+        if (err) next.phone = err;
+        else delete next.phone;
+      }
+      return next;
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -121,16 +147,9 @@ export default function DiscussProjectsPage() {
       errors.email = 'Please enter a valid business email address (e.g. name@studio.com).';
     }
 
-    if (!phoneDigits) {
-      errors.phone = 'Phone / WhatsApp number is required.';
-    } else if (phoneCountry.code === '+91') {
-      if (phoneDigits.length !== 10) {
-        errors.phone = 'Please enter a valid 10-digit Indian mobile number.';
-      } else if (!/^[6-9]\d{9}$/.test(phoneDigits)) {
-        errors.phone = 'Indian mobile numbers must start with 6, 7, 8, or 9.';
-      }
-    } else if (phoneDigits.length < 7 || phoneDigits.length > 15) {
-      errors.phone = 'Please enter a valid phone number (7 to 15 digits).';
+    const phoneErr = validatePhoneNumber(phoneDigits, phoneCountry, true);
+    if (phoneErr) {
+      errors.phone = phoneErr;
     }
 
     // Validate account requirement if guest
@@ -391,6 +410,7 @@ export default function DiscussProjectsPage() {
                         setFormData({ ...formData, name: e.target.value });
                         if (fieldErrors.name) setFieldErrors((prev) => ({ ...prev, name: '' }));
                       }}
+                      onBlur={() => handleBlur('name')}
                       style={{
                         width: '100%',
                         padding: '10px 14px',
@@ -418,6 +438,7 @@ export default function DiscussProjectsPage() {
                         setFormData({ ...formData, company: e.target.value });
                         if (fieldErrors.company) setFieldErrors((prev) => ({ ...prev, company: '' }));
                       }}
+                      onBlur={() => handleBlur('company')}
                       style={{
                         width: '100%',
                         padding: '10px 14px',
@@ -448,6 +469,7 @@ export default function DiscussProjectsPage() {
                         setFormData({ ...formData, email: e.target.value });
                         if (fieldErrors.email) setFieldErrors((prev) => ({ ...prev, email: '' }));
                       }}
+                      onBlur={() => handleBlur('email')}
                       style={{
                         width: '100%',
                         padding: '10px 14px',
@@ -474,6 +496,7 @@ export default function DiscussProjectsPage() {
                         if (fieldErrors.phone) setFieldErrors((prev) => ({ ...prev, phone: '' }));
                       }}
                       onCountryChange={setPhoneCountry}
+                      onBlur={() => handleBlur('phone')}
                       error={fieldErrors.phone}
                     />
                   </div>

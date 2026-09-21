@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { BusinessPageConfig, BUSINESS_TABS } from '../../lib/businessPages';
-import { CountryCode, PHONE_COUNTRIES } from '../PhoneInputField';
+import { CountryCode, PHONE_COUNTRIES, getPhonePlaceholder, getMaxDigits, validatePhoneNumber } from '../PhoneInputField';
 import { submitFormEntry } from '../../lib/submitFormEntry';
 
 interface BusinessPageLayoutProps {
@@ -44,8 +44,155 @@ export default function BusinessPageLayout({ config }: BusinessPageLayoutProps) 
         : [...current, option];
 
       handleInputChange(fieldName, updated);
+      if (fieldErrors[fieldName]) {
+        setFieldErrors((prev) => {
+          const next = { ...prev };
+          delete next[fieldName];
+          return next;
+        });
+      }
       return { ...prev, [fieldName]: updated };
     });
+  };
+
+  const handleCountryChange = (fieldName: string, country: CountryCode) => {
+    setPhoneCountry(country);
+    const max = getMaxDigits(country);
+    const trimmedDigits = phoneDigits.slice(0, max);
+    if (trimmedDigits !== phoneDigits) {
+      setPhoneDigits(trimmedDigits);
+    }
+    const fullPhone = trimmedDigits ? `${country.code} ${trimmedDigits}` : '';
+    handleInputChange(fieldName, fullPhone);
+
+    // Dynamic error re-evaluation if error was shown or user already entered digits
+    if (fieldErrors[fieldName] || trimmedDigits) {
+      const err = validatePhoneNumber(trimmedDigits, country, true);
+      if (!err) {
+        setFieldErrors((prev) => {
+          const next = { ...prev };
+          delete next[fieldName];
+          return next;
+        });
+      } else if (fieldErrors[fieldName]) {
+        setFieldErrors((prev) => ({ ...prev, [fieldName]: err }));
+      }
+    }
+  };
+
+  const handlePhoneChange = (fieldName: string, rawValue: string, required: boolean) => {
+    const max = getMaxDigits(phoneCountry);
+    const digits = rawValue.replace(/\D/g, '').slice(0, max);
+    setPhoneDigits(digits);
+    const fullPhone = digits ? `${phoneCountry.code} ${digits}` : '';
+    handleInputChange(fieldName, fullPhone);
+
+    // Clear error in real-time when valid
+    if (fieldErrors[fieldName]) {
+      const err = validatePhoneNumber(digits, phoneCountry, required);
+      if (!err) {
+        setFieldErrors((prev) => {
+          const next = { ...prev };
+          delete next[fieldName];
+          return next;
+        });
+      }
+    }
+  };
+
+  const validateSingleField = (
+    field: any,
+    val: any,
+    currentDigits: string = phoneDigits,
+    currentCountry: CountryCode = phoneCountry
+  ): string | null => {
+    const rawVal = val !== undefined && val !== null ? String(val).trim() : '';
+
+    if (field.type === 'tel') {
+      const digits = (currentDigits || (rawVal ? rawVal.replace(currentCountry.code, '').replace(/\D/g, '') : '')).trim();
+      return validatePhoneNumber(digits, currentCountry, field.required);
+    }
+
+    if (field.type === 'email') {
+      if (field.required && !rawVal) {
+        return `${field.label.replace(/\*$/, '').trim()} is required.`;
+      }
+      if (rawVal) {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(rawVal)) {
+          return 'Please enter a valid email address (e.g. name@company.com).';
+        }
+      }
+      return null;
+    }
+
+    if (field.type === 'url') {
+      if (field.required && !rawVal) {
+        return `${field.label.replace(/\*$/, '').trim()} is required.`;
+      }
+      if (rawVal) {
+        const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/i;
+        if (!urlPattern.test(rawVal)) {
+          return 'Please enter a valid URL (e.g. https://yourcompany.com).';
+        }
+      }
+      return null;
+    }
+
+    if (field.type === 'checkbox_group') {
+      if (field.required) {
+        const checked = selectedCheckboxes[field.name] || [];
+        if (checked.length === 0) {
+          return field.name === 'consent'
+            ? 'You must agree to continue.'
+            : 'Please select at least one option.';
+        }
+      }
+      return null;
+    }
+
+    if (field.type === 'file') {
+      if (field.required && !uploadedFiles[field.name]?.url && !formValues[field.name]) {
+        return 'Please attach the required document or portfolio.';
+      }
+      return null;
+    }
+
+    if (field.type === 'select') {
+      if (field.required && !rawVal) {
+        return `Please select an option.`;
+      }
+      return null;
+    }
+
+    if (field.type === 'textarea') {
+      if (field.required && !rawVal) {
+        return `${field.label.replace(/\*$/, '').trim()} is required.`;
+      }
+      if (rawVal && rawVal.length < 10) {
+        return 'Please provide at least 10 characters with project details.';
+      }
+      return null;
+    }
+
+    if (field.required && !rawVal) {
+      return `${field.label.replace(/\*$/, '').trim()} is required.`;
+    }
+
+    return null;
+  };
+
+  const handleFieldBlur = (field: any) => {
+    const err = validateSingleField(field, formValues[field.name]);
+    if (err) {
+      setFieldErrors((prev) => ({ ...prev, [field.name]: err }));
+    } else if (fieldErrors[field.name]) {
+      setFieldErrors((prev) => {
+        const next = { ...prev };
+        delete next[field.name];
+        return next;
+      });
+    }
   };
 
   const handleFileUpload = async (fieldName: string, file: File) => {
@@ -97,28 +244,9 @@ export default function BusinessPageLayout({ config }: BusinessPageLayoutProps) 
     const errors: Record<string, string> = {};
 
     config.form.fields.forEach((field) => {
-      const val = formValues[field.name];
-
-      if (field.required) {
-        if (field.type === 'checkbox_group') {
-          const checked = selectedCheckboxes[field.name] || [];
-          if (checked.length === 0) {
-            errors[field.name] = 'Please select at least one option.';
-          }
-        } else if (field.type === 'tel') {
-          if (!phoneDigits || phoneDigits.trim().length < 6) {
-            errors[field.name] = 'Please provide a valid contact number.';
-          }
-        } else if (!val || String(val).trim() === '') {
-          errors[field.name] = `${field.label.replace(/\*$/, '').trim()} is required.`;
-        }
-      }
-
-      if (field.type === 'email' && val) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(String(val).trim())) {
-          errors[field.name] = 'Please enter a valid email address.';
-        }
+      const err = validateSingleField(field, formValues[field.name]);
+      if (err) {
+        errors[field.name] = err;
       }
     });
 
@@ -369,42 +497,64 @@ export default function BusinessPageLayout({ config }: BusinessPageLayoutProps) 
                             value={formValues[field.name] || ''}
                             placeholder={field.placeholder}
                             onChange={(e) => handleInputChange(field.name, e.target.value)}
+                            onBlur={() => handleFieldBlur(field)}
                             className={`business-input ${error ? 'is-error' : ''}`}
                           />
                         )}
 
-                        {/* PHONE WITH COUNTRY CODE SELECTOR */}
+                        {/* PHONE WITH DYNAMIC COUNTRY CODE & PLACEHOLDER */}
                         {field.type === 'tel' && (
-                          <div className="business-phone-row">
-                            <div className="business-phone-prefix">
-                              <select
-                                value={phoneCountry.iso}
-                                onChange={(e) => {
-                                  const c = PHONE_COUNTRIES.find((item) => item.iso === e.target.value) || PHONE_COUNTRIES[0];
-                                  setPhoneCountry(c);
-                                  handleInputChange(field.name, `${c.code} ${phoneDigits}`);
+                          <div className="business-phone-wrapper">
+                            <div className="business-phone-row">
+                              <div className="business-phone-prefix">
+                                <select
+                                  value={phoneCountry.iso}
+                                  onChange={(e) => {
+                                    const c = PHONE_COUNTRIES.find((item) => item.iso === e.target.value) || PHONE_COUNTRIES[0];
+                                    handleCountryChange(field.name, c);
+                                  }}
+                                  aria-label="Country phone code"
+                                >
+                                  {PHONE_COUNTRIES.map((c) => (
+                                    <option key={c.iso} value={c.iso}>
+                                      {c.flag} {c.code} ({c.iso})
+                                    </option>
+                                  ))}
+                                </select>
+                                <span className="business-phone-prefix-arrow">▼</span>
+                              </div>
+                              <input
+                                type="tel"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                maxLength={getMaxDigits(phoneCountry)}
+                                value={phoneDigits}
+                                placeholder={
+                                  !field.placeholder || field.placeholder === '+91' || /^\+\d+$/.test(field.placeholder.trim())
+                                    ? getPhonePlaceholder(phoneCountry)
+                                    : field.placeholder
+                                }
+                                onChange={(e) => handlePhoneChange(field.name, e.target.value, field.required)}
+                                onBlur={(e) => {
+                                  const raw = e.target.value;
+                                  const digits = (raw.replace(/\D/g, '') || phoneDigits).slice(0, getMaxDigits(phoneCountry));
+                                  const err = validatePhoneNumber(digits, phoneCountry, field.required);
+                                  if (err) {
+                                    setFieldErrors((prev) => ({ ...prev, [field.name]: err }));
+                                  } else if (fieldErrors[field.name]) {
+                                    setFieldErrors((prev) => {
+                                      const next = { ...prev };
+                                      delete next[field.name];
+                                      return next;
+                                    });
+                                  }
                                 }}
-                                aria-label="Country phone code"
-                              >
-                                {PHONE_COUNTRIES.map((c) => (
-                                  <option key={c.iso} value={c.iso}>
-                                    {c.flag} {c.code}
-                                  </option>
-                                ))}
-                              </select>
-                              <span className="business-phone-prefix-arrow">▼</span>
+                                className={`business-input ${error ? 'is-error' : ''}`}
+                              />
                             </div>
-                            <input
-                              type="tel"
-                              value={phoneDigits}
-                              placeholder={field.placeholder || '+91'}
-                              onChange={(e) => {
-                                const digits = e.target.value.replace(/\D/g, '');
-                                setPhoneDigits(digits);
-                                handleInputChange(field.name, `${phoneCountry.code} ${digits}`);
-                              }}
-                              className={`business-input ${error ? 'is-error' : ''}`}
-                            />
+                            <span style={{ display: 'block', fontSize: 11, color: '#8C827A', marginTop: 4 }}>
+                              {phoneCountry.flag} {phoneCountry.country}: {phoneCountry.hint || `${phoneCountry.digits}-digit number`}
+                            </span>
                           </div>
                         )}
 
@@ -414,6 +564,7 @@ export default function BusinessPageLayout({ config }: BusinessPageLayoutProps) 
                             <select
                               value={formValues[field.name] || ''}
                               onChange={(e) => handleInputChange(field.name, e.target.value)}
+                              onBlur={() => handleFieldBlur(field)}
                               className={`business-select ${!formValues[field.name] ? 'is-empty' : ''} ${error ? 'is-error' : ''}`}
                             >
                               <option value="">{field.placeholder || 'Select an option'}</option>
@@ -555,6 +706,7 @@ export default function BusinessPageLayout({ config }: BusinessPageLayoutProps) 
                             value={formValues[field.name] || ''}
                             placeholder={field.placeholder}
                             onChange={(e) => handleInputChange(field.name, e.target.value)}
+                            onBlur={() => handleFieldBlur(field)}
                             className={`business-textarea ${error ? 'is-error' : ''}`}
                           />
                         )}

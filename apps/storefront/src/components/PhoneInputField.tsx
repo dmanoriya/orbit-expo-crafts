@@ -8,28 +8,127 @@ export interface CountryCode {
   flag: string;
   iso: string;
   digits: number;
+  placeholder: string;
+  hint?: string;
 }
 
 export const PHONE_COUNTRIES: CountryCode[] = [
-  { country: 'India', code: '+91', flag: '🇮🇳', iso: 'IN', digits: 10 },
-  { country: 'United Arab Emirates', code: '+971', flag: '🇦🇪', iso: 'AE', digits: 9 },
-  { country: 'United States', code: '+1', flag: '🇺🇸', iso: 'US', digits: 10 },
-  { country: 'United Kingdom', code: '+44', flag: '🇬🇧', iso: 'GB', digits: 10 },
-  { country: 'Singapore', code: '+65', flag: '🇸🇬', iso: 'SG', digits: 8 },
-  { country: 'Australia', code: '+61', flag: '🇦🇺', iso: 'AU', digits: 9 },
-  { country: 'Canada', code: '+1', flag: '🇨🇦', iso: 'CA', digits: 10 },
-  { country: 'Germany', code: '+49', flag: '🇩🇪', iso: 'DE', digits: 11 },
-  { country: 'Saudi Arabia', code: '+966', flag: '🇸🇦', iso: 'SA', digits: 9 },
-  { country: 'Qatar', code: '+974', flag: '🇶🇦', iso: 'QA', digits: 8 },
-  { country: 'France', code: '+33', flag: '🇫🇷', iso: 'FR', digits: 9 },
-  { country: 'Italy', code: '+39', flag: '🇮🇹', iso: 'IT', digits: 10 },
+  { country: 'India', code: '+91', flag: '🇮🇳', iso: 'IN', digits: 10, placeholder: '98765 43210', hint: '10-digit mobile number' },
+  { country: 'United Arab Emirates', code: '+971', flag: '🇦🇪', iso: 'AE', digits: 9, placeholder: '50 123 4567', hint: '9-digit phone number' },
+  { country: 'United States', code: '+1', flag: '🇺🇸', iso: 'US', digits: 10, placeholder: '(555) 012-3456', hint: '10-digit phone number' },
+  { country: 'United Kingdom', code: '+44', flag: '🇬🇧', iso: 'GB', digits: 10, placeholder: '7911 123456', hint: '10-digit phone number' },
+  { country: 'Singapore', code: '+65', flag: '🇸🇬', iso: 'SG', digits: 8, placeholder: '8123 4567', hint: '8-digit phone number' },
+  { country: 'Australia', code: '+61', flag: '🇦🇺', iso: 'AU', digits: 9, placeholder: '412 345 678', hint: '9-digit mobile number' },
+  { country: 'Canada', code: '+1', flag: '🇨🇦', iso: 'CA', digits: 10, placeholder: '(555) 012-3456', hint: '10-digit phone number' },
+  { country: 'Germany', code: '+49', flag: '🇩🇪', iso: 'DE', digits: 11, placeholder: '151 23456789', hint: '10–11 digit phone number' },
+  { country: 'Saudi Arabia', code: '+966', flag: '🇸🇦', iso: 'SA', digits: 9, placeholder: '50 123 4567', hint: '9-digit phone number' },
+  { country: 'Qatar', code: '+974', flag: '🇶🇦', iso: 'QA', digits: 8, placeholder: '3312 3456', hint: '8-digit phone number' },
+  { country: 'France', code: '+33', flag: '🇫🇷', iso: 'FR', digits: 9, placeholder: '6 12 34 56 78', hint: '9-digit phone number' },
+  { country: 'Italy', code: '+39', flag: '🇮🇹', iso: 'IT', digits: 10, placeholder: '312 345 6789', hint: '10-digit phone number' },
 ];
+
+export function getPhonePlaceholder(country: CountryCode): string {
+  return country.placeholder || `${country.digits}-digit number`;
+}
+
+export function getMaxDigits(country: CountryCode): number {
+  if (country.iso === 'DE') return 12;
+  if (country.iso === 'GB') return 11;
+  return country.digits || 15;
+}
+
+export function validatePhoneNumber(phoneDigits: string, country: CountryCode, required = true): string | null {
+  const clean = (phoneDigits || '').replace(/\D/g, '');
+  if (!clean) {
+    return required ? 'Phone / WhatsApp number is required.' : null;
+  }
+
+  if (country.iso === 'IN') {
+    if (clean.length !== 10) {
+      return 'Please enter a valid 10-digit Indian mobile number.';
+    }
+    if (!/^[6-9]\d{9}$/.test(clean)) {
+      return 'Indian mobile numbers must start with 6, 7, 8, or 9.';
+    }
+    return null;
+  }
+
+  if (country.iso === 'US' || country.iso === 'CA') {
+    if (clean.length !== 10) {
+      return `Please enter a valid 10-digit ${country.country} phone number.`;
+    }
+    return null;
+  }
+
+  if (country.iso === 'AE') {
+    if (clean.length !== 9) {
+      return 'Please enter a valid 9-digit UAE phone number.';
+    }
+    return null;
+  }
+
+  if (country.iso === 'GB') {
+    if (clean.length < 10 || clean.length > 11) {
+      return 'Please enter a valid 10-digit UK phone number.';
+    }
+    return null;
+  }
+
+  if (country.iso === 'SG' || country.iso === 'QA') {
+    if (clean.length !== 8) {
+      return `Please enter a valid 8-digit ${country.country} phone number.`;
+    }
+    return null;
+  }
+
+  if (country.iso === 'AU') {
+    if (clean.length !== 9) {
+      return 'Please enter a valid 9-digit Australian mobile number.';
+    }
+    return null;
+  }
+
+  if (country.iso === 'DE') {
+    if (clean.length < 10 || clean.length > 12) {
+      return 'Please enter a valid German phone number (10 to 11 digits).';
+    }
+    return null;
+  }
+
+  if (country.iso === 'FR') {
+    if (clean.length !== 9) {
+      return 'Please enter a valid 9-digit French phone number.';
+    }
+    return null;
+  }
+
+  if (country.iso === 'IT') {
+    if (clean.length !== 10) {
+      return 'Please enter a valid 10-digit Italian phone number.';
+    }
+    return null;
+  }
+
+  if (country.iso === 'SA') {
+    if (clean.length !== 9) {
+      return 'Please enter a valid 9-digit Saudi phone number.';
+    }
+    return null;
+  }
+
+  if (clean.length < 7 || clean.length > 15) {
+    return `Please enter a valid ${country.country} phone number (7 to 15 digits).`;
+  }
+
+  return null;
+}
 
 export interface PhoneInputFieldProps {
   value: string; // digits only
   countryCode?: string; // e.g. '+91'
   onChange: (phoneDigits: string, fullInternationalNumber: string, country: CountryCode) => void;
   onCountryChange?: (country: CountryCode) => void;
+  onBlur?: () => void;
   label?: string;
   required?: boolean;
   disabled?: boolean;
@@ -48,6 +147,7 @@ export const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
   countryCode = '+91',
   onChange,
   onCountryChange,
+  onBlur,
   label,
   required = false,
   disabled = false,
@@ -64,15 +164,16 @@ export const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
     return PHONE_COUNTRIES.find((c) => c.code === countryCode || c.iso === countryCode) || PHONE_COUNTRIES[0];
   }, [countryCode]);
 
-  const maxDigits = activeCountry.code === '+91' ? 10 : 15;
+  const maxDigits = getMaxDigits(activeCountry);
 
   const handleCountrySelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const found = PHONE_COUNTRIES.find((c) => c.iso === e.target.value) || PHONE_COUNTRIES[0];
     if (onCountryChange) {
       onCountryChange(found);
     }
-    // Re-trigger onChange with newly active country
-    const cleanDigits = value.replace(/\D/g, '').slice(0, found.code === '+91' ? 10 : 15);
+    // Re-trigger onChange with newly active country and trim to new max
+    const newMax = getMaxDigits(found);
+    const cleanDigits = value.replace(/\D/g, '').slice(0, newMax);
     const fullNumber = cleanDigits ? `${found.code} ${cleanDigits}` : '';
     onChange(cleanDigits, fullNumber, found);
   };
@@ -85,9 +186,7 @@ export const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
     onChange(digitsOnly, fullNumber, activeCountry);
   };
 
-  const defaultPlaceholder = activeCountry.code === '+91'
-    ? '98765 43210 (10 digits)'
-    : 'Phone number (digits only)';
+  const dynamicPlaceholder = placeholder || activeCountry.placeholder || getPhonePlaceholder(activeCountry);
 
   return (
     <div className={`phone-input-field ${className}`} style={{ width: '100%', ...wrapperStyle }}>
@@ -174,9 +273,10 @@ export const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
           disabled={disabled}
           required={required}
           autoComplete={autoComplete}
-          placeholder={placeholder || defaultPlaceholder}
+          placeholder={dynamicPlaceholder}
           value={value}
           onChange={handleInputChange}
+          onBlur={onBlur}
           style={{
             flex: 1,
             width: '100%',

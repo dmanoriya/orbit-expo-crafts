@@ -5,28 +5,13 @@ import Link from 'next/link';
 import { useEnquiry } from '../../context/EnquiryContext';
 import { useAuth } from '../../context/AuthContext';
 import { submitFormEntry } from '../../lib/submitFormEntry';
-
-interface CountryCode {
-  country: string;
-  code: string;
-  flag: string;
-  iso: string;
-}
-
-const COUNTRIES: CountryCode[] = [
-  { country: 'India', code: '+91', flag: '🇮🇳', iso: 'IN' },
-  { country: 'United States', code: '+1', flag: '🇺🇸', iso: 'US' },
-  { country: 'United Kingdom', code: '+44', flag: '🇬🇧', iso: 'GB' },
-  { country: 'United Arab Emirates', code: '+971', flag: '🇦🇪', iso: 'AE' },
-  { country: 'Singapore', code: '+65', flag: '🇸🇬', iso: 'SG' },
-  { country: 'Australia', code: '+61', flag: '🇦🇺', iso: 'AU' },
-  { country: 'Canada', code: '+1', flag: '🇨🇦', iso: 'CA' },
-  { country: 'Germany', code: '+49', flag: '🇩🇪', iso: 'DE' },
-  { country: 'Saudi Arabia', code: '+966', flag: '🇸🇦', iso: 'SA' },
-  { country: 'Qatar', code: '+974', flag: '🇶🇦', iso: 'QA' },
-  { country: 'France', code: '+33', flag: '🇫🇷', iso: 'FR' },
-  { country: 'Italy', code: '+39', flag: '🇮🇹', iso: 'IT' },
-];
+import PhoneInputField, {
+  CountryCode,
+  PHONE_COUNTRIES,
+  getPhonePlaceholder,
+  getMaxDigits,
+  validatePhoneNumber,
+} from '../../components/PhoneInputField';
 
 const SPAM_KEYWORDS = [
   'casino', 'viagra', 'porn', 'sex', 'crypto', 'bitcoin', 'loan', 'investment',
@@ -47,7 +32,7 @@ export default function ContactPage() {
   const [fullName, setFullName] = useState('');
   const [company, setCompany] = useState('');
   const [email, setEmail] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState<CountryCode>(COUNTRIES[0]);
+  const [selectedCountry, setSelectedCountry] = useState<CountryCode>(PHONE_COUNTRIES[0]);
   const [phone, setPhone] = useState('');
 
   // Trade Portal Account (Required when not logged in)
@@ -62,18 +47,18 @@ export default function ContactPage() {
 
   // Helper to parse phone number and country code cleanly
   const parsePhoneAndCountry = (rawPhone: string) => {
-    if (!rawPhone) return { country: COUNTRIES[0], digits: '' };
+    if (!rawPhone) return { country: PHONE_COUNTRIES[0], digits: '' };
     const trimmed = rawPhone.trim();
-    const matchedCountry = COUNTRIES.find((c) => trimmed.startsWith(c.code));
+    const matchedCountry = PHONE_COUNTRIES.find((c) => trimmed.startsWith(c.code));
     if (matchedCountry) {
       const localDigits = trimmed.slice(matchedCountry.code.length).replace(/\D/g, '');
       return { country: matchedCountry, digits: localDigits };
     }
     const digits = trimmed.replace(/\D/g, '');
     if (digits.length > 10 && digits.startsWith('91')) {
-      return { country: COUNTRIES[0], digits: digits.slice(2) };
+      return { country: PHONE_COUNTRIES[0], digits: digits.slice(2) };
     }
-    return { country: COUNTRIES[0], digits };
+    return { country: PHONE_COUNTRIES[0], digits };
   };
 
   useEffect(() => {
@@ -176,19 +161,9 @@ export default function ContactPage() {
     }
 
     // Phone / WhatsApp validation
-    const cleanPhone = phone.replace(/\D/g, '');
-    const isIndia = selectedCountry.code === '+91';
-
-    if (!cleanPhone) {
-      errs.phone = 'Phone / WhatsApp number is required.';
-    } else if (isIndia) {
-      if (cleanPhone.length !== 10) {
-        errs.phone = 'Indian phone number must be exactly 10 digits.';
-      } else if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
-        errs.phone = 'Indian phone numbers must start with 6, 7, 8, or 9.';
-      }
-    } else if (!isIndia && (cleanPhone.length < 7 || cleanPhone.length > 15)) {
-      errs.phone = 'International phone number must be between 7 and 15 digits.';
+    const phoneErr = validatePhoneNumber(phone, selectedCountry, true);
+    if (phoneErr) {
+      errs.phone = phoneErr;
     }
 
     // Trade Portal Account (Mandatory for unauthenticated users)
@@ -211,6 +186,31 @@ export default function ContactPage() {
 
     setErrors(errs);
     return Object.keys(errs).length === 0;
+  };
+
+  const handleFieldBlur = (fieldName: string) => {
+    setErrors((prev) => {
+      const next = { ...prev };
+      if (fieldName === 'fullName') {
+        const trimmedName = fullName.trim();
+        if (!trimmedName) next.fullName = 'Full Name is required.';
+        else if (trimmedName.length < 2) next.fullName = 'Full Name must be at least 2 characters.';
+        else if (!/^[a-zA-Z\s.'-]+$/.test(trimmedName)) next.fullName = 'Name can only contain letters and standard characters.';
+        else if (SPAM_KEYWORDS.some((kw) => trimmedName.toLowerCase().includes(kw))) next.fullName = 'Invalid name input.';
+        else delete next.fullName;
+      } else if (fieldName === 'email') {
+        const trimmedEmail = email.trim().toLowerCase();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!trimmedEmail) next.email = 'Email Address is required.';
+        else if (!emailRegex.test(trimmedEmail)) next.email = 'Please enter a valid business email address (e.g. name@company.com).';
+        else delete next.email;
+      } else if (fieldName === 'phone') {
+        const err = validatePhoneNumber(phone, selectedCountry, true);
+        if (err) next.phone = err;
+        else delete next.phone;
+      }
+      return next;
+    });
   };
 
   const handleNextStep = () => {
@@ -465,7 +465,11 @@ export default function ContactPage() {
                     type="text"
                     placeholder="e.g. Arch. Priya Sharma"
                     value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
+                    onChange={(e) => {
+                      setFullName(e.target.value);
+                      if (errors.fullName) setErrors((prev) => ({ ...prev, fullName: '' }));
+                    }}
+                    onBlur={() => handleFieldBlur('fullName')}
                   />
                   {errors.fullName && <span className="field-error">{errors.fullName}</span>}
                 </div>
@@ -488,12 +492,16 @@ export default function ContactPage() {
                     type="email"
                     placeholder="priya@studiolotus.in"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (errors.email) setErrors((prev) => ({ ...prev, email: '' }));
+                    }}
+                    onBlur={() => handleFieldBlur('email')}
                   />
                   {errors.email && <span className="field-error">{errors.email}</span>}
                 </div>
 
-                {/* PHONE / WHATSAPP WITH COUNTRY FLAG SELECTOR */}
+                {/* PHONE / WHATSAPP WITH DYNAMIC COUNTRY FLAG SELECTOR */}
                 <div className="field" style={{ marginBottom: 24 }}>
                   <label>PHONE / WHATSAPP NUMBER *</label>
                   <div className="sample-phone-group">
@@ -501,13 +509,20 @@ export default function ContactPage() {
                       <select
                         value={selectedCountry.iso}
                         onChange={(e) => {
-                          const found = COUNTRIES.find((c) => c.iso === e.target.value);
-                          if (found) setSelectedCountry(found);
+                          const found = PHONE_COUNTRIES.find((c) => c.iso === e.target.value) || PHONE_COUNTRIES[0];
+                          setSelectedCountry(found);
+                          const maxDigits = getMaxDigits(found);
+                          const cleanDigits = phone.replace(/\D/g, '').slice(0, maxDigits);
+                          setPhone(cleanDigits);
+                          if (errors.phone) {
+                            const err = validatePhoneNumber(cleanDigits, found, true);
+                            setErrors((prev) => ({ ...prev, phone: err || '' }));
+                          }
                         }}
                       >
-                        {COUNTRIES.map((c) => (
+                        {PHONE_COUNTRIES.map((c) => (
                           <option key={c.iso} value={c.iso}>
-                            {c.flag} {c.code} ({c.iso})
+                            {c.flag} {c.code} ({c.country})
                           </option>
                         ))}
                       </select>
@@ -517,17 +532,29 @@ export default function ContactPage() {
                     </div>
                     <input
                       type="tel"
-                      maxLength={selectedCountry.code === '+91' ? 10 : 15}
-                      placeholder={selectedCountry.code === '+91' ? '98765 43210 (10 digits)' : 'Phone number'}
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      maxLength={getMaxDigits(selectedCountry)}
+                      placeholder={getPhonePlaceholder(selectedCountry)}
                       value={phone}
                       onChange={(e) => {
-                        const maxDigits = selectedCountry.code === '+91' ? 10 : 15;
+                        const maxDigits = getMaxDigits(selectedCountry);
                         const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, maxDigits);
                         setPhone(digitsOnly);
+                        if (errors.phone) {
+                          const err = validatePhoneNumber(digitsOnly, selectedCountry, true);
+                          if (!err) setErrors((prev) => ({ ...prev, phone: '' }));
+                        }
                       }}
+                      onBlur={() => handleFieldBlur('phone')}
                     />
                   </div>
                   {errors.phone && <span className="field-error">{errors.phone}</span>}
+                  {selectedCountry.hint && !errors.phone && (
+                    <p style={{ fontSize: 11, color: '#888', marginTop: 4 }}>
+                      Format: {selectedCountry.code} {selectedCountry.placeholder} ({selectedCountry.hint})
+                    </p>
+                  )}
                 </div>
 
                 {/* TRADE PORTAL ACCOUNT SETUP (REQUIRED) */}
