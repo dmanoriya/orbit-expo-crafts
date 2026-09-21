@@ -21,7 +21,7 @@ const defaultFooterData: FooterData = {
   footer_tagline: 'Thoughtfully made furniture and décor for considered spaces.',
   footer_address: 'E-243, RIICO Industrial Area, Phase II, Udaipur, Rajasthan 313001, India',
   footer_phone: '+91 99280 22151',
-  footer_email: 'trade@orbitexpocrafts.com',
+  footer_email: 'sales@orbitexpocrafts.com',
   social_instagram: 'https://instagram.com/orbitexpocrafts',
   social_linkedin: 'https://linkedin.com/company/orbitexpocrafts',
   social_pinterest: 'https://pinterest.com/orbitexpocrafts',
@@ -184,7 +184,7 @@ export const Footer: React.FC = () => {
                   rel="noopener noreferrer"
                   className="footer-whatsapp-link"
                 >
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="footer-wa-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="footer-wa-icon">
                     <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
                   </svg>
                   <span className="footer-phone-text">{data.footer_phone || '+91 99280 22151'}</span>
@@ -195,8 +195,11 @@ export const Footer: React.FC = () => {
 
               {/* EMAIL */}
               <div className="footer-email-row">
-                <a href={`mailto:${data.footer_email || 'trade@orbitexpocrafts.com'}`} className="footer-email-text">
-                  {data.footer_email || 'trade@orbitexpocrafts.com'}
+                <a
+                  href={`mailto:${data.footer_email && data.footer_email !== 'trade@orbitexpocrafts.com' ? data.footer_email : 'sales@orbitexpocrafts.com'}`}
+                  className="footer-email-text"
+                >
+                  {data.footer_email && data.footer_email !== 'trade@orbitexpocrafts.com' ? data.footer_email : 'sales@orbitexpocrafts.com'}
                 </a>
               </div>
             </div>

@@ -2341,7 +2341,7 @@ section.blk.tight { padding: 72px 0; }
 .footer-nav-columns {
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1.18fr;
+  grid-template-columns: 1fr 1fr 1fr minmax(235px, 1.25fr);
   gap: 36px;
   align-items: start;
   padding-top: 10px;
@@ -2422,6 +2422,8 @@ section.blk.tight { padding: 72px 0; }
   color: #141210;
   font-size: 14px;
   font-weight: 500;
+  white-space: nowrap;
+  flex-wrap: nowrap;
   transition: color 0.2s ease;
 }
 
@@ -2431,16 +2433,19 @@ section.blk.tight { padding: 72px 0; }
 
 .footer-wa-icon {
   flex-shrink: 0;
+  display: block;
 }
 
 .footer-phone-text {
   letter-spacing: 0.02em;
   font-size: 13.5px;
+  white-space: nowrap;
 }
 
 .footer-wa-divider {
   color: #D5B990;
   font-weight: 300;
+  user-select: none;
 }
 
 .footer-wa-chat {
@@ -2448,6 +2453,7 @@ section.blk.tight { padding: 72px 0; }
   font-weight: 700;
   font-size: 13.5px;
   letter-spacing: 0.08em;
+  white-space: nowrap;
   transition: opacity 0.2s ease;
 }
 
@@ -2463,6 +2469,8 @@ section.blk.tight { padding: 72px 0; }
   font-size: 13.5px;
   color: #4A453E;
   text-decoration: none;
+  white-space: nowrap;
+  display: inline-block;
   transition: color 0.2s ease;
 }
 

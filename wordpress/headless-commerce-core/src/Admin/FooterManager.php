@@ -34,7 +34,7 @@ class FooterManager {
 			'footer_tagline'   => 'Bespoke contract & trade furniture handcrafted in Udaipur & Jodhpur for luxury resorts, boutique hotels and specifiers worldwide.',
 			'footer_address'   => 'E-243, RIICO Industrial Area, Phase II, Udaipur, Rajasthan 313001, India',
 			'footer_phone'     => '+91 99280 22151',
-			'footer_email'     => 'trade@orbitexpocrafts.com',
+			'footer_email'     => 'sales@orbitexpocrafts.com',
 
 			// Social Links
 			'social_instagram' => 'https://instagram.com/orbitexpocrafts',

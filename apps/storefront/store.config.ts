@@ -7,7 +7,7 @@ export const storeConfig = {
   transport: (process.env.NEXT_PUBLIC_COMMERCE_TRANSPORT as 'rest' | 'graphql') || 'rest',
   currency: 'INR',
   currencySymbol: '₹',
-  supportEmail: 'trade@orbitexpocrafts.com',
+  supportEmail: 'sales@orbitexpocrafts.com',
   phone: '+91 99280 22151',
 };
 
