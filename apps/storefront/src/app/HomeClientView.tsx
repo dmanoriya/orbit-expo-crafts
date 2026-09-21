@@ -687,7 +687,7 @@ export default function HomeClientView({
                 {hpData.new_arrivals_desc ||
                   'Recently finished bespoke archetypes, contemporary additions, and seasonal design debuts ready for contract specification.'}
               </p>
-              <Link href={hpData.new_arrivals_url || '/collections?badge=new'} className="link-arrow new-arrivals-link">
+              <Link href={hpData.new_arrivals_url || '/collections/new-arrivals'} className="link-arrow new-arrivals-link">
                 {(hpData.new_arrivals_cta || 'Explore all new arrivals').replace(/[\s→\->]+$/g, '').trim()}{' '}
                 <span className="arrow-icon">→</span>
               </Link>
@@ -799,7 +799,7 @@ export default function HomeClientView({
           </div>
 
           <div style={{ textAlign: 'center', marginTop: 40 }}>
-            <Link href={hpData.new_arrivals_url || '/collections?badge=new'} className="btn btn-primary btn-lg">
+            <Link href={hpData.new_arrivals_url || '/collections/new-arrivals'} className="btn btn-primary btn-lg">
               {(hpData.new_arrivals_cta || 'Explore all new arrivals').replace(/[\s→\->]+$/g, '').trim()} →
             </Link>
           </div>

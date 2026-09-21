@@ -1079,7 +1079,7 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
   new_arrivals_title: 'Fresh from the Rajasthan Workshops',
   new_arrivals_desc: 'Recently finished bespoke archetypes, contemporary additions, and seasonal design debuts ready for contract specification.',
   new_arrivals_cta: 'Explore all new arrivals',
-  new_arrivals_url: '/collections?badge=new',
+  new_arrivals_url: '/collections/new-arrivals',
 };
 
 export async function fetchWpHomepageData(): Promise<HomepageData> {

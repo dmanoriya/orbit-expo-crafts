@@ -619,23 +619,6 @@ export default function CatalogueClient({
               'Explore handcrafted bespoke furniture, lighting, rugs, and decor elements engineered for luxury hospitality, commercial fit-outs, and high-end residential projects.'}
           </p>
         </div>
-        <span
-          className="pill-note"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
-            fontSize: 13,
-            background: 'var(--surface-2)',
-            padding: '8px 16px',
-            borderRadius: 'var(--r-pill)',
-          }}
-        >
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15a2 2 0 01-2 2H8l-5 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-          </svg>
-          Direct B2B Manufacturing · Quote-First Catalog
-        </span>
       </div>
 
       {/* FILTER DRAWER BACKDROP (MOBILE/TABLET) */}

@@ -370,7 +370,7 @@ export const Header: React.FC = () => {
                 const isHovered = activeCategory === cat.name;
                 const isDept = isKnownDepartment(cat.slug);
                 const href = cat.slug === 'new-arrivals'
-                  ? '/collections?badge=new'
+                  ? '/collections/new-arrivals'
                   : cat.isTurnkey
                   ? '/turnkey'
                   : isDept
@@ -597,7 +597,7 @@ export const Header: React.FC = () => {
 
                   {/* NEW ARRIVALS DIRECT ROW */}
                   <Link
-                    href="/collections?badge=new"
+                    href="/collections/new-arrivals"
                     onClick={closeMobileDrawer}
                     className="mobile-drill-row mobile-drill-featured-row"
                   >
