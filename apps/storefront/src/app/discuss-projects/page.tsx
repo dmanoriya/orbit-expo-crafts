@@ -241,10 +241,10 @@ export default function DiscussProjectsPage() {
             TURNKEY CONTRACT CONSULTATION
           </span>
           <h1 className="disp" style={{ fontSize: 'clamp(32px, 4.5vw, 56px)', fontWeight: 400, color: 'var(--ink)', margin: 0, lineHeight: 1.15 }}>
-            Discuss Your Next Project
+            Discuss Your Project
           </h1>
           <p style={{ fontSize: 17, color: 'var(--ink-2)', maxWidth: '68ch', marginTop: 16, lineHeight: 1.6 }}>
-            From 150-key luxury desert resorts and coastal boutique hotels to bespoke private estates, our technical engineering studio in Udaipur &amp; Jodhpur translates your architectural blueprints into repeatable, export-grade handcrafted furniture.
+            Tell us about your project and furniture needs. We help turn your ideas and designs into custom furniture for your space.
           </p>
         </div>
 
