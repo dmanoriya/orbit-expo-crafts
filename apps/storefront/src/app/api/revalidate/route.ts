@@ -26,9 +26,15 @@ export async function POST(request: NextRequest) {
     const pathParam = request.nextUrl.searchParams.get('path');
 
     const defaultTags = ['wp-products', 'wp-categories', 'wp-attributes', 'wp-homepage', 'wp-config', 'business-pages', 'mega-menu'];
-    const tags: string[] = Array.isArray(body.tags) && body.tags.length > 0
+    const rawTags: string[] = Array.isArray(body.tags) && body.tags.length > 0
       ? body.tags
       : (tagParam ? [tagParam, 'business-pages', 'mega-menu'] : defaultTags);
+
+    const tagsSet = new Set(rawTags);
+    if (tagsSet.has('wp-categories') || tagsSet.has('wp-products')) {
+      tagsSet.add('mega-menu');
+    }
+    const tags = Array.from(tagsSet);
 
     tags.forEach((tag) => {
       try {

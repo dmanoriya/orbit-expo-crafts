@@ -37,40 +37,68 @@ export const DEFAULT_MEGA_MENU_DATA: MegaMenuData = {
   updatedAt: 0,
 };
 
+function getCandidateBases(): string[] {
+  const custom = (process.env.WORDPRESS_URL || process.env.NEXT_PUBLIC_WORDPRESS_URL || '').replace(/\/$/, '');
+  const list: string[] = [];
+
+  if (custom) list.push(custom);
+
+  const defaults = [
+    'http://woo-catalog-nextjs.local',
+    'https://admin.orbitexpocrafts.com',
+  ];
+
+  for (const def of defaults) {
+    if (!list.includes(def)) list.push(def);
+  }
+
+  return list;
+}
+
 /**
- * Fetch dynamic mega menu configuration from WordPress backend with Next.js ISR tag
+ * Fetch dynamic mega menu configuration from WordPress backend with candidate failover and ISR tag
  */
 export async function getMegaMenuData(): Promise<MegaMenuData> {
-  const wpUrl =
-    process.env.WORDPRESS_URL ||
-    process.env.NEXT_PUBLIC_WORDPRESS_URL ||
-    'https://admin.orbitexpocrafts.com';
+  const candidates = getCandidateBases();
+  const isDev = process.env.NODE_ENV === 'development';
 
-  try {
-    const res = await fetch(`${wpUrl.replace(/\/+$/, '')}/wp-json/hcc/v1/mega-menu`, {
-      next: { tags: ['mega-menu'], revalidate: 86400 },
-      headers: {
-        Accept: 'application/json',
-      },
-    });
+  for (const base of candidates) {
+    try {
+      const targetUrl = `${base}/wp-json/hcc/v1/mega-menu`;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 4000);
 
-    if (!res.ok) {
-      return DEFAULT_MEGA_MENU_DATA;
+      const res = await fetch(targetUrl, {
+        headers: {
+          Accept: 'application/json',
+        },
+        ...(isDev
+          ? { cache: 'no-store' }
+          : { next: { tags: ['mega-menu'], revalidate: 60 } }),
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+
+      if (res.ok) {
+        const text = await res.text().catch(() => '');
+        try {
+          const data = JSON.parse(text);
+          if (data && Array.isArray(data.navItems) && data.taxonomy && typeof data.taxonomy === 'object') {
+            return {
+              navItems: data.navItems,
+              taxonomy: data.taxonomy,
+              updatedAt: data.updatedAt || Date.now(),
+            };
+          }
+        } catch {
+          // JSON parse failed, try next candidate
+        }
+      }
+    } catch {
+      // Network/timeout error -> try next candidate
     }
-
-    const data = await res.json();
-
-    if (data && Array.isArray(data.navItems) && data.taxonomy && typeof data.taxonomy === 'object') {
-      return {
-        navItems: data.navItems,
-        taxonomy: data.taxonomy,
-        updatedAt: data.updatedAt || Date.now(),
-      };
-    }
-
-    return DEFAULT_MEGA_MENU_DATA;
-  } catch (err) {
-    // Return resilient local fallback on network error
-    return DEFAULT_MEGA_MENU_DATA;
   }
+
+  // Return resilient local fallback if all backends fail
+  return DEFAULT_MEGA_MENU_DATA;
 }

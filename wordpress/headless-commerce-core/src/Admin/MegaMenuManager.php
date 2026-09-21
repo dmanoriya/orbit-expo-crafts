@@ -256,16 +256,26 @@ class MegaMenuManager {
 
 		$frontend_url = BusinessPagesManager::get_frontend_url();
 
-		$url = add_query_arg( array(
-			'secret' => $secret,
-			'tag'    => 'mega-menu',
-			'path'   => '/',
-		), $frontend_url . '/api/revalidate' );
+		$targets = array( $frontend_url );
+		$host = isset( $_SERVER['HTTP_HOST'] ) ? sanitize_text_field( $_SERVER['HTTP_HOST'] ) : '';
+		if ( strpos( $host, '.local' ) !== false || strpos( $host, 'localhost' ) !== false || strpos( $host, '127.0.0.1' ) !== false ) {
+			if ( ! in_array( 'http://localhost:3000', $targets ) ) {
+				$targets[] = 'http://localhost:3000';
+			}
+		}
 
-		wp_remote_get( $url, array(
-			'timeout'   => 3,
-			'sslverify' => false,
-		) );
+		foreach ( $targets as $target ) {
+			$url = add_query_arg( array(
+				'secret' => $secret,
+				'tag'    => 'mega-menu',
+				'path'   => '/',
+			), rtrim( $target, '/' ) . '/api/revalidate' );
+
+			wp_remote_get( $url, array(
+				'timeout'   => 2,
+				'sslverify' => false,
+			) );
+		}
 	}
 
 	/**

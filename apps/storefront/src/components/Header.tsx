@@ -57,18 +57,41 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [liveMenuData, setLiveMenuData] = useState<MegaMenuData | undefined>(menuData);
+
+  useEffect(() => {
+    if (menuData) {
+      setLiveMenuData(menuData);
+    }
+  }, [menuData]);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/api/wp/mega-menu')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        const payload = (json && json.data && Array.isArray(json.data.navItems)) ? json.data : json;
+        if (isMounted && payload && Array.isArray(payload.navItems) && payload.taxonomy) {
+          setLiveMenuData(payload);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const navCategories = React.useMemo(() => {
-    return (menuData?.navItems && menuData.navItems.length > 0)
-      ? menuData.navItems
+    return (liveMenuData?.navItems && liveMenuData.navItems.length > 0)
+      ? liveMenuData.navItems
       : DEFAULT_NAV_CATEGORIES;
-  }, [menuData]);
+  }, [liveMenuData]);
 
   const taxonomyData = React.useMemo(() => {
-    return (menuData?.taxonomy && Object.keys(menuData.taxonomy).length > 0)
-      ? menuData.taxonomy
+    return (liveMenuData?.taxonomy && Object.keys(liveMenuData.taxonomy).length > 0)
+      ? liveMenuData.taxonomy
       : (megaTaxonomyData as unknown as MegaMenuTaxonomy);
-  }, [menuData]);
+  }, [liveMenuData]);
 
   const mobileDepartments: MobileDept[] = React.useMemo(() => {
     return navCategories

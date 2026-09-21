@@ -57,7 +57,8 @@ class CacheManager {
 
 	public static function purge_catalog_cache() {
 		self::delete( 'categories_list' );
-		self::notify_nextjs_revalidate( array( 'wp-categories', 'wp-products' ), 0 );
+		delete_transient( 'hcc_public_mega_menu' );
+		self::notify_nextjs_revalidate( array( 'wp-categories', 'wp-products', 'mega-menu' ), 0 );
 	}
 
 	public static function purge_attribute_cache() {
@@ -69,30 +70,38 @@ class CacheManager {
 		self::delete( 'products_list_all' );
 		self::delete( 'categories_list' );
 		self::delete( 'attributes_list' );
-		self::notify_nextjs_revalidate( array( 'wp-products', 'wp-categories', 'wp-attributes', 'wp-homepage', 'wp-config' ), 0 );
+		delete_transient( 'hcc_public_mega_menu' );
+		self::notify_nextjs_revalidate( array( 'wp-products', 'wp-categories', 'wp-attributes', 'wp-homepage', 'wp-config', 'mega-menu' ), 0 );
 	}
 
 	/**
 	 * Instant Webhook Ping to Next.js Storefront Cache Revalidation Route
 	 */
 	private static function notify_nextjs_revalidate( $tags, $id ) {
-		$frontend_url      = get_option( 'hcc_frontend_url', 'https://orbitexpocrafts.com' );
-		$revalidate_url    = get_option( 'hcc_revalidate_url' );
-		$revalidate_secret = get_option( 'hcc_revalidate_secret', 'orbit_expo_crafts_secret_key_2026' );
+		$frontend_url      = get_option( 'hcc_frontend_url', '' );
+		$revalidate_secret = get_option( 'hcc_revalidate_secret', 'orbit_headless_revalidate_2026' );
 
-		if ( empty( $revalidate_url ) ) {
-			$base           = rtrim( $frontend_url, '/' );
-			$revalidate_url = "{$base}/api/revalidate?secret={$revalidate_secret}";
+		$host = isset( $_SERVER['HTTP_HOST'] ) ? sanitize_text_field( $_SERVER['HTTP_HOST'] ) : '';
+		$is_local_wp = ( strpos( $host, '.local' ) !== false || strpos( $host, 'localhost' ) !== false || strpos( $host, '127.0.0.1' ) !== false );
+
+		if ( empty( $frontend_url ) ) {
+			$frontend_url = $is_local_wp ? 'http://localhost:3000' : 'https://orbitexpocrafts.com';
 		}
 
-		if ( ! empty( $revalidate_url ) ) {
+		$targets = array( rtrim( $frontend_url, '/' ) );
+		if ( $is_local_wp && ! in_array( 'http://localhost:3000', $targets ) ) {
+			$targets[] = 'http://localhost:3000';
+		}
+
+		foreach ( $targets as $target_base ) {
+			$revalidate_url = "{$target_base}/api/revalidate?secret={$revalidate_secret}";
 			wp_remote_post( $revalidate_url, array(
 				'blocking'  => false,
 				'timeout'   => 2,
 				'sslverify' => false,
 				'headers'   => array(
-					'Content-Type'         => 'application/json',
-					'X-Revalidate-Secret'  => $revalidate_secret,
+					'Content-Type'        => 'application/json',
+					'X-Revalidate-Secret' => $revalidate_secret,
 				),
 				'body'      => wp_json_encode( array(
 					'tags' => (array) $tags,
