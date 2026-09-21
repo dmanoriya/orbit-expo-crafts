@@ -308,16 +308,48 @@ class AdminSettings {
 						</p>
 					</form>
 				</div>
-				<div style="flex: 1; background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ccd0d4;">
-					<h2>System Status</h2>
-					<ul>
-						<li><strong>Plugin Version:</strong> <?php echo esc_html( HCC_VERSION ); ?></li>
-						<li><strong>Active Store Mode:</strong> <code><?php echo esc_html( $current_mode ); ?></code></li>
-						<li><strong>REST Namespace:</strong> <code>/wp-json/hcc/v1/</code></li>
-						<li><strong>GraphQL Endpoint:</strong> <code>/wp-json/hcc/v1/graphql</code></li>
-						<li><strong>Active SEO Engine:</strong> <?php echo esc_html( $seo_provider ); ?></li>
-						<li><strong>WooCommerce Active:</strong> <?php echo class_exists( 'WooCommerce' ) ? ' Yes' : ' No'; ?></li>
-					</ul>
+				<div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+					<div style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ccd0d4; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+						<h2 style="margin-top:0; font-size:16px; font-weight:700; color:#0E5C63; display:flex; align-items:center; gap:8px;">
+							🏛️ Storefront Builders & Modules
+						</h2>
+						<p class="description" style="margin-bottom: 14px;">Direct access to manage storefront content, forms, and pages:</p>
+						<div style="display: flex; flex-direction: column; gap: 8px;">
+							<a href="<?php echo esc_url( admin_url( 'admin.php?page=hcc-business-pages' ) ); ?>" class="button button-primary" style="display:block; text-align:center; font-weight:600; padding:6px 10px; height:auto; background:#0E5C63; border-color:#0E5C63;">
+								🏛️ Business Pages & Forms Builder
+							</a>
+							<a href="<?php echo esc_url( admin_url( 'admin.php?page=hcc-form-entries' ) ); ?>" class="button button-secondary" style="display:block; text-align:center; font-weight:600; padding:6px 10px; height:auto;">
+								📋 Form Submissions & Leads
+							</a>
+							<a href="<?php echo esc_url( admin_url( 'admin.php?page=hcc-homepage-builder' ) ); ?>" class="button button-secondary" style="display:block; text-align:center; font-weight:600; padding:6px 10px; height:auto;">
+								🏠 Homepage Content Builder
+							</a>
+							<a href="<?php echo esc_url( admin_url( 'admin.php?page=hcc-footer-builder' ) ); ?>" class="button button-secondary" style="display:block; text-align:center; font-weight:600; padding:6px 10px; height:auto;">
+								🦶 Footer Builder
+							</a>
+							<a href="<?php echo esc_url( admin_url( 'admin.php?page=hcc-typography-manager' ) ); ?>" class="button button-secondary" style="display:block; text-align:center; font-weight:600; padding:6px 10px; height:auto;">
+								🔤 Typography & Fonts
+							</a>
+							<a href="<?php echo esc_url( admin_url( 'admin.php?page=hcc-taxonomy-importer' ) ); ?>" class="button button-secondary" style="display:block; text-align:center; font-weight:600; padding:6px 10px; height:auto;">
+								📁 Taxonomy Importer
+							</a>
+							<a href="<?php echo esc_url( admin_url( 'admin.php?page=hcc-product-importer' ) ); ?>" class="button button-secondary" style="display:block; text-align:center; font-weight:600; padding:6px 10px; height:auto;">
+								📦 Product CSV Importer
+							</a>
+						</div>
+					</div>
+
+					<div style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #ccd0d4; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+						<h2 style="margin-top:0; font-size:16px;">System Status</h2>
+						<ul style="line-height: 1.8;">
+							<li><strong>Plugin Version:</strong> <span class="badge" style="background:#0E5C63; color:#fff; padding:2px 8px; border-radius:12px; font-weight:600; font-size:11px;"><?php echo esc_html( HCC_VERSION ); ?></span></li>
+							<li><strong>Active Store Mode:</strong> <code><?php echo esc_html( $current_mode ); ?></code></li>
+							<li><strong>REST Namespace:</strong> <code>/wp-json/hcc/v1/</code></li>
+							<li><strong>GraphQL Endpoint:</strong> <code>/wp-json/hcc/v1/graphql</code></li>
+							<li><strong>Active SEO Engine:</strong> <?php echo esc_html( $seo_provider ); ?></li>
+							<li><strong>WooCommerce Active:</strong> <?php echo class_exists( 'WooCommerce' ) ? ' Yes' : ' No'; ?></li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>

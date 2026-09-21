@@ -17,13 +17,25 @@ class BusinessPagesManager {
 	}
 
 	public static function add_admin_menu() {
+		// Submenu under Headless Commerce
 		add_submenu_page(
 			'headless-commerce-core',
-			'Business Forms & Pages Builder',
-			'Business Pages & Forms',
+			__( 'Business Forms & Pages Builder', 'headless-commerce-core' ),
+			__( 'Business Pages & Forms', 'headless-commerce-core' ),
 			'manage_options',
 			'hcc-business-pages',
 			array( __CLASS__, 'render_admin_page' )
+		);
+
+		// Dedicated Top-Level Admin Menu for Maximum Discoverability
+		add_menu_page(
+			__( 'Business Forms & Pages Builder', 'headless-commerce-core' ),
+			__( 'Business Pages', 'headless-commerce-core' ),
+			'manage_options',
+			'hcc-business-pages-main',
+			array( __CLASS__, 'render_admin_page' ),
+			'dashicons-feedback',
+			59
 		);
 	}
 
@@ -817,6 +829,8 @@ class BusinessPagesManager {
 			'furniture_decor_designers' => '04 Furniture & Décor Designers',
 		);
 
+		$current_admin_page = isset( $_GET['page'] ) ? sanitize_key( $_GET['page'] ) : 'hcc-business-pages';
+
 		?>
 		<div class="wrap" style="max-width:1200px;">
 			<h1 style="font-size:24px; font-weight:700; color:#1d2327; margin-bottom:6px;">
@@ -829,7 +843,7 @@ class BusinessPagesManager {
 			<!-- TABS NAVIGATION -->
 			<h2 class="nav-tab-wrapper" style="margin-bottom:24px;">
 				<?php foreach ( $tab_titles as $t_key => $t_label ) : ?>
-					<a href="?page=hcc-business-pages&tab=<?php echo esc_attr( $t_key ); ?>" class="nav-tab <?php echo ( $active_tab === $t_key ) ? 'nav-tab-active' : ''; ?>" style="font-size:14px; font-weight:600;">
+					<a href="?page=<?php echo esc_attr( $current_admin_page ); ?>&tab=<?php echo esc_attr( $t_key ); ?>" class="nav-tab <?php echo ( $active_tab === $t_key ) ? 'nav-tab-active' : ''; ?>" style="font-size:14px; font-weight:600;">
 						<?php echo esc_html( $t_label ); ?>
 					</a>
 				<?php endforeach; ?>
@@ -1347,8 +1361,15 @@ class BusinessPagesManager {
 	 * Trigger Next.js on-demand revalidation
 	 */
 	public static function trigger_nextjs_revalidation( $slug ) {
-		$secret = defined( 'HCC_REVALIDATION_SECRET' ) ? HCC_REVALIDATION_SECRET : 'orbit_headless_revalidate_2026';
-		$frontend_url = defined( 'HCC_FRONTEND_URL' ) ? HCC_FRONTEND_URL : 'http://localhost:3000';
+		$secret = get_option( 'hcc_revalidate_secret', '' );
+		if ( empty( $secret ) ) {
+			$secret = defined( 'HCC_REVALIDATION_SECRET' ) ? HCC_REVALIDATION_SECRET : 'orbit_headless_revalidate_2026';
+		}
+
+		$frontend_url = get_option( 'hcc_frontend_url', '' );
+		if ( empty( $frontend_url ) ) {
+			$frontend_url = defined( 'HCC_FRONTEND_URL' ) ? HCC_FRONTEND_URL : 'http://localhost:3000';
+		}
 		
 		$url = add_query_arg( array(
 			'secret' => $secret,
