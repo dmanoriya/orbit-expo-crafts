@@ -124,8 +124,8 @@ class HomepageManager {
 
 			// Materials
 			'mat_eyebrow'       => 'HERITAGE CRAFTS',
-			'mat_title'         => 'Twenty-one material vocabularies under one roof.',
-			'mat_desc'          => 'Combining traditional Rajasthan woodworking, bone inlay, and metalwork with modern European hardware.',
+			'mat_title'         => 'Vocabularies under one roof.',
+			'mat_desc'          => 'Combining traditional woodworking, and metalwork with modern hardware.',
 
 			// Bottom CTA Band
 			'band_title'        => 'Tell us what you\'re building.',

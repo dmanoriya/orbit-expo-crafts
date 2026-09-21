@@ -57,6 +57,11 @@ export default function HomeClientView({
     refreshData();
   }, []);
 
+  const EXCLUDED_HOMEPAGE_MATERIALS = React.useMemo(
+    () => new Set(['bone inlay', 'genuine leather', 'rope weave', 'tile inlay', 'vegan leather']),
+    []
+  );
+
   // Complete list of materials and heritage crafts
   const allMaterials = React.useMemo(() => {
     const set = new Set<string>();
@@ -72,8 +77,10 @@ export default function HomeClientView({
         (p as any).attributes.material.forEach((m: string) => { if (m) set.add(m); });
       }
     });
-    return Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b));
-  }, [materialsList, products]);
+    return Array.from(set)
+      .filter((m) => Boolean(m) && !EXCLUDED_HOMEPAGE_MATERIALS.has(m.toLowerCase().trim()))
+      .sort((a, b) => a.localeCompare(b));
+  }, [materialsList, products, EXCLUDED_HOMEPAGE_MATERIALS]);
 
   const featured = products.slice(0, 6);
 
@@ -467,11 +474,15 @@ export default function HomeClientView({
                 {hpData.mat_eyebrow || 'HERITAGE CRAFTS & MATERIALS'}
               </span>
               <h2 className="disp" style={{ marginTop: 6 }}>
-                {hpData.mat_title || 'Twenty-one material vocabularies under one roof.'}
+                {hpData.mat_title && hpData.mat_title !== 'Twenty-one material vocabularies under one roof.'
+                  ? hpData.mat_title
+                  : 'Vocabularies under one roof.'}
               </h2>
             </div>
             <p style={{ maxWidth: 540 }}>
-              {hpData.mat_desc || 'Combining traditional Rajasthan woodworking, bone inlay, brass casting, and stone masonry with contract-grade durability.'}
+              {hpData.mat_desc && !hpData.mat_desc.includes('bone inlay')
+                ? hpData.mat_desc
+                : 'Combining traditional woodworking, and metalwork with modern hardware.'}
             </p>
           </div>
 
