@@ -33,6 +33,18 @@ class ConfigController extends RestController {
 			'callback'            => array( $this, 'get_footer' ),
 			'permission_callback' => '__return_true',
 		) );
+
+		register_rest_route( $this->namespace, '/business-pages', array(
+			'methods'             => \WP_REST_Server::READABLE,
+			'callback'            => array( $this, 'get_business_pages' ),
+			'permission_callback' => '__return_true',
+		) );
+
+		register_rest_route( $this->namespace, '/business-pages/(?P<slug>[a-zA-Z0-9_-]+)', array(
+			'methods'             => \WP_REST_Server::READABLE,
+			'callback'            => array( $this, 'get_single_business_page' ),
+			'permission_callback' => '__return_true',
+		) );
 	}
 
 	public function get_config( $request ) {
@@ -66,5 +78,41 @@ class ConfigController extends RestController {
 	public function get_footer( $request ) {
 		$ft = \HeadlessCommerceCore\Admin\FooterManager::get_footer_data();
 		return $this->success_response( $ft );
+	}
+
+	public function get_business_pages( $request ) {
+		$pages = \HeadlessCommerceCore\Admin\BusinessPagesManager::get_all_pages_data();
+		return $this->success_response( $pages );
+	}
+
+	public function get_single_business_page( $request ) {
+		$slug = sanitize_title( $request->get_param( 'slug' ) );
+		$page = \HeadlessCommerceCore\Admin\BusinessPagesManager::get_page_data_by_slug( $slug );
+
+		if ( ! $page ) {
+			return $this->error_response( 'page_not_found', 'Business page not found.', 404 );
+		}
+
+		// If a WordPress page with this slug exists, merge any existing RankMath meta
+		$wp_page = get_page_by_path( $slug );
+		if ( $wp_page && class_exists( '\\HeadlessCommerceCore\\SEO\\SEOService' ) ) {
+			$rank_math_seo = \HeadlessCommerceCore\SEO\SEOService::get_seo( $wp_page->ID, 'post' );
+			if ( ! empty( $rank_math_seo ) && is_array( $rank_math_seo ) ) {
+				if ( ! empty( $rank_math_seo['title'] ) && empty( $page['seo']['title'] ) ) {
+					$page['seo']['title'] = $rank_math_seo['title'];
+				}
+				if ( ! empty( $rank_math_seo['description'] ) && empty( $page['seo']['description'] ) ) {
+					$page['seo']['description'] = $rank_math_seo['description'];
+				}
+				if ( ! empty( $rank_math_seo['canonical'] ) ) {
+					$page['seo']['canonical_url'] = $rank_math_seo['canonical'];
+				}
+				if ( ! empty( $rank_math_seo['openGraph']['image'] ) && empty( $page['seo']['og_image'] ) ) {
+					$page['seo']['og_image'] = $rank_math_seo['openGraph']['image'];
+				}
+			}
+		}
+
+		return $this->success_response( $page );
 	}
 }

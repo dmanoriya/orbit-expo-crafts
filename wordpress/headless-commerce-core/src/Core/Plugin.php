@@ -61,6 +61,7 @@ class Plugin {
 			\HeadlessCommerceCore\Admin\HomepageManager::init();
 			\HeadlessCommerceCore\Admin\TypographyManager::init();
 			\HeadlessCommerceCore\Admin\FooterManager::init();
+			\HeadlessCommerceCore\Admin\BusinessPagesManager::init();
 			\HeadlessCommerceCore\Admin\CategoryTaxonomyManager::init();
 			\HeadlessCommerceCore\Admin\ProductImporterManager::init();
 		}

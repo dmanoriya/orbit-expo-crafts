@@ -122,8 +122,14 @@ class FormEntriesManager {
 			$prefix = 'QT-';
 		} elseif ( $form_type === 'discuss_projects' ) {
 			$prefix = 'PRJ-';
-		} elseif ( $form_type === 'interior_designer' ) {
+		} elseif ( $form_type === 'interior_designer' || $form_type === 'interior_designers' ) {
 			$prefix = 'DES-';
+		} elseif ( $form_type === 'suppliers_vendors' || $form_type === 'supplier_vendor' ) {
+			$prefix = 'VND-';
+		} elseif ( $form_type === 'influencers_marketing' || $form_type === 'influencer_marketing' ) {
+			$prefix = 'INF-';
+		} elseif ( $form_type === 'furniture_decor_designers' || $form_type === 'furniture_decor_designer' ) {
+			$prefix = 'FURN-';
 		} elseif ( $form_type === 'finish_sample' ) {
 			$prefix = 'SMP-';
 		} elseif ( $form_type === 'cad_request' ) {
@@ -1345,6 +1351,33 @@ class FormEntriesManager {
 			if (entry.notes) {
 				html += '<h3 style="margin-top:16px; margin-bottom:8px; font-size:15px; border-bottom:1px solid #ccc; padding-bottom:4px;">Client Project Notes / Brief</h3>';
 				html += '<div style="background:#f9f9f9; border:1px solid #ddd; padding:12px; border-radius:4px; font-style:italic; line-height:1.5;">' + entry.notes.replace(/\n/g, '<br>') + '</div>';
+			}
+
+			if (entry.booking_data) {
+				try {
+					var bDataRaw = typeof entry.booking_data === 'string' ? JSON.parse(entry.booking_data) : entry.booking_data;
+					if (bDataRaw && bDataRaw.custom_fields && typeof bDataRaw.custom_fields === 'object') {
+						html += '<h3 style="margin-top:16px; margin-bottom:8px; font-size:15px; border-bottom:1px solid #ccc; padding-bottom:4px;">📋 Submitted Specifications &amp; Responses</h3>';
+						html += '<table class="widefat striped" style="margin-bottom:16px;">';
+						for (var k in bDataRaw.custom_fields) {
+							if (bDataRaw.custom_fields.hasOwnProperty(k)) {
+								var val = bDataRaw.custom_fields[k];
+								var displayVal = Array.isArray(val) ? val.join(', ') : (typeof val === 'object' ? JSON.stringify(val) : String(val));
+								var labelFormatted = k.replace(/_/g, ' ').replace(/\b\w/g, function(l){ return l.toUpperCase(); });
+								html += '<tr><td style="width:220px; font-weight:600;">' + labelFormatted + ':</td><td>' + displayVal + '</td></tr>';
+							}
+						}
+						html += '</table>';
+					}
+					if (bDataRaw && Array.isArray(bDataRaw.uploaded_files) && bDataRaw.uploaded_files.length > 0) {
+						html += '<h3 style="margin-top:16px; margin-bottom:8px; font-size:15px; border-bottom:1px solid #ccc; padding-bottom:4px;">📎 Attached Documents &amp; Files</h3>';
+						html += '<ul style="list-style:disc; margin-left:20px;">';
+						bDataRaw.uploaded_files.forEach(function(fileUrl) {
+							html += '<li><a href="' + fileUrl + '" target="_blank" style="color:#0E5C63; font-weight:600;">' + fileUrl.split('/').pop() + ' ↗</a></li>';
+						});
+						html += '</ul>';
+					}
+				} catch(e) {}
 			}
 
 			if (entry.shortlist_items && !entry.booking_data) {

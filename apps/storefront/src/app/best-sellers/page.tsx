@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { fetchWpStorefrontData } from '../../lib/wpCommerce';
 import { BestSellersClient } from './BestSellersClient';
@@ -13,13 +14,15 @@ export default async function BestSellersPage() {
   const data = await fetchWpStorefrontData();
 
   return (
-    <BestSellersClient
-      products={data.products}
-      categories={data.categories}
-      segments={data.segments}
-      materials={data.materials}
-      colors={data.colors}
-      isWpConnected={data.isWpConnected}
-    />
+    <Suspense fallback={<div className="min-h-screen bg-[#FDFBF7]" />}>
+      <BestSellersClient
+        products={data.products}
+        categories={data.categories}
+        segments={data.segments}
+        materials={data.materials}
+        colors={data.colors}
+        isWpConnected={data.isWpConnected}
+      />
+    </Suspense>
   );
 }

@@ -33,6 +33,7 @@ yarn-error.log*
 pnpm-debug.log*
 *.tsbuildinfo
 Website_Discussion/
+new-changes/
 *.zip
 !wordpress/headless-commerce-core.zip
 dist-hostinger/

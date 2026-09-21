@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { fetchWpStorefrontData } from '../../../lib/wpCommerce';
 import { NewArrivalsClient } from './NewArrivalsClient';
@@ -23,13 +24,15 @@ export default async function NewArrivalsPage() {
   const data = await fetchWpStorefrontData();
 
   return (
-    <NewArrivalsClient
-      products={data.products}
-      categories={data.categories}
-      segments={data.segments}
-      materials={data.materials}
-      colors={data.colors}
-      isWpConnected={data.isWpConnected}
-    />
+    <Suspense fallback={<div className="min-h-screen bg-[#FDFBF7]" />}>
+      <NewArrivalsClient
+        products={data.products}
+        categories={data.categories}
+        segments={data.segments}
+        materials={data.materials}
+        colors={data.colors}
+        isWpConnected={data.isWpConnected}
+      />
+    </Suspense>
   );
 }

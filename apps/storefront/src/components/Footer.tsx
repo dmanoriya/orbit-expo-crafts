@@ -86,10 +86,10 @@ export const Footer: React.FC = () => {
               <h4 className="footer-col-header">BUSINESS</h4>
               <span className="footer-header-underline" aria-hidden="true" />
               <ul className="footer-menu-list">
-                <li><Link href="/contact?subject=Suppliers%20%26%20Vendors">Suppliers &amp; Vendors</Link></li>
+                <li><Link href="/suppliers-vendors">Suppliers &amp; Vendors</Link></li>
                 <li><Link href="/interior-designers">Architects &amp; Interior Designers</Link></li>
-                <li><Link href="/contact?subject=Influencers%20%26%20Marketing">Influencers &amp; Marketing</Link></li>
-                <li><Link href="/contact?subject=Furniture%20%26%20Decor%20Designers">Furniture &amp; Decor Designers</Link></li>
+                <li><Link href="/influencers-marketing">Influencers &amp; Marketing</Link></li>
+                <li><Link href="/furniture-decor-designers">Furniture &amp; Decor Designers</Link></li>
               </ul>
             </div>
 
