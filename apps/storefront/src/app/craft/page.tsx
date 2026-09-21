@@ -109,7 +109,7 @@ export default async function CraftPage() {
               Craft that doesn&apos;t cost the forest.
             </h2>
             <p style={{ color: 'var(--ink-2)', marginBottom: 20 }}>
-              Water-based and low-VOC coatings as the default. Certified and reclaimed timber on request. Offcuts routed back into small goods rather than the burn pile. Artisan clusters in Jodhpur and Udaipur paid per piece, not per day.
+              Water-based and low-VOC coatings as the default. Certified and reclaimed timber on request. Offcuts routed back into small goods rather than the burn pile.
             </p>
             <div className="chips">
               <span className="chip on"><i />FSC on request</span>
