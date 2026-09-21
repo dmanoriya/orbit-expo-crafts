@@ -46,8 +46,7 @@ export default async function CraftPage() {
               CRAFT & MATERIALS
             </span>
             <h1 className="disp" style={{ fontSize: 'clamp(36px, 4.2vw, 58px)', lineHeight: 1.12, fontWeight: 400, marginBottom: 24, color: 'var(--ink)' }}>
-              Rajasthan makes it.<br />
-              <span style={{ fontStyle: 'italic', color: '#B8AF9F', fontWeight: 300 }}>We make it repeatable.</span>
+              We make it repeatable.
             </h1>
             <p style={{ fontSize: 17, color: 'var(--ink-2)', lineHeight: 1.6, maxWidth: 520, fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
               Traditional material knowledge disciplined by drawings, samples and repeatable production standards.
