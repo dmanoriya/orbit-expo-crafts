@@ -315,7 +315,10 @@ class AdminSettings {
 						</h2>
 						<p class="description" style="margin-bottom: 14px;">Direct access to manage storefront content, forms, and pages:</p>
 						<div style="display: flex; flex-direction: column; gap: 8px;">
-							<a href="<?php echo esc_url( admin_url( 'admin.php?page=hcc-business-pages' ) ); ?>" class="button button-primary" style="display:block; text-align:center; font-weight:600; padding:6px 10px; height:auto; background:#0E5C63; border-color:#0E5C63;">
+							<a href="<?php echo esc_url( admin_url( 'admin.php?page=hcc-mega-menu' ) ); ?>" class="button button-primary" style="display:block; text-align:center; font-weight:600; padding:6px 10px; height:auto; background:#0E5C63; border-color:#0E5C63;">
+								🧭 Mega Menu &amp; Taxonomy Builder
+							</a>
+							<a href="<?php echo esc_url( admin_url( 'admin.php?page=hcc-business-pages' ) ); ?>" class="button button-secondary" style="display:block; text-align:center; font-weight:600; padding:6px 10px; height:auto;">
 								🏛️ Business Pages & Forms Builder
 							</a>
 							<a href="<?php echo esc_url( admin_url( 'admin.php?page=hcc-form-entries' ) ); ?>" class="button button-secondary" style="display:block; text-align:center; font-weight:600; padding:6px 10px; height:auto;">

@@ -7,6 +7,7 @@ import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { EnquiryDrawer } from '../components/EnquiryDrawer';
 import { FontLoader } from '../components/FontLoader';
+import { getMegaMenuData } from '../lib/megaMenu';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -21,7 +22,8 @@ export const metadata: Metadata = {
   description: 'Turnkey furniture manufacturing for hospitality, commercial and residential projects in Rajasthan.',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const menuData = await getMegaMenuData();
   return (
     <html lang="en" data-theme="peacock">
       <head>
@@ -51,7 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthProvider>
           <EnquiryProvider>
             <FavoritesProvider>
-              <Header />
+              <Header menuData={menuData} />
               <main id="app">{children}</main>
               <Footer />
               <EnquiryDrawer />

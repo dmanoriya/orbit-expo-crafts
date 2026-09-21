@@ -25,10 +25,10 @@ export async function POST(request: NextRequest) {
     const tagParam = request.nextUrl.searchParams.get('tag');
     const pathParam = request.nextUrl.searchParams.get('path');
 
-    const defaultTags = ['wp-products', 'wp-categories', 'wp-attributes', 'wp-homepage', 'wp-config', 'business-pages'];
+    const defaultTags = ['wp-products', 'wp-categories', 'wp-attributes', 'wp-homepage', 'wp-config', 'business-pages', 'mega-menu'];
     const tags: string[] = Array.isArray(body.tags) && body.tags.length > 0
       ? body.tags
-      : (tagParam ? [tagParam, 'business-pages'] : defaultTags);
+      : (tagParam ? [tagParam, 'business-pages', 'mega-menu'] : defaultTags);
 
     tags.forEach((tag) => {
       try {

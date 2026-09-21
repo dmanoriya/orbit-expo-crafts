@@ -65,6 +65,7 @@ class Plugin {
 			\HeadlessCommerceCore\Admin\ProductImporterManager::init();
 		}
 		\HeadlessCommerceCore\Admin\BusinessPagesManager::init();
+		\HeadlessCommerceCore\Admin\MegaMenuManager::init();
 		\HeadlessCommerceCore\Admin\FormEntriesManager::init();
 	}
 

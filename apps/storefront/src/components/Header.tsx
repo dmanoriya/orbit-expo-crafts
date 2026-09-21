@@ -9,6 +9,12 @@ import { useFavorites } from '../context/FavoritesContext';
 import { SearchModal } from './SearchModal';
 import megaTaxonomyData from '../data/mega_menu_taxonomy.json';
 import { slugifyCategory, isKnownDepartment } from '../lib/categoryTaxonomy';
+import {
+  MegaMenuData,
+  MegaMenuNavItem,
+  MegaMenuTaxonomy,
+  DEFAULT_NAV_CATEGORIES,
+} from '../lib/megaMenu';
 
 interface NavCategory {
   name: string;
@@ -17,19 +23,6 @@ interface NavCategory {
   deptKey?: string;
   isTurnkey?: boolean;
 }
-
-const NAV_CATEGORIES: NavCategory[] = [
-  { name: 'New Arrivals', slug: 'new-arrivals', hasSubmenu: false },
-  { name: 'Furniture', slug: 'furniture', hasSubmenu: true, deptKey: 'Furniture' },
-  { name: 'Home Decor', slug: 'home-decor', hasSubmenu: true, deptKey: 'Home Decor' },
-  { name: 'Wall Decor & Mirrors', slug: 'wall-decor-and-mirrors', hasSubmenu: true, deptKey: 'Wall Decor & Mirrors' },
-  { name: 'Lighting', slug: 'lighting', hasSubmenu: true, deptKey: 'Lighting' },
-  { name: 'Rugs & Floor Coverings', slug: 'rugs-and-floor-coverings', hasSubmenu: true, deptKey: 'Rugs & Floor Coverings' },
-  { name: 'Storage & Organization', slug: 'storage-and-organization', hasSubmenu: true, deptKey: 'Storage & Organization' },
-  { name: 'Kitchen & Tabletop', slug: 'kitchen-and-tabletop', hasSubmenu: true, deptKey: 'Kitchen & Tabletop' },
-  { name: 'Outdoor & Garden', slug: 'outdoor-and-garden', hasSubmenu: true, deptKey: 'Outdoor & Garden' },
-  { name: 'Kids & Pet Home', slug: 'kids-and-pet-home', hasSubmenu: true },
-];
 
 interface DrillStep {
   level: 0 | 1 | 2 | 3;
@@ -52,20 +45,11 @@ interface MobileDept {
   count: number;
 }
 
-const MOBILE_DEPARTMENTS: MobileDept[] = [
-  { name: 'Furniture', slug: 'furniture', deptKey: 'Furniture', count: Object.keys((megaTaxonomyData as Record<string, any>)['Furniture'] || {}).length },
-  { name: 'Home Decor', slug: 'home-decor', deptKey: 'Home Decor', count: Object.keys((megaTaxonomyData as Record<string, any>)['Home Decor'] || {}).length },
-  { name: 'Wall Decor & Mirrors', slug: 'wall-decor-and-mirrors', deptKey: 'Wall Decor & Mirrors', count: Object.keys((megaTaxonomyData as Record<string, any>)['Wall Decor & Mirrors'] || {}).length },
-  { name: 'Lighting', slug: 'lighting', deptKey: 'Lighting', count: Object.keys((megaTaxonomyData as Record<string, any>)['Lighting'] || {}).length },
-  { name: 'Rugs & Floor Coverings', slug: 'rugs-and-floor-coverings', deptKey: 'Rugs & Floor Coverings', count: Object.keys((megaTaxonomyData as Record<string, any>)['Rugs & Floor Coverings'] || {}).length },
-  { name: 'Storage & Organization', slug: 'storage-and-organization', deptKey: 'Storage & Organization', count: Object.keys((megaTaxonomyData as Record<string, any>)['Storage & Organization'] || {}).length },
-  { name: 'Kitchen & Tabletop', slug: 'kitchen-and-tabletop', deptKey: 'Kitchen & Tabletop', count: Object.keys((megaTaxonomyData as Record<string, any>)['Kitchen & Tabletop'] || {}).length },
-  { name: 'Outdoor & Garden', slug: 'outdoor-and-garden', deptKey: 'Outdoor & Garden', count: Object.keys((megaTaxonomyData as Record<string, any>)['Outdoor & Garden'] || {}).length },
-  { name: 'Kids & Baby Home', slug: 'kids-and-baby-home', deptKey: 'Kids & Baby Home', count: Object.keys((megaTaxonomyData as Record<string, any>)['Kids & Baby Home'] || {}).length },
-  { name: 'Pet Home', slug: 'pet-home', deptKey: 'Pet Home', count: Object.keys((megaTaxonomyData as Record<string, any>)['Pet Home'] || {}).length },
-];
+interface HeaderProps {
+  menuData?: MegaMenuData;
+}
 
-export const Header: React.FC = () => {
+export const Header: React.FC<HeaderProps> = ({ menuData }) => {
   const pathname = usePathname();
   const { enquiry, openDrawer } = useEnquiry();
   const { user, isAuthenticated } = useAuth();
@@ -73,6 +57,33 @@ export const Header: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  const navCategories = React.useMemo(() => {
+    return (menuData?.navItems && menuData.navItems.length > 0)
+      ? menuData.navItems
+      : DEFAULT_NAV_CATEGORIES;
+  }, [menuData]);
+
+  const taxonomyData = React.useMemo(() => {
+    return (menuData?.taxonomy && Object.keys(menuData.taxonomy).length > 0)
+      ? menuData.taxonomy
+      : (megaTaxonomyData as unknown as MegaMenuTaxonomy);
+  }, [menuData]);
+
+  const mobileDepartments: MobileDept[] = React.useMemo(() => {
+    return navCategories
+      .filter((cat) => cat.hasSubmenu && (cat.deptKey || cat.slug === 'kids-and-pet-home'))
+      .map((cat) => {
+        const key = cat.deptKey || (cat.slug === 'kids-and-pet-home' ? 'Kids & Pet Home' : cat.name);
+        const count = Object.keys((taxonomyData as Record<string, any>)[key] || {}).length;
+        return {
+          name: cat.name,
+          slug: cat.slug,
+          deptKey: key,
+          count,
+        };
+      });
+  }, [navCategories, taxonomyData]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [drillStack, setDrillStack] = useState<DrillStep[]>([ROOT_STEP]);
   const currentStep = drillStack[drillStack.length - 1] || ROOT_STEP;
@@ -366,7 +377,7 @@ export const Header: React.FC = () => {
         <nav className="site-nav-tier">
           <div className="header-container nav-tier-inner">
             <ul className="category-nav-list">
-              {NAV_CATEGORIES.map((cat) => {
+              {navCategories.map((cat) => {
                 const isHovered = activeCategory === cat.name;
                 const isDept = isKnownDepartment(cat.slug);
                 const href = cat.slug === 'new-arrivals'
@@ -378,11 +389,11 @@ export const Header: React.FC = () => {
                   : `/collections/${cat.slug}`;
 
                 const subData = cat.deptKey
-                  ? (megaTaxonomyData as Record<string, any>)[cat.deptKey]
+                  ? (taxonomyData as Record<string, any>)[cat.deptKey]
                   : cat.slug === 'kids-and-pet-home'
                   ? {
-                      ...(megaTaxonomyData as Record<string, any>)['Kids & Baby Home'],
-                      ...(megaTaxonomyData as Record<string, any>)['Pet Home'],
+                      ...(taxonomyData as Record<string, any>)['Kids & Baby Home'],
+                      ...(taxonomyData as Record<string, any>)['Pet Home'],
                     }
                   : null;
 
@@ -587,7 +598,7 @@ export const Header: React.FC = () => {
 
                   {/* SECTION DIVIDER */}
                   <div className="mobile-menu-divider-label">
-                    ALL DEPARTMENTS (10)
+                    ALL DEPARTMENTS ({mobileDepartments.length})
                   </div>
 
                   {/* NEW ARRIVALS DIRECT ROW */}
@@ -606,9 +617,9 @@ export const Header: React.FC = () => {
                     </svg>
                   </Link>
 
-                  {/* 10 DEPARTMENTS DRILL LIST */}
+                  {/* DEPARTMENTS DRILL LIST */}
                   <div className="mobile-drill-list">
-                    {MOBILE_DEPARTMENTS.map((dept) => (
+                    {mobileDepartments.map((dept) => (
                       <button
                         key={dept.slug}
                         type="button"
@@ -665,7 +676,7 @@ export const Header: React.FC = () => {
                   {/* LIST OF L1 ITEMS */}
                   <div className="mobile-drill-list">
                     {(() => {
-                      const subData = (megaTaxonomyData as Record<string, any>)[currentStep.deptKey] || {};
+                      const subData = (taxonomyData as Record<string, any>)[currentStep.deptKey] || {};
                       const l1Keys = Object.keys(subData);
 
                       return l1Keys.map((l1Name) => {
@@ -716,7 +727,7 @@ export const Header: React.FC = () => {
                   {/* LIST OF L2 ITEMS */}
                   <div className="mobile-drill-list">
                     {(() => {
-                      const subData = (megaTaxonomyData as Record<string, any>)[currentStep.deptKey] || {};
+                      const subData = (taxonomyData as Record<string, any>)[currentStep.deptKey] || {};
                       const l2Map = subData[currentStep.l1Name] || {};
                       const l2Keys = Object.keys(l2Map);
 
@@ -761,7 +772,7 @@ export const Header: React.FC = () => {
                   </Link>
 
                   {(() => {
-                    const subData = (megaTaxonomyData as Record<string, any>)[currentStep.deptKey] || {};
+                    const subData = (taxonomyData as Record<string, any>)[currentStep.deptKey] || {};
                     const l2Map = subData[currentStep.l1Name] || {};
                     const l3List: string[] = l2Map[currentStep.l2Name] || [];
 
