@@ -30,10 +30,10 @@ class TypographyManager {
 
 	public static function get_typography_data() {
 		$defaults = array(
-			'font_heading' => 'Fraunces',
-			'font_body'    => 'Archivo',
-			'font_menu'    => 'Archivo',
-			'font_button'  => 'Archivo',
+			'font_heading' => 'EB Garamond',
+			'font_body'    => 'Inter',
+			'font_menu'    => 'Inter',
+			'font_button'  => 'Inter',
 			'font_mono'    => 'JetBrains Mono',
 		);
 
@@ -49,7 +49,8 @@ class TypographyManager {
 		$data = self::get_typography_data();
 
 		$font_choices_heading = array(
-			'Fraunces'           => 'Fraunces (Luxury Display Serif - Prototype Default)',
+			'EB Garamond'        => 'EB Garamond (Classic Renaissance Serif - Default)',
+			'Fraunces'           => 'Fraunces (Luxury Display Serif)',
 			'Newsreader'         => 'Newsreader (Elegant Editorial Serif)',
 			'Playfair Display'   => 'Playfair Display (Classic High-Contrast Serif)',
 			'Cormorant Garamond' => 'Cormorant Garamond (Refined Display Serif)',

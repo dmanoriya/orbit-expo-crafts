@@ -20,6 +20,20 @@ export async function GET() {
     }
 
     const data = await res.json();
+    if (data?.data?.fonts) {
+      if (!data.data.fonts.fontHeading || ['Fraunces', 'Gilda Display'].includes(data.data.fonts.fontHeading)) {
+        data.data.fonts.fontHeading = 'EB Garamond';
+      }
+      if (!data.data.fonts.fontBody || ['Archivo', 'Sarabun', 'Plus Jakarta Sans'].includes(data.data.fonts.fontBody)) {
+        data.data.fonts.fontBody = 'Inter';
+      }
+      if (!data.data.fonts.fontMenu || ['Archivo', 'Sarabun', 'Plus Jakarta Sans'].includes(data.data.fonts.fontMenu)) {
+        data.data.fonts.fontMenu = 'Inter';
+      }
+      if (!data.data.fonts.fontButton || ['Archivo', 'Sarabun', 'Plus Jakarta Sans'].includes(data.data.fonts.fontButton)) {
+        data.data.fonts.fontButton = 'Inter';
+      }
+    }
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
