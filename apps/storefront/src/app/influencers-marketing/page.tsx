@@ -6,13 +6,13 @@ import BusinessPageLayout from '../../components/business/BusinessPageLayout';
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const page = await fetchBusinessPageConfig('interior-designers');
+  const page = await fetchBusinessPageConfig('influencers-marketing');
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://orbitexpocrafts.com';
   const canonical = page.seo?.canonical_url
     ? (page.seo.canonical_url.startsWith('http') ? page.seo.canonical_url : `${siteUrl}${page.seo.canonical_url.startsWith('/') ? '' : '/'}${page.seo.canonical_url}`)
-    : `${siteUrl}/interior-designers`;
+    : `${siteUrl}/influencers-marketing`;
 
-  const ogImage = page.seo?.og_image || page.visual?.image_url || '/business/architects-interior-designers.jpeg';
+  const ogImage = page.seo?.og_image || page.visual?.image_url || '/business/influencers-marketing.jpeg';
   const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage.startsWith('/') ? '' : '/'}${ogImage}`;
 
   return {
@@ -47,8 +47,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function InteriorDesignersPage() {
-  const config = await fetchBusinessPageConfig('interior-designers');
+export default async function InfluencersMarketingPage() {
+  const config = await fetchBusinessPageConfig('influencers-marketing');
 
   return <BusinessPageLayout config={config} />;
 }
