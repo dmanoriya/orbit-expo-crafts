@@ -220,6 +220,18 @@ export default function HomeClientView({
       ? hpData.hero_bg_image
       : '/hero_section_bg.webp';
 
+  const catTitle =
+    !hpData.cat_title || hpData.cat_title === 'Ten categories. Every piece a room needs.'
+      ? 'Categories. Every piece a home needs'
+      : hpData.cat_title;
+
+  const catDesc =
+    !hpData.cat_desc ||
+    hpData.cat_desc ===
+      'From solid wood seating to complex bone inlay casegoods — every piece is built to order in our Udaipur and Jodhpur manufacturing facilities.'
+      ? 'From solid wood seating to custom storage furniture, every piece is made to order in our manufacturing facilities.'
+      : hpData.cat_desc;
+
   return (
     <div>
       {/* 1. NEW PRIORITY GALLERY HERO SECTION (THE LIVING GALLERY) */}
@@ -406,9 +418,9 @@ export default function HomeClientView({
           <div className="sec-head">
             <div>
               <span className="mono">{hpData.cat_eyebrow}</span>
-              <h2 className="disp">{hpData.cat_title}</h2>
+              <h2 className="disp">{catTitle}</h2>
             </div>
-            <p>{hpData.cat_desc}</p>
+            <p>{catDesc}</p>
           </div>
 
           <div className="cat-grid">

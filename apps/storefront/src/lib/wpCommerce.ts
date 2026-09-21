@@ -1032,8 +1032,8 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
   track2_desc: 'Pre-engineered room packages for rapid hotel guestroom & restaurant fit-outs.',
   track2_points: "FSC certified wood options\nNo minimum order quantity\n45-day turnaround guarantee\nSite installation support team",
   cat_eyebrow: 'PRODUCT CATEGORIES · DIRECT FACTORY CATALOGUE',
-  cat_title: 'Ten categories. Every piece a room needs.',
-  cat_desc: 'From solid wood seating to complex bone inlay casegoods — every piece is built to order in our Udaipur and Jodhpur manufacturing facilities.',
+  cat_title: 'Categories. Every piece a home needs',
+  cat_desc: 'From solid wood seating to custom storage furniture, every piece is made to order in our manufacturing facilities.',
   seg_eyebrow: 'PROJECT DOMAINS',
   seg_title: 'Shop the way a project actually gets specified.',
   seg_desc: 'Furniture engineered for commercial spaces with heavy contract use standards.',
@@ -1058,15 +1058,15 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
   step_title: 'Five steps from your drawing to your floor.',
   step1_title: 'Enquiry',
   step1_desc: 'Send drawings, BOQ, or shortlist catalog items for quotation.',
-  step2_title: 'Specs',
-  step2_desc: 'CAD shop drawings, timber samples, and fabric approvals.',
-  step3_title: 'Prototype',
-  step3_desc: 'First-piece inspection before bulk production begins.',
-  step4_title: 'Manufacture',
-  step4_desc: 'Solid wood joinery, finishing, upholstery, and QC.',
-  step5_title: 'Delivery',
-  step5_desc: 'Export-grade packaging, shipping, and site installation.',
-  mat_eyebrow: 'HERITAGE CRAFTS',
+  step2_title: 'Sampling',
+  step2_desc: 'Timber finish swatches, upholstery strike-offs, and shop drawings.',
+  step3_title: 'Production',
+  step3_desc: 'CNC milling, joinery assembly, and multi-stage sanding.',
+  step4_title: 'Finishing & QC',
+  step4_desc: 'Hand-applied stains, topcoats, hardware fitting, and drop testing.',
+  step5_title: 'Dispatch',
+  step5_desc: 'Custom crating, transit insurance, and delivery to your site or warehouse.',
+  mat_eyebrow: 'MATERIALS & TECHNIQUES',
   mat_title: 'Twenty-one material vocabularies under one roof.',
   mat_desc: 'Combining traditional Rajasthan woodworking, bone inlay, and metalwork with modern European hardware.',
   band_title: "Tell us what you're building.",
@@ -1093,6 +1093,17 @@ export async function fetchWpHomepageData(): Promise<HomepageData> {
       Object.keys(raw).forEach((k) => {
         cleaned[k] = typeof raw[k] === 'string' ? decodeHtmlEntities(raw[k]) : raw[k];
       });
+      if (!cleaned.cat_title || cleaned.cat_title === 'Ten categories. Every piece a room needs.') {
+        cleaned.cat_title = 'Categories. Every piece a home needs';
+      }
+      if (
+        !cleaned.cat_desc ||
+        cleaned.cat_desc ===
+          'From solid wood seating to complex bone inlay casegoods — every piece is built to order in our Udaipur and Jodhpur manufacturing facilities.'
+      ) {
+        cleaned.cat_desc =
+          'From solid wood seating to custom storage furniture, every piece is made to order in our manufacturing facilities.';
+      }
       return { ...DEFAULT_HOMEPAGE_DATA, ...cleaned };
     }
   } catch (e) {

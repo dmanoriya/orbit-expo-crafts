@@ -81,8 +81,8 @@ class HomepageManager {
 
 			// Categories
 			'cat_eyebrow'       => 'PRODUCT CATEGORIES · DIRECT FACTORY CATALOGUE',
-			'cat_title'         => 'Ten categories. Every piece a room needs.',
-			'cat_desc'          => 'From solid wood seating to complex bone inlay casegoods — every piece is built to order in our Udaipur and Jodhpur manufacturing facilities.',
+			'cat_title'         => 'Categories. Every piece a home needs',
+			'cat_desc'          => 'From solid wood seating to custom storage furniture, every piece is made to order in our manufacturing facilities.',
 
 			// Project Spaces / Domains
 			'seg_eyebrow'       => 'PROJECT DOMAINS',
