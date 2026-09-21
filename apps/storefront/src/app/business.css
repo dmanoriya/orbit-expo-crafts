@@ -12,9 +12,11 @@
 }
 
 .business-container {
-  max-width: 1040px;
+  max-width: var(--maxw, 1280px);
+  width: 100%;
   margin: 0 auto;
-  padding: 40px 24px 96px;
+  padding: 36px 28px 96px;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
@@ -47,12 +49,12 @@
 
 .business-page-title {
   font-family: var(--font-display, 'EB Garamond', Georgia, serif);
-  font-size: 44px;
+  font-size: clamp(34px, 3.8vw, 48px);
   font-weight: 400;
   line-height: 1.12;
   letter-spacing: -0.015em;
   color: #111111;
-  max-width: 580px;
+  max-width: 680px;
   margin: 0 0 12px 0;
 }
 
@@ -78,11 +80,11 @@
 }
 
 .business-page-subtitle {
-  font-size: 14.5px;
+  font-size: 15px;
   font-weight: 300;
   line-height: 1.55;
   color: #6B635B;
-  max-width: 540px;
+  max-width: 620px;
   margin: 0;
 }
 
@@ -103,7 +105,7 @@
 
 .business-enquiry-num {
   font-family: var(--font-display, 'EB Garamond', Georgia, serif);
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 400;
   color: #C2A686;
   line-height: 1;
@@ -112,15 +114,15 @@
 /* --- MAIN 2-COLUMN GRID --- */
 .business-main-grid {
   display: grid;
-  grid-template-columns: 350px minmax(0, 1fr);
-  gap: 36px;
+  grid-template-columns: 420px minmax(0, 1fr);
+  gap: 44px;
   align-items: start;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1100px) {
   .business-main-grid {
-    grid-template-columns: 310px minmax(0, 1fr);
-    gap: 28px;
+    grid-template-columns: 360px minmax(0, 1fr);
+    gap: 32px;
   }
 }
 

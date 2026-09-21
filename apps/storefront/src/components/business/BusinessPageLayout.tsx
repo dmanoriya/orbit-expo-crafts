@@ -222,7 +222,7 @@ export default function BusinessPageLayout({ config }: BusinessPageLayoutProps) 
 
   return (
     <div className="business-page-wrapper">
-      <div className="business-container">
+      <div className="wrap business-container">
 
         {/* 1. TOP HEADER SECTION */}
         <header className="business-header">
