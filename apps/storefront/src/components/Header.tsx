@@ -437,11 +437,6 @@ export const Header: React.FC = () => {
                                           >
                                             {l2Name}
                                           </Link>
-                                          {isScrollable && (
-                                            <span className="dropdown-l2-count" title={`${l3Items.length} items (scroll for more)`}>
-                                              {l3Items.length}
-                                            </span>
-                                          )}
                                         </div>
                                         <ul
                                           className={`dropdown-l3-list ${isScrollable ? 'is-scrollable' : ''}`}
@@ -621,7 +616,6 @@ export const Header: React.FC = () => {
                         onClick={() => handleOpenDept(dept.name, dept.slug, dept.deptKey)}
                       >
                         <span className="row-title">{dept.name}</span>
-                        <span className="row-badge">{dept.count} Categories</span>
                         <svg className="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                           <path d="M9 18l6-6-6-6" />
                         </svg>
@@ -687,7 +681,6 @@ export const Header: React.FC = () => {
                             onClick={() => handleOpenL1(l1Name, l1Slug)}
                           >
                             <span className="row-title">{l1Name}</span>
-                            <span className="row-badge">{l2Count} Sub-groups</span>
                             <svg className="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                               <path d="M9 18l6-6-6-6" />
                             </svg>
@@ -740,7 +733,6 @@ export const Header: React.FC = () => {
                             onClick={() => handleOpenL2(l2Name, l2Slug)}
                           >
                             <span className="row-title">{l2Name}</span>
-                            <span className="row-badge">{l3Count} Items</span>
                             <svg className="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                               <path d="M9 18l6-6-6-6" />
                             </svg>
