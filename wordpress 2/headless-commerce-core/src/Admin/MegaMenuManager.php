@@ -7,21 +7,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Direct WooCommerce Product Categories Mega Menu Manager
- * Fetches directly from live WooCommerce `product_cat` hierarchy
- * Allows administrators to select/hide categories at any level with live storefront URLs
+ * Clean & Simple Mega Menu & Taxonomy Builder
+ * Restores original curated 7-column Furniture taxonomy
+ * Provides intuitive visual cards with Show/Hide toggles, inline renaming, and live storefront links
  */
 class MegaMenuManager {
 
-	const HIDDEN_TERMS_OPTION   = 'hcc_mega_menu_hidden_term_ids';
-	const NAME_OVERRIDES_OPTION = 'hcc_mega_menu_name_overrides';
-	const TOP_NAV_OPTION        = 'hcc_mega_menu_top_nav';
-	const TRANSIENT_KEY         = 'hcc_public_mega_menu';
+	const OPTION_KEY     = 'hcc_mega_menu_config';
+	const TRANSIENT_KEY  = 'hcc_public_mega_menu';
+	const SCHEMA_VERSION = '1.4.0';
 
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'add_admin_menu' ), 15 );
 		add_action( 'rest_api_init', array( __CLASS__, 'register_rest_routes' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_admin_assets' ) );
+
+		// Auto-migrate corrupted or outdated configuration on initial boot
+		add_action( 'init', array( __CLASS__, 'ensure_clean_schema' ), 20 );
 	}
 
 	public static function add_admin_menu() {
@@ -50,9 +52,16 @@ class MegaMenuManager {
 	}
 
 	/**
+	 * Decode HTML entities and clean string
+	 */
+	public static function clean_text( $text ) {
+		return trim( html_entity_decode( (string) $text, ENT_QUOTES, 'UTF-8' ) );
+	}
+
+	/**
 	 * Default top navigation bar links
 	 */
-	public static function get_default_top_nav() {
+	public static function get_default_nav_items() {
 		return array(
 			array( 'id' => 'nav_new_arrivals', 'name' => 'New Arrivals', 'slug' => 'new-arrivals', 'href' => '/collections/new-arrivals', 'hasSubmenu' => false, 'deptKey' => '', 'hidden' => false ),
 			array( 'id' => 'nav_furniture', 'name' => 'Furniture', 'slug' => 'furniture', 'href' => '/furniture', 'hasSubmenu' => true, 'deptKey' => 'Furniture', 'hidden' => false ),
@@ -68,177 +77,131 @@ class MegaMenuManager {
 	}
 
 	/**
-	 * Get hidden category IDs
+	 * Build structured baseline taxonomy from master blueprint
 	 */
-	public static function get_hidden_term_ids() {
-		$hidden = get_option( self::HIDDEN_TERMS_OPTION, null );
-		if ( ! is_array( $hidden ) ) {
-			return array();
+	public static function get_default_departments_data() {
+		$json_file = HCC_PLUGIN_DIR . 'master_category_taxonomy.json';
+		$raw_tax   = array();
+
+		if ( file_exists( $json_file ) ) {
+			$raw_tax = json_decode( file_get_contents( $json_file ), true );
 		}
-		return array_map( 'intval', $hidden );
-	}
 
-	/**
-	 * Get category display name overrides
-	 */
-	public static function get_name_overrides() {
-		$overrides = get_option( self::NAME_OVERRIDES_OPTION, array() );
-		return is_array( $overrides ) ? $overrides : array();
-	}
-
-	/**
-	 * Get configured top navigation items
-	 */
-	public static function get_top_nav_config() {
-		$top_nav = get_option( self::TOP_NAV_OPTION, null );
-		if ( ! is_array( $top_nav ) || empty( $top_nav ) ) {
-			return self::get_default_top_nav();
-		}
-		return $top_nav;
-	}
-
-	/**
-	 * Build complete hierarchy tree directly from WooCommerce product_cat terms
-	 */
-	public static function get_woo_category_tree() {
-		$terms = get_terms( array(
-			'taxonomy'   => 'product_cat',
-			'hide_empty' => false,
-			'orderby'    => 'name',
-			'order'      => 'ASC',
-		) );
-
-		if ( is_wp_error( $terms ) || empty( $terms ) ) {
+		if ( ! is_array( $raw_tax ) || empty( $raw_tax ) ) {
 			return array();
 		}
 
-		$by_parent = array();
-		$by_id     = array();
+		$departments = array();
 
-		foreach ( $terms as $term ) {
-			if ( $term->slug === 'uncategorized' ) {
-				continue;
-			}
-			$by_id[ $term->term_id ] = $term;
-			$parent_id = (int) $term->parent;
-			if ( ! isset( $by_parent[ $parent_id ] ) ) {
-				$by_parent[ $parent_id ] = array();
-			}
-			$by_parent[ $parent_id ][] = $term;
-		}
-
-		$hidden_ids = self::get_hidden_term_ids();
-		$overrides  = self::get_name_overrides();
-
-		$tree = array();
-		$root_terms = $by_parent[0] ?? array();
-
-		// Preferred order of departments matching storefront design
-		$order_map = array(
-			'furniture'               => 1,
-			'home-decor'              => 2,
-			'wall-decor-and-mirrors'  => 3,
-			'lighting'                => 4,
-			'rugs-and-floor-coverings'=> 5,
-			'storage-and-organization'=> 6,
-			'kitchen-and-tabletop'    => 7,
-			'outdoor-and-garden'      => 8,
-			'kids-and-baby-home'      => 9,
-			'pet-home'                => 10,
-		);
-
-		usort( $root_terms, function( $a, $b ) use ( $order_map ) {
-			$ord_a = $order_map[ $a->slug ] ?? 99;
-			$ord_b = $order_map[ $b->slug ] ?? 99;
-			if ( $ord_a !== $ord_b ) return $ord_a - $ord_b;
-			return strcmp( $a->name, $b->name );
-		} );
-
-		foreach ( $root_terms as $dept_term ) {
-			$dept_id = $dept_term->term_id;
-			$dept_name = $dept_term->name;
-			$dept_slug = $dept_term->slug;
-
-			$dept_node = array(
-				'id'           => $dept_id,
-				'name'         => $dept_name,
-				'slug'         => $dept_slug,
-				'display_name' => $overrides[ $dept_id ] ?? $dept_name,
-				'count'        => (int) $dept_term->count,
-				'hidden'       => in_array( $dept_id, $hidden_ids, true ),
-				'url_path'     => '/' . $dept_slug,
-				'l1_items'     => array(),
+		foreach ( $raw_tax as $dept_name => $l1_map ) {
+			$dept_clean = self::clean_text( $dept_name );
+			$departments[ $dept_clean ] = array(
+				'name'       => $dept_clean,
+				'hidden'     => false,
+				'categories' => array(),
 			);
 
-			$l1_terms = $by_parent[ $dept_id ] ?? array();
-			foreach ( $l1_terms as $l1_term ) {
-				$l1_id   = $l1_term->term_id;
-				$l1_name = $l1_term->name;
-				$l1_slug = $l1_term->slug;
-				$l1_path = '/' . $dept_slug . '/' . $l1_slug;
+			if ( ! is_array( $l1_map ) ) continue;
 
-				$l1_node = array(
-					'id'           => $l1_id,
-					'name'         => $l1_name,
-					'slug'         => $l1_slug,
-					'display_name' => $overrides[ $l1_id ] ?? $l1_name,
-					'count'        => (int) $l1_term->count,
-					'hidden'       => in_array( $l1_id, $hidden_ids, true ),
-					'url_path'     => $l1_path,
-					'l2_items'     => array(),
+			foreach ( $l1_map as $l1_name => $l2_map ) {
+				$l1_clean = self::clean_text( $l1_name );
+				$l1_data = array(
+					'name'      => $l1_clean,
+					'hidden'    => false,
+					'subgroups' => array(),
 				);
 
-				$l2_terms = $by_parent[ $l1_id ] ?? array();
-				foreach ( $l2_terms as $l2_term ) {
-					$l2_id   = $l2_term->term_id;
-					$l2_name = $l2_term->name;
-					$l2_slug = $l2_term->slug;
-					$l2_path = $l1_path . '/' . $l2_slug;
+				if ( is_array( $l2_map ) ) {
+					foreach ( $l2_map as $l2_name => $l3_items ) {
+						$l2_clean = self::clean_text( $l2_name );
+						$clean_l3 = array();
+						if ( is_array( $l3_items ) ) {
+							foreach ( $l3_items as $l3 ) {
+								$item_name = is_array( $l3 ) ? ( $l3['name'] ?? '' ) : (string) $l3;
+								$item_clean = self::clean_text( $item_name );
+								if ( $item_clean ) {
+									$clean_l3[] = array(
+										'name'   => $item_clean,
+										'hidden' => false,
+									);
+								}
+							}
+						}
 
-					$l2_node = array(
-						'id'           => $l2_id,
-						'name'         => $l2_name,
-						'slug'         => $l2_slug,
-						'display_name' => $overrides[ $l2_id ] ?? $l2_name,
-						'count'        => (int) $l2_term->count,
-						'hidden'       => in_array( $l2_id, $hidden_ids, true ),
-						'url_path'     => $l2_path,
-						'l3_items'     => array(),
-					);
-
-					$l3_terms = $by_parent[ $l2_id ] ?? array();
-					foreach ( $l3_terms as $l3_term ) {
-						$l3_id   = $l3_term->term_id;
-						$l3_name = $l3_term->name;
-						$l3_slug = $l3_term->slug;
-						$l3_path = $l2_path . '/' . $l3_slug;
-
-						$l2_node['l3_items'][] = array(
-							'id'           => $l3_id,
-							'name'         => $l3_name,
-							'slug'         => $l3_slug,
-							'display_name' => $overrides[ $l3_id ] ?? $l3_name,
-							'count'        => (int) $l3_term->count,
-							'hidden'       => in_array( $l3_id, $hidden_ids, true ),
-							'url_path'     => $l3_path,
+						$l1_data['subgroups'][ $l2_clean ] = array(
+							'name'   => $l2_clean,
+							'hidden' => false,
+							'items'  => $clean_l3,
 						);
 					}
-
-					$l1_node['l2_items'][] = $l2_node;
 				}
 
-				$dept_node['l1_items'][] = $l1_node;
+				$departments[ $dept_clean ]['categories'][ $l1_clean ] = $l1_data;
 			}
-
-			$tree[ $dept_name ] = $dept_node;
 		}
 
-		return $tree;
+		return $departments;
+	}
+
+	/**
+	 * Ensure database has clean, uncorrupted schema matching version 1.4.0
+	 */
+	public static function ensure_clean_schema() {
+		$current_ver = get_option( 'hcc_mega_menu_version', '' );
+		$config      = get_option( self::OPTION_KEY, null );
+
+		$needs_reset = false;
+
+		if ( empty( $config ) || ! is_array( $config ) || empty( $config['departments'] ) ) {
+			$needs_reset = true;
+		} elseif ( $current_ver !== self::SCHEMA_VERSION ) {
+			$needs_reset = true;
+		} elseif (
+			isset( $config['departments']['Furniture']['categories']['Cat Beds'] ) ||
+			isset( $config['departments']['Furniture']['categories']['Cat Scratching Posts'] ) ||
+			isset( $config['departments']['Furniture']['categories']['Dog Beds'] ) ||
+			isset( $config['departments']['Furniture']['categories']['Cat Towers'] ) ||
+			empty( $config['departments']['Furniture']['categories']['Living Room Furniture'] )
+		) {
+			$needs_reset = true;
+		}
+
+		if ( $needs_reset ) {
+			$curated_defaults = self::get_default_departments_data();
+
+			$clean_config = array(
+				'nav_items'   => self::get_default_nav_items(),
+				'departments' => $curated_defaults,
+			);
+
+			update_option( self::OPTION_KEY, $clean_config );
+			update_option( 'hcc_mega_menu_version', self::SCHEMA_VERSION );
+			delete_transient( self::TRANSIENT_KEY );
+			self::trigger_nextjs_revalidation();
+		}
+	}
+
+	/**
+	 * Retrieve current full configuration (admin editing mode)
+	 */
+	public static function get_menu_config() {
+		self::ensure_clean_schema();
+		$config = get_option( self::OPTION_KEY, null );
+
+		if ( ! is_array( $config ) || empty( $config ) || empty( $config['departments'] ) ) {
+			$config = array(
+				'nav_items'   => self::get_default_nav_items(),
+				'departments' => self::get_default_departments_data(),
+			);
+			update_option( self::OPTION_KEY, $config );
+		}
+
+		return $config;
 	}
 
 	/**
 	 * Get resolved clean public mega menu data for Next.js
-	 * Fetches directly from WooCommerce product_cat terms, respecting hidden exclusions
+	 * Filters out all hidden categories/items and formats for frontend consumption
 	 */
 	public static function get_public_menu_data() {
 		$cached = get_transient( self::TRANSIENT_KEY );
@@ -246,65 +209,77 @@ class MegaMenuManager {
 			return $cached;
 		}
 
-		$tree       = self::get_woo_category_tree();
-		$top_nav    = self::get_top_nav_config();
-		$hidden_ids = self::get_hidden_term_ids();
+		$config     = self::get_menu_config();
+		$raw_nav    = $config['nav_items'] ?? self::get_default_nav_items();
+		$raw_depts  = $config['departments'] ?? self::get_default_departments_data();
 
-		// 1. Resolve Active Top Nav Items
+		// 1. Process active Nav Items
 		$active_nav = array();
-		foreach ( $top_nav as $item ) {
+		foreach ( $raw_nav as $item ) {
 			if ( ! empty( $item['hidden'] ) ) {
 				continue;
 			}
 			$active_nav[] = array(
 				'id'         => $item['id'] ?? '',
-				'name'       => $item['name'] ?? '',
+				'name'       => self::clean_text( $item['name'] ?? '' ),
 				'slug'       => $item['slug'] ?? '',
 				'href'       => $item['href'] ?? ( '/' . ( $item['slug'] ?? '' ) ),
 				'hasSubmenu' => ! empty( $item['hasSubmenu'] ),
-				'deptKey'    => $item['deptKey'] ?? '',
+				'deptKey'    => self::clean_text( $item['deptKey'] ?? '' ),
 			);
 		}
 
-		// 2. Resolve Active Department Taxonomy
+		// 2. Process active Department Taxonomy
 		$active_tax = array();
 
-		foreach ( $tree as $dept_name => $dept_node ) {
-			if ( ! empty( $dept_node['hidden'] ) ) {
+		foreach ( $raw_depts as $dept_name => $dept_info ) {
+			if ( ! empty( $dept_info['hidden'] ) ) {
 				continue;
 			}
 
-			$dept_key = $dept_node['display_name'];
-			$dept_tree = array();
+			$canonical_dept_name = self::clean_text( $dept_name );
+			$dept_display_name   = ! empty( $dept_info['name'] ) ? self::clean_text( $dept_info['name'] ) : $canonical_dept_name;
+			$dept_tree           = array();
+			$cats                = $dept_info['categories'] ?? array();
 
-			foreach ( $dept_node['l1_items'] as $l1_node ) {
-				if ( ! empty( $l1_node['hidden'] ) ) {
+			foreach ( $cats as $l1_key => $l1_data ) {
+				if ( ! empty( $l1_data['hidden'] ) ) {
 					continue;
 				}
 
-				$l1_title = $l1_node['display_name'];
-				$dept_tree[ $l1_title ] = array();
+				$l1_display_name = ! empty( $l1_data['name'] ) ? self::clean_text( $l1_data['name'] ) : self::clean_text( $l1_key );
+				$dept_tree[ $l1_display_name ] = array();
 
-				foreach ( $l1_node['l2_items'] as $l2_node ) {
-					if ( ! empty( $l2_node['hidden'] ) ) {
+				$subgroups = $l1_data['subgroups'] ?? array();
+				foreach ( $subgroups as $l2_key => $l2_data ) {
+					if ( ! empty( $l2_data['hidden'] ) ) {
 						continue;
 					}
 
-					$l2_title = $l2_node['display_name'];
-					$l3_active_names = array();
+					$l2_display_name = ! empty( $l2_data['name'] ) ? self::clean_text( $l2_data['name'] ) : self::clean_text( $l2_key );
+					$items_list      = array();
 
-					foreach ( $l2_node['l3_items'] as $l3_node ) {
-						if ( ! empty( $l3_node['hidden'] ) ) {
+					$items = $l2_data['items'] ?? array();
+					foreach ( $items as $it ) {
+						if ( ! empty( $it['hidden'] ) ) {
 							continue;
 						}
-						$l3_active_names[] = $l3_node['display_name'];
+						$it_name = is_array( $it ) ? ( $it['name'] ?? '' ) : (string) $it;
+						$it_clean = self::clean_text( $it_name );
+						if ( $it_clean ) {
+							$items_list[] = $it_clean;
+						}
 					}
 
-					$dept_tree[ $l1_title ][ $l2_title ] = $l3_active_names;
+					$dept_tree[ $l1_display_name ][ $l2_display_name ] = $items_list;
 				}
 			}
 
-			$active_tax[ $dept_key ] = $dept_tree;
+			// Store by both display name and canonical name to guarantee Header.tsx lookup success
+			$active_tax[ $dept_display_name ] = $dept_tree;
+			if ( $canonical_dept_name !== $dept_display_name ) {
+				$active_tax[ $canonical_dept_name ] = $dept_tree;
+			}
 		}
 
 		// Handle composite department: "Kids & Pet Home"
@@ -332,6 +307,17 @@ class MegaMenuManager {
 	public static function get_mega_menu_endpoint() {
 		$data = self::get_public_menu_data();
 		return new \WP_REST_Response( $data, 200 );
+	}
+
+	/**
+	 * Slugify category for URL calculation
+	 */
+	public static function make_slug( $text ) {
+		$slug = strtolower( (string) $text );
+		$slug = str_replace( '&', 'and', $slug );
+		$slug = preg_replace( '/[^a-z0-9\s-]/', '', $slug );
+		$slug = preg_replace( '/[\s_]+/', '-', $slug );
+		return trim( $slug, '-' );
 	}
 
 	/**
@@ -377,117 +363,120 @@ class MegaMenuManager {
 
 		// Handle Reset
 		if ( isset( $_POST['hcc_reset_mega_menu'] ) && check_admin_referer( 'hcc_mega_menu_action', 'hcc_mega_menu_nonce' ) ) {
-			delete_option( self::HIDDEN_TERMS_OPTION );
-			delete_option( self::NAME_OVERRIDES_OPTION );
-			delete_option( self::TOP_NAV_OPTION );
+			$default_config = array(
+				'nav_items'   => self::get_default_nav_items(),
+				'departments' => self::get_default_departments_data(),
+			);
+			update_option( self::OPTION_KEY, $default_config );
+			update_option( 'hcc_mega_menu_version', self::SCHEMA_VERSION );
+			delete_transient( self::TRANSIENT_KEY );
 			self::trigger_nextjs_revalidation();
-			echo '<div class="notice notice-success is-dismissible" style="margin-top:16px;"><p><strong>✅ Mega Menu reset! All WooCommerce product categories are now active. Live storefront revalidated.</strong></p></div>';
+			echo '<div class="notice notice-success is-dismissible" style="margin-top:16px;"><p><strong>✅ Mega Menu reset to original curated blueprint! Live storefront revalidated.</strong></p></div>';
 		}
 
 		// Handle Save
 		if ( isset( $_POST['hcc_save_mega_menu'] ) && check_admin_referer( 'hcc_mega_menu_action', 'hcc_mega_menu_nonce' ) ) {
-			// Process hidden term IDs
-			$posted_hidden = isset( $_POST['hidden_terms'] ) && is_array( $_POST['hidden_terms'] )
-				? array_map( 'intval', $_POST['hidden_terms'] )
-				: array();
+			$posted_config_raw = isset( $_POST['mega_menu_config_json'] ) ? wp_unslash( $_POST['mega_menu_config_json'] ) : '';
+			$decoded = json_decode( $posted_config_raw, true );
 
-			// Process name overrides
-			$posted_overrides = isset( $_POST['name_overrides'] ) && is_array( $_POST['name_overrides'] )
-				? array_map( 'sanitize_text_field', wp_unslash( $_POST['name_overrides'] ) )
-				: array();
-
-			$clean_overrides = array();
-			foreach ( $posted_overrides as $tid => $name ) {
-				$tid = (int) $tid;
-				$name = trim( $name );
-				if ( $tid > 0 && ! empty( $name ) ) {
-					$clean_overrides[ $tid ] = $name;
-				}
+			if ( is_array( $decoded ) && ! empty( $decoded['departments'] ) ) {
+				update_option( self::OPTION_KEY, $decoded );
+				update_option( 'hcc_mega_menu_version', self::SCHEMA_VERSION );
+				delete_transient( self::TRANSIENT_KEY );
+				self::trigger_nextjs_revalidation();
+				echo '<div class="notice notice-success is-dismissible" style="margin-top:16px; padding:12px;"><p style="font-size:15px; margin:0;"><strong>✅ Mega Menu configuration saved!</strong> Changes published live to storefront. <a href="' . esc_url( $live_url ) . '" target="_blank" style="margin-left:12px; font-weight:700; color:#0E5C63; text-decoration:underline;">👁️ View Live Storefront ↗</a></p></div>';
+			} else {
+				echo '<div class="notice notice-error is-dismissible"><p>Failed to save: invalid menu data received.</p></div>';
 			}
-
-			// Process top nav items
-			$posted_top_nav = isset( $_POST['top_nav_json'] ) ? wp_unslash( $_POST['top_nav_json'] ) : '';
-			$decoded_top_nav = json_decode( $posted_top_nav, true );
-
-			update_option( self::HIDDEN_TERMS_OPTION, $posted_hidden );
-			update_option( self::NAME_OVERRIDES_OPTION, $clean_overrides );
-
-			if ( is_array( $decoded_top_nav ) && ! empty( $decoded_top_nav ) ) {
-				update_option( self::TOP_NAV_OPTION, $decoded_top_nav );
-			}
-
-			self::trigger_nextjs_revalidation();
-
-			echo '<div class="notice notice-success is-dismissible" style="margin-top:16px; padding:12px;"><p style="font-size:15px; margin:0;"><strong>✅ Mega Menu configuration saved!</strong> Selected WooCommerce product categories are synced live to the storefront. <a href="' . esc_url( $live_url ) . '" target="_blank" style="margin-left:12px; font-weight:700; color:#0E5C63; text-decoration:underline;">👁️ View Live Storefront ↗</a></p></div>';
 		}
 
-		$tree       = self::get_woo_category_tree();
-		$top_nav    = self::get_top_nav_config();
-		$hidden_ids = self::get_hidden_term_ids();
-		$overrides  = self::get_name_overrides();
+		$config      = self::get_menu_config();
+		$nav_items   = $config['nav_items'] ?? self::get_default_nav_items();
+		$departments = $config['departments'] ?? self::get_default_departments_data();
 
-		$dept_keys = array_keys( $tree );
-		$first_dept = ! empty( $dept_keys ) ? $dept_keys[0] : '';
+		// Department icon helper
+		$dept_icons = array(
+			'Furniture'               => '🛋️',
+			'Home Decor'              => '🏺',
+			'Wall Decor & Mirrors'    => '🖼️',
+			'Lighting'                => '💡',
+			'Rugs & Floor Coverings'  => '🧶',
+			'Storage & Organization'  => '📦',
+			'Kitchen & Tabletop'      => '🍽️',
+			'Outdoor & Garden'        => '🌿',
+			'Kids & Baby Home'        => '🧸',
+			'Pet Home'                => '🐾',
+		);
 		?>
 		<style>
-			.hcc-menu-wrap { max-width: 1300px; margin: 20px 0 40px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif; }
-			.hcc-header-banner { background: #fff; border: 1px solid #c3c4c7; border-radius: 8px; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
+			.hcc-menu-wrap { max-width: 1240px; margin: 20px 0 40px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #1d2327; }
+			.hcc-header-banner { background: #fff; border: 1px solid #c3c4c7; border-radius: 8px; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
 			.hcc-header-title { margin: 0; font-size: 22px; font-weight: 700; color: #1d2327; display: flex; align-items: center; gap: 8px; }
-			.hcc-live-badge { display: inline-flex; align-items: center; gap: 6px; background: #e6f4ea; color: #137333; padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; border: 1px solid #ceead6; }
+			.hcc-live-badge { display: inline-flex; align-items: center; gap: 6px; background: #e6f4ea; color: #137333; padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; border: 1px solid #ceead6; transition: all 0.15s ease; }
 			.hcc-live-badge:hover { background: #ceead6; color: #0d5223; }
-			
-			.hcc-toolbar-sticky { position: sticky; top: 32px; z-index: 100; background: #fff; border: 1px solid #0E5C63; border-radius: 8px; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 14px rgba(14,92,99,0.15); margin-bottom: 24px; gap: 12px; flex-wrap: wrap; }
-			.hcc-search-input { min-width: 320px; flex: 1; max-width: 450px; padding: 8px 12px 8px 34px; border: 1px solid #8c8f94; border-radius: 6px; font-size: 14px; background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%238c8f94" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') no-repeat 10px center; }
+
+			.hcc-toolbar-sticky { position: sticky; top: 32px; z-index: 100; background: #fff; border: 1.5px solid #0E5C63; border-radius: 8px; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 14px rgba(14,92,99,0.15); margin-bottom: 22px; gap: 12px; flex-wrap: wrap; }
+			.hcc-search-input { min-width: 260px; flex: 1; max-width: 380px; padding: 8px 12px 8px 34px; border: 1px solid #8c8f94; border-radius: 6px; font-size: 14px; background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%238c8f94" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') no-repeat 10px center; }
 			.hcc-search-input:focus { border-color: #0E5C63; outline: none; box-shadow: 0 0 0 2px rgba(14,92,99,0.2); }
 
-			.hcc-tabs-bar { display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 2px solid #0E5C63; margin-bottom: 20px; }
-			.hcc-tab-btn { background: #f0f0f1; border: 1px solid #c3c4c7; border-bottom: none; padding: 10px 18px; font-size: 14px; font-weight: 600; color: #50575e; border-radius: 6px 6px 0 0; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s ease; }
-			.hcc-tab-btn:hover { background: #e5e5e5; color: #1d2327; }
-			.hcc-tab-btn.active { background: #0E5C63; color: #fff; border-color: #0E5C63; }
-			.hcc-tab-count { background: rgba(0,0,0,0.08); padding: 2px 7px; border-radius: 12px; font-size: 11px; }
-			.hcc-tab-btn.active .hcc-tab-count { background: rgba(255,255,255,0.25); color: #fff; }
+			/* Clean Navigation Pills */
+			.hcc-tabs-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; background: #f0f0f1; padding: 8px; border-radius: 8px; border: 1px solid #dcdcde; }
+			.hcc-tab-btn { background: #fff; border: 1px solid #c3c4c7; padding: 9px 15px; font-size: 13px; font-weight: 600; color: #3c434a; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+			.hcc-tab-btn:hover { background: #f6f7f7; color: #1d2327; border-color: #8c8f94; }
+			.hcc-tab-btn.active { background: #0E5C63; color: #fff; border-color: #0E5C63; box-shadow: 0 2px 4px rgba(14,92,99,0.25); }
+			.hcc-tab-count { background: rgba(0,0,0,0.07); padding: 1px 7px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+			.hcc-tab-btn.active .hcc-tab-count { background: rgba(255,255,255,0.28); color: #fff; }
 
 			.hcc-tab-content { display: none; }
 			.hcc-tab-content.active { display: block; }
 
-			.hcc-dept-header-card { background: #fff; border: 1px solid #c3c4c7; border-radius: 8px; padding: 16px 20px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-			.hcc-dept-title-group { display: flex; align-items: center; gap: 12px; }
-			.hcc-dept-title-group h2 { margin: 0; font-size: 18px; font-weight: 700; color: #1d2327; }
-			.hcc-dept-actions { display: flex; align-items: center; gap: 8px; }
+			/* Department Banner Card */
+			.hcc-dept-card { background: #fff; border: 1px solid #c3c4c7; border-radius: 8px; padding: 16px 20px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+			.hcc-dept-left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 
-			.hcc-l1-card { background: #fff; border: 1px solid #c3c4c7; border-radius: 8px; margin-bottom: 16px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.03); transition: border-color 0.2s ease; }
-			.hcc-l1-card:hover { border-color: #8c8f94; }
-			.hcc-l1-card.is-hidden-card { opacity: 0.55; background: #fafafa; }
-			.hcc-l1-header { padding: 14px 20px; background: #f9f9fa; border-bottom: 1px solid #e2e4e7; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
-			.hcc-l1-left { display: flex; align-items: center; gap: 12px; flex: 1; }
-			.hcc-l1-title { font-size: 15px; font-weight: 700; color: #1d2327; }
-			.hcc-count-badge { background: #e0e0e0; color: #3c434a; font-size: 12px; padding: 2px 8px; border-radius: 12px; font-weight: 600; }
-			.hcc-link-btn { color: #0E5C63; text-decoration: none; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 4px; background: rgba(14,92,99,0.08); }
-			.hcc-link-btn:hover { background: rgba(14,92,99,0.18); text-decoration: underline; color: #083c41; }
-			.hcc-l1-body { padding: 18px 20px; }
+			/* Category Column Cards */
+			.hcc-column-card { background: #fff; border: 1.5px solid #dcdcde; border-radius: 8px; margin-bottom: 14px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.03); transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+			.hcc-column-card:hover { border-color: #0E5C63; box-shadow: 0 2px 8px rgba(14,92,99,0.08); }
+			.hcc-column-card.is-hidden { opacity: 0.55; background: #fafafa; border-style: dashed; }
+			
+			.hcc-card-top-row { padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; background: #fafafa; border-bottom: 1px solid #eee; }
+			.hcc-card-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 280px; }
+			.hcc-card-right { display: flex; align-items: center; gap: 8px; }
 
-			.hcc-l2-group { background: #fdfdfd; border: 1px solid #e5e5e5; border-radius: 6px; padding: 14px 16px; margin-bottom: 14px; }
-			.hcc-l2-group:last-child { margin-bottom: 0; }
-			.hcc-l2-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
-			.hcc-l2-title { font-size: 14px; font-weight: 700; color: #2c3338; display: flex; align-items: center; gap: 8px; }
+			.hcc-col-badge { background: #0E5C63; color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
 
-			.hcc-l3-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-			.hcc-chip { display: inline-flex; align-items: center; gap: 6px; background: #f0f0f1; border: 1px solid #dcdcde; border-radius: 20px; padding: 4px 10px 4px 8px; font-size: 12px; color: #2c3338; transition: all 0.15s ease; }
-			.hcc-chip:hover { border-color: #8c8f94; background: #e8e8e8; }
-			.hcc-chip.chip-hidden { opacity: 0.45; text-decoration: line-through; background: #fff; }
-			.hcc-chip input[type="checkbox"] { margin: 0; cursor: pointer; }
-			.hcc-chip-link { color: #0E5C63; text-decoration: none; font-size: 12px; margin-left: 2px; }
-			.hcc-chip-link:hover { text-decoration: underline; font-weight: bold; }
+			/* Simple Toggle Switches */
+			.hcc-toggle-btn { display: inline-flex; align-items: center; cursor: pointer; user-select: none; font-size: 13px; font-weight: 600; gap: 5px; padding: 5px 12px; border-radius: 20px; border: 1px solid #c3c4c7; background: #fff; color: #50575e; transition: all 0.15s ease; }
+			.hcc-toggle-btn.is-active { background: #e6f4ea; border-color: #ceead6; color: #137333; }
+			.hcc-toggle-btn:hover { border-color: #8c8f94; }
 
-			.hcc-toggle-all-btn { background: #fff; border: 1px solid #8c8f94; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; color: #2c3338; }
-			.hcc-toggle-all-btn:hover { background: #f0f0f1; border-color: #50575e; }
+			.hcc-name-input { font-size: 14px; font-weight: 600; padding: 6px 10px; border: 1px solid #c3c4c7; border-radius: 5px; width: 100%; max-width: 300px; color: #1d2327; background: #fff; }
+			.hcc-name-input:focus { border-color: #0E5C63; outline: none; box-shadow: 0 0 0 1px #0E5C63; }
 
-			/* Top Nav Links Table */
-			.hcc-top-nav-table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #c3c4c7; border-radius: 8px; overflow: hidden; }
-			.hcc-top-nav-table th { background: #f6f7f7; text-align: left; padding: 12px 16px; border-bottom: 1px solid #c3c4c7; font-size: 13px; font-weight: 700; color: #1d2327; }
-			.hcc-top-nav-table td { padding: 12px 16px; border-bottom: 1px solid #f0f0f1; font-size: 14px; vertical-align: middle; }
-			.hcc-top-nav-table tr:hover { background: #fbfbfb; }
-			.hcc-nav-input { width: 100%; max-width: 260px; padding: 6px 10px; border: 1px solid #8c8f94; border-radius: 4px; font-size: 13px; }
+			.hcc-url-link { color: #0E5C63; text-decoration: none; font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 4px; background: rgba(14,92,99,0.07); display: inline-flex; align-items: center; gap: 4px; transition: all 0.15s ease; }
+			.hcc-url-link:hover { background: rgba(14,92,99,0.16); color: #083c41; text-decoration: underline; }
+
+			.hcc-expand-btn { background: #fff; border: 1px solid #c3c4c7; padding: 5px 12px; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer; color: #3c434a; display: inline-flex; align-items: center; gap: 4px; }
+			.hcc-expand-btn:hover { background: #f0f0f1; border-color: #8c8f94; }
+
+			/* Drawer: Subcategories (Level 2) */
+			.hcc-card-drawer { display: none; padding: 16px 20px; background: #fff; border-top: 1px solid #eee; }
+			.hcc-card-drawer.is-open { display: block; }
+
+			.hcc-subgroup-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+			.hcc-subgroup-table th { text-align: left; font-size: 12px; color: #646970; text-transform: uppercase; padding: 6px 10px; border-bottom: 1px solid #e2e4e7; }
+			.hcc-subgroup-table td { padding: 8px 10px; border-bottom: 1px solid #f0f0f1; vertical-align: top; }
+
+			/* Items Pills (Level 3) */
+			.hcc-items-container { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 5px; }
+			.hcc-item-pill { display: inline-flex; align-items: center; gap: 5px; background: #f6f7f7; border: 1px solid #dcdcde; border-radius: 14px; padding: 2px 8px; font-size: 11px; color: #3c434a; cursor: pointer; }
+			.hcc-item-pill.pill-hidden { opacity: 0.45; text-decoration: line-through; background: #fff; }
+			.hcc-item-pill input[type="checkbox"] { margin: 0; cursor: pointer; }
+			.hcc-item-pill-link { color: #0E5C63; text-decoration: none; font-size: 10px; margin-left: 2px; }
+			.hcc-item-pill-link:hover { text-decoration: underline; }
+
+			.hcc-add-btn { background: #fff; border: 1px dashed #0E5C63; color: #0E5C63; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; transition: all 0.15s ease; }
+			.hcc-add-btn:hover { background: rgba(14,92,99,0.06); }
 		</style>
 
 		<div class="wrap hcc-menu-wrap">
@@ -495,10 +484,10 @@ class MegaMenuManager {
 			<div class="hcc-header-banner">
 				<div>
 					<h1 class="hcc-header-title">
-						<span>🧭 Storefront Mega Menu & Category Navigation</span>
+						<span>🧭 Storefront Mega Menu & Category Builder</span>
 					</h1>
 					<p style="margin: 6px 0 0; font-size: 14px; color: #50575e;">
-						Directly powered by live WooCommerce Product Categories (<code>product_cat</code>). Check or uncheck categories to retain or hide them in the storefront mega menu.
+						Directly control all department columns, subcategories, display names, and visibility with instant live storefront sync.
 					</p>
 				</div>
 				<div>
@@ -511,382 +500,481 @@ class MegaMenuManager {
 
 			<form method="post" action="" id="hcc_mega_menu_form">
 				<?php wp_nonce_field( 'hcc_mega_menu_action', 'hcc_mega_menu_nonce' ); ?>
+				<input type="hidden" name="mega_menu_config_json" id="mega_menu_config_json" value="">
 
 				<!-- Sticky Actions Toolbar -->
 				<div class="hcc-toolbar-sticky">
 					<div style="display: flex; align-items: center; gap: 10px; flex: 1;">
 						<input
 							type="text"
-							id="hcc_category_search"
 							class="hcc-search-input"
-							placeholder="🔍 Search categories, subcategories, or items..."
-							onkeyup="hccFilterCategories(this.value)"
+							placeholder="🔍 Search categories or subcategories..."
+							onkeyup="hccFilterMenu(this.value)"
 						/>
-						<span id="hcc_search_match_count" style="font-size: 13px; color: #50575e; font-weight: 600;"></span>
 					</div>
 					<div style="display: flex; align-items: center; gap: 8px;">
 						<button
 							type="submit"
 							name="hcc_reset_mega_menu"
 							class="button button-secondary"
-							onclick="return confirm('Reset all visibility preferences and show all WooCommerce categories in the Mega Menu?');"
+							onclick="return confirm('Reset the entire mega menu to the original curated blueprint? This will restore all 7 Furniture columns.');"
 						>
-							🔄 Reset All to Active
+							🔄 Reset to Curated Blueprint
 						</button>
 						<button
-							type="submit"
-							name="hcc_save_mega_menu"
+							type="button"
 							class="button button-primary button-hero"
 							style="background:#0E5C63; border-color:#0E5C63; padding: 8px 24px; font-weight: 700; height: auto;"
+							onclick="hccSaveForm()"
 						>
 							💾 Save Mega Menu Configuration
 						</button>
+						<input type="submit" name="hcc_save_mega_menu" id="hcc_real_submit_btn" style="display:none;">
 					</div>
 				</div>
 
-				<input type="hidden" name="top_nav_json" id="hcc_top_nav_json" value="<?php echo esc_attr( wp_json_encode( $top_nav ) ); ?>">
-
-				<!-- Department Navigation Tabs -->
+				<!-- Navigation Tabs (Pills) -->
 				<div class="hcc-tabs-bar">
-					<button
-						type="button"
-						class="hcc-tab-btn active"
-						data-tab="top-nav"
-						onclick="hccSwitchTab('top-nav', this)"
-					>
-						<span>⭐ Top Navigation Links</span>
-						<span class="hcc-tab-count"><?php echo count( $top_nav ); ?></span>
-					</button>
-
-					<?php foreach ( $tree as $dept_name => $dept_node ) :
-						$l1_count = count( $dept_node['l1_items'] );
-						$dept_tab_id = sanitize_title( $dept_name );
+					<?php foreach ( $departments as $dept_key => $dept_info ) :
+						$cols = $dept_info['categories'] ?? array();
+						$dept_tab_id = sanitize_title( $dept_key );
+						$icon = $dept_icons[ $dept_key ] ?? '📁';
+						$is_first = ( $dept_key === 'Furniture' );
 					?>
 						<button
 							type="button"
-							class="hcc-tab-btn"
+							class="hcc-tab-btn <?php echo $is_first ? 'active' : ''; ?>"
 							data-tab="<?php echo esc_attr( $dept_tab_id ); ?>"
 							onclick="hccSwitchTab('<?php echo esc_attr( $dept_tab_id ); ?>', this)"
 						>
-							<span><?php echo esc_html( $dept_node['display_name'] ); ?></span>
-							<span class="hcc-tab-count"><?php echo (int) $l1_count; ?></span>
+							<span><?php echo esc_html( $icon . ' ' . ( $dept_info['name'] ?? $dept_key ) ); ?></span>
+							<span class="hcc-tab-count"><?php echo count( $cols ); ?></span>
 						</button>
 					<?php endforeach; ?>
-				</div>
 
-				<!-- TAB: TOP NAVIGATION BAR LINKS -->
-				<div id="tab_top-nav" class="hcc-tab-content active">
-					<div class="hcc-dept-header-card">
-						<div>
-							<h3 style="margin: 0 0 4px; font-size: 16px;">Top Navigation Bar Tier</h3>
-							<p style="margin: 0; color: #50575e; font-size: 13px;">Manage the primary links displayed across the top bar of the storefront header.</p>
-						</div>
-					</div>
-
-					<table class="hcc-top-nav-table" id="hcc_top_nav_table">
-						<thead>
-							<tr>
-								<th style="width: 70px;">Visible</th>
-								<th>Display Title</th>
-								<th>Link / Slug</th>
-								<th>Mega Dropdown</th>
-								<th>Storefront URL</th>
-							</tr>
-						</thead>
-						<tbody>
-							<?php foreach ( $top_nav as $idx => $nav_item ) :
-								$is_hidden = ! empty( $nav_item['hidden'] );
-								$target_href = $nav_item['href'] ?? ( '/' . ( $nav_item['slug'] ?? '' ) );
-							?>
-								<tr data-nav-idx="<?php echo esc_attr( $idx ); ?>">
-									<td style="text-align: center;">
-										<input
-											type="checkbox"
-											class="hcc-top-nav-vis"
-											data-idx="<?php echo esc_attr( $idx ); ?>"
-											<?php checked( ! $is_hidden ); ?>
-											onchange="hccUpdateTopNav()"
-										/>
-									</td>
-									<td>
-										<input
-											type="text"
-											class="hcc-nav-input hcc-top-nav-name"
-											data-idx="<?php echo esc_attr( $idx ); ?>"
-											value="<?php echo esc_attr( $nav_item['name'] ); ?>"
-											onchange="hccUpdateTopNav()"
-										/>
-									</td>
-									<td>
-										<code><?php echo esc_html( $nav_item['slug'] ); ?></code>
-									</td>
-									<td>
-										<?php if ( ! empty( $nav_item['hasSubmenu'] ) ) : ?>
-											<span style="color: #137333; font-weight: 600; font-size: 13px;">✓ Yes (<?php echo esc_html( $nav_item['deptKey'] ?? 'Department' ); ?>)</span>
-										<?php else : ?>
-											<span style="color: #8c8f94; font-size: 13px;">Direct Link</span>
-										<?php endif; ?>
-									</td>
-									<td>
-										<a href="<?php echo esc_url( rtrim( $live_url, '/' ) . $target_href ); ?>" target="_blank" class="hcc-link-btn">
-											<span><?php echo esc_html( $target_href ); ?></span>
-											<span>↗</span>
-										</a>
-									</td>
-								</tr>
-							<?php endforeach; ?>
-						</tbody>
-					</table>
+					<button
+						type="button"
+						class="hcc-tab-btn"
+						data-tab="top-nav"
+						onclick="hccSwitchTab('top-nav', this)"
+					>
+						<span>🔗 Top Navigation Links</span>
+						<span class="hcc-tab-count"><?php echo count( $nav_items ); ?></span>
+					</button>
 				</div>
 
 				<!-- TABS: DEPARTMENTS -->
-				<?php foreach ( $tree as $dept_name => $dept_node ) :
-					$dept_tab_id = sanitize_title( $dept_name );
-					$dept_id     = $dept_node['id'];
-					$is_dept_hidden = in_array( $dept_id, $hidden_ids, true );
-					$dept_live_url  = rtrim( $live_url, '/' ) . $dept_node['url_path'];
+				<?php foreach ( $departments as $dept_key => $dept_info ) :
+					$dept_tab_id    = sanitize_title( $dept_key );
+					$dept_slug      = self::make_slug( $dept_key );
+					$is_dept_hidden = ! empty( $dept_info['hidden'] );
+					$cols           = $dept_info['categories'] ?? array();
+					$dept_live_url  = rtrim( $live_url, '/' ) . '/' . $dept_slug;
+					$is_first_tab   = ( $dept_key === 'Furniture' );
+					$col_counter    = 1;
 				?>
-					<div id="tab_<?php echo esc_attr( $dept_tab_id ); ?>" class="hcc-tab-content">
-						<!-- Department Info Card -->
-						<div class="hcc-dept-header-card">
-							<div class="hcc-dept-title-group">
-								<label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-									<input
-										type="checkbox"
-										name="hidden_terms_invert[]"
-										class="hcc-term-chk"
-										data-term-id="<?php echo esc_attr( $dept_id ); ?>"
-										data-level="0"
-										<?php checked( ! $is_dept_hidden ); ?>
-										onchange="hccToggleTerm(this)"
-									/>
-									<h2><?php echo esc_html( $dept_node['display_name'] ); ?></h2>
-								</label>
-								<span class="hcc-count-badge"><?php echo count( $dept_node['l1_items'] ); ?> Subcategories</span>
-								<span class="hcc-count-badge" style="background:#e6f4ea; color:#137333;"><?php echo (int) $dept_node['count']; ?> Products</span>
+					<div id="tab_<?php echo esc_attr( $dept_tab_id ); ?>" class="hcc-tab-content <?php echo $is_first_tab ? 'active' : ''; ?>">
+						<!-- Department Top Control Card -->
+						<div class="hcc-dept-card">
+							<div class="hcc-dept-left">
+								<button
+									type="button"
+									class="hcc-toggle-btn <?php echo ! $is_dept_hidden ? 'is-active' : ''; ?>"
+									onclick="hccToggleDeptVis('<?php echo esc_js( $dept_key ); ?>', this)"
+								>
+									<?php echo ! $is_dept_hidden ? '👁️ Department Visible' : '🚫 Department Hidden'; ?>
+								</button>
+								<label style="font-weight:600; font-size:14px;">Name:</label>
+								<input
+									type="text"
+									class="hcc-name-input"
+									style="font-size:15px; font-weight:700; width:220px;"
+									value="<?php echo esc_attr( $dept_info['name'] ?? $dept_key ); ?>"
+									onchange="hccChangeDeptName('<?php echo esc_js( $dept_key ); ?>', this.value)"
+								/>
+								<span style="color:#50575e; font-size:13px; font-weight:600;">(<?php echo count( $cols ); ?> Mega Columns)</span>
 							</div>
-							<div class="hcc-dept-actions">
-								<a href="<?php echo esc_url( $dept_live_url ); ?>" target="_blank" class="hcc-link-btn" title="View department on live storefront">
-									<span>👁️ View Live Department ↗</span>
+							<div>
+								<a href="<?php echo esc_url( $dept_live_url ); ?>" target="_blank" class="hcc-url-link">
+									<span>👁️ View Live Department (<?php echo esc_html( '/' . $dept_slug ); ?>) ↗</span>
 								</a>
-								<button type="button" class="hcc-toggle-all-btn" onclick="hccBulkCheckDept('tab_<?php echo esc_attr( $dept_tab_id ); ?>', true)">[✓] Select All</button>
-								<button type="button" class="hcc-toggle-all-btn" onclick="hccBulkCheckDept('tab_<?php echo esc_attr( $dept_tab_id ); ?>', false)">[✗] Deselect All</button>
 							</div>
 						</div>
 
-						<!-- Subcategory Cards (Level 1) -->
-						<div class="hcc-l1-list">
-							<?php foreach ( $dept_node['l1_items'] as $l1_node ) :
-								$l1_id        = $l1_node['id'];
-								$is_l1_hidden = in_array( $l1_id, $hidden_ids, true );
-								$l1_live_url  = rtrim( $live_url, '/' ) . $l1_node['url_path'];
-								$l2_count     = count( $l1_node['l2_items'] );
+						<!-- Subcategory Columns List (Level 1) -->
+						<div class="hcc-columns-container" data-dept="<?php echo esc_attr( $dept_key ); ?>">
+							<?php foreach ( $cols as $l1_key => $l1_data ) :
+								$is_l1_hidden = ! empty( $l1_data['hidden'] );
+								$l1_slug      = self::make_slug( $l1_key );
+								$l1_live_url  = rtrim( $live_url, '/' ) . '/' . $dept_slug . '/' . $l1_slug;
+								$subgroups    = $l1_data['subgroups'] ?? array();
 							?>
-								<div class="hcc-l1-card <?php echo $is_l1_hidden ? 'is-hidden-card' : ''; ?>" id="l1_card_<?php echo esc_attr( $l1_id ); ?>">
-									<div class="hcc-l1-header">
-										<div class="hcc-l1-left">
+								<div class="hcc-column-card <?php echo $is_l1_hidden ? 'is-hidden' : ''; ?>" data-dept="<?php echo esc_attr( $dept_key ); ?>" data-l1="<?php echo esc_attr( $l1_key ); ?>">
+									<div class="hcc-card-top-row">
+										<div class="hcc-card-left">
+											<span class="hcc-col-badge">Col <?php echo $col_counter++; ?></span>
+											<button
+												type="button"
+												class="hcc-toggle-btn <?php echo ! $is_l1_hidden ? 'is-active' : ''; ?>"
+												onclick="hccToggleL1Vis('<?php echo esc_js( $dept_key ); ?>', '<?php echo esc_js( $l1_key ); ?>', this)"
+											>
+												<?php echo ! $is_l1_hidden ? '👁️ Visible' : '🚫 Hidden'; ?>
+											</button>
 											<input
-												type="checkbox"
-												class="hcc-term-chk"
-												data-term-id="<?php echo esc_attr( $l1_id ); ?>"
-												data-level="1"
-												data-parent-dept="<?php echo esc_attr( $dept_id ); ?>"
-												<?php checked( ! $is_l1_hidden ); ?>
-												onchange="hccToggleTerm(this)"
+												type="text"
+												class="hcc-name-input"
+												value="<?php echo esc_attr( $l1_data['name'] ?? $l1_key ); ?>"
+												placeholder="Column Name"
+												onchange="hccChangeL1Name('<?php echo esc_js( $dept_key ); ?>', '<?php echo esc_js( $l1_key ); ?>', this.value)"
 											/>
-											<span class="hcc-l1-title"><?php echo esc_html( $l1_node['display_name'] ); ?></span>
-											<span class="hcc-count-badge"><?php echo (int) $l2_count; ?> Sub-groups</span>
-											<span class="hcc-count-badge" style="background:#eef; color:#336;"><?php echo (int) $l1_node['count']; ?> Products</span>
 										</div>
-										<div style="display: flex; align-items: center; gap: 10px;">
-											<a href="<?php echo esc_url( $l1_live_url ); ?>" target="_blank" class="hcc-link-btn" onclick="event.stopPropagation();">
-												<span>👁️ View on Storefront ↗</span>
+										<div class="hcc-card-right">
+											<a href="<?php echo esc_url( $l1_live_url ); ?>" target="_blank" class="hcc-url-link">
+												<span>View Live ↗</span>
 											</a>
+											<button
+												type="button"
+												class="hcc-expand-btn"
+												onclick="hccToggleDrawer(this)"
+											>
+												<span>▼ Subcategories (<?php echo count( $subgroups ); ?>)</span>
+											</button>
 										</div>
 									</div>
 
-									<div class="hcc-l1-body">
-										<?php if ( empty( $l1_node['l2_items'] ) ) : ?>
-											<p style="margin:0; color:#8c8f94; font-size:13px; font-style:italic;">No sub-subcategories found under this category in WooCommerce.</p>
+									<!-- Drawer: Subcategories (Level 2) and Leaf items (Level 3) -->
+									<div class="hcc-card-drawer">
+										<?php if ( empty( $subgroups ) ) : ?>
+											<p style="margin:0 0 10px; color:#8c8f94; font-size:13px; font-style:italic;">No subcategories yet.</p>
 										<?php else : ?>
-											<?php foreach ( $l1_node['l2_items'] as $l2_node ) :
-												$l2_id        = $l2_node['id'];
-												$is_l2_hidden = in_array( $l2_id, $hidden_ids, true );
-												$l2_live_url  = rtrim( $live_url, '/' ) . $l2_node['url_path'];
-												$l3_count     = count( $l2_node['l3_items'] );
-											?>
-												<div class="hcc-l2-group">
-													<div class="hcc-l2-header">
-														<div class="hcc-l2-title">
-															<input
-																type="checkbox"
-																class="hcc-term-chk"
-																data-term-id="<?php echo esc_attr( $l2_id ); ?>"
-																data-level="2"
-																data-parent-l1="<?php echo esc_attr( $l1_id ); ?>"
-																<?php checked( ! $is_l2_hidden ); ?>
-																onchange="hccToggleTerm(this)"
-															/>
-															<strong><?php echo esc_html( $l2_node['display_name'] ); ?></strong>
-															<span class="hcc-count-badge"><?php echo (int) $l3_count; ?> Items</span>
-															<span class="hcc-count-badge" style="background:#f4f4f4;"><?php echo (int) $l2_node['count']; ?> Products</span>
-														</div>
-														<a href="<?php echo esc_url( $l2_live_url ); ?>" target="_blank" class="hcc-link-btn">
-															<span>👁️ View on Storefront ↗</span>
-														</a>
-													</div>
-
-													<?php if ( ! empty( $l2_node['l3_items'] ) ) : ?>
-														<div class="hcc-l3-chips">
-															<?php foreach ( $l2_node['l3_items'] as $l3_node ) :
-																$l3_id        = $l3_node['id'];
-																$is_l3_hidden = in_array( $l3_id, $hidden_ids, true );
-																$l3_live_url  = rtrim( $live_url, '/' ) . $l3_node['url_path'];
-															?>
-																<label class="hcc-chip <?php echo $is_l3_hidden ? 'chip-hidden' : ''; ?>" title="Category ID: <?php echo esc_attr( $l3_id ); ?>">
-																	<input
-																		type="checkbox"
-																		class="hcc-term-chk"
-																		data-term-id="<?php echo esc_attr( $l3_id ); ?>"
-																		data-level="3"
-																		data-parent-l2="<?php echo esc_attr( $l2_id ); ?>"
-																		<?php checked( ! $is_l3_hidden ); ?>
-																		onchange="hccToggleTerm(this)"
-																	/>
-																	<span><?php echo esc_html( $l3_node['display_name'] ); ?></span>
-																	<a href="<?php echo esc_url( $l3_live_url ); ?>" target="_blank" class="hcc-chip-link" onclick="event.stopPropagation();" title="View <?php echo esc_attr( $l3_node['display_name'] ); ?> on live storefront">↗</a>
-																</label>
-															<?php endforeach; ?>
-														</div>
-													<?php endif; ?>
-												</div>
-											<?php endforeach; ?>
+											<table class="hcc-subgroup-table">
+												<thead>
+													<tr>
+														<th style="width: 100px;">Status</th>
+														<th style="width: 260px;">Subcategory Name</th>
+														<th>Items / Storefront Link</th>
+													</tr>
+												</thead>
+												<tbody>
+													<?php foreach ( $subgroups as $l2_key => $l2_data ) :
+														$is_l2_hidden = ! empty( $l2_data['hidden'] );
+														$l2_slug      = self::make_slug( $l2_key );
+														$l2_live_url  = rtrim( $live_url, '/' ) . '/' . $dept_slug . '/' . $l1_slug . '/' . $l2_slug;
+														$items        = $l2_data['items'] ?? array();
+													?>
+														<tr>
+															<td>
+																<button
+																	type="button"
+																	class="hcc-toggle-btn <?php echo ! $is_l2_hidden ? 'is-active' : ''; ?>"
+																	style="padding:3px 9px; font-size:12px;"
+																	onclick="hccToggleL2Vis('<?php echo esc_js( $dept_key ); ?>', '<?php echo esc_js( $l1_key ); ?>', '<?php echo esc_js( $l2_key ); ?>', this)"
+																>
+																	<?php echo ! $is_l2_hidden ? '✓ Show' : '✗ Hide'; ?>
+																</button>
+															</td>
+															<td>
+																<input
+																	type="text"
+																	class="hcc-name-input"
+																	style="font-size:13px;"
+																	value="<?php echo esc_attr( $l2_data['name'] ?? $l2_key ); ?>"
+																	onchange="hccChangeL2Name('<?php echo esc_js( $dept_key ); ?>', '<?php echo esc_js( $l1_key ); ?>', '<?php echo esc_js( $l2_key ); ?>', this.value)"
+																/>
+															</td>
+															<td>
+																<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 4px;">
+																	<span style="font-size:12px; color:#50575e; font-weight:600;"><?php echo count( $items ); ?> Products/Types</span>
+																	<a href="<?php echo esc_url( $l2_live_url ); ?>" target="_blank" class="hcc-url-link" style="font-size:11px; padding:2px 7px;">
+																		<span>View Live ↗</span>
+																	</a>
+																</div>
+																<?php if ( ! empty( $items ) ) : ?>
+																	<div class="hcc-items-container">
+																		<?php foreach ( $items as $it_idx => $it ) :
+																			$it_name   = is_array( $it ) ? ( $it['name'] ?? '' ) : (string) $it;
+																			$is_it_hid = is_array( $it ) && ! empty( $it['hidden'] );
+																			$it_slug   = self::make_slug( $it_name );
+																			$it_url    = rtrim( $live_url, '/' ) . '/' . $dept_slug . '/' . $l1_slug . '/' . $l2_slug . '/' . $it_slug;
+																		?>
+																			<label class="hcc-item-pill <?php echo $is_it_hid ? 'pill-hidden' : ''; ?>" title="<?php echo esc_attr( $it_name ); ?>">
+																				<input
+																					type="checkbox"
+																					<?php checked( ! $is_it_hid ); ?>
+																					onchange="hccToggleL3Vis('<?php echo esc_js( $dept_key ); ?>', '<?php echo esc_js( $l1_key ); ?>', '<?php echo esc_js( $l2_key ); ?>', <?php echo (int) $it_idx; ?>, this)"
+																				/>
+																				<span><?php echo esc_html( $it_name ); ?></span>
+																				<a href="<?php echo esc_url( $it_url ); ?>" target="_blank" class="hcc-item-pill-link" onclick="event.stopPropagation();" title="View live">↗</a>
+																			</label>
+																		<?php endforeach; ?>
+																	</div>
+																<?php endif; ?>
+															</td>
+														</tr>
+													<?php endforeach; ?>
+												</tbody>
+											</table>
 										<?php endif; ?>
+
+										<button
+											type="button"
+											class="hcc-add-btn"
+											onclick="hccAddSubcategory('<?php echo esc_js( $dept_key ); ?>', '<?php echo esc_js( $l1_key ); ?>')"
+										>
+											+ Add Subcategory
+										</button>
 									</div>
 								</div>
 							<?php endforeach; ?>
+
+							<button
+								type="button"
+								class="hcc-add-btn"
+								style="font-size:14px; padding:10px 20px; border-width:2px;"
+								onclick="hccAddColumn('<?php echo esc_js( $dept_key ); ?>')"
+							>
+								+ Add New Column to <?php echo esc_html( $dept_info['name'] ?? $dept_key ); ?>
+							</button>
 						</div>
 					</div>
 				<?php endforeach; ?>
 
-				<!-- Hidden inputs container for unchecked/hidden terms -->
-				<div id="hcc_hidden_terms_container">
-					<?php foreach ( $hidden_ids as $hid ) : ?>
-						<input type="hidden" name="hidden_terms[]" value="<?php echo (int) $hid; ?>" id="hidden_input_<?php echo (int) $hid; ?>">
-					<?php endforeach; ?>
+				<!-- TAB: TOP NAVIGATION BAR LINKS -->
+				<div id="tab_top-nav" class="hcc-tab-content">
+					<div class="hcc-header-banner" style="margin-bottom:16px;">
+						<div>
+							<h3 style="margin:0 0 4px; font-size:16px;">Top Navigation Bar Links</h3>
+							<p style="margin:0; color:#50575e; font-size:13px;">Manage links displayed along the top bar of the storefront header.</p>
+						</div>
+					</div>
+
+					<div style="background:#fff; border:1px solid #c3c4c7; border-radius:8px; overflow:hidden;">
+						<table style="width:100%; border-collapse:collapse;" id="hcc_nav_table">
+							<thead>
+								<tr style="background:#f6f7f7; text-align:left; font-size:13px; color:#1d2327; border-bottom:1px solid #c3c4c7;">
+									<th style="padding:12px 16px; width:90px;">Visibility</th>
+									<th style="padding:12px 16px;">Display Name</th>
+									<th style="padding:12px 16px;">Slug / Link</th>
+									<th style="padding:12px 16px;">Mega Dropdown</th>
+									<th style="padding:12px 16px;">Storefront URL</th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php foreach ( $nav_items as $idx => $item ) :
+									$is_hidden = ! empty( $item['hidden'] );
+									$href = $item['href'] ?? ( '/' . ( $item['slug'] ?? '' ) );
+								?>
+									<tr data-nav-idx="<?php echo esc_attr( $idx ); ?>" style="border-bottom:1px solid #f0f0f1;">
+										<td style="padding:12px 16px; text-align:center;">
+											<button
+												type="button"
+												class="hcc-toggle-btn <?php echo ! $is_hidden ? 'is-active' : ''; ?>"
+												onclick="hccToggleNavVis(<?php echo esc_attr( $idx ); ?>, this)"
+											>
+												<?php echo ! $is_hidden ? '👁️ Visible' : '🚫 Hidden'; ?>
+											</button>
+										</td>
+										<td style="padding:12px 16px;">
+											<input
+												type="text"
+												class="hcc-name-input"
+												value="<?php echo esc_attr( $item['name'] ); ?>"
+												onchange="hccChangeNavName(<?php echo esc_attr( $idx ); ?>, this.value)"
+											/>
+										</td>
+										<td style="padding:12px 16px;">
+											<code><?php echo esc_html( $item['slug'] ); ?></code>
+										</td>
+										<td style="padding:12px 16px;">
+											<?php if ( ! empty( $item['hasSubmenu'] ) ) : ?>
+												<span style="color:#137333; font-weight:600; font-size:13px;">✓ Dropdown Active</span>
+											<?php else : ?>
+												<span style="color:#8c8f94; font-size:13px;">Direct Link</span>
+											<?php endif; ?>
+										</td>
+										<td style="padding:12px 16px;">
+											<a href="<?php echo esc_url( rtrim( $live_url, '/' ) . $href ); ?>" target="_blank" class="hcc-url-link">
+												<span><?php echo esc_html( $href ); ?></span>
+												<span>↗</span>
+											</a>
+										</td>
+									</tr>
+								<?php endforeach; ?>
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</form>
 		</div>
 
 		<script>
+			window.HCC_CONFIG = <?php echo wp_json_encode( $config ); ?>;
+
 			function hccSwitchTab(tabId, btn) {
 				document.querySelectorAll('.hcc-tab-btn').forEach(function(b) { b.classList.remove('active'); });
 				document.querySelectorAll('.hcc-tab-content').forEach(function(c) { c.classList.remove('active'); });
-				
 				btn.classList.add('active');
 				var target = document.getElementById('tab_' + tabId);
-				if (target) {
-					target.classList.add('active');
+				if (target) target.classList.add('active');
+			}
+
+			function hccToggleDrawer(btn) {
+				var card = btn.closest('.hcc-column-card');
+				if (!card) return;
+				var drawer = card.querySelector('.hcc-card-drawer');
+				if (drawer) {
+					var isOpen = drawer.classList.contains('is-open');
+					if (isOpen) {
+						drawer.classList.remove('is-open');
+						btn.querySelector('span').innerText = btn.querySelector('span').innerText.replace('▲', '▼');
+					} else {
+						drawer.classList.add('is-open');
+						btn.querySelector('span').innerText = btn.querySelector('span').innerText.replace('▼', '▲');
+					}
 				}
 			}
 
-			function hccToggleTerm(chk) {
-				var termId = chk.getAttribute('data-term-id');
-				var isChecked = chk.checked;
-				var container = document.getElementById('hcc_hidden_terms_container');
-				var existing = document.getElementById('hidden_input_' + termId);
+			/* Top Nav Updates */
+			function hccToggleNavVis(idx, btn) {
+				if (!window.HCC_CONFIG.nav_items[idx]) return;
+				var isHidden = !window.HCC_CONFIG.nav_items[idx].hidden;
+				window.HCC_CONFIG.nav_items[idx].hidden = isHidden;
+				btn.classList.toggle('is-active', !isHidden);
+				btn.innerText = !isHidden ? '👁️ Visible' : '🚫 Hidden';
+			}
 
-				if (!isChecked) {
-					// Add to hidden
-					if (!existing) {
-						var inp = document.createElement('input');
-						inp.type = 'hidden';
-						inp.name = 'hidden_terms[]';
-						inp.value = termId;
-						inp.id = 'hidden_input_' + termId;
-						container.appendChild(inp);
-					}
-					// Visual style
-					var chip = chk.closest('.hcc-chip');
-					if (chip) chip.classList.add('chip-hidden');
-					var card = chk.closest('.hcc-l1-card');
-					if (card && chk.getAttribute('data-level') === '1') card.classList.add('is-hidden-card');
-				} else {
-					// Remove from hidden
-					if (existing) {
-						existing.remove();
-					}
-					var chip = chk.closest('.hcc-chip');
-					if (chip) chip.classList.remove('chip-hidden');
-					var card = chk.closest('.hcc-l1-card');
-					if (card && chk.getAttribute('data-level') === '1') card.classList.remove('is-hidden-card');
+			function hccChangeNavName(idx, val) {
+				if (window.HCC_CONFIG.nav_items[idx]) {
+					window.HCC_CONFIG.nav_items[idx].name = val;
 				}
 			}
 
-			function hccBulkCheckDept(tabId, check) {
-				var tab = document.getElementById(tabId);
-				if (!tab) return;
-				var chks = tab.querySelectorAll('.hcc-term-chk');
-				chks.forEach(function(c) {
-					c.checked = check;
-					hccToggleTerm(c);
-				});
+			/* Department Updates */
+			function hccToggleDeptVis(deptKey, btn) {
+				if (!window.HCC_CONFIG.departments[deptKey]) return;
+				var isHidden = !window.HCC_CONFIG.departments[deptKey].hidden;
+				window.HCC_CONFIG.departments[deptKey].hidden = isHidden;
+				btn.classList.toggle('is-active', !isHidden);
+				btn.innerText = !isHidden ? '👁️ Department Visible' : '🚫 Department Hidden';
 			}
 
-			function hccUpdateTopNav() {
-				var table = document.getElementById('hcc_top_nav_table');
-				var rows = table.querySelectorAll('tr[data-nav-idx]');
-				var topNavData = [];
-
-				rows.forEach(function(r) {
-					var idx = parseInt(r.getAttribute('data-nav-idx'), 10);
-					var visChk = r.querySelector('.hcc-top-nav-vis');
-					var nameInp = r.querySelector('.hcc-top-nav-name');
-					var orig = window.HCC_TOP_NAV_INITIAL ? window.HCC_TOP_NAV_INITIAL[idx] : {};
-
-					topNavData.push({
-						id: orig.id || ('nav_' + idx),
-						name: nameInp ? nameInp.value : orig.name,
-						slug: orig.slug || '',
-						href: orig.href || ('/' + orig.slug),
-						hasSubmenu: orig.hasSubmenu !== false,
-						deptKey: orig.deptKey || '',
-						hidden: visChk ? !visChk.checked : false
-					});
-				});
-
-				document.getElementById('hcc_top_nav_json').value = JSON.stringify(topNavData);
+			function hccChangeDeptName(deptKey, val) {
+				if (window.HCC_CONFIG.departments[deptKey]) {
+					window.HCC_CONFIG.departments[deptKey].name = val;
+				}
 			}
 
-			window.HCC_TOP_NAV_INITIAL = <?php echo wp_json_encode( $top_nav ); ?>;
+			/* Level 1 Subcategory Column Updates */
+			function hccToggleL1Vis(deptKey, l1Key, btn) {
+				var dept = window.HCC_CONFIG.departments[deptKey];
+				if (!dept || !dept.categories || !dept.categories[l1Key]) return;
+				var isHidden = !dept.categories[l1Key].hidden;
+				dept.categories[l1Key].hidden = isHidden;
+				btn.classList.toggle('is-active', !isHidden);
+				btn.innerText = !isHidden ? '👁️ Visible' : '🚫 Hidden';
+				var card = btn.closest('.hcc-column-card');
+				if (card) card.classList.toggle('is-hidden', isHidden);
+			}
 
-			function hccFilterCategories(keyword) {
+			function hccChangeL1Name(deptKey, l1Key, val) {
+				var dept = window.HCC_CONFIG.departments[deptKey];
+				if (dept && dept.categories && dept.categories[l1Key]) {
+					dept.categories[l1Key].name = val;
+				}
+			}
+
+			/* Level 2 Sub-group Updates */
+			function hccToggleL2Vis(deptKey, l1Key, l2Key, btn) {
+				var dept = window.HCC_CONFIG.departments[deptKey];
+				if (!dept || !dept.categories || !dept.categories[l1Key]) return;
+				var l1 = dept.categories[l1Key];
+				if (!l1.subgroups || !l1.subgroups[l2Key]) return;
+				var isHidden = !l1.subgroups[l2Key].hidden;
+				l1.subgroups[l2Key].hidden = isHidden;
+				btn.classList.toggle('is-active', !isHidden);
+				btn.innerText = !isHidden ? '✓ Show' : '✗ Hide';
+			}
+
+			function hccChangeL2Name(deptKey, l1Key, l2Key, val) {
+				var dept = window.HCC_CONFIG.departments[deptKey];
+				if (dept && dept.categories && dept.categories[l1Key]) {
+					var l1 = dept.categories[l1Key];
+					if (l1.subgroups && l1.subgroups[l2Key]) {
+						l1.subgroups[l2Key].name = val;
+					}
+				}
+			}
+
+			/* Level 3 Leaf Item Updates */
+			function hccToggleL3Vis(deptKey, l1Key, l2Key, itIdx, chk) {
+				var dept = window.HCC_CONFIG.departments[deptKey];
+				if (!dept || !dept.categories || !dept.categories[l1Key]) return;
+				var l1 = dept.categories[l1Key];
+				if (!l1.subgroups || !l1.subgroups[l2Key] || !l1.subgroups[l2Key].items) return;
+				var items = l1.subgroups[l2Key].items;
+				if (items[itIdx] !== undefined) {
+					var itemObj = items[itIdx];
+					if (typeof itemObj === 'string') {
+						itemObj = { name: itemObj, hidden: false };
+						items[itIdx] = itemObj;
+					}
+					itemObj.hidden = !chk.checked;
+					var pill = chk.closest('.hcc-item-pill');
+					if (pill) pill.classList.toggle('pill-hidden', !chk.checked);
+				}
+			}
+
+			/* Add Column */
+			function hccAddColumn(deptKey) {
+				var name = prompt('Enter new category column name for ' + deptKey + ':');
+				if (!name || !name.trim()) return;
+				name = name.trim();
+				if (!window.HCC_CONFIG.departments[deptKey].categories) {
+					window.HCC_CONFIG.departments[deptKey].categories = {};
+				}
+				window.HCC_CONFIG.departments[deptKey].categories[name] = {
+					name: name,
+					hidden: false,
+					subgroups: {}
+				};
+				hccSaveForm();
+			}
+
+			/* Add Subcategory */
+			function hccAddSubcategory(deptKey, l1Key) {
+				var name = prompt('Enter new subcategory name under ' + l1Key + ':');
+				if (!name || !name.trim()) return;
+				name = name.trim();
+				var l1 = window.HCC_CONFIG.departments[deptKey].categories[l1Key];
+				if (!l1.subgroups) l1.subgroups = {};
+				l1.subgroups[name] = {
+					name: name,
+					hidden: false,
+					items: []
+				};
+				hccSaveForm();
+			}
+
+			function hccSaveForm() {
+				document.getElementById('mega_menu_config_json').value = JSON.stringify(window.HCC_CONFIG);
+				document.getElementById('hcc_real_submit_btn').click();
+			}
+
+			function hccFilterMenu(keyword) {
 				keyword = (keyword || '').toLowerCase().trim();
-				var cards = document.querySelectorAll('.hcc-l1-card');
-				var chips = document.querySelectorAll('.hcc-chip');
-				var countEl = document.getElementById('hcc_search_match_count');
-				var matchCount = 0;
-
+				var cards = document.querySelectorAll('.hcc-column-card');
 				if (!keyword) {
 					cards.forEach(function(c) { c.style.display = ''; });
-					chips.forEach(function(ch) { ch.style.display = ''; });
-					if (countEl) countEl.innerText = '';
 					return;
 				}
-
 				cards.forEach(function(card) {
 					var text = card.innerText.toLowerCase();
 					if (text.indexOf(keyword) !== -1) {
 						card.style.display = '';
-						matchCount++;
 					} else {
 						card.style.display = 'none';
 					}
 				});
-
-				if (countEl) {
-					countEl.innerText = matchCount + ' category groups found';
-				}
 			}
 		</script>
 		<?php

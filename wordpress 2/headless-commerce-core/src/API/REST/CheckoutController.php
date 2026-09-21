@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class CheckoutController extends RestController {
 
-	public function register_routes(): void {
+	public function register_routes() {
 		register_rest_route( $this->namespace, '/checkout', array(
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
@@ -28,42 +28,52 @@ class CheckoutController extends RestController {
 		) );
 	}
 
-	public function get_checkout_data( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
+	public function get_checkout_data( $request ) {
 		if ( ! StoreMode::is_purchasing_enabled() ) {
 			return $this->error_response( 'hcc_catalog_mode', 'Checkout is disabled in catalog mode.', 403 );
 		}
 
-		$gateways = WC()->payment_gateways()->get_available_payment_gateways();
 		$available_gateways = array();
-
-		foreach ( $gateways as $id => $gateway ) {
-			$available_gateways[] = array(
-				'id'          => $id,
-				'title'       => $gateway->get_title(),
-				'description' => $gateway->get_description(),
-				'icon'        => $gateway->get_icon(),
-			);
+		if ( function_exists( 'WC' ) && WC() && WC()->payment_gateways() ) {
+			$gateways = WC()->payment_gateways()->get_available_payment_gateways();
+			if ( is_array( $gateways ) ) {
+				foreach ( $gateways as $id => $gateway ) {
+					$available_gateways[] = array(
+						'id'          => $id,
+						'title'       => method_exists( $gateway, 'get_title' ) ? $gateway->get_title() : $id,
+						'description' => method_exists( $gateway, 'get_description' ) ? $gateway->get_description() : '',
+						'icon'        => method_exists( $gateway, 'get_icon' ) ? $gateway->get_icon() : '',
+					);
+				}
+			}
 		}
+
+		$subtotal = ( function_exists( 'WC' ) && WC() && WC()->cart ) ? (float) WC()->cart->get_subtotal() : 0.0;
+		$total    = ( function_exists( 'WC' ) && WC() && WC()->cart ) ? (float) WC()->cart->get_total( 'edit' ) : 0.0;
 
 		return $this->success_response( array(
 			'paymentGateways' => $available_gateways,
-			'cartSubtotal'    => (float) WC()->cart->get_subtotal(),
-			'cartTotal'       => (float) WC()->cart->get_total( 'edit' ),
-			'currency'        => get_woocommerce_currency(),
+			'cartSubtotal'    => $subtotal,
+			'cartTotal'       => $total,
+			'currency'        => function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : 'USD',
 		) );
 	}
 
-	public function place_order( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
+	public function place_order( $request ) {
 		if ( ! StoreMode::is_purchasing_enabled() ) {
 			return $this->error_response( 'hcc_catalog_mode', 'Purchasing disabled in catalog mode.', 403 );
 		}
 
+		if ( ! function_exists( 'wc_create_order' ) || ! function_exists( 'WC' ) || ! WC() || ! WC()->cart ) {
+			return $this->error_response( 'hcc_wc_unavailable', 'WooCommerce engine unavailable.', 500 );
+		}
+
 		$params = $request->get_json_params();
 
-		$billing  = $params['billing'] ?? array();
-		$shipping = $params['shipping'] ?? $billing;
-		$payment_method = sanitize_text_field( $params['paymentMethod'] ?? 'cod' );
-		$notes    = sanitize_text_field( $params['customerNote'] ?? '' );
+		$billing  = isset( $params['billing'] ) && is_array( $params['billing'] ) ? $params['billing'] : array();
+		$shipping = isset( $params['shipping'] ) && is_array( $params['shipping'] ) ? $params['shipping'] : $billing;
+		$payment_method = sanitize_text_field( isset( $params['paymentMethod'] ) ? $params['paymentMethod'] : 'cod' );
+		$notes    = sanitize_text_field( isset( $params['customerNote'] ) ? $params['customerNote'] : '' );
 
 		if ( empty( $billing['first_name'] ) || empty( $billing['email'] ) ) {
 			return $this->error_response( 'hcc_invalid_billing', 'Billing first name and email are required.', 400 );
@@ -84,7 +94,7 @@ class CheckoutController extends RestController {
 					$cart_item['data'],
 					$cart_item['quantity'],
 					array(
-						'variation' => $cart_item['variation'] ?? array(),
+						'variation' => isset( $cart_item['variation'] ) ? $cart_item['variation'] : array(),
 						'subtotal'  => $cart_item['line_subtotal'],
 						'total'     => $cart_item['line_total'],
 					)

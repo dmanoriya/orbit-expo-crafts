@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class SEOController extends RestController {
 
-	public function register_routes(): void {
+	public function register_routes() {
 		register_rest_route( $this->namespace, '/seo', array(
 			'methods'             => \WP_REST_Server::READABLE,
 			'callback'            => array( $this, 'get_seo' ),
@@ -21,7 +21,7 @@ class SEOController extends RestController {
 		) );
 	}
 
-	public function get_seo( \WP_REST_Request $request ): \WP_REST_Response|\WP_Error {
+	public function get_seo( $request ) {
 		$id   = (int) $request->get_param( 'id' );
 		$type = sanitize_text_field( $request->get_param( 'type' ) ?? 'post' );
 

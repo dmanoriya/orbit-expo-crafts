@@ -1,0 +1,3958 @@
+{
+  "Furniture": {
+    "Living Room Furniture": {
+      "Sofas & Seating": [
+        {
+          "name": "Sofas & Couches",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Sectional Sofas",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Loveseats",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Sofa Beds & Sleeper Sofas",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Reclining Sofas",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Chesterfield Sofas",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Tuxedo Sofas",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Camelback Sofas",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Settees",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Accent Chairs",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Armchairs",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Club Chairs",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Wingback Chairs",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Lounge Chairs",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Recliners",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Rocking Chairs",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Swivel Chairs",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Barrel Chairs",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Slipper Chairs",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Chaise Lounges",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Daybeds",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Ottomans",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Poufs",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Footstools",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        },
+        {
+          "name": "Benches",
+          "facets": "material; upholstery; seating capacity; width; depth; height; cushion fill; recline; sleeper size; modularity",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; transitional; farmhouse; rustic; industrial; coastal; boho; Japandi; art deco",
+          "room": "living room; family room; lounge; den"
+        }
+      ],
+      "Living Room Tables": [
+        {
+          "name": "Coffee Tables",
+          "facets": "material; shape; width; height; storage; nesting; lift top; finish",
+          "styles": "modern; contemporary; mid-century; traditional; industrial; farmhouse; coastal; boho",
+          "room": "living room; lounge; hallway"
+        },
+        {
+          "name": "Lift-Top Coffee Tables",
+          "facets": "material; shape; width; height; storage; nesting; lift top; finish",
+          "styles": "modern; contemporary; mid-century; traditional; industrial; farmhouse; coastal; boho",
+          "room": "living room; lounge; hallway"
+        },
+        {
+          "name": "Nesting Coffee Tables",
+          "facets": "material; shape; width; height; storage; nesting; lift top; finish",
+          "styles": "modern; contemporary; mid-century; traditional; industrial; farmhouse; coastal; boho",
+          "room": "living room; lounge; hallway"
+        },
+        {
+          "name": "Drum Coffee Tables",
+          "facets": "material; shape; width; height; storage; nesting; lift top; finish",
+          "styles": "modern; contemporary; mid-century; traditional; industrial; farmhouse; coastal; boho",
+          "room": "living room; lounge; hallway"
+        },
+        {
+          "name": "Side Tables",
+          "facets": "material; shape; width; height; storage; nesting; lift top; finish",
+          "styles": "modern; contemporary; mid-century; traditional; industrial; farmhouse; coastal; boho",
+          "room": "living room; lounge; hallway"
+        },
+        {
+          "name": "End Tables",
+          "facets": "material; shape; width; height; storage; nesting; lift top; finish",
+          "styles": "modern; contemporary; mid-century; traditional; industrial; farmhouse; coastal; boho",
+          "room": "living room; lounge; hallway"
+        },
+        {
+          "name": "C Tables",
+          "facets": "material; shape; width; height; storage; nesting; lift top; finish",
+          "styles": "modern; contemporary; mid-century; traditional; industrial; farmhouse; coastal; boho",
+          "room": "living room; lounge; hallway"
+        },
+        {
+          "name": "Drink Tables",
+          "facets": "material; shape; width; height; storage; nesting; lift top; finish",
+          "styles": "modern; contemporary; mid-century; traditional; industrial; farmhouse; coastal; boho",
+          "room": "living room; lounge; hallway"
+        },
+        {
+          "name": "Console Tables",
+          "facets": "material; shape; width; height; storage; nesting; lift top; finish",
+          "styles": "modern; contemporary; mid-century; traditional; industrial; farmhouse; coastal; boho",
+          "room": "living room; lounge; hallway"
+        },
+        {
+          "name": "Sofa Tables",
+          "facets": "material; shape; width; height; storage; nesting; lift top; finish",
+          "styles": "modern; contemporary; mid-century; traditional; industrial; farmhouse; coastal; boho",
+          "room": "living room; lounge; hallway"
+        },
+        {
+          "name": "Accent Tables",
+          "facets": "material; shape; width; height; storage; nesting; lift top; finish",
+          "styles": "modern; contemporary; mid-century; traditional; industrial; farmhouse; coastal; boho",
+          "room": "living room; lounge; hallway"
+        },
+        {
+          "name": "Pedestal Tables",
+          "facets": "material; shape; width; height; storage; nesting; lift top; finish",
+          "styles": "modern; contemporary; mid-century; traditional; industrial; farmhouse; coastal; boho",
+          "room": "living room; lounge; hallway"
+        }
+      ],
+      "Media & Display Furniture": [
+        {
+          "name": "TV Stands & Media Consoles",
+          "facets": "material; TV size; width; cable management; shelves; doors; drawers; wall mount; finish",
+          "styles": "modern; contemporary; mid-century; industrial; traditional; Scandinavian",
+          "room": "living room; media room; office"
+        },
+        {
+          "name": "Entertainment Centers",
+          "facets": "material; TV size; width; cable management; shelves; doors; drawers; wall mount; finish",
+          "styles": "modern; contemporary; mid-century; industrial; traditional; Scandinavian",
+          "room": "living room; media room; office"
+        },
+        {
+          "name": "Media Cabinets",
+          "facets": "material; TV size; width; cable management; shelves; doors; drawers; wall mount; finish",
+          "styles": "modern; contemporary; mid-century; industrial; traditional; Scandinavian",
+          "room": "living room; media room; office"
+        },
+        {
+          "name": "Record Player Stands",
+          "facets": "material; TV size; width; cable management; shelves; doors; drawers; wall mount; finish",
+          "styles": "modern; contemporary; mid-century; industrial; traditional; Scandinavian",
+          "room": "living room; media room; office"
+        },
+        {
+          "name": "Display Cabinets",
+          "facets": "material; TV size; width; cable management; shelves; doors; drawers; wall mount; finish",
+          "styles": "modern; contemporary; mid-century; industrial; traditional; Scandinavian",
+          "room": "living room; media room; office"
+        },
+        {
+          "name": "Curio Cabinets",
+          "facets": "material; TV size; width; cable management; shelves; doors; drawers; wall mount; finish",
+          "styles": "modern; contemporary; mid-century; industrial; traditional; Scandinavian",
+          "room": "living room; media room; office"
+        },
+        {
+          "name": "Bookcases",
+          "facets": "material; TV size; width; cable management; shelves; doors; drawers; wall mount; finish",
+          "styles": "modern; contemporary; mid-century; industrial; traditional; Scandinavian",
+          "room": "living room; media room; office"
+        },
+        {
+          "name": "\u00c9tag\u00e8res",
+          "facets": "material; TV size; width; cable management; shelves; doors; drawers; wall mount; finish",
+          "styles": "modern; contemporary; mid-century; industrial; traditional; Scandinavian",
+          "room": "living room; media room; office"
+        },
+        {
+          "name": "Wall Units",
+          "facets": "material; TV size; width; cable management; shelves; doors; drawers; wall mount; finish",
+          "styles": "modern; contemporary; mid-century; industrial; traditional; Scandinavian",
+          "room": "living room; media room; office"
+        }
+      ]
+    },
+    "Bedroom Furniture": {
+      "Beds": [
+        {
+          "name": "Bed Frames",
+          "facets": "size; material; upholstery; headboard; storage; mattress compatibility; slat type; height",
+          "styles": "modern; contemporary; mid-century; traditional; farmhouse; coastal; Japandi; luxury",
+          "room": "bedroom; guest room"
+        },
+        {
+          "name": "Platform Beds",
+          "facets": "size; material; upholstery; headboard; storage; mattress compatibility; slat type; height",
+          "styles": "modern; contemporary; mid-century; traditional; farmhouse; coastal; Japandi; luxury",
+          "room": "bedroom; guest room"
+        },
+        {
+          "name": "Upholstered Beds",
+          "facets": "size; material; upholstery; headboard; storage; mattress compatibility; slat type; height",
+          "styles": "modern; contemporary; mid-century; traditional; farmhouse; coastal; Japandi; luxury",
+          "room": "bedroom; guest room"
+        },
+        {
+          "name": "Panel Beds",
+          "facets": "size; material; upholstery; headboard; storage; mattress compatibility; slat type; height",
+          "styles": "modern; contemporary; mid-century; traditional; farmhouse; coastal; Japandi; luxury",
+          "room": "bedroom; guest room"
+        },
+        {
+          "name": "Sleigh Beds",
+          "facets": "size; material; upholstery; headboard; storage; mattress compatibility; slat type; height",
+          "styles": "modern; contemporary; mid-century; traditional; farmhouse; coastal; Japandi; luxury",
+          "room": "bedroom; guest room"
+        },
+        {
+          "name": "Canopy Beds",
+          "facets": "size; material; upholstery; headboard; storage; mattress compatibility; slat type; height",
+          "styles": "modern; contemporary; mid-century; traditional; farmhouse; coastal; Japandi; luxury",
+          "room": "bedroom; guest room"
+        },
+        {
+          "name": "Four Poster Beds",
+          "facets": "size; material; upholstery; headboard; storage; mattress compatibility; slat type; height",
+          "styles": "modern; contemporary; mid-century; traditional; farmhouse; coastal; Japandi; luxury",
+          "room": "bedroom; guest room"
+        },
+        {
+          "name": "Storage Beds",
+          "facets": "size; material; upholstery; headboard; storage; mattress compatibility; slat type; height",
+          "styles": "modern; contemporary; mid-century; traditional; farmhouse; coastal; Japandi; luxury",
+          "room": "bedroom; guest room"
+        },
+        {
+          "name": "Divan Beds",
+          "facets": "size; material; upholstery; headboard; storage; mattress compatibility; slat type; height",
+          "styles": "modern; contemporary; mid-century; traditional; farmhouse; coastal; Japandi; luxury",
+          "room": "bedroom; guest room"
+        },
+        {
+          "name": "Murphy Beds",
+          "facets": "size; material; upholstery; headboard; storage; mattress compatibility; slat type; height",
+          "styles": "modern; contemporary; mid-century; traditional; farmhouse; coastal; Japandi; luxury",
+          "room": "bedroom; guest room"
+        },
+        {
+          "name": "Trundle Beds",
+          "facets": "size; material; upholstery; headboard; storage; mattress compatibility; slat type; height",
+          "styles": "modern; contemporary; mid-century; traditional; farmhouse; coastal; Japandi; luxury",
+          "room": "bedroom; guest room"
+        },
+        {
+          "name": "Daybeds",
+          "facets": "size; material; upholstery; headboard; storage; mattress compatibility; slat type; height",
+          "styles": "modern; contemporary; mid-century; traditional; farmhouse; coastal; Japandi; luxury",
+          "room": "bedroom; guest room"
+        },
+        {
+          "name": "Folding Beds",
+          "facets": "size; material; upholstery; headboard; storage; mattress compatibility; slat type; height",
+          "styles": "modern; contemporary; mid-century; traditional; farmhouse; coastal; Japandi; luxury",
+          "room": "bedroom; guest room"
+        }
+      ],
+      "Headboards & Bed Components": [
+        {
+          "name": "Headboards",
+          "facets": "bed size; material; mounting type; height; upholstery; finish",
+          "styles": "modern; traditional; contemporary; rustic; luxury",
+          "room": "bedroom"
+        },
+        {
+          "name": "Upholstered Headboards",
+          "facets": "bed size; material; mounting type; height; upholstery; finish",
+          "styles": "modern; traditional; contemporary; rustic; luxury",
+          "room": "bedroom"
+        },
+        {
+          "name": "Wood Headboards",
+          "facets": "bed size; material; mounting type; height; upholstery; finish",
+          "styles": "modern; traditional; contemporary; rustic; luxury",
+          "room": "bedroom"
+        },
+        {
+          "name": "Metal Headboards",
+          "facets": "bed size; material; mounting type; height; upholstery; finish",
+          "styles": "modern; traditional; contemporary; rustic; luxury",
+          "room": "bedroom"
+        },
+        {
+          "name": "Footboards",
+          "facets": "bed size; material; mounting type; height; upholstery; finish",
+          "styles": "modern; traditional; contemporary; rustic; luxury",
+          "room": "bedroom"
+        },
+        {
+          "name": "Bed Slats",
+          "facets": "bed size; material; mounting type; height; upholstery; finish",
+          "styles": "modern; traditional; contemporary; rustic; luxury",
+          "room": "bedroom"
+        },
+        {
+          "name": "Bed Bases",
+          "facets": "bed size; material; mounting type; height; upholstery; finish",
+          "styles": "modern; traditional; contemporary; rustic; luxury",
+          "room": "bedroom"
+        }
+      ],
+      "Bedroom Storage": [
+        {
+          "name": "Nightstands",
+          "facets": "material; width; drawers; doors; hanging rail; mirror; finish; assembly",
+          "styles": "modern; contemporary; traditional; Scandinavian; farmhouse; luxury",
+          "room": "bedroom; dressing room"
+        },
+        {
+          "name": "Bedside Tables",
+          "facets": "material; width; drawers; doors; hanging rail; mirror; finish; assembly",
+          "styles": "modern; contemporary; traditional; Scandinavian; farmhouse; luxury",
+          "room": "bedroom; dressing room"
+        },
+        {
+          "name": "Dressers",
+          "facets": "material; width; drawers; doors; hanging rail; mirror; finish; assembly",
+          "styles": "modern; contemporary; traditional; Scandinavian; farmhouse; luxury",
+          "room": "bedroom; dressing room"
+        },
+        {
+          "name": "Chests of Drawers",
+          "facets": "material; width; drawers; doors; hanging rail; mirror; finish; assembly",
+          "styles": "modern; contemporary; traditional; Scandinavian; farmhouse; luxury",
+          "room": "bedroom; dressing room"
+        },
+        {
+          "name": "Tallboys",
+          "facets": "material; width; drawers; doors; hanging rail; mirror; finish; assembly",
+          "styles": "modern; contemporary; traditional; Scandinavian; farmhouse; luxury",
+          "room": "bedroom; dressing room"
+        },
+        {
+          "name": "Wardrobes & Armoires",
+          "facets": "material; width; drawers; doors; hanging rail; mirror; finish; assembly",
+          "styles": "modern; contemporary; traditional; Scandinavian; farmhouse; luxury",
+          "room": "bedroom; dressing room"
+        },
+        {
+          "name": "Sliding Door Wardrobes",
+          "facets": "material; width; drawers; doors; hanging rail; mirror; finish; assembly",
+          "styles": "modern; contemporary; traditional; Scandinavian; farmhouse; luxury",
+          "room": "bedroom; dressing room"
+        },
+        {
+          "name": "Open Wardrobes",
+          "facets": "material; width; drawers; doors; hanging rail; mirror; finish; assembly",
+          "styles": "modern; contemporary; traditional; Scandinavian; farmhouse; luxury",
+          "room": "bedroom; dressing room"
+        },
+        {
+          "name": "Vanities & Dressing Tables",
+          "facets": "material; width; drawers; doors; hanging rail; mirror; finish; assembly",
+          "styles": "modern; contemporary; traditional; Scandinavian; farmhouse; luxury",
+          "room": "bedroom; dressing room"
+        },
+        {
+          "name": "Jewelry Armoires",
+          "facets": "material; width; drawers; doors; hanging rail; mirror; finish; assembly",
+          "styles": "modern; contemporary; traditional; Scandinavian; farmhouse; luxury",
+          "room": "bedroom; dressing room"
+        },
+        {
+          "name": "Bedroom Benches",
+          "facets": "material; width; drawers; doors; hanging rail; mirror; finish; assembly",
+          "styles": "modern; contemporary; traditional; Scandinavian; farmhouse; luxury",
+          "room": "bedroom; dressing room"
+        },
+        {
+          "name": "Blanket Chests",
+          "facets": "material; width; drawers; doors; hanging rail; mirror; finish; assembly",
+          "styles": "modern; contemporary; traditional; Scandinavian; farmhouse; luxury",
+          "room": "bedroom; dressing room"
+        }
+      ]
+    },
+    "Dining & Kitchen Furniture": {
+      "Dining Tables": [
+        {
+          "name": "Dining Tables",
+          "facets": "material; shape; length; width; height; seating capacity; extendable; leaf type; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial; Scandinavian; rustic",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Extendable Dining Tables",
+          "facets": "material; shape; length; width; height; seating capacity; extendable; leaf type; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial; Scandinavian; rustic",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Round Dining Tables",
+          "facets": "material; shape; length; width; height; seating capacity; extendable; leaf type; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial; Scandinavian; rustic",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Rectangular Dining Tables",
+          "facets": "material; shape; length; width; height; seating capacity; extendable; leaf type; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial; Scandinavian; rustic",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Oval Dining Tables",
+          "facets": "material; shape; length; width; height; seating capacity; extendable; leaf type; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial; Scandinavian; rustic",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Square Dining Tables",
+          "facets": "material; shape; length; width; height; seating capacity; extendable; leaf type; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial; Scandinavian; rustic",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Pedestal Dining Tables",
+          "facets": "material; shape; length; width; height; seating capacity; extendable; leaf type; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial; Scandinavian; rustic",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Trestle Dining Tables",
+          "facets": "material; shape; length; width; height; seating capacity; extendable; leaf type; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial; Scandinavian; rustic",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Drop-Leaf Dining Tables",
+          "facets": "material; shape; length; width; height; seating capacity; extendable; leaf type; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial; Scandinavian; rustic",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Counter Height Dining Tables",
+          "facets": "material; shape; length; width; height; seating capacity; extendable; leaf type; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial; Scandinavian; rustic",
+          "room": "dining room; kitchen"
+        }
+      ],
+      "Dining Seating": [
+        {
+          "name": "Dining Chairs",
+          "facets": "material; upholstery; seat height; back type; arms; swivel; stackable; weight capacity",
+          "styles": "modern; contemporary; farmhouse; industrial; traditional; coastal",
+          "room": "dining room; kitchen; bar"
+        },
+        {
+          "name": "Upholstered Dining Chairs",
+          "facets": "material; upholstery; seat height; back type; arms; swivel; stackable; weight capacity",
+          "styles": "modern; contemporary; farmhouse; industrial; traditional; coastal",
+          "room": "dining room; kitchen; bar"
+        },
+        {
+          "name": "Wood Dining Chairs",
+          "facets": "material; upholstery; seat height; back type; arms; swivel; stackable; weight capacity",
+          "styles": "modern; contemporary; farmhouse; industrial; traditional; coastal",
+          "room": "dining room; kitchen; bar"
+        },
+        {
+          "name": "Arm Dining Chairs",
+          "facets": "material; upholstery; seat height; back type; arms; swivel; stackable; weight capacity",
+          "styles": "modern; contemporary; farmhouse; industrial; traditional; coastal",
+          "room": "dining room; kitchen; bar"
+        },
+        {
+          "name": "Side Dining Chairs",
+          "facets": "material; upholstery; seat height; back type; arms; swivel; stackable; weight capacity",
+          "styles": "modern; contemporary; farmhouse; industrial; traditional; coastal",
+          "room": "dining room; kitchen; bar"
+        },
+        {
+          "name": "Dining Benches",
+          "facets": "material; upholstery; seat height; back type; arms; swivel; stackable; weight capacity",
+          "styles": "modern; contemporary; farmhouse; industrial; traditional; coastal",
+          "room": "dining room; kitchen; bar"
+        },
+        {
+          "name": "Bar Stools",
+          "facets": "material; upholstery; seat height; back type; arms; swivel; stackable; weight capacity",
+          "styles": "modern; contemporary; farmhouse; industrial; traditional; coastal",
+          "room": "dining room; kitchen; bar"
+        },
+        {
+          "name": "Counter Stools",
+          "facets": "material; upholstery; seat height; back type; arms; swivel; stackable; weight capacity",
+          "styles": "modern; contemporary; farmhouse; industrial; traditional; coastal",
+          "room": "dining room; kitchen; bar"
+        },
+        {
+          "name": "Swivel Bar Stools",
+          "facets": "material; upholstery; seat height; back type; arms; swivel; stackable; weight capacity",
+          "styles": "modern; contemporary; farmhouse; industrial; traditional; coastal",
+          "room": "dining room; kitchen; bar"
+        },
+        {
+          "name": "Backless Stools",
+          "facets": "material; upholstery; seat height; back type; arms; swivel; stackable; weight capacity",
+          "styles": "modern; contemporary; farmhouse; industrial; traditional; coastal",
+          "room": "dining room; kitchen; bar"
+        }
+      ],
+      "Dining Storage": [
+        {
+          "name": "Sideboards & Buffets",
+          "facets": "material; width; drawers; doors; shelves; wine storage; wheels; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Credenzas",
+          "facets": "material; width; drawers; doors; shelves; wine storage; wheels; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "China Cabinets",
+          "facets": "material; width; drawers; doors; shelves; wine storage; wheels; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Hutches",
+          "facets": "material; width; drawers; doors; shelves; wine storage; wheels; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Bar Cabinets",
+          "facets": "material; width; drawers; doors; shelves; wine storage; wheels; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Wine Cabinets",
+          "facets": "material; width; drawers; doors; shelves; wine storage; wheels; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Kitchen Carts & Islands",
+          "facets": "material; width; drawers; doors; shelves; wine storage; wheels; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Pantry Cabinets",
+          "facets": "material; width; drawers; doors; shelves; wine storage; wheels; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Baker's Racks",
+          "facets": "material; width; drawers; doors; shelves; wine storage; wheels; finish",
+          "styles": "modern; contemporary; farmhouse; traditional; industrial",
+          "room": "dining room; kitchen"
+        }
+      ]
+    },
+    "Home Office Furniture": {
+      "Desks": [
+        {
+          "name": "Writing Desks",
+          "facets": "material; width; depth; height; height adjustable; storage; cable management; keyboard tray",
+          "styles": "modern; contemporary; industrial; Scandinavian; mid-century; traditional",
+          "room": "home office; study; bedroom"
+        },
+        {
+          "name": "Computer Desks",
+          "facets": "material; width; depth; height; height adjustable; storage; cable management; keyboard tray",
+          "styles": "modern; contemporary; industrial; Scandinavian; mid-century; traditional",
+          "room": "home office; study; bedroom"
+        },
+        {
+          "name": "Executive Desks",
+          "facets": "material; width; depth; height; height adjustable; storage; cable management; keyboard tray",
+          "styles": "modern; contemporary; industrial; Scandinavian; mid-century; traditional",
+          "room": "home office; study; bedroom"
+        },
+        {
+          "name": "Standing Desks",
+          "facets": "material; width; depth; height; height adjustable; storage; cable management; keyboard tray",
+          "styles": "modern; contemporary; industrial; Scandinavian; mid-century; traditional",
+          "room": "home office; study; bedroom"
+        },
+        {
+          "name": "Height Adjustable Desks",
+          "facets": "material; width; depth; height; height adjustable; storage; cable management; keyboard tray",
+          "styles": "modern; contemporary; industrial; Scandinavian; mid-century; traditional",
+          "room": "home office; study; bedroom"
+        },
+        {
+          "name": "L-Shaped Desks",
+          "facets": "material; width; depth; height; height adjustable; storage; cable management; keyboard tray",
+          "styles": "modern; contemporary; industrial; Scandinavian; mid-century; traditional",
+          "room": "home office; study; bedroom"
+        },
+        {
+          "name": "Corner Desks",
+          "facets": "material; width; depth; height; height adjustable; storage; cable management; keyboard tray",
+          "styles": "modern; contemporary; industrial; Scandinavian; mid-century; traditional",
+          "room": "home office; study; bedroom"
+        },
+        {
+          "name": "Secretary Desks",
+          "facets": "material; width; depth; height; height adjustable; storage; cable management; keyboard tray",
+          "styles": "modern; contemporary; industrial; Scandinavian; mid-century; traditional",
+          "room": "home office; study; bedroom"
+        },
+        {
+          "name": "Wall-Mounted Desks",
+          "facets": "material; width; depth; height; height adjustable; storage; cable management; keyboard tray",
+          "styles": "modern; contemporary; industrial; Scandinavian; mid-century; traditional",
+          "room": "home office; study; bedroom"
+        },
+        {
+          "name": "Floating Desks",
+          "facets": "material; width; depth; height; height adjustable; storage; cable management; keyboard tray",
+          "styles": "modern; contemporary; industrial; Scandinavian; mid-century; traditional",
+          "room": "home office; study; bedroom"
+        },
+        {
+          "name": "Lap Desks",
+          "facets": "material; width; depth; height; height adjustable; storage; cable management; keyboard tray",
+          "styles": "modern; contemporary; industrial; Scandinavian; mid-century; traditional",
+          "room": "home office; study; bedroom"
+        },
+        {
+          "name": "Kids Desks",
+          "facets": "material; width; depth; height; height adjustable; storage; cable management; keyboard tray",
+          "styles": "modern; contemporary; industrial; Scandinavian; mid-century; traditional",
+          "room": "home office; study; bedroom"
+        }
+      ],
+      "Office Seating & Storage": [
+        {
+          "name": "Office Chairs",
+          "facets": "material; ergonomic support; seat height; armrests; lumbar support; tilt; wheels; drawers; lockable",
+          "styles": "modern; contemporary; ergonomic; industrial",
+          "room": "home office; study"
+        },
+        {
+          "name": "Ergonomic Office Chairs",
+          "facets": "material; ergonomic support; seat height; armrests; lumbar support; tilt; wheels; drawers; lockable",
+          "styles": "modern; contemporary; ergonomic; industrial",
+          "room": "home office; study"
+        },
+        {
+          "name": "Executive Office Chairs",
+          "facets": "material; ergonomic support; seat height; armrests; lumbar support; tilt; wheels; drawers; lockable",
+          "styles": "modern; contemporary; ergonomic; industrial",
+          "room": "home office; study"
+        },
+        {
+          "name": "Task Chairs",
+          "facets": "material; ergonomic support; seat height; armrests; lumbar support; tilt; wheels; drawers; lockable",
+          "styles": "modern; contemporary; ergonomic; industrial",
+          "room": "home office; study"
+        },
+        {
+          "name": "Drafting Chairs",
+          "facets": "material; ergonomic support; seat height; armrests; lumbar support; tilt; wheels; drawers; lockable",
+          "styles": "modern; contemporary; ergonomic; industrial",
+          "room": "home office; study"
+        },
+        {
+          "name": "Office Stools",
+          "facets": "material; ergonomic support; seat height; armrests; lumbar support; tilt; wheels; drawers; lockable",
+          "styles": "modern; contemporary; ergonomic; industrial",
+          "room": "home office; study"
+        },
+        {
+          "name": "File Cabinets",
+          "facets": "material; ergonomic support; seat height; armrests; lumbar support; tilt; wheels; drawers; lockable",
+          "styles": "modern; contemporary; ergonomic; industrial",
+          "room": "home office; study"
+        },
+        {
+          "name": "Mobile Pedestals",
+          "facets": "material; ergonomic support; seat height; armrests; lumbar support; tilt; wheels; drawers; lockable",
+          "styles": "modern; contemporary; ergonomic; industrial",
+          "room": "home office; study"
+        },
+        {
+          "name": "Office Bookcases",
+          "facets": "material; ergonomic support; seat height; armrests; lumbar support; tilt; wheels; drawers; lockable",
+          "styles": "modern; contemporary; ergonomic; industrial",
+          "room": "home office; study"
+        },
+        {
+          "name": "Desk Hutches",
+          "facets": "material; ergonomic support; seat height; armrests; lumbar support; tilt; wheels; drawers; lockable",
+          "styles": "modern; contemporary; ergonomic; industrial",
+          "room": "home office; study"
+        },
+        {
+          "name": "Printer Stands",
+          "facets": "material; ergonomic support; seat height; armrests; lumbar support; tilt; wheels; drawers; lockable",
+          "styles": "modern; contemporary; ergonomic; industrial",
+          "room": "home office; study"
+        }
+      ]
+    },
+    "Entryway & Hallway Furniture": {
+      "Entryway Furniture": [
+        {
+          "name": "Entryway Benches",
+          "facets": "material; width; hooks; shoe capacity; storage; wall mount; finish",
+          "styles": "modern; farmhouse; traditional; industrial; Scandinavian",
+          "room": "entryway; hallway; foyer"
+        },
+        {
+          "name": "Hall Trees",
+          "facets": "material; width; hooks; shoe capacity; storage; wall mount; finish",
+          "styles": "modern; farmhouse; traditional; industrial; Scandinavian",
+          "room": "entryway; hallway; foyer"
+        },
+        {
+          "name": "Coat Racks",
+          "facets": "material; width; hooks; shoe capacity; storage; wall mount; finish",
+          "styles": "modern; farmhouse; traditional; industrial; Scandinavian",
+          "room": "entryway; hallway; foyer"
+        },
+        {
+          "name": "Shoe Cabinets",
+          "facets": "material; width; hooks; shoe capacity; storage; wall mount; finish",
+          "styles": "modern; farmhouse; traditional; industrial; Scandinavian",
+          "room": "entryway; hallway; foyer"
+        },
+        {
+          "name": "Shoe Benches",
+          "facets": "material; width; hooks; shoe capacity; storage; wall mount; finish",
+          "styles": "modern; farmhouse; traditional; industrial; Scandinavian",
+          "room": "entryway; hallway; foyer"
+        },
+        {
+          "name": "Umbrella Stands",
+          "facets": "material; width; hooks; shoe capacity; storage; wall mount; finish",
+          "styles": "modern; farmhouse; traditional; industrial; Scandinavian",
+          "room": "entryway; hallway; foyer"
+        },
+        {
+          "name": "Entryway Consoles",
+          "facets": "material; width; hooks; shoe capacity; storage; wall mount; finish",
+          "styles": "modern; farmhouse; traditional; industrial; Scandinavian",
+          "room": "entryway; hallway; foyer"
+        },
+        {
+          "name": "Wall-Mounted Entryway Shelves",
+          "facets": "material; width; hooks; shoe capacity; storage; wall mount; finish",
+          "styles": "modern; farmhouse; traditional; industrial; Scandinavian",
+          "room": "entryway; hallway; foyer"
+        },
+        {
+          "name": "Keys & Mail Organizers",
+          "facets": "material; width; hooks; shoe capacity; storage; wall mount; finish",
+          "styles": "modern; farmhouse; traditional; industrial; Scandinavian",
+          "room": "entryway; hallway; foyer"
+        }
+      ]
+    },
+    "Accent & Utility Furniture": {
+      "Accent Furniture": [
+        {
+          "name": "Accent Cabinets",
+          "facets": "material; size; shelves; wheels; foldable; finish",
+          "styles": "modern; traditional; boho; global; industrial",
+          "room": "living room; hallway; dining room; bedroom"
+        },
+        {
+          "name": "Pedestal Stands",
+          "facets": "material; size; shelves; wheels; foldable; finish",
+          "styles": "modern; traditional; boho; global; industrial",
+          "room": "living room; hallway; dining room; bedroom"
+        },
+        {
+          "name": "Plant Stands",
+          "facets": "material; size; shelves; wheels; foldable; finish",
+          "styles": "modern; traditional; boho; global; industrial",
+          "room": "living room; hallway; dining room; bedroom"
+        },
+        {
+          "name": "Magazine Racks",
+          "facets": "material; size; shelves; wheels; foldable; finish",
+          "styles": "modern; traditional; boho; global; industrial",
+          "room": "living room; hallway; dining room; bedroom"
+        },
+        {
+          "name": "Room Dividers",
+          "facets": "material; size; shelves; wheels; foldable; finish",
+          "styles": "modern; traditional; boho; global; industrial",
+          "room": "living room; hallway; dining room; bedroom"
+        },
+        {
+          "name": "Folding Screens",
+          "facets": "material; size; shelves; wheels; foldable; finish",
+          "styles": "modern; traditional; boho; global; industrial",
+          "room": "living room; hallway; dining room; bedroom"
+        },
+        {
+          "name": "Serving Carts",
+          "facets": "material; size; shelves; wheels; foldable; finish",
+          "styles": "modern; traditional; boho; global; industrial",
+          "room": "living room; hallway; dining room; bedroom"
+        },
+        {
+          "name": "Bar Carts",
+          "facets": "material; size; shelves; wheels; foldable; finish",
+          "styles": "modern; traditional; boho; global; industrial",
+          "room": "living room; hallway; dining room; bedroom"
+        },
+        {
+          "name": "Telephone Tables",
+          "facets": "material; size; shelves; wheels; foldable; finish",
+          "styles": "modern; traditional; boho; global; industrial",
+          "room": "living room; hallway; dining room; bedroom"
+        },
+        {
+          "name": "Nest of Tables",
+          "facets": "material; size; shelves; wheels; foldable; finish",
+          "styles": "modern; traditional; boho; global; industrial",
+          "room": "living room; hallway; dining room; bedroom"
+        }
+      ]
+    },
+    "Outdoor Furniture": {
+      "Outdoor Seating": [
+        {
+          "name": "Outdoor Sofas",
+          "facets": "material; weather resistance; cushion fabric; seating capacity; stackable; foldable; UV resistance",
+          "styles": "modern; coastal; tropical; rustic; contemporary",
+          "room": "patio; balcony; garden; terrace; poolside"
+        },
+        {
+          "name": "Outdoor Sectionals",
+          "facets": "material; weather resistance; cushion fabric; seating capacity; stackable; foldable; UV resistance",
+          "styles": "modern; coastal; tropical; rustic; contemporary",
+          "room": "patio; balcony; garden; terrace; poolside"
+        },
+        {
+          "name": "Patio Chairs",
+          "facets": "material; weather resistance; cushion fabric; seating capacity; stackable; foldable; UV resistance",
+          "styles": "modern; coastal; tropical; rustic; contemporary",
+          "room": "patio; balcony; garden; terrace; poolside"
+        },
+        {
+          "name": "Outdoor Lounge Chairs",
+          "facets": "material; weather resistance; cushion fabric; seating capacity; stackable; foldable; UV resistance",
+          "styles": "modern; coastal; tropical; rustic; contemporary",
+          "room": "patio; balcony; garden; terrace; poolside"
+        },
+        {
+          "name": "Adirondack Chairs",
+          "facets": "material; weather resistance; cushion fabric; seating capacity; stackable; foldable; UV resistance",
+          "styles": "modern; coastal; tropical; rustic; contemporary",
+          "room": "patio; balcony; garden; terrace; poolside"
+        },
+        {
+          "name": "Outdoor Rocking Chairs",
+          "facets": "material; weather resistance; cushion fabric; seating capacity; stackable; foldable; UV resistance",
+          "styles": "modern; coastal; tropical; rustic; contemporary",
+          "room": "patio; balcony; garden; terrace; poolside"
+        },
+        {
+          "name": "Outdoor Recliners",
+          "facets": "material; weather resistance; cushion fabric; seating capacity; stackable; foldable; UV resistance",
+          "styles": "modern; coastal; tropical; rustic; contemporary",
+          "room": "patio; balcony; garden; terrace; poolside"
+        },
+        {
+          "name": "Chaise Lounges",
+          "facets": "material; weather resistance; cushion fabric; seating capacity; stackable; foldable; UV resistance",
+          "styles": "modern; coastal; tropical; rustic; contemporary",
+          "room": "patio; balcony; garden; terrace; poolside"
+        },
+        {
+          "name": "Hammock Chairs",
+          "facets": "material; weather resistance; cushion fabric; seating capacity; stackable; foldable; UV resistance",
+          "styles": "modern; coastal; tropical; rustic; contemporary",
+          "room": "patio; balcony; garden; terrace; poolside"
+        },
+        {
+          "name": "Porch Swings",
+          "facets": "material; weather resistance; cushion fabric; seating capacity; stackable; foldable; UV resistance",
+          "styles": "modern; coastal; tropical; rustic; contemporary",
+          "room": "patio; balcony; garden; terrace; poolside"
+        },
+        {
+          "name": "Outdoor Benches",
+          "facets": "material; weather resistance; cushion fabric; seating capacity; stackable; foldable; UV resistance",
+          "styles": "modern; coastal; tropical; rustic; contemporary",
+          "room": "patio; balcony; garden; terrace; poolside"
+        },
+        {
+          "name": "Outdoor Ottomans",
+          "facets": "material; weather resistance; cushion fabric; seating capacity; stackable; foldable; UV resistance",
+          "styles": "modern; coastal; tropical; rustic; contemporary",
+          "room": "patio; balcony; garden; terrace; poolside"
+        },
+        {
+          "name": "Outdoor Poufs",
+          "facets": "material; weather resistance; cushion fabric; seating capacity; stackable; foldable; UV resistance",
+          "styles": "modern; coastal; tropical; rustic; contemporary",
+          "room": "patio; balcony; garden; terrace; poolside"
+        }
+      ],
+      "Outdoor Tables & Dining": [
+        {
+          "name": "Outdoor Dining Tables",
+          "facets": "material; shape; seating capacity; umbrella hole; weather resistance; extendable; height",
+          "styles": "modern; coastal; rustic; contemporary",
+          "room": "patio; balcony; garden; poolside"
+        },
+        {
+          "name": "Outdoor Dining Sets",
+          "facets": "material; shape; seating capacity; umbrella hole; weather resistance; extendable; height",
+          "styles": "modern; coastal; rustic; contemporary",
+          "room": "patio; balcony; garden; poolside"
+        },
+        {
+          "name": "Outdoor Coffee Tables",
+          "facets": "material; shape; seating capacity; umbrella hole; weather resistance; extendable; height",
+          "styles": "modern; coastal; rustic; contemporary",
+          "room": "patio; balcony; garden; poolside"
+        },
+        {
+          "name": "Outdoor Side Tables",
+          "facets": "material; shape; seating capacity; umbrella hole; weather resistance; extendable; height",
+          "styles": "modern; coastal; rustic; contemporary",
+          "room": "patio; balcony; garden; poolside"
+        },
+        {
+          "name": "Outdoor Bar Tables",
+          "facets": "material; shape; seating capacity; umbrella hole; weather resistance; extendable; height",
+          "styles": "modern; coastal; rustic; contemporary",
+          "room": "patio; balcony; garden; poolside"
+        },
+        {
+          "name": "Outdoor Bistro Tables",
+          "facets": "material; shape; seating capacity; umbrella hole; weather resistance; extendable; height",
+          "styles": "modern; coastal; rustic; contemporary",
+          "room": "patio; balcony; garden; poolside"
+        },
+        {
+          "name": "Picnic Tables",
+          "facets": "material; shape; seating capacity; umbrella hole; weather resistance; extendable; height",
+          "styles": "modern; coastal; rustic; contemporary",
+          "room": "patio; balcony; garden; poolside"
+        },
+        {
+          "name": "Fire Pit Tables",
+          "facets": "material; shape; seating capacity; umbrella hole; weather resistance; extendable; height",
+          "styles": "modern; coastal; rustic; contemporary",
+          "room": "patio; balcony; garden; poolside"
+        }
+      ]
+    }
+  },
+  "Home Decor": {
+    "Decorative Accessories": {
+      "Decorative Objects": [
+        {
+          "name": "Decorative Objects",
+          "facets": "material; theme; size; color; finish; handmade; indoor/outdoor",
+          "styles": "modern; contemporary; traditional; global; boho; luxury; art deco",
+          "room": "living room; bedroom; office; entryway"
+        },
+        {
+          "name": "Sculptures & Figurines",
+          "facets": "material; theme; size; color; finish; handmade; indoor/outdoor",
+          "styles": "modern; contemporary; traditional; global; boho; luxury; art deco",
+          "room": "living room; bedroom; office; entryway"
+        },
+        {
+          "name": "Showpieces",
+          "facets": "material; theme; size; color; finish; handmade; indoor/outdoor",
+          "styles": "modern; contemporary; traditional; global; boho; luxury; art deco",
+          "room": "living room; bedroom; office; entryway"
+        },
+        {
+          "name": "Busts",
+          "facets": "material; theme; size; color; finish; handmade; indoor/outdoor",
+          "styles": "modern; contemporary; traditional; global; boho; luxury; art deco",
+          "room": "living room; bedroom; office; entryway"
+        },
+        {
+          "name": "Decorative Boxes",
+          "facets": "material; theme; size; color; finish; handmade; indoor/outdoor",
+          "styles": "modern; contemporary; traditional; global; boho; luxury; art deco",
+          "room": "living room; bedroom; office; entryway"
+        },
+        {
+          "name": "Decorative Trays",
+          "facets": "material; theme; size; color; finish; handmade; indoor/outdoor",
+          "styles": "modern; contemporary; traditional; global; boho; luxury; art deco",
+          "room": "living room; bedroom; office; entryway"
+        },
+        {
+          "name": "Decorative Bowls",
+          "facets": "material; theme; size; color; finish; handmade; indoor/outdoor",
+          "styles": "modern; contemporary; traditional; global; boho; luxury; art deco",
+          "room": "living room; bedroom; office; entryway"
+        },
+        {
+          "name": "Orbs & Spheres",
+          "facets": "material; theme; size; color; finish; handmade; indoor/outdoor",
+          "styles": "modern; contemporary; traditional; global; boho; luxury; art deco",
+          "room": "living room; bedroom; office; entryway"
+        },
+        {
+          "name": "Bookends",
+          "facets": "material; theme; size; color; finish; handmade; indoor/outdoor",
+          "styles": "modern; contemporary; traditional; global; boho; luxury; art deco",
+          "room": "living room; bedroom; office; entryway"
+        },
+        {
+          "name": "Hourglasses",
+          "facets": "material; theme; size; color; finish; handmade; indoor/outdoor",
+          "styles": "modern; contemporary; traditional; global; boho; luxury; art deco",
+          "room": "living room; bedroom; office; entryway"
+        },
+        {
+          "name": "Sand Timers",
+          "facets": "material; theme; size; color; finish; handmade; indoor/outdoor",
+          "styles": "modern; contemporary; traditional; global; boho; luxury; art deco",
+          "room": "living room; bedroom; office; entryway"
+        },
+        {
+          "name": "Decorative Ladders",
+          "facets": "material; theme; size; color; finish; handmade; indoor/outdoor",
+          "styles": "modern; contemporary; traditional; global; boho; luxury; art deco",
+          "room": "living room; bedroom; office; entryway"
+        },
+        {
+          "name": "Decorative Screens",
+          "facets": "material; theme; size; color; finish; handmade; indoor/outdoor",
+          "styles": "modern; contemporary; traditional; global; boho; luxury; art deco",
+          "room": "living room; bedroom; office; entryway"
+        },
+        {
+          "name": "Collectibles",
+          "facets": "material; theme; size; color; finish; handmade; indoor/outdoor",
+          "styles": "modern; contemporary; traditional; global; boho; luxury; art deco",
+          "room": "living room; bedroom; office; entryway"
+        }
+      ]
+    },
+    "Vases & Vessels": {
+      "Vases": [
+        {
+          "name": "Flower Vases",
+          "facets": "material; height; opening diameter; shape; color; finish; watertight",
+          "styles": "modern; traditional; rustic; global; Mediterranean; Japandi",
+          "room": "living room; dining room; entryway"
+        },
+        {
+          "name": "Bud Vases",
+          "facets": "material; height; opening diameter; shape; color; finish; watertight",
+          "styles": "modern; traditional; rustic; global; Mediterranean; Japandi",
+          "room": "living room; dining room; entryway"
+        },
+        {
+          "name": "Floor Vases",
+          "facets": "material; height; opening diameter; shape; color; finish; watertight",
+          "styles": "modern; traditional; rustic; global; Mediterranean; Japandi",
+          "room": "living room; dining room; entryway"
+        },
+        {
+          "name": "Ceramic Vases",
+          "facets": "material; height; opening diameter; shape; color; finish; watertight",
+          "styles": "modern; traditional; rustic; global; Mediterranean; Japandi",
+          "room": "living room; dining room; entryway"
+        },
+        {
+          "name": "Glass Vases",
+          "facets": "material; height; opening diameter; shape; color; finish; watertight",
+          "styles": "modern; traditional; rustic; global; Mediterranean; Japandi",
+          "room": "living room; dining room; entryway"
+        },
+        {
+          "name": "Metal Vases",
+          "facets": "material; height; opening diameter; shape; color; finish; watertight",
+          "styles": "modern; traditional; rustic; global; Mediterranean; Japandi",
+          "room": "living room; dining room; entryway"
+        },
+        {
+          "name": "Wood Vases",
+          "facets": "material; height; opening diameter; shape; color; finish; watertight",
+          "styles": "modern; traditional; rustic; global; Mediterranean; Japandi",
+          "room": "living room; dining room; entryway"
+        },
+        {
+          "name": "Terracotta Vases",
+          "facets": "material; height; opening diameter; shape; color; finish; watertight",
+          "styles": "modern; traditional; rustic; global; Mediterranean; Japandi",
+          "room": "living room; dining room; entryway"
+        },
+        {
+          "name": "Decorative Jars",
+          "facets": "material; height; opening diameter; shape; color; finish; watertight",
+          "styles": "modern; traditional; rustic; global; Mediterranean; Japandi",
+          "room": "living room; dining room; entryway"
+        },
+        {
+          "name": "Ginger Jars",
+          "facets": "material; height; opening diameter; shape; color; finish; watertight",
+          "styles": "modern; traditional; rustic; global; Mediterranean; Japandi",
+          "room": "living room; dining room; entryway"
+        },
+        {
+          "name": "Urns",
+          "facets": "material; height; opening diameter; shape; color; finish; watertight",
+          "styles": "modern; traditional; rustic; global; Mediterranean; Japandi",
+          "room": "living room; dining room; entryway"
+        }
+      ]
+    },
+    "Candle Decor": {
+      "Candle Holders": [
+        {
+          "name": "Candle Holders",
+          "facets": "material; candle type; height; indoor/outdoor; finish; set size",
+          "styles": "modern; traditional; rustic; Moroccan; industrial",
+          "room": "living room; dining room; patio"
+        },
+        {
+          "name": "Candlesticks",
+          "facets": "material; candle type; height; indoor/outdoor; finish; set size",
+          "styles": "modern; traditional; rustic; Moroccan; industrial",
+          "room": "living room; dining room; patio"
+        },
+        {
+          "name": "Pillar Candle Holders",
+          "facets": "material; candle type; height; indoor/outdoor; finish; set size",
+          "styles": "modern; traditional; rustic; Moroccan; industrial",
+          "room": "living room; dining room; patio"
+        },
+        {
+          "name": "Tealight Holders",
+          "facets": "material; candle type; height; indoor/outdoor; finish; set size",
+          "styles": "modern; traditional; rustic; Moroccan; industrial",
+          "room": "living room; dining room; patio"
+        },
+        {
+          "name": "Votive Holders",
+          "facets": "material; candle type; height; indoor/outdoor; finish; set size",
+          "styles": "modern; traditional; rustic; Moroccan; industrial",
+          "room": "living room; dining room; patio"
+        },
+        {
+          "name": "Lanterns",
+          "facets": "material; candle type; height; indoor/outdoor; finish; set size",
+          "styles": "modern; traditional; rustic; Moroccan; industrial",
+          "room": "living room; dining room; patio"
+        },
+        {
+          "name": "Hurricanes",
+          "facets": "material; candle type; height; indoor/outdoor; finish; set size",
+          "styles": "modern; traditional; rustic; Moroccan; industrial",
+          "room": "living room; dining room; patio"
+        },
+        {
+          "name": "Candelabras",
+          "facets": "material; candle type; height; indoor/outdoor; finish; set size",
+          "styles": "modern; traditional; rustic; Moroccan; industrial",
+          "room": "living room; dining room; patio"
+        },
+        {
+          "name": "Wall Candle Holders",
+          "facets": "material; candle type; height; indoor/outdoor; finish; set size",
+          "styles": "modern; traditional; rustic; Moroccan; industrial",
+          "room": "living room; dining room; patio"
+        }
+      ]
+    },
+    "Clocks": {
+      "Decorative Clocks": [
+        {
+          "name": "Wall Clocks",
+          "facets": "size; mechanism; material; display; silent sweep; battery type",
+          "styles": "modern; traditional; vintage; industrial; minimalist",
+          "room": "living room; bedroom; office; kitchen"
+        },
+        {
+          "name": "Table Clocks",
+          "facets": "size; mechanism; material; display; silent sweep; battery type",
+          "styles": "modern; traditional; vintage; industrial; minimalist",
+          "room": "living room; bedroom; office; kitchen"
+        },
+        {
+          "name": "Mantel Clocks",
+          "facets": "size; mechanism; material; display; silent sweep; battery type",
+          "styles": "modern; traditional; vintage; industrial; minimalist",
+          "room": "living room; bedroom; office; kitchen"
+        },
+        {
+          "name": "Alarm Clocks",
+          "facets": "size; mechanism; material; display; silent sweep; battery type",
+          "styles": "modern; traditional; vintage; industrial; minimalist",
+          "room": "living room; bedroom; office; kitchen"
+        },
+        {
+          "name": "Grandfather Clocks",
+          "facets": "size; mechanism; material; display; silent sweep; battery type",
+          "styles": "modern; traditional; vintage; industrial; minimalist",
+          "room": "living room; bedroom; office; kitchen"
+        },
+        {
+          "name": "Digital Clocks",
+          "facets": "size; mechanism; material; display; silent sweep; battery type",
+          "styles": "modern; traditional; vintage; industrial; minimalist",
+          "room": "living room; bedroom; office; kitchen"
+        }
+      ]
+    },
+    "Frames & Display": {
+      "Photo & Display": [
+        {
+          "name": "Photo Frames",
+          "facets": "frame size; material; orientation; wall/tabletop; number of photos; finish",
+          "styles": "modern; traditional; rustic; luxury",
+          "room": "living room; bedroom; office"
+        },
+        {
+          "name": "Picture Frames",
+          "facets": "frame size; material; orientation; wall/tabletop; number of photos; finish",
+          "styles": "modern; traditional; rustic; luxury",
+          "room": "living room; bedroom; office"
+        },
+        {
+          "name": "Collage Frames",
+          "facets": "frame size; material; orientation; wall/tabletop; number of photos; finish",
+          "styles": "modern; traditional; rustic; luxury",
+          "room": "living room; bedroom; office"
+        },
+        {
+          "name": "Shadow Boxes",
+          "facets": "frame size; material; orientation; wall/tabletop; number of photos; finish",
+          "styles": "modern; traditional; rustic; luxury",
+          "room": "living room; bedroom; office"
+        },
+        {
+          "name": "Display Domes",
+          "facets": "frame size; material; orientation; wall/tabletop; number of photos; finish",
+          "styles": "modern; traditional; rustic; luxury",
+          "room": "living room; bedroom; office"
+        },
+        {
+          "name": "Plate Stands",
+          "facets": "frame size; material; orientation; wall/tabletop; number of photos; finish",
+          "styles": "modern; traditional; rustic; luxury",
+          "room": "living room; bedroom; office"
+        },
+        {
+          "name": "Easels",
+          "facets": "frame size; material; orientation; wall/tabletop; number of photos; finish",
+          "styles": "modern; traditional; rustic; luxury",
+          "room": "living room; bedroom; office"
+        },
+        {
+          "name": "Memo Boards",
+          "facets": "frame size; material; orientation; wall/tabletop; number of photos; finish",
+          "styles": "modern; traditional; rustic; luxury",
+          "room": "living room; bedroom; office"
+        }
+      ]
+    },
+    "Botanicals": {
+      "Artificial Plants & Flowers": [
+        {
+          "name": "Faux Plants",
+          "facets": "plant type; height; pot included; material; indoor/outdoor; UV resistant",
+          "styles": "modern; botanical; farmhouse; boho",
+          "room": "living room; bedroom; entryway; patio"
+        },
+        {
+          "name": "Artificial Flowers",
+          "facets": "plant type; height; pot included; material; indoor/outdoor; UV resistant",
+          "styles": "modern; botanical; farmhouse; boho",
+          "room": "living room; bedroom; entryway; patio"
+        },
+        {
+          "name": "Artificial Trees",
+          "facets": "plant type; height; pot included; material; indoor/outdoor; UV resistant",
+          "styles": "modern; botanical; farmhouse; boho",
+          "room": "living room; bedroom; entryway; patio"
+        },
+        {
+          "name": "Dried Flowers",
+          "facets": "plant type; height; pot included; material; indoor/outdoor; UV resistant",
+          "styles": "modern; botanical; farmhouse; boho",
+          "room": "living room; bedroom; entryway; patio"
+        },
+        {
+          "name": "Dried Grasses",
+          "facets": "plant type; height; pot included; material; indoor/outdoor; UV resistant",
+          "styles": "modern; botanical; farmhouse; boho",
+          "room": "living room; bedroom; entryway; patio"
+        },
+        {
+          "name": "Wreaths",
+          "facets": "plant type; height; pot included; material; indoor/outdoor; UV resistant",
+          "styles": "modern; botanical; farmhouse; boho",
+          "room": "living room; bedroom; entryway; patio"
+        },
+        {
+          "name": "Garlands",
+          "facets": "plant type; height; pot included; material; indoor/outdoor; UV resistant",
+          "styles": "modern; botanical; farmhouse; boho",
+          "room": "living room; bedroom; entryway; patio"
+        },
+        {
+          "name": "Floral Stems",
+          "facets": "plant type; height; pot included; material; indoor/outdoor; UV resistant",
+          "styles": "modern; botanical; farmhouse; boho",
+          "room": "living room; bedroom; entryway; patio"
+        }
+      ]
+    },
+    "Religious & Spiritual Decor": {
+      "Spiritual Decor": [
+        {
+          "name": "Idols & Statues",
+          "facets": "material; deity/theme; size; finish; handmade",
+          "styles": "traditional; spiritual; Indian; global",
+          "room": "puja room; meditation room; living room"
+        },
+        {
+          "name": "Puja Accessories",
+          "facets": "material; deity/theme; size; finish; handmade",
+          "styles": "traditional; spiritual; Indian; global",
+          "room": "puja room; meditation room; living room"
+        },
+        {
+          "name": "Incense Holders",
+          "facets": "material; deity/theme; size; finish; handmade",
+          "styles": "traditional; spiritual; Indian; global",
+          "room": "puja room; meditation room; living room"
+        },
+        {
+          "name": "Prayer Beads Display",
+          "facets": "material; deity/theme; size; finish; handmade",
+          "styles": "traditional; spiritual; Indian; global",
+          "room": "puja room; meditation room; living room"
+        },
+        {
+          "name": "Meditation Altars",
+          "facets": "material; deity/theme; size; finish; handmade",
+          "styles": "traditional; spiritual; Indian; global",
+          "room": "puja room; meditation room; living room"
+        },
+        {
+          "name": "Spiritual Wall Decor",
+          "facets": "material; deity/theme; size; finish; handmade",
+          "styles": "traditional; spiritual; Indian; global",
+          "room": "puja room; meditation room; living room"
+        },
+        {
+          "name": "Feng Shui Decor",
+          "facets": "material; deity/theme; size; finish; handmade",
+          "styles": "traditional; spiritual; Indian; global",
+          "room": "puja room; meditation room; living room"
+        },
+        {
+          "name": "Vastu Decor",
+          "facets": "material; deity/theme; size; finish; handmade",
+          "styles": "traditional; spiritual; Indian; global",
+          "room": "puja room; meditation room; living room"
+        }
+      ]
+    }
+  },
+  "Wall Decor & Mirrors": {
+    "Wall Art": {
+      "Art Prints & Artwork": [
+        {
+          "name": "Art Prints",
+          "facets": "art style; orientation; size; frame; color; subject; artist; set size",
+          "styles": "modern; contemporary; traditional; abstract; botanical; vintage; minimalist",
+          "room": "living room; bedroom; office; dining room"
+        },
+        {
+          "name": "Framed Art",
+          "facets": "art style; orientation; size; frame; color; subject; artist; set size",
+          "styles": "modern; contemporary; traditional; abstract; botanical; vintage; minimalist",
+          "room": "living room; bedroom; office; dining room"
+        },
+        {
+          "name": "Canvas Art",
+          "facets": "art style; orientation; size; frame; color; subject; artist; set size",
+          "styles": "modern; contemporary; traditional; abstract; botanical; vintage; minimalist",
+          "room": "living room; bedroom; office; dining room"
+        },
+        {
+          "name": "Paintings",
+          "facets": "art style; orientation; size; frame; color; subject; artist; set size",
+          "styles": "modern; contemporary; traditional; abstract; botanical; vintage; minimalist",
+          "room": "living room; bedroom; office; dining room"
+        },
+        {
+          "name": "Original Art",
+          "facets": "art style; orientation; size; frame; color; subject; artist; set size",
+          "styles": "modern; contemporary; traditional; abstract; botanical; vintage; minimalist",
+          "room": "living room; bedroom; office; dining room"
+        },
+        {
+          "name": "Photography Prints",
+          "facets": "art style; orientation; size; frame; color; subject; artist; set size",
+          "styles": "modern; contemporary; traditional; abstract; botanical; vintage; minimalist",
+          "room": "living room; bedroom; office; dining room"
+        },
+        {
+          "name": "Illustrations",
+          "facets": "art style; orientation; size; frame; color; subject; artist; set size",
+          "styles": "modern; contemporary; traditional; abstract; botanical; vintage; minimalist",
+          "room": "living room; bedroom; office; dining room"
+        },
+        {
+          "name": "Posters",
+          "facets": "art style; orientation; size; frame; color; subject; artist; set size",
+          "styles": "modern; contemporary; traditional; abstract; botanical; vintage; minimalist",
+          "room": "living room; bedroom; office; dining room"
+        },
+        {
+          "name": "Typography Art",
+          "facets": "art style; orientation; size; frame; color; subject; artist; set size",
+          "styles": "modern; contemporary; traditional; abstract; botanical; vintage; minimalist",
+          "room": "living room; bedroom; office; dining room"
+        },
+        {
+          "name": "Abstract Art",
+          "facets": "art style; orientation; size; frame; color; subject; artist; set size",
+          "styles": "modern; contemporary; traditional; abstract; botanical; vintage; minimalist",
+          "room": "living room; bedroom; office; dining room"
+        },
+        {
+          "name": "Botanical Art",
+          "facets": "art style; orientation; size; frame; color; subject; artist; set size",
+          "styles": "modern; contemporary; traditional; abstract; botanical; vintage; minimalist",
+          "room": "living room; bedroom; office; dining room"
+        },
+        {
+          "name": "Landscape Art",
+          "facets": "art style; orientation; size; frame; color; subject; artist; set size",
+          "styles": "modern; contemporary; traditional; abstract; botanical; vintage; minimalist",
+          "room": "living room; bedroom; office; dining room"
+        },
+        {
+          "name": "Portrait Art",
+          "facets": "art style; orientation; size; frame; color; subject; artist; set size",
+          "styles": "modern; contemporary; traditional; abstract; botanical; vintage; minimalist",
+          "room": "living room; bedroom; office; dining room"
+        }
+      ]
+    },
+    "Wall Decor": {
+      "Decorative Wall Pieces": [
+        {
+          "name": "Wall Sculptures",
+          "facets": "material; size; orientation; color; removable; indoor/outdoor; pattern",
+          "styles": "modern; boho; rustic; farmhouse; global; traditional",
+          "room": "living room; bedroom; entryway; kids room"
+        },
+        {
+          "name": "Metal Wall Art",
+          "facets": "material; size; orientation; color; removable; indoor/outdoor; pattern",
+          "styles": "modern; boho; rustic; farmhouse; global; traditional",
+          "room": "living room; bedroom; entryway; kids room"
+        },
+        {
+          "name": "Wood Wall Art",
+          "facets": "material; size; orientation; color; removable; indoor/outdoor; pattern",
+          "styles": "modern; boho; rustic; farmhouse; global; traditional",
+          "room": "living room; bedroom; entryway; kids room"
+        },
+        {
+          "name": "Woven Wall Hangings",
+          "facets": "material; size; orientation; color; removable; indoor/outdoor; pattern",
+          "styles": "modern; boho; rustic; farmhouse; global; traditional",
+          "room": "living room; bedroom; entryway; kids room"
+        },
+        {
+          "name": "Macram\u00e9 Wall Hangings",
+          "facets": "material; size; orientation; color; removable; indoor/outdoor; pattern",
+          "styles": "modern; boho; rustic; farmhouse; global; traditional",
+          "room": "living room; bedroom; entryway; kids room"
+        },
+        {
+          "name": "Wall Plates",
+          "facets": "material; size; orientation; color; removable; indoor/outdoor; pattern",
+          "styles": "modern; boho; rustic; farmhouse; global; traditional",
+          "room": "living room; bedroom; entryway; kids room"
+        },
+        {
+          "name": "Wall Baskets",
+          "facets": "material; size; orientation; color; removable; indoor/outdoor; pattern",
+          "styles": "modern; boho; rustic; farmhouse; global; traditional",
+          "room": "living room; bedroom; entryway; kids room"
+        },
+        {
+          "name": "Tapestries",
+          "facets": "material; size; orientation; color; removable; indoor/outdoor; pattern",
+          "styles": "modern; boho; rustic; farmhouse; global; traditional",
+          "room": "living room; bedroom; entryway; kids room"
+        },
+        {
+          "name": "Wall Decals",
+          "facets": "material; size; orientation; color; removable; indoor/outdoor; pattern",
+          "styles": "modern; boho; rustic; farmhouse; global; traditional",
+          "room": "living room; bedroom; entryway; kids room"
+        },
+        {
+          "name": "Wallpaper",
+          "facets": "material; size; orientation; color; removable; indoor/outdoor; pattern",
+          "styles": "modern; boho; rustic; farmhouse; global; traditional",
+          "room": "living room; bedroom; entryway; kids room"
+        },
+        {
+          "name": "Wall Panels",
+          "facets": "material; size; orientation; color; removable; indoor/outdoor; pattern",
+          "styles": "modern; boho; rustic; farmhouse; global; traditional",
+          "room": "living room; bedroom; entryway; kids room"
+        },
+        {
+          "name": "Decorative Signs",
+          "facets": "material; size; orientation; color; removable; indoor/outdoor; pattern",
+          "styles": "modern; boho; rustic; farmhouse; global; traditional",
+          "room": "living room; bedroom; entryway; kids room"
+        }
+      ]
+    },
+    "Mirrors": {
+      "Mirrors": [
+        {
+          "name": "Wall Mirrors",
+          "facets": "shape; width; height; frame material; finish; beveled; hanging orientation",
+          "styles": "modern; contemporary; art deco; traditional; farmhouse; luxury",
+          "room": "bedroom; bathroom; entryway; living room"
+        },
+        {
+          "name": "Floor Mirrors",
+          "facets": "shape; width; height; frame material; finish; beveled; hanging orientation",
+          "styles": "modern; contemporary; art deco; traditional; farmhouse; luxury",
+          "room": "bedroom; bathroom; entryway; living room"
+        },
+        {
+          "name": "Full-Length Mirrors",
+          "facets": "shape; width; height; frame material; finish; beveled; hanging orientation",
+          "styles": "modern; contemporary; art deco; traditional; farmhouse; luxury",
+          "room": "bedroom; bathroom; entryway; living room"
+        },
+        {
+          "name": "Lean Mirrors",
+          "facets": "shape; width; height; frame material; finish; beveled; hanging orientation",
+          "styles": "modern; contemporary; art deco; traditional; farmhouse; luxury",
+          "room": "bedroom; bathroom; entryway; living room"
+        },
+        {
+          "name": "Vanity Mirrors",
+          "facets": "shape; width; height; frame material; finish; beveled; hanging orientation",
+          "styles": "modern; contemporary; art deco; traditional; farmhouse; luxury",
+          "room": "bedroom; bathroom; entryway; living room"
+        },
+        {
+          "name": "Dressing Mirrors",
+          "facets": "shape; width; height; frame material; finish; beveled; hanging orientation",
+          "styles": "modern; contemporary; art deco; traditional; farmhouse; luxury",
+          "room": "bedroom; bathroom; entryway; living room"
+        },
+        {
+          "name": "Round Mirrors",
+          "facets": "shape; width; height; frame material; finish; beveled; hanging orientation",
+          "styles": "modern; contemporary; art deco; traditional; farmhouse; luxury",
+          "room": "bedroom; bathroom; entryway; living room"
+        },
+        {
+          "name": "Arch Mirrors",
+          "facets": "shape; width; height; frame material; finish; beveled; hanging orientation",
+          "styles": "modern; contemporary; art deco; traditional; farmhouse; luxury",
+          "room": "bedroom; bathroom; entryway; living room"
+        },
+        {
+          "name": "Rectangular Mirrors",
+          "facets": "shape; width; height; frame material; finish; beveled; hanging orientation",
+          "styles": "modern; contemporary; art deco; traditional; farmhouse; luxury",
+          "room": "bedroom; bathroom; entryway; living room"
+        },
+        {
+          "name": "Oval Mirrors",
+          "facets": "shape; width; height; frame material; finish; beveled; hanging orientation",
+          "styles": "modern; contemporary; art deco; traditional; farmhouse; luxury",
+          "room": "bedroom; bathroom; entryway; living room"
+        },
+        {
+          "name": "Sunburst Mirrors",
+          "facets": "shape; width; height; frame material; finish; beveled; hanging orientation",
+          "styles": "modern; contemporary; art deco; traditional; farmhouse; luxury",
+          "room": "bedroom; bathroom; entryway; living room"
+        },
+        {
+          "name": "Decorative Mirrors",
+          "facets": "shape; width; height; frame material; finish; beveled; hanging orientation",
+          "styles": "modern; contemporary; art deco; traditional; farmhouse; luxury",
+          "room": "bedroom; bathroom; entryway; living room"
+        }
+      ]
+    }
+  },
+  "Lighting": {
+    "Ceiling Lighting": {
+      "Ceiling Lights": [
+        {
+          "name": "Chandeliers",
+          "facets": "fixture size; number of lights; bulb base; wattage; dimmable; material; finish; ceiling height",
+          "styles": "modern; contemporary; industrial; farmhouse; traditional; art deco; Scandinavian",
+          "room": "living room; dining room; kitchen; bedroom; entryway"
+        },
+        {
+          "name": "Pendant Lights",
+          "facets": "fixture size; number of lights; bulb base; wattage; dimmable; material; finish; ceiling height",
+          "styles": "modern; contemporary; industrial; farmhouse; traditional; art deco; Scandinavian",
+          "room": "living room; dining room; kitchen; bedroom; entryway"
+        },
+        {
+          "name": "Mini Pendants",
+          "facets": "fixture size; number of lights; bulb base; wattage; dimmable; material; finish; ceiling height",
+          "styles": "modern; contemporary; industrial; farmhouse; traditional; art deco; Scandinavian",
+          "room": "living room; dining room; kitchen; bedroom; entryway"
+        },
+        {
+          "name": "Cluster Pendants",
+          "facets": "fixture size; number of lights; bulb base; wattage; dimmable; material; finish; ceiling height",
+          "styles": "modern; contemporary; industrial; farmhouse; traditional; art deco; Scandinavian",
+          "room": "living room; dining room; kitchen; bedroom; entryway"
+        },
+        {
+          "name": "Linear Pendants",
+          "facets": "fixture size; number of lights; bulb base; wattage; dimmable; material; finish; ceiling height",
+          "styles": "modern; contemporary; industrial; farmhouse; traditional; art deco; Scandinavian",
+          "room": "living room; dining room; kitchen; bedroom; entryway"
+        },
+        {
+          "name": "Flush Mount Lights",
+          "facets": "fixture size; number of lights; bulb base; wattage; dimmable; material; finish; ceiling height",
+          "styles": "modern; contemporary; industrial; farmhouse; traditional; art deco; Scandinavian",
+          "room": "living room; dining room; kitchen; bedroom; entryway"
+        },
+        {
+          "name": "Semi-Flush Mount Lights",
+          "facets": "fixture size; number of lights; bulb base; wattage; dimmable; material; finish; ceiling height",
+          "styles": "modern; contemporary; industrial; farmhouse; traditional; art deco; Scandinavian",
+          "room": "living room; dining room; kitchen; bedroom; entryway"
+        },
+        {
+          "name": "Ceiling Spotlights",
+          "facets": "fixture size; number of lights; bulb base; wattage; dimmable; material; finish; ceiling height",
+          "styles": "modern; contemporary; industrial; farmhouse; traditional; art deco; Scandinavian",
+          "room": "living room; dining room; kitchen; bedroom; entryway"
+        },
+        {
+          "name": "Track Lighting",
+          "facets": "fixture size; number of lights; bulb base; wattage; dimmable; material; finish; ceiling height",
+          "styles": "modern; contemporary; industrial; farmhouse; traditional; art deco; Scandinavian",
+          "room": "living room; dining room; kitchen; bedroom; entryway"
+        },
+        {
+          "name": "Ceiling Fans with Lights",
+          "facets": "fixture size; number of lights; bulb base; wattage; dimmable; material; finish; ceiling height",
+          "styles": "modern; contemporary; industrial; farmhouse; traditional; art deco; Scandinavian",
+          "room": "living room; dining room; kitchen; bedroom; entryway"
+        }
+      ]
+    },
+    "Wall Lighting": {
+      "Wall Lights": [
+        {
+          "name": "Wall Sconces",
+          "facets": "fixture width; projection; bulb type; hardwired/plugin; dimmable; finish; shade material",
+          "styles": "modern; contemporary; industrial; traditional; art deco",
+          "room": "bedroom; bathroom; hallway; living room"
+        },
+        {
+          "name": "Picture Lights",
+          "facets": "fixture width; projection; bulb type; hardwired/plugin; dimmable; finish; shade material",
+          "styles": "modern; contemporary; industrial; traditional; art deco",
+          "room": "bedroom; bathroom; hallway; living room"
+        },
+        {
+          "name": "Swing Arm Wall Lamps",
+          "facets": "fixture width; projection; bulb type; hardwired/plugin; dimmable; finish; shade material",
+          "styles": "modern; contemporary; industrial; traditional; art deco",
+          "room": "bedroom; bathroom; hallway; living room"
+        },
+        {
+          "name": "Up/Down Lights",
+          "facets": "fixture width; projection; bulb type; hardwired/plugin; dimmable; finish; shade material",
+          "styles": "modern; contemporary; industrial; traditional; art deco",
+          "room": "bedroom; bathroom; hallway; living room"
+        },
+        {
+          "name": "Wall Reading Lights",
+          "facets": "fixture width; projection; bulb type; hardwired/plugin; dimmable; finish; shade material",
+          "styles": "modern; contemporary; industrial; traditional; art deco",
+          "room": "bedroom; bathroom; hallway; living room"
+        },
+        {
+          "name": "Vanity Lights",
+          "facets": "fixture width; projection; bulb type; hardwired/plugin; dimmable; finish; shade material",
+          "styles": "modern; contemporary; industrial; traditional; art deco",
+          "room": "bedroom; bathroom; hallway; living room"
+        }
+      ]
+    },
+    "Portable Lighting": {
+      "Lamps": [
+        {
+          "name": "Table Lamps",
+          "facets": "height; bulb type; dimmable; cordless; battery; shade material; base material; finish",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; industrial",
+          "room": "living room; bedroom; office"
+        },
+        {
+          "name": "Desk Lamps",
+          "facets": "height; bulb type; dimmable; cordless; battery; shade material; base material; finish",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; industrial",
+          "room": "living room; bedroom; office"
+        },
+        {
+          "name": "Bedside Lamps",
+          "facets": "height; bulb type; dimmable; cordless; battery; shade material; base material; finish",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; industrial",
+          "room": "living room; bedroom; office"
+        },
+        {
+          "name": "Floor Lamps",
+          "facets": "height; bulb type; dimmable; cordless; battery; shade material; base material; finish",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; industrial",
+          "room": "living room; bedroom; office"
+        },
+        {
+          "name": "Arc Floor Lamps",
+          "facets": "height; bulb type; dimmable; cordless; battery; shade material; base material; finish",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; industrial",
+          "room": "living room; bedroom; office"
+        },
+        {
+          "name": "Tripod Floor Lamps",
+          "facets": "height; bulb type; dimmable; cordless; battery; shade material; base material; finish",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; industrial",
+          "room": "living room; bedroom; office"
+        },
+        {
+          "name": "Torchiere Lamps",
+          "facets": "height; bulb type; dimmable; cordless; battery; shade material; base material; finish",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; industrial",
+          "room": "living room; bedroom; office"
+        },
+        {
+          "name": "Reading Lamps",
+          "facets": "height; bulb type; dimmable; cordless; battery; shade material; base material; finish",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; industrial",
+          "room": "living room; bedroom; office"
+        },
+        {
+          "name": "Cordless Lamps",
+          "facets": "height; bulb type; dimmable; cordless; battery; shade material; base material; finish",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; industrial",
+          "room": "living room; bedroom; office"
+        },
+        {
+          "name": "Rechargeable Lamps",
+          "facets": "height; bulb type; dimmable; cordless; battery; shade material; base material; finish",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; industrial",
+          "room": "living room; bedroom; office"
+        },
+        {
+          "name": "Touch Lamps",
+          "facets": "height; bulb type; dimmable; cordless; battery; shade material; base material; finish",
+          "styles": "modern; contemporary; mid-century; Scandinavian; traditional; industrial",
+          "room": "living room; bedroom; office"
+        }
+      ]
+    },
+    "Decorative & Specialty Lighting": {
+      "Specialty Lighting": [
+        {
+          "name": "String Lights",
+          "facets": "power source; bulb type; smart compatibility; indoor/outdoor; color temperature; length",
+          "styles": "modern; festive; ambient; minimalist",
+          "room": "bedroom; kids room; kitchen; patio"
+        },
+        {
+          "name": "Fairy Lights",
+          "facets": "power source; bulb type; smart compatibility; indoor/outdoor; color temperature; length",
+          "styles": "modern; festive; ambient; minimalist",
+          "room": "bedroom; kids room; kitchen; patio"
+        },
+        {
+          "name": "LED Strip Lights",
+          "facets": "power source; bulb type; smart compatibility; indoor/outdoor; color temperature; length",
+          "styles": "modern; festive; ambient; minimalist",
+          "room": "bedroom; kids room; kitchen; patio"
+        },
+        {
+          "name": "Night Lights",
+          "facets": "power source; bulb type; smart compatibility; indoor/outdoor; color temperature; length",
+          "styles": "modern; festive; ambient; minimalist",
+          "room": "bedroom; kids room; kitchen; patio"
+        },
+        {
+          "name": "Decorative Lantern Lights",
+          "facets": "power source; bulb type; smart compatibility; indoor/outdoor; color temperature; length",
+          "styles": "modern; festive; ambient; minimalist",
+          "room": "bedroom; kids room; kitchen; patio"
+        },
+        {
+          "name": "Smart Lights",
+          "facets": "power source; bulb type; smart compatibility; indoor/outdoor; color temperature; length",
+          "styles": "modern; festive; ambient; minimalist",
+          "room": "bedroom; kids room; kitchen; patio"
+        },
+        {
+          "name": "Battery Operated Lights",
+          "facets": "power source; bulb type; smart compatibility; indoor/outdoor; color temperature; length",
+          "styles": "modern; festive; ambient; minimalist",
+          "room": "bedroom; kids room; kitchen; patio"
+        },
+        {
+          "name": "Under Cabinet Lighting",
+          "facets": "power source; bulb type; smart compatibility; indoor/outdoor; color temperature; length",
+          "styles": "modern; festive; ambient; minimalist",
+          "room": "bedroom; kids room; kitchen; patio"
+        }
+      ]
+    },
+    "Outdoor Lighting": {
+      "Outdoor Lights": [
+        {
+          "name": "Outdoor Wall Lights",
+          "facets": "IP rating; power source; solar; bulb type; finish; motion sensor; dusk-to-dawn",
+          "styles": "modern; traditional; rustic; coastal",
+          "room": "patio; garden; porch; driveway"
+        },
+        {
+          "name": "Porch Lights",
+          "facets": "IP rating; power source; solar; bulb type; finish; motion sensor; dusk-to-dawn",
+          "styles": "modern; traditional; rustic; coastal",
+          "room": "patio; garden; porch; driveway"
+        },
+        {
+          "name": "Outdoor Pendant Lights",
+          "facets": "IP rating; power source; solar; bulb type; finish; motion sensor; dusk-to-dawn",
+          "styles": "modern; traditional; rustic; coastal",
+          "room": "patio; garden; porch; driveway"
+        },
+        {
+          "name": "Landscape Lights",
+          "facets": "IP rating; power source; solar; bulb type; finish; motion sensor; dusk-to-dawn",
+          "styles": "modern; traditional; rustic; coastal",
+          "room": "patio; garden; porch; driveway"
+        },
+        {
+          "name": "Pathway Lights",
+          "facets": "IP rating; power source; solar; bulb type; finish; motion sensor; dusk-to-dawn",
+          "styles": "modern; traditional; rustic; coastal",
+          "room": "patio; garden; porch; driveway"
+        },
+        {
+          "name": "Garden Spotlights",
+          "facets": "IP rating; power source; solar; bulb type; finish; motion sensor; dusk-to-dawn",
+          "styles": "modern; traditional; rustic; coastal",
+          "room": "patio; garden; porch; driveway"
+        },
+        {
+          "name": "Solar Lights",
+          "facets": "IP rating; power source; solar; bulb type; finish; motion sensor; dusk-to-dawn",
+          "styles": "modern; traditional; rustic; coastal",
+          "room": "patio; garden; porch; driveway"
+        },
+        {
+          "name": "Deck Lights",
+          "facets": "IP rating; power source; solar; bulb type; finish; motion sensor; dusk-to-dawn",
+          "styles": "modern; traditional; rustic; coastal",
+          "room": "patio; garden; porch; driveway"
+        },
+        {
+          "name": "Post Lights",
+          "facets": "IP rating; power source; solar; bulb type; finish; motion sensor; dusk-to-dawn",
+          "styles": "modern; traditional; rustic; coastal",
+          "room": "patio; garden; porch; driveway"
+        }
+      ]
+    }
+  },
+  "Rugs & Floor Coverings": {
+    "Area Rugs": {
+      "Area Rugs": [
+        {
+          "name": "Area Rugs",
+          "facets": "size; shape; material; pile height; construction; washable; backing; indoor/outdoor; pattern",
+          "styles": "modern; traditional; Persian; Moroccan; boho; Scandinavian; farmhouse; coastal",
+          "room": "living room; bedroom; dining room; kids room; patio"
+        },
+        {
+          "name": "Living Room Rugs",
+          "facets": "size; shape; material; pile height; construction; washable; backing; indoor/outdoor; pattern",
+          "styles": "modern; traditional; Persian; Moroccan; boho; Scandinavian; farmhouse; coastal",
+          "room": "living room; bedroom; dining room; kids room; patio"
+        },
+        {
+          "name": "Bedroom Rugs",
+          "facets": "size; shape; material; pile height; construction; washable; backing; indoor/outdoor; pattern",
+          "styles": "modern; traditional; Persian; Moroccan; boho; Scandinavian; farmhouse; coastal",
+          "room": "living room; bedroom; dining room; kids room; patio"
+        },
+        {
+          "name": "Dining Room Rugs",
+          "facets": "size; shape; material; pile height; construction; washable; backing; indoor/outdoor; pattern",
+          "styles": "modern; traditional; Persian; Moroccan; boho; Scandinavian; farmhouse; coastal",
+          "room": "living room; bedroom; dining room; kids room; patio"
+        },
+        {
+          "name": "Kids Rugs",
+          "facets": "size; shape; material; pile height; construction; washable; backing; indoor/outdoor; pattern",
+          "styles": "modern; traditional; Persian; Moroccan; boho; Scandinavian; farmhouse; coastal",
+          "room": "living room; bedroom; dining room; kids room; patio"
+        },
+        {
+          "name": "Nursery Rugs",
+          "facets": "size; shape; material; pile height; construction; washable; backing; indoor/outdoor; pattern",
+          "styles": "modern; traditional; Persian; Moroccan; boho; Scandinavian; farmhouse; coastal",
+          "room": "living room; bedroom; dining room; kids room; patio"
+        },
+        {
+          "name": "Indoor Outdoor Rugs",
+          "facets": "size; shape; material; pile height; construction; washable; backing; indoor/outdoor; pattern",
+          "styles": "modern; traditional; Persian; Moroccan; boho; Scandinavian; farmhouse; coastal",
+          "room": "living room; bedroom; dining room; kids room; patio"
+        },
+        {
+          "name": "Washable Rugs",
+          "facets": "size; shape; material; pile height; construction; washable; backing; indoor/outdoor; pattern",
+          "styles": "modern; traditional; Persian; Moroccan; boho; Scandinavian; farmhouse; coastal",
+          "room": "living room; bedroom; dining room; kids room; patio"
+        },
+        {
+          "name": "Shag Rugs",
+          "facets": "size; shape; material; pile height; construction; washable; backing; indoor/outdoor; pattern",
+          "styles": "modern; traditional; Persian; Moroccan; boho; Scandinavian; farmhouse; coastal",
+          "room": "living room; bedroom; dining room; kids room; patio"
+        },
+        {
+          "name": "Flatweave Rugs",
+          "facets": "size; shape; material; pile height; construction; washable; backing; indoor/outdoor; pattern",
+          "styles": "modern; traditional; Persian; Moroccan; boho; Scandinavian; farmhouse; coastal",
+          "room": "living room; bedroom; dining room; kids room; patio"
+        },
+        {
+          "name": "Tufted Rugs",
+          "facets": "size; shape; material; pile height; construction; washable; backing; indoor/outdoor; pattern",
+          "styles": "modern; traditional; Persian; Moroccan; boho; Scandinavian; farmhouse; coastal",
+          "room": "living room; bedroom; dining room; kids room; patio"
+        },
+        {
+          "name": "Hand-Knotted Rugs",
+          "facets": "size; shape; material; pile height; construction; washable; backing; indoor/outdoor; pattern",
+          "styles": "modern; traditional; Persian; Moroccan; boho; Scandinavian; farmhouse; coastal",
+          "room": "living room; bedroom; dining room; kids room; patio"
+        },
+        {
+          "name": "Hand-Tufted Rugs",
+          "facets": "size; shape; material; pile height; construction; washable; backing; indoor/outdoor; pattern",
+          "styles": "modern; traditional; Persian; Moroccan; boho; Scandinavian; farmhouse; coastal",
+          "room": "living room; bedroom; dining room; kids room; patio"
+        },
+        {
+          "name": "Machine-Made Rugs",
+          "facets": "size; shape; material; pile height; construction; washable; backing; indoor/outdoor; pattern",
+          "styles": "modern; traditional; Persian; Moroccan; boho; Scandinavian; farmhouse; coastal",
+          "room": "living room; bedroom; dining room; kids room; patio"
+        },
+        {
+          "name": "Braided Rugs",
+          "facets": "size; shape; material; pile height; construction; washable; backing; indoor/outdoor; pattern",
+          "styles": "modern; traditional; Persian; Moroccan; boho; Scandinavian; farmhouse; coastal",
+          "room": "living room; bedroom; dining room; kids room; patio"
+        },
+        {
+          "name": "Round Rugs",
+          "facets": "size; shape; material; pile height; construction; washable; backing; indoor/outdoor; pattern",
+          "styles": "modern; traditional; Persian; Moroccan; boho; Scandinavian; farmhouse; coastal",
+          "room": "living room; bedroom; dining room; kids room; patio"
+        },
+        {
+          "name": "Square Rugs",
+          "facets": "size; shape; material; pile height; construction; washable; backing; indoor/outdoor; pattern",
+          "styles": "modern; traditional; Persian; Moroccan; boho; Scandinavian; farmhouse; coastal",
+          "room": "living room; bedroom; dining room; kids room; patio"
+        }
+      ]
+    },
+    "Runners & Small Rugs": {
+      "Small Rugs": [
+        {
+          "name": "Runner Rugs",
+          "facets": "size; length; width; material; backing; washable; non-slip; indoor/outdoor",
+          "styles": "modern; traditional; geometric; floral; natural",
+          "room": "hallway; kitchen; bedroom; entryway"
+        },
+        {
+          "name": "Hallway Runners",
+          "facets": "size; length; width; material; backing; washable; non-slip; indoor/outdoor",
+          "styles": "modern; traditional; geometric; floral; natural",
+          "room": "hallway; kitchen; bedroom; entryway"
+        },
+        {
+          "name": "Kitchen Runners",
+          "facets": "size; length; width; material; backing; washable; non-slip; indoor/outdoor",
+          "styles": "modern; traditional; geometric; floral; natural",
+          "room": "hallway; kitchen; bedroom; entryway"
+        },
+        {
+          "name": "Bedside Rugs",
+          "facets": "size; length; width; material; backing; washable; non-slip; indoor/outdoor",
+          "styles": "modern; traditional; geometric; floral; natural",
+          "room": "hallway; kitchen; bedroom; entryway"
+        },
+        {
+          "name": "Accent Rugs",
+          "facets": "size; length; width; material; backing; washable; non-slip; indoor/outdoor",
+          "styles": "modern; traditional; geometric; floral; natural",
+          "room": "hallway; kitchen; bedroom; entryway"
+        },
+        {
+          "name": "Doormats",
+          "facets": "size; length; width; material; backing; washable; non-slip; indoor/outdoor",
+          "styles": "modern; traditional; geometric; floral; natural",
+          "room": "hallway; kitchen; bedroom; entryway"
+        },
+        {
+          "name": "Entryway Mats",
+          "facets": "size; length; width; material; backing; washable; non-slip; indoor/outdoor",
+          "styles": "modern; traditional; geometric; floral; natural",
+          "room": "hallway; kitchen; bedroom; entryway"
+        }
+      ]
+    },
+    "Natural Fiber Rugs": {
+      "By Material": [
+        {
+          "name": "Wool Rugs",
+          "facets": "material; weave; size; shape; pile; handmade; origin",
+          "styles": "natural; boho; coastal; traditional; modern",
+          "room": "living room; bedroom; dining room"
+        },
+        {
+          "name": "Jute Rugs",
+          "facets": "material; weave; size; shape; pile; handmade; origin",
+          "styles": "natural; boho; coastal; traditional; modern",
+          "room": "living room; bedroom; dining room"
+        },
+        {
+          "name": "Sisal Rugs",
+          "facets": "material; weave; size; shape; pile; handmade; origin",
+          "styles": "natural; boho; coastal; traditional; modern",
+          "room": "living room; bedroom; dining room"
+        },
+        {
+          "name": "Cotton Rugs",
+          "facets": "material; weave; size; shape; pile; handmade; origin",
+          "styles": "natural; boho; coastal; traditional; modern",
+          "room": "living room; bedroom; dining room"
+        },
+        {
+          "name": "Silk Rugs",
+          "facets": "material; weave; size; shape; pile; handmade; origin",
+          "styles": "natural; boho; coastal; traditional; modern",
+          "room": "living room; bedroom; dining room"
+        },
+        {
+          "name": "Viscose Rugs",
+          "facets": "material; weave; size; shape; pile; handmade; origin",
+          "styles": "natural; boho; coastal; traditional; modern",
+          "room": "living room; bedroom; dining room"
+        },
+        {
+          "name": "Bamboo Rugs",
+          "facets": "material; weave; size; shape; pile; handmade; origin",
+          "styles": "natural; boho; coastal; traditional; modern",
+          "room": "living room; bedroom; dining room"
+        },
+        {
+          "name": "Hemp Rugs",
+          "facets": "material; weave; size; shape; pile; handmade; origin",
+          "styles": "natural; boho; coastal; traditional; modern",
+          "room": "living room; bedroom; dining room"
+        }
+      ]
+    },
+    "Synthetic Rugs": {
+      "By Material": [
+        {
+          "name": "Polypropylene Rugs",
+          "facets": "material; stain resistance; washable; indoor/outdoor; pile; size",
+          "styles": "modern; performance; family friendly",
+          "room": "living room; bedroom; kids room; patio"
+        },
+        {
+          "name": "Polyester Rugs",
+          "facets": "material; stain resistance; washable; indoor/outdoor; pile; size",
+          "styles": "modern; performance; family friendly",
+          "room": "living room; bedroom; kids room; patio"
+        },
+        {
+          "name": "Nylon Rugs",
+          "facets": "material; stain resistance; washable; indoor/outdoor; pile; size",
+          "styles": "modern; performance; family friendly",
+          "room": "living room; bedroom; kids room; patio"
+        },
+        {
+          "name": "Acrylic Rugs",
+          "facets": "material; stain resistance; washable; indoor/outdoor; pile; size",
+          "styles": "modern; performance; family friendly",
+          "room": "living room; bedroom; kids room; patio"
+        },
+        {
+          "name": "PET Recycled Rugs",
+          "facets": "material; stain resistance; washable; indoor/outdoor; pile; size",
+          "styles": "modern; performance; family friendly",
+          "room": "living room; bedroom; kids room; patio"
+        }
+      ]
+    },
+    "Rug Accessories": {
+      "Accessories": [
+        {
+          "name": "Rug Pads",
+          "facets": "size; floor compatibility; thickness; material; washable",
+          "styles": "",
+          "room": "all rooms"
+        },
+        {
+          "name": "Rug Grippers",
+          "facets": "size; floor compatibility; thickness; material; washable",
+          "styles": "",
+          "room": "all rooms"
+        },
+        {
+          "name": "Rug Tape",
+          "facets": "size; floor compatibility; thickness; material; washable",
+          "styles": "",
+          "room": "all rooms"
+        },
+        {
+          "name": "Anti-Slip Mats",
+          "facets": "size; floor compatibility; thickness; material; washable",
+          "styles": "",
+          "room": "all rooms"
+        }
+      ]
+    }
+  },
+  "Storage & Organization": {
+    "Baskets & Bins": {
+      "Baskets": [
+        {
+          "name": "Storage Baskets",
+          "facets": "material; capacity; dimensions; lid; handles; stackable; foldable; color",
+          "styles": "modern; natural; industrial; kids",
+          "room": "living room; bedroom; laundry; kids room"
+        },
+        {
+          "name": "Woven Baskets",
+          "facets": "material; capacity; dimensions; lid; handles; stackable; foldable; color",
+          "styles": "modern; natural; industrial; kids",
+          "room": "living room; bedroom; laundry; kids room"
+        },
+        {
+          "name": "Laundry Baskets",
+          "facets": "material; capacity; dimensions; lid; handles; stackable; foldable; color",
+          "styles": "modern; natural; industrial; kids",
+          "room": "living room; bedroom; laundry; kids room"
+        },
+        {
+          "name": "Decorative Baskets",
+          "facets": "material; capacity; dimensions; lid; handles; stackable; foldable; color",
+          "styles": "modern; natural; industrial; kids",
+          "room": "living room; bedroom; laundry; kids room"
+        },
+        {
+          "name": "Toy Baskets",
+          "facets": "material; capacity; dimensions; lid; handles; stackable; foldable; color",
+          "styles": "modern; natural; industrial; kids",
+          "room": "living room; bedroom; laundry; kids room"
+        },
+        {
+          "name": "Shelf Baskets",
+          "facets": "material; capacity; dimensions; lid; handles; stackable; foldable; color",
+          "styles": "modern; natural; industrial; kids",
+          "room": "living room; bedroom; laundry; kids room"
+        },
+        {
+          "name": "Lidded Baskets",
+          "facets": "material; capacity; dimensions; lid; handles; stackable; foldable; color",
+          "styles": "modern; natural; industrial; kids",
+          "room": "living room; bedroom; laundry; kids room"
+        },
+        {
+          "name": "Wire Baskets",
+          "facets": "material; capacity; dimensions; lid; handles; stackable; foldable; color",
+          "styles": "modern; natural; industrial; kids",
+          "room": "living room; bedroom; laundry; kids room"
+        },
+        {
+          "name": "Fabric Storage Bins",
+          "facets": "material; capacity; dimensions; lid; handles; stackable; foldable; color",
+          "styles": "modern; natural; industrial; kids",
+          "room": "living room; bedroom; laundry; kids room"
+        },
+        {
+          "name": "Plastic Storage Bins",
+          "facets": "material; capacity; dimensions; lid; handles; stackable; foldable; color",
+          "styles": "modern; natural; industrial; kids",
+          "room": "living room; bedroom; laundry; kids room"
+        },
+        {
+          "name": "Collapsible Bins",
+          "facets": "material; capacity; dimensions; lid; handles; stackable; foldable; color",
+          "styles": "modern; natural; industrial; kids",
+          "room": "living room; bedroom; laundry; kids room"
+        }
+      ]
+    },
+    "Closet & Wardrobe Organization": {
+      "Closet Storage": [
+        {
+          "name": "Hanging Organizers",
+          "facets": "dimensions; material; capacity; hanging type; stackable; foldable; clear window",
+          "styles": "",
+          "room": "bedroom; closet; dressing room"
+        },
+        {
+          "name": "Closet Shelves",
+          "facets": "dimensions; material; capacity; hanging type; stackable; foldable; clear window",
+          "styles": "",
+          "room": "bedroom; closet; dressing room"
+        },
+        {
+          "name": "Garment Racks",
+          "facets": "dimensions; material; capacity; hanging type; stackable; foldable; clear window",
+          "styles": "",
+          "room": "bedroom; closet; dressing room"
+        },
+        {
+          "name": "Clothes Racks",
+          "facets": "dimensions; material; capacity; hanging type; stackable; foldable; clear window",
+          "styles": "",
+          "room": "bedroom; closet; dressing room"
+        },
+        {
+          "name": "Hangers",
+          "facets": "dimensions; material; capacity; hanging type; stackable; foldable; clear window",
+          "styles": "",
+          "room": "bedroom; closet; dressing room"
+        },
+        {
+          "name": "Pant Hangers",
+          "facets": "dimensions; material; capacity; hanging type; stackable; foldable; clear window",
+          "styles": "",
+          "room": "bedroom; closet; dressing room"
+        },
+        {
+          "name": "Scarf Hangers",
+          "facets": "dimensions; material; capacity; hanging type; stackable; foldable; clear window",
+          "styles": "",
+          "room": "bedroom; closet; dressing room"
+        },
+        {
+          "name": "Shoe Racks",
+          "facets": "dimensions; material; capacity; hanging type; stackable; foldable; clear window",
+          "styles": "",
+          "room": "bedroom; closet; dressing room"
+        },
+        {
+          "name": "Shoe Organizers",
+          "facets": "dimensions; material; capacity; hanging type; stackable; foldable; clear window",
+          "styles": "",
+          "room": "bedroom; closet; dressing room"
+        },
+        {
+          "name": "Drawer Dividers",
+          "facets": "dimensions; material; capacity; hanging type; stackable; foldable; clear window",
+          "styles": "",
+          "room": "bedroom; closet; dressing room"
+        },
+        {
+          "name": "Underbed Storage",
+          "facets": "dimensions; material; capacity; hanging type; stackable; foldable; clear window",
+          "styles": "",
+          "room": "bedroom; closet; dressing room"
+        },
+        {
+          "name": "Storage Bags",
+          "facets": "dimensions; material; capacity; hanging type; stackable; foldable; clear window",
+          "styles": "",
+          "room": "bedroom; closet; dressing room"
+        },
+        {
+          "name": "Vacuum Storage Bags",
+          "facets": "dimensions; material; capacity; hanging type; stackable; foldable; clear window",
+          "styles": "",
+          "room": "bedroom; closet; dressing room"
+        },
+        {
+          "name": "Jewelry Organizers",
+          "facets": "dimensions; material; capacity; hanging type; stackable; foldable; clear window",
+          "styles": "",
+          "room": "bedroom; closet; dressing room"
+        }
+      ]
+    },
+    "Shelving": {
+      "Shelves": [
+        {
+          "name": "Wall Shelves",
+          "facets": "material; width; load capacity; wall mount; number of tiers; modular",
+          "styles": "modern; industrial; Scandinavian; farmhouse",
+          "room": "living room; bedroom; office; garage"
+        },
+        {
+          "name": "Floating Shelves",
+          "facets": "material; width; load capacity; wall mount; number of tiers; modular",
+          "styles": "modern; industrial; Scandinavian; farmhouse",
+          "room": "living room; bedroom; office; garage"
+        },
+        {
+          "name": "Corner Shelves",
+          "facets": "material; width; load capacity; wall mount; number of tiers; modular",
+          "styles": "modern; industrial; Scandinavian; farmhouse",
+          "room": "living room; bedroom; office; garage"
+        },
+        {
+          "name": "Ladder Shelves",
+          "facets": "material; width; load capacity; wall mount; number of tiers; modular",
+          "styles": "modern; industrial; Scandinavian; farmhouse",
+          "room": "living room; bedroom; office; garage"
+        },
+        {
+          "name": "Cube Shelving",
+          "facets": "material; width; load capacity; wall mount; number of tiers; modular",
+          "styles": "modern; industrial; Scandinavian; farmhouse",
+          "room": "living room; bedroom; office; garage"
+        },
+        {
+          "name": "Modular Shelving",
+          "facets": "material; width; load capacity; wall mount; number of tiers; modular",
+          "styles": "modern; industrial; Scandinavian; farmhouse",
+          "room": "living room; bedroom; office; garage"
+        },
+        {
+          "name": "Utility Shelves",
+          "facets": "material; width; load capacity; wall mount; number of tiers; modular",
+          "styles": "modern; industrial; Scandinavian; farmhouse",
+          "room": "living room; bedroom; office; garage"
+        },
+        {
+          "name": "Garage Shelving",
+          "facets": "material; width; load capacity; wall mount; number of tiers; modular",
+          "styles": "modern; industrial; Scandinavian; farmhouse",
+          "room": "living room; bedroom; office; garage"
+        }
+      ]
+    },
+    "Boxes & Containers": {
+      "Storage Containers": [
+        {
+          "name": "Storage Boxes",
+          "facets": "material; capacity; dimensions; lid; stackable; transparent; food safe",
+          "styles": "",
+          "room": "all rooms"
+        },
+        {
+          "name": "Lidded Storage Boxes",
+          "facets": "material; capacity; dimensions; lid; stackable; transparent; food safe",
+          "styles": "",
+          "room": "all rooms"
+        },
+        {
+          "name": "Stackable Storage Boxes",
+          "facets": "material; capacity; dimensions; lid; stackable; transparent; food safe",
+          "styles": "",
+          "room": "all rooms"
+        },
+        {
+          "name": "Decorative Boxes",
+          "facets": "material; capacity; dimensions; lid; stackable; transparent; food safe",
+          "styles": "",
+          "room": "all rooms"
+        },
+        {
+          "name": "Photo Storage Boxes",
+          "facets": "material; capacity; dimensions; lid; stackable; transparent; food safe",
+          "styles": "",
+          "room": "all rooms"
+        },
+        {
+          "name": "Document Boxes",
+          "facets": "material; capacity; dimensions; lid; stackable; transparent; food safe",
+          "styles": "",
+          "room": "all rooms"
+        },
+        {
+          "name": "Food Storage Containers",
+          "facets": "material; capacity; dimensions; lid; stackable; transparent; food safe",
+          "styles": "",
+          "room": "all rooms"
+        },
+        {
+          "name": "Utility Totes",
+          "facets": "material; capacity; dimensions; lid; stackable; transparent; food safe",
+          "styles": "",
+          "room": "all rooms"
+        }
+      ]
+    },
+    "Kitchen Organization": {
+      "Kitchen Storage": [
+        {
+          "name": "Pantry Organizers",
+          "facets": "material; dimensions; capacity; adjustable; wall mount; dishwasher safe",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Spice Racks",
+          "facets": "material; dimensions; capacity; adjustable; wall mount; dishwasher safe",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Can Organizers",
+          "facets": "material; dimensions; capacity; adjustable; wall mount; dishwasher safe",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Cutlery Trays",
+          "facets": "material; dimensions; capacity; adjustable; wall mount; dishwasher safe",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Drawer Organizers",
+          "facets": "material; dimensions; capacity; adjustable; wall mount; dishwasher safe",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Plate Racks",
+          "facets": "material; dimensions; capacity; adjustable; wall mount; dishwasher safe",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Dish Racks",
+          "facets": "material; dimensions; capacity; adjustable; wall mount; dishwasher safe",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Sink Caddies",
+          "facets": "material; dimensions; capacity; adjustable; wall mount; dishwasher safe",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Fridge Organizers",
+          "facets": "material; dimensions; capacity; adjustable; wall mount; dishwasher safe",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Kitchen Shelf Risers",
+          "facets": "material; dimensions; capacity; adjustable; wall mount; dishwasher safe",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Pot Racks",
+          "facets": "material; dimensions; capacity; adjustable; wall mount; dishwasher safe",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Pan Organizers",
+          "facets": "material; dimensions; capacity; adjustable; wall mount; dishwasher safe",
+          "styles": "",
+          "room": "kitchen"
+        }
+      ]
+    },
+    "Office Organization": {
+      "Desk & Office": [
+        {
+          "name": "Desk Organizers",
+          "facets": "material; compartments; dimensions; stackable; cable management",
+          "styles": "",
+          "room": "office"
+        },
+        {
+          "name": "File Organizers",
+          "facets": "material; compartments; dimensions; stackable; cable management",
+          "styles": "",
+          "room": "office"
+        },
+        {
+          "name": "Letter Trays",
+          "facets": "material; compartments; dimensions; stackable; cable management",
+          "styles": "",
+          "room": "office"
+        },
+        {
+          "name": "Magazine Files",
+          "facets": "material; compartments; dimensions; stackable; cable management",
+          "styles": "",
+          "room": "office"
+        },
+        {
+          "name": "Pen Holders",
+          "facets": "material; compartments; dimensions; stackable; cable management",
+          "styles": "",
+          "room": "office"
+        },
+        {
+          "name": "Cable Organizers",
+          "facets": "material; compartments; dimensions; stackable; cable management",
+          "styles": "",
+          "room": "office"
+        },
+        {
+          "name": "Monitor Stands",
+          "facets": "material; compartments; dimensions; stackable; cable management",
+          "styles": "",
+          "room": "office"
+        },
+        {
+          "name": "Document Holders",
+          "facets": "material; compartments; dimensions; stackable; cable management",
+          "styles": "",
+          "room": "office"
+        }
+      ]
+    }
+  },
+  "Kitchen & Tabletop": {
+    "Dinnerware": {
+      "Dinnerware": [
+        {
+          "name": "Dinnerware Sets",
+          "facets": "material; set size; diameter; microwave safe; dishwasher safe; color; pattern",
+          "styles": "modern; traditional; farmhouse; luxury; minimalist",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Dinner Plates",
+          "facets": "material; set size; diameter; microwave safe; dishwasher safe; color; pattern",
+          "styles": "modern; traditional; farmhouse; luxury; minimalist",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Side Plates",
+          "facets": "material; set size; diameter; microwave safe; dishwasher safe; color; pattern",
+          "styles": "modern; traditional; farmhouse; luxury; minimalist",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Salad Plates",
+          "facets": "material; set size; diameter; microwave safe; dishwasher safe; color; pattern",
+          "styles": "modern; traditional; farmhouse; luxury; minimalist",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Dessert Plates",
+          "facets": "material; set size; diameter; microwave safe; dishwasher safe; color; pattern",
+          "styles": "modern; traditional; farmhouse; luxury; minimalist",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Bowls",
+          "facets": "material; set size; diameter; microwave safe; dishwasher safe; color; pattern",
+          "styles": "modern; traditional; farmhouse; luxury; minimalist",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Soup Bowls",
+          "facets": "material; set size; diameter; microwave safe; dishwasher safe; color; pattern",
+          "styles": "modern; traditional; farmhouse; luxury; minimalist",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Pasta Bowls",
+          "facets": "material; set size; diameter; microwave safe; dishwasher safe; color; pattern",
+          "styles": "modern; traditional; farmhouse; luxury; minimalist",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Cereal Bowls",
+          "facets": "material; set size; diameter; microwave safe; dishwasher safe; color; pattern",
+          "styles": "modern; traditional; farmhouse; luxury; minimalist",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Serving Bowls",
+          "facets": "material; set size; diameter; microwave safe; dishwasher safe; color; pattern",
+          "styles": "modern; traditional; farmhouse; luxury; minimalist",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Platters",
+          "facets": "material; set size; diameter; microwave safe; dishwasher safe; color; pattern",
+          "styles": "modern; traditional; farmhouse; luxury; minimalist",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Serving Trays",
+          "facets": "material; set size; diameter; microwave safe; dishwasher safe; color; pattern",
+          "styles": "modern; traditional; farmhouse; luxury; minimalist",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Chargers",
+          "facets": "material; set size; diameter; microwave safe; dishwasher safe; color; pattern",
+          "styles": "modern; traditional; farmhouse; luxury; minimalist",
+          "room": "kitchen; dining room"
+        }
+      ]
+    },
+    "Drinkware": {
+      "Glasses & Mugs": [
+        {
+          "name": "Drinking Glasses",
+          "facets": "material; capacity; set size; dishwasher safe; stemmed; insulated; color",
+          "styles": "modern; classic; luxury; barware",
+          "room": "kitchen; dining room; bar"
+        },
+        {
+          "name": "Tumblers",
+          "facets": "material; capacity; set size; dishwasher safe; stemmed; insulated; color",
+          "styles": "modern; classic; luxury; barware",
+          "room": "kitchen; dining room; bar"
+        },
+        {
+          "name": "Highball Glasses",
+          "facets": "material; capacity; set size; dishwasher safe; stemmed; insulated; color",
+          "styles": "modern; classic; luxury; barware",
+          "room": "kitchen; dining room; bar"
+        },
+        {
+          "name": "Lowball Glasses",
+          "facets": "material; capacity; set size; dishwasher safe; stemmed; insulated; color",
+          "styles": "modern; classic; luxury; barware",
+          "room": "kitchen; dining room; bar"
+        },
+        {
+          "name": "Wine Glasses",
+          "facets": "material; capacity; set size; dishwasher safe; stemmed; insulated; color",
+          "styles": "modern; classic; luxury; barware",
+          "room": "kitchen; dining room; bar"
+        },
+        {
+          "name": "Champagne Glasses",
+          "facets": "material; capacity; set size; dishwasher safe; stemmed; insulated; color",
+          "styles": "modern; classic; luxury; barware",
+          "room": "kitchen; dining room; bar"
+        },
+        {
+          "name": "Beer Glasses",
+          "facets": "material; capacity; set size; dishwasher safe; stemmed; insulated; color",
+          "styles": "modern; classic; luxury; barware",
+          "room": "kitchen; dining room; bar"
+        },
+        {
+          "name": "Cocktail Glasses",
+          "facets": "material; capacity; set size; dishwasher safe; stemmed; insulated; color",
+          "styles": "modern; classic; luxury; barware",
+          "room": "kitchen; dining room; bar"
+        },
+        {
+          "name": "Shot Glasses",
+          "facets": "material; capacity; set size; dishwasher safe; stemmed; insulated; color",
+          "styles": "modern; classic; luxury; barware",
+          "room": "kitchen; dining room; bar"
+        },
+        {
+          "name": "Mugs",
+          "facets": "material; capacity; set size; dishwasher safe; stemmed; insulated; color",
+          "styles": "modern; classic; luxury; barware",
+          "room": "kitchen; dining room; bar"
+        },
+        {
+          "name": "Coffee Cups",
+          "facets": "material; capacity; set size; dishwasher safe; stemmed; insulated; color",
+          "styles": "modern; classic; luxury; barware",
+          "room": "kitchen; dining room; bar"
+        },
+        {
+          "name": "Tea Cups",
+          "facets": "material; capacity; set size; dishwasher safe; stemmed; insulated; color",
+          "styles": "modern; classic; luxury; barware",
+          "room": "kitchen; dining room; bar"
+        },
+        {
+          "name": "Cup & Saucer Sets",
+          "facets": "material; capacity; set size; dishwasher safe; stemmed; insulated; color",
+          "styles": "modern; classic; luxury; barware",
+          "room": "kitchen; dining room; bar"
+        },
+        {
+          "name": "Carafes",
+          "facets": "material; capacity; set size; dishwasher safe; stemmed; insulated; color",
+          "styles": "modern; classic; luxury; barware",
+          "room": "kitchen; dining room; bar"
+        },
+        {
+          "name": "Decanters",
+          "facets": "material; capacity; set size; dishwasher safe; stemmed; insulated; color",
+          "styles": "modern; classic; luxury; barware",
+          "room": "kitchen; dining room; bar"
+        },
+        {
+          "name": "Pitchers & Jugs",
+          "facets": "material; capacity; set size; dishwasher safe; stemmed; insulated; color",
+          "styles": "modern; classic; luxury; barware",
+          "room": "kitchen; dining room; bar"
+        }
+      ]
+    },
+    "Cutlery & Flatware": {
+      "Flatware": [
+        {
+          "name": "Flatware Sets",
+          "facets": "material; finish; set size; dishwasher safe; handle material",
+          "styles": "modern; classic; luxury; industrial",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Forks",
+          "facets": "material; finish; set size; dishwasher safe; handle material",
+          "styles": "modern; classic; luxury; industrial",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Knives",
+          "facets": "material; finish; set size; dishwasher safe; handle material",
+          "styles": "modern; classic; luxury; industrial",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Spoons",
+          "facets": "material; finish; set size; dishwasher safe; handle material",
+          "styles": "modern; classic; luxury; industrial",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Teaspoons",
+          "facets": "material; finish; set size; dishwasher safe; handle material",
+          "styles": "modern; classic; luxury; industrial",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Dessert Spoons",
+          "facets": "material; finish; set size; dishwasher safe; handle material",
+          "styles": "modern; classic; luxury; industrial",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Serving Spoons",
+          "facets": "material; finish; set size; dishwasher safe; handle material",
+          "styles": "modern; classic; luxury; industrial",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Serving Forks",
+          "facets": "material; finish; set size; dishwasher safe; handle material",
+          "styles": "modern; classic; luxury; industrial",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Steak Knives",
+          "facets": "material; finish; set size; dishwasher safe; handle material",
+          "styles": "modern; classic; luxury; industrial",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Chopsticks",
+          "facets": "material; finish; set size; dishwasher safe; handle material",
+          "styles": "modern; classic; luxury; industrial",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Cutlery Organizers",
+          "facets": "material; finish; set size; dishwasher safe; handle material",
+          "styles": "modern; classic; luxury; industrial",
+          "room": "kitchen; dining room"
+        }
+      ]
+    },
+    "Serveware": {
+      "Serving": [
+        {
+          "name": "Serving Platters",
+          "facets": "material; dimensions; food safe; dishwasher safe; handles; set size",
+          "styles": "modern; farmhouse; luxury; rustic",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Serving Bowls",
+          "facets": "material; dimensions; food safe; dishwasher safe; handles; set size",
+          "styles": "modern; farmhouse; luxury; rustic",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Cake Stands",
+          "facets": "material; dimensions; food safe; dishwasher safe; handles; set size",
+          "styles": "modern; farmhouse; luxury; rustic",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Tiered Stands",
+          "facets": "material; dimensions; food safe; dishwasher safe; handles; set size",
+          "styles": "modern; farmhouse; luxury; rustic",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Cheese Boards",
+          "facets": "material; dimensions; food safe; dishwasher safe; handles; set size",
+          "styles": "modern; farmhouse; luxury; rustic",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Charcuterie Boards",
+          "facets": "material; dimensions; food safe; dishwasher safe; handles; set size",
+          "styles": "modern; farmhouse; luxury; rustic",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Serving Boards",
+          "facets": "material; dimensions; food safe; dishwasher safe; handles; set size",
+          "styles": "modern; farmhouse; luxury; rustic",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Bread Baskets",
+          "facets": "material; dimensions; food safe; dishwasher safe; handles; set size",
+          "styles": "modern; farmhouse; luxury; rustic",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Gravy Boats",
+          "facets": "material; dimensions; food safe; dishwasher safe; handles; set size",
+          "styles": "modern; farmhouse; luxury; rustic",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Butter Dishes",
+          "facets": "material; dimensions; food safe; dishwasher safe; handles; set size",
+          "styles": "modern; farmhouse; luxury; rustic",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Condiment Sets",
+          "facets": "material; dimensions; food safe; dishwasher safe; handles; set size",
+          "styles": "modern; farmhouse; luxury; rustic",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Salt & Pepper Sets",
+          "facets": "material; dimensions; food safe; dishwasher safe; handles; set size",
+          "styles": "modern; farmhouse; luxury; rustic",
+          "room": "kitchen; dining room"
+        }
+      ]
+    },
+    "Table Linens": {
+      "Table Textiles": [
+        {
+          "name": "Tablecloths",
+          "facets": "size; shape; material; stain resistant; washable; color; pattern",
+          "styles": "modern; traditional; festive; luxury",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Table Runners",
+          "facets": "size; shape; material; stain resistant; washable; color; pattern",
+          "styles": "modern; traditional; festive; luxury",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Placemats",
+          "facets": "size; shape; material; stain resistant; washable; color; pattern",
+          "styles": "modern; traditional; festive; luxury",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Cloth Napkins",
+          "facets": "size; shape; material; stain resistant; washable; color; pattern",
+          "styles": "modern; traditional; festive; luxury",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Napkin Rings",
+          "facets": "size; shape; material; stain resistant; washable; color; pattern",
+          "styles": "modern; traditional; festive; luxury",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Coasters",
+          "facets": "size; shape; material; stain resistant; washable; color; pattern",
+          "styles": "modern; traditional; festive; luxury",
+          "room": "dining room; kitchen"
+        },
+        {
+          "name": "Table Protectors",
+          "facets": "size; shape; material; stain resistant; washable; color; pattern",
+          "styles": "modern; traditional; festive; luxury",
+          "room": "dining room; kitchen"
+        }
+      ]
+    },
+    "Kitchen Textiles": {
+      "Kitchen Linen": [
+        {
+          "name": "Kitchen Towels",
+          "facets": "material; size; heat resistance; absorbency; washable; pattern",
+          "styles": "modern; farmhouse; festive",
+          "room": "kitchen"
+        },
+        {
+          "name": "Tea Towels",
+          "facets": "material; size; heat resistance; absorbency; washable; pattern",
+          "styles": "modern; farmhouse; festive",
+          "room": "kitchen"
+        },
+        {
+          "name": "Dish Towels",
+          "facets": "material; size; heat resistance; absorbency; washable; pattern",
+          "styles": "modern; farmhouse; festive",
+          "room": "kitchen"
+        },
+        {
+          "name": "Aprons",
+          "facets": "material; size; heat resistance; absorbency; washable; pattern",
+          "styles": "modern; farmhouse; festive",
+          "room": "kitchen"
+        },
+        {
+          "name": "Oven Mitts",
+          "facets": "material; size; heat resistance; absorbency; washable; pattern",
+          "styles": "modern; farmhouse; festive",
+          "room": "kitchen"
+        },
+        {
+          "name": "Pot Holders",
+          "facets": "material; size; heat resistance; absorbency; washable; pattern",
+          "styles": "modern; farmhouse; festive",
+          "room": "kitchen"
+        },
+        {
+          "name": "Bread Basket Liners",
+          "facets": "material; size; heat resistance; absorbency; washable; pattern",
+          "styles": "modern; farmhouse; festive",
+          "room": "kitchen"
+        }
+      ]
+    },
+    "Cookware & Bakeware": {
+      "Cookware": [
+        {
+          "name": "Cookware Sets",
+          "facets": "material; diameter; capacity; induction compatible; oven safe; non-stick; dishwasher safe",
+          "styles": "modern; professional; classic",
+          "room": "kitchen"
+        },
+        {
+          "name": "Frying Pans",
+          "facets": "material; diameter; capacity; induction compatible; oven safe; non-stick; dishwasher safe",
+          "styles": "modern; professional; classic",
+          "room": "kitchen"
+        },
+        {
+          "name": "Saucepans",
+          "facets": "material; diameter; capacity; induction compatible; oven safe; non-stick; dishwasher safe",
+          "styles": "modern; professional; classic",
+          "room": "kitchen"
+        },
+        {
+          "name": "Stock Pots",
+          "facets": "material; diameter; capacity; induction compatible; oven safe; non-stick; dishwasher safe",
+          "styles": "modern; professional; classic",
+          "room": "kitchen"
+        },
+        {
+          "name": "Dutch Ovens",
+          "facets": "material; diameter; capacity; induction compatible; oven safe; non-stick; dishwasher safe",
+          "styles": "modern; professional; classic",
+          "room": "kitchen"
+        },
+        {
+          "name": "Grill Pans",
+          "facets": "material; diameter; capacity; induction compatible; oven safe; non-stick; dishwasher safe",
+          "styles": "modern; professional; classic",
+          "room": "kitchen"
+        },
+        {
+          "name": "Woks",
+          "facets": "material; diameter; capacity; induction compatible; oven safe; non-stick; dishwasher safe",
+          "styles": "modern; professional; classic",
+          "room": "kitchen"
+        },
+        {
+          "name": "Casserole Dishes",
+          "facets": "material; diameter; capacity; induction compatible; oven safe; non-stick; dishwasher safe",
+          "styles": "modern; professional; classic",
+          "room": "kitchen"
+        },
+        {
+          "name": "Baking Trays",
+          "facets": "material; diameter; capacity; induction compatible; oven safe; non-stick; dishwasher safe",
+          "styles": "modern; professional; classic",
+          "room": "kitchen"
+        },
+        {
+          "name": "Cake Pans",
+          "facets": "material; diameter; capacity; induction compatible; oven safe; non-stick; dishwasher safe",
+          "styles": "modern; professional; classic",
+          "room": "kitchen"
+        },
+        {
+          "name": "Loaf Pans",
+          "facets": "material; diameter; capacity; induction compatible; oven safe; non-stick; dishwasher safe",
+          "styles": "modern; professional; classic",
+          "room": "kitchen"
+        },
+        {
+          "name": "Muffin Pans",
+          "facets": "material; diameter; capacity; induction compatible; oven safe; non-stick; dishwasher safe",
+          "styles": "modern; professional; classic",
+          "room": "kitchen"
+        },
+        {
+          "name": "Pizza Pans",
+          "facets": "material; diameter; capacity; induction compatible; oven safe; non-stick; dishwasher safe",
+          "styles": "modern; professional; classic",
+          "room": "kitchen"
+        }
+      ]
+    },
+    "Kitchen Tools & Accessories": {
+      "Tools": [
+        {
+          "name": "Cutting Boards",
+          "facets": "material; dimensions; dishwasher safe; food safe; set size",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Knife Blocks",
+          "facets": "material; dimensions; dishwasher safe; food safe; set size",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Utensil Holders",
+          "facets": "material; dimensions; dishwasher safe; food safe; set size",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Cooking Utensil Sets",
+          "facets": "material; dimensions; dishwasher safe; food safe; set size",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Measuring Cups & Spoons",
+          "facets": "material; dimensions; dishwasher safe; food safe; set size",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Colanders & Strainers",
+          "facets": "material; dimensions; dishwasher safe; food safe; set size",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Mixing Bowls",
+          "facets": "material; dimensions; dishwasher safe; food safe; set size",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Mortar & Pestle",
+          "facets": "material; dimensions; dishwasher safe; food safe; set size",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Rolling Pins",
+          "facets": "material; dimensions; dishwasher safe; food safe; set size",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Trivets",
+          "facets": "material; dimensions; dishwasher safe; food safe; set size",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Bottle Openers",
+          "facets": "material; dimensions; dishwasher safe; food safe; set size",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Can Openers",
+          "facets": "material; dimensions; dishwasher safe; food safe; set size",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Kitchen Scales",
+          "facets": "material; dimensions; dishwasher safe; food safe; set size",
+          "styles": "",
+          "room": "kitchen"
+        },
+        {
+          "name": "Timers",
+          "facets": "material; dimensions; dishwasher safe; food safe; set size",
+          "styles": "",
+          "room": "kitchen"
+        }
+      ]
+    },
+    "Coffee & Tea": {
+      "Coffee & Tea": [
+        {
+          "name": "Teapots",
+          "facets": "material; capacity; induction compatible; dishwasher safe; filter type",
+          "styles": "modern; classic; Japanese; luxury",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Tea Kettles",
+          "facets": "material; capacity; induction compatible; dishwasher safe; filter type",
+          "styles": "modern; classic; Japanese; luxury",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "French Presses",
+          "facets": "material; capacity; induction compatible; dishwasher safe; filter type",
+          "styles": "modern; classic; Japanese; luxury",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Pour Over Coffee Makers",
+          "facets": "material; capacity; induction compatible; dishwasher safe; filter type",
+          "styles": "modern; classic; Japanese; luxury",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Coffee Canisters",
+          "facets": "material; capacity; induction compatible; dishwasher safe; filter type",
+          "styles": "modern; classic; Japanese; luxury",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Tea Canisters",
+          "facets": "material; capacity; induction compatible; dishwasher safe; filter type",
+          "styles": "modern; classic; Japanese; luxury",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Sugar Bowls",
+          "facets": "material; capacity; induction compatible; dishwasher safe; filter type",
+          "styles": "modern; classic; Japanese; luxury",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Milk Jugs & Creamers",
+          "facets": "material; capacity; induction compatible; dishwasher safe; filter type",
+          "styles": "modern; classic; Japanese; luxury",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Tea Infusers",
+          "facets": "material; capacity; induction compatible; dishwasher safe; filter type",
+          "styles": "modern; classic; Japanese; luxury",
+          "room": "kitchen; dining room"
+        },
+        {
+          "name": "Tea Strainers",
+          "facets": "material; capacity; induction compatible; dishwasher safe; filter type",
+          "styles": "modern; classic; Japanese; luxury",
+          "room": "kitchen; dining room"
+        }
+      ]
+    }
+  },
+  "Outdoor & Garden": {
+    "Planters & Pots": {
+      "Planters": [
+        {
+          "name": "Indoor Planters",
+          "facets": "material; diameter; height; drainage; indoor/outdoor; self watering; frost resistant",
+          "styles": "modern; natural; rustic; Mediterranean; boho",
+          "room": "living room; balcony; patio; garden"
+        },
+        {
+          "name": "Outdoor Planters",
+          "facets": "material; diameter; height; drainage; indoor/outdoor; self watering; frost resistant",
+          "styles": "modern; natural; rustic; Mediterranean; boho",
+          "room": "living room; balcony; patio; garden"
+        },
+        {
+          "name": "Plant Pots",
+          "facets": "material; diameter; height; drainage; indoor/outdoor; self watering; frost resistant",
+          "styles": "modern; natural; rustic; Mediterranean; boho",
+          "room": "living room; balcony; patio; garden"
+        },
+        {
+          "name": "Ceramic Planters",
+          "facets": "material; diameter; height; drainage; indoor/outdoor; self watering; frost resistant",
+          "styles": "modern; natural; rustic; Mediterranean; boho",
+          "room": "living room; balcony; patio; garden"
+        },
+        {
+          "name": "Terracotta Planters",
+          "facets": "material; diameter; height; drainage; indoor/outdoor; self watering; frost resistant",
+          "styles": "modern; natural; rustic; Mediterranean; boho",
+          "room": "living room; balcony; patio; garden"
+        },
+        {
+          "name": "Metal Planters",
+          "facets": "material; diameter; height; drainage; indoor/outdoor; self watering; frost resistant",
+          "styles": "modern; natural; rustic; Mediterranean; boho",
+          "room": "living room; balcony; patio; garden"
+        },
+        {
+          "name": "Wood Planters",
+          "facets": "material; diameter; height; drainage; indoor/outdoor; self watering; frost resistant",
+          "styles": "modern; natural; rustic; Mediterranean; boho",
+          "room": "living room; balcony; patio; garden"
+        },
+        {
+          "name": "Fiberglass Planters",
+          "facets": "material; diameter; height; drainage; indoor/outdoor; self watering; frost resistant",
+          "styles": "modern; natural; rustic; Mediterranean; boho",
+          "room": "living room; balcony; patio; garden"
+        },
+        {
+          "name": "Hanging Planters",
+          "facets": "material; diameter; height; drainage; indoor/outdoor; self watering; frost resistant",
+          "styles": "modern; natural; rustic; Mediterranean; boho",
+          "room": "living room; balcony; patio; garden"
+        },
+        {
+          "name": "Wall Planters",
+          "facets": "material; diameter; height; drainage; indoor/outdoor; self watering; frost resistant",
+          "styles": "modern; natural; rustic; Mediterranean; boho",
+          "room": "living room; balcony; patio; garden"
+        },
+        {
+          "name": "Window Boxes",
+          "facets": "material; diameter; height; drainage; indoor/outdoor; self watering; frost resistant",
+          "styles": "modern; natural; rustic; Mediterranean; boho",
+          "room": "living room; balcony; patio; garden"
+        },
+        {
+          "name": "Raised Garden Beds",
+          "facets": "material; diameter; height; drainage; indoor/outdoor; self watering; frost resistant",
+          "styles": "modern; natural; rustic; Mediterranean; boho",
+          "room": "living room; balcony; patio; garden"
+        }
+      ]
+    },
+    "Garden Decor": {
+      "Decor": [
+        {
+          "name": "Garden Statues",
+          "facets": "material; size; weather resistant; solar; theme; finish",
+          "styles": "rustic; traditional; modern; whimsical",
+          "room": "garden; patio; balcony"
+        },
+        {
+          "name": "Garden Ornaments",
+          "facets": "material; size; weather resistant; solar; theme; finish",
+          "styles": "rustic; traditional; modern; whimsical",
+          "room": "garden; patio; balcony"
+        },
+        {
+          "name": "Garden Stakes",
+          "facets": "material; size; weather resistant; solar; theme; finish",
+          "styles": "rustic; traditional; modern; whimsical",
+          "room": "garden; patio; balcony"
+        },
+        {
+          "name": "Wind Chimes",
+          "facets": "material; size; weather resistant; solar; theme; finish",
+          "styles": "rustic; traditional; modern; whimsical",
+          "room": "garden; patio; balcony"
+        },
+        {
+          "name": "Garden Bells",
+          "facets": "material; size; weather resistant; solar; theme; finish",
+          "styles": "rustic; traditional; modern; whimsical",
+          "room": "garden; patio; balcony"
+        },
+        {
+          "name": "Bird Baths",
+          "facets": "material; size; weather resistant; solar; theme; finish",
+          "styles": "rustic; traditional; modern; whimsical",
+          "room": "garden; patio; balcony"
+        },
+        {
+          "name": "Bird Feeders",
+          "facets": "material; size; weather resistant; solar; theme; finish",
+          "styles": "rustic; traditional; modern; whimsical",
+          "room": "garden; patio; balcony"
+        },
+        {
+          "name": "Garden Signs",
+          "facets": "material; size; weather resistant; solar; theme; finish",
+          "styles": "rustic; traditional; modern; whimsical",
+          "room": "garden; patio; balcony"
+        },
+        {
+          "name": "Outdoor Wall Decor",
+          "facets": "material; size; weather resistant; solar; theme; finish",
+          "styles": "rustic; traditional; modern; whimsical",
+          "room": "garden; patio; balcony"
+        },
+        {
+          "name": "Garden Mirrors",
+          "facets": "material; size; weather resistant; solar; theme; finish",
+          "styles": "rustic; traditional; modern; whimsical",
+          "room": "garden; patio; balcony"
+        },
+        {
+          "name": "Garden Lanterns",
+          "facets": "material; size; weather resistant; solar; theme; finish",
+          "styles": "rustic; traditional; modern; whimsical",
+          "room": "garden; patio; balcony"
+        },
+        {
+          "name": "Garden Fountains",
+          "facets": "material; size; weather resistant; solar; theme; finish",
+          "styles": "rustic; traditional; modern; whimsical",
+          "room": "garden; patio; balcony"
+        }
+      ]
+    },
+    "Shade & Shelter": {
+      "Outdoor Shade": [
+        {
+          "name": "Patio Umbrellas",
+          "facets": "size; canopy material; UV protection; waterproof; frame material; crank/tilt; base weight",
+          "styles": "modern; resort; coastal",
+          "room": "patio; garden; poolside"
+        },
+        {
+          "name": "Cantilever Umbrellas",
+          "facets": "size; canopy material; UV protection; waterproof; frame material; crank/tilt; base weight",
+          "styles": "modern; resort; coastal",
+          "room": "patio; garden; poolside"
+        },
+        {
+          "name": "Market Umbrellas",
+          "facets": "size; canopy material; UV protection; waterproof; frame material; crank/tilt; base weight",
+          "styles": "modern; resort; coastal",
+          "room": "patio; garden; poolside"
+        },
+        {
+          "name": "Umbrella Bases",
+          "facets": "size; canopy material; UV protection; waterproof; frame material; crank/tilt; base weight",
+          "styles": "modern; resort; coastal",
+          "room": "patio; garden; poolside"
+        },
+        {
+          "name": "Pergolas",
+          "facets": "size; canopy material; UV protection; waterproof; frame material; crank/tilt; base weight",
+          "styles": "modern; resort; coastal",
+          "room": "patio; garden; poolside"
+        },
+        {
+          "name": "Gazebos",
+          "facets": "size; canopy material; UV protection; waterproof; frame material; crank/tilt; base weight",
+          "styles": "modern; resort; coastal",
+          "room": "patio; garden; poolside"
+        },
+        {
+          "name": "Canopies",
+          "facets": "size; canopy material; UV protection; waterproof; frame material; crank/tilt; base weight",
+          "styles": "modern; resort; coastal",
+          "room": "patio; garden; poolside"
+        },
+        {
+          "name": "Outdoor Curtains",
+          "facets": "size; canopy material; UV protection; waterproof; frame material; crank/tilt; base weight",
+          "styles": "modern; resort; coastal",
+          "room": "patio; garden; poolside"
+        },
+        {
+          "name": "Shade Sails",
+          "facets": "size; canopy material; UV protection; waterproof; frame material; crank/tilt; base weight",
+          "styles": "modern; resort; coastal",
+          "room": "patio; garden; poolside"
+        }
+      ]
+    },
+    "Outdoor Heating & Fire": {
+      "Fire & Heat": [
+        {
+          "name": "Fire Pits",
+          "facets": "fuel type; material; size; BTU; portable; cover included",
+          "styles": "modern; rustic; industrial",
+          "room": "patio; garden"
+        },
+        {
+          "name": "Fire Pit Bowls",
+          "facets": "fuel type; material; size; BTU; portable; cover included",
+          "styles": "modern; rustic; industrial",
+          "room": "patio; garden"
+        },
+        {
+          "name": "Tabletop Fire Pits",
+          "facets": "fuel type; material; size; BTU; portable; cover included",
+          "styles": "modern; rustic; industrial",
+          "room": "patio; garden"
+        },
+        {
+          "name": "Outdoor Fireplaces",
+          "facets": "fuel type; material; size; BTU; portable; cover included",
+          "styles": "modern; rustic; industrial",
+          "room": "patio; garden"
+        },
+        {
+          "name": "Patio Heaters",
+          "facets": "fuel type; material; size; BTU; portable; cover included",
+          "styles": "modern; rustic; industrial",
+          "room": "patio; garden"
+        },
+        {
+          "name": "Chimineas",
+          "facets": "fuel type; material; size; BTU; portable; cover included",
+          "styles": "modern; rustic; industrial",
+          "room": "patio; garden"
+        }
+      ]
+    },
+    "Hammocks & Swings": {
+      "Relaxation": [
+        {
+          "name": "Hammocks",
+          "facets": "material; capacity; stand included; weather resistance; weight limit",
+          "styles": "boho; tropical; coastal; rustic",
+          "room": "garden; patio; balcony"
+        },
+        {
+          "name": "Hammock Stands",
+          "facets": "material; capacity; stand included; weather resistance; weight limit",
+          "styles": "boho; tropical; coastal; rustic",
+          "room": "garden; patio; balcony"
+        },
+        {
+          "name": "Hanging Chairs",
+          "facets": "material; capacity; stand included; weather resistance; weight limit",
+          "styles": "boho; tropical; coastal; rustic",
+          "room": "garden; patio; balcony"
+        },
+        {
+          "name": "Porch Swings",
+          "facets": "material; capacity; stand included; weather resistance; weight limit",
+          "styles": "boho; tropical; coastal; rustic",
+          "room": "garden; patio; balcony"
+        },
+        {
+          "name": "Swing Seats",
+          "facets": "material; capacity; stand included; weather resistance; weight limit",
+          "styles": "boho; tropical; coastal; rustic",
+          "room": "garden; patio; balcony"
+        },
+        {
+          "name": "Garden Swings",
+          "facets": "material; capacity; stand included; weather resistance; weight limit",
+          "styles": "boho; tropical; coastal; rustic",
+          "room": "garden; patio; balcony"
+        }
+      ]
+    },
+    "Outdoor Cushions & Textiles": {
+      "Outdoor Textiles": [
+        {
+          "name": "Outdoor Cushions",
+          "facets": "material; UV resistance; water resistance; washable; size; pattern",
+          "styles": "coastal; modern; tropical; boho",
+          "room": "patio; garden; balcony"
+        },
+        {
+          "name": "Outdoor Cushion Covers",
+          "facets": "material; UV resistance; water resistance; washable; size; pattern",
+          "styles": "coastal; modern; tropical; boho",
+          "room": "patio; garden; balcony"
+        },
+        {
+          "name": "Outdoor Throw Pillows",
+          "facets": "material; UV resistance; water resistance; washable; size; pattern",
+          "styles": "coastal; modern; tropical; boho",
+          "room": "patio; garden; balcony"
+        },
+        {
+          "name": "Outdoor Rugs",
+          "facets": "material; UV resistance; water resistance; washable; size; pattern",
+          "styles": "coastal; modern; tropical; boho",
+          "room": "patio; garden; balcony"
+        },
+        {
+          "name": "Picnic Blankets",
+          "facets": "material; UV resistance; water resistance; washable; size; pattern",
+          "styles": "coastal; modern; tropical; boho",
+          "room": "patio; garden; balcony"
+        },
+        {
+          "name": "Outdoor Tablecloths",
+          "facets": "material; UV resistance; water resistance; washable; size; pattern",
+          "styles": "coastal; modern; tropical; boho",
+          "room": "patio; garden; balcony"
+        },
+        {
+          "name": "Furniture Covers",
+          "facets": "material; UV resistance; water resistance; washable; size; pattern",
+          "styles": "coastal; modern; tropical; boho",
+          "room": "patio; garden; balcony"
+        }
+      ]
+    }
+  },
+  "Kids & Baby Home": {
+    "Kids Furniture": {
+      "Kids Furniture": [
+        {
+          "name": "Kids Beds",
+          "facets": "age range; material; size; safety rails; weight capacity; storage; finish",
+          "styles": "kids; modern; playful; Scandinavian",
+          "room": "kids room; playroom"
+        },
+        {
+          "name": "Toddler Beds",
+          "facets": "age range; material; size; safety rails; weight capacity; storage; finish",
+          "styles": "kids; modern; playful; Scandinavian",
+          "room": "kids room; playroom"
+        },
+        {
+          "name": "Bunk Beds",
+          "facets": "age range; material; size; safety rails; weight capacity; storage; finish",
+          "styles": "kids; modern; playful; Scandinavian",
+          "room": "kids room; playroom"
+        },
+        {
+          "name": "Loft Beds",
+          "facets": "age range; material; size; safety rails; weight capacity; storage; finish",
+          "styles": "kids; modern; playful; Scandinavian",
+          "room": "kids room; playroom"
+        },
+        {
+          "name": "Kids Headboards",
+          "facets": "age range; material; size; safety rails; weight capacity; storage; finish",
+          "styles": "kids; modern; playful; Scandinavian",
+          "room": "kids room; playroom"
+        },
+        {
+          "name": "Kids Nightstands",
+          "facets": "age range; material; size; safety rails; weight capacity; storage; finish",
+          "styles": "kids; modern; playful; Scandinavian",
+          "room": "kids room; playroom"
+        },
+        {
+          "name": "Kids Dressers",
+          "facets": "age range; material; size; safety rails; weight capacity; storage; finish",
+          "styles": "kids; modern; playful; Scandinavian",
+          "room": "kids room; playroom"
+        },
+        {
+          "name": "Kids Wardrobes",
+          "facets": "age range; material; size; safety rails; weight capacity; storage; finish",
+          "styles": "kids; modern; playful; Scandinavian",
+          "room": "kids room; playroom"
+        },
+        {
+          "name": "Kids Desks",
+          "facets": "age range; material; size; safety rails; weight capacity; storage; finish",
+          "styles": "kids; modern; playful; Scandinavian",
+          "room": "kids room; playroom"
+        },
+        {
+          "name": "Kids Chairs",
+          "facets": "age range; material; size; safety rails; weight capacity; storage; finish",
+          "styles": "kids; modern; playful; Scandinavian",
+          "room": "kids room; playroom"
+        },
+        {
+          "name": "Kids Tables",
+          "facets": "age range; material; size; safety rails; weight capacity; storage; finish",
+          "styles": "kids; modern; playful; Scandinavian",
+          "room": "kids room; playroom"
+        },
+        {
+          "name": "Kids Benches",
+          "facets": "age range; material; size; safety rails; weight capacity; storage; finish",
+          "styles": "kids; modern; playful; Scandinavian",
+          "room": "kids room; playroom"
+        },
+        {
+          "name": "Kids Bookshelves",
+          "facets": "age range; material; size; safety rails; weight capacity; storage; finish",
+          "styles": "kids; modern; playful; Scandinavian",
+          "room": "kids room; playroom"
+        },
+        {
+          "name": "Toy Storage Benches",
+          "facets": "age range; material; size; safety rails; weight capacity; storage; finish",
+          "styles": "kids; modern; playful; Scandinavian",
+          "room": "kids room; playroom"
+        },
+        {
+          "name": "Kids Bean Bags",
+          "facets": "age range; material; size; safety rails; weight capacity; storage; finish",
+          "styles": "kids; modern; playful; Scandinavian",
+          "room": "kids room; playroom"
+        }
+      ]
+    },
+    "Nursery Furniture": {
+      "Nursery": [
+        {
+          "name": "Cribs",
+          "facets": "age range; safety standard; material; conversion stages; mattress size; storage",
+          "styles": "nursery; modern; Scandinavian",
+          "room": "nursery"
+        },
+        {
+          "name": "Convertible Cribs",
+          "facets": "age range; safety standard; material; conversion stages; mattress size; storage",
+          "styles": "nursery; modern; Scandinavian",
+          "room": "nursery"
+        },
+        {
+          "name": "Bassinets",
+          "facets": "age range; safety standard; material; conversion stages; mattress size; storage",
+          "styles": "nursery; modern; Scandinavian",
+          "room": "nursery"
+        },
+        {
+          "name": "Changing Tables",
+          "facets": "age range; safety standard; material; conversion stages; mattress size; storage",
+          "styles": "nursery; modern; Scandinavian",
+          "room": "nursery"
+        },
+        {
+          "name": "Changing Dressers",
+          "facets": "age range; safety standard; material; conversion stages; mattress size; storage",
+          "styles": "nursery; modern; Scandinavian",
+          "room": "nursery"
+        },
+        {
+          "name": "Nursery Rocking Chairs",
+          "facets": "age range; safety standard; material; conversion stages; mattress size; storage",
+          "styles": "nursery; modern; Scandinavian",
+          "room": "nursery"
+        },
+        {
+          "name": "Gliders",
+          "facets": "age range; safety standard; material; conversion stages; mattress size; storage",
+          "styles": "nursery; modern; Scandinavian",
+          "room": "nursery"
+        },
+        {
+          "name": "Nursing Chairs",
+          "facets": "age range; safety standard; material; conversion stages; mattress size; storage",
+          "styles": "nursery; modern; Scandinavian",
+          "room": "nursery"
+        },
+        {
+          "name": "Nursery Bookcases",
+          "facets": "age range; safety standard; material; conversion stages; mattress size; storage",
+          "styles": "nursery; modern; Scandinavian",
+          "room": "nursery"
+        },
+        {
+          "name": "Toy Storage",
+          "facets": "age range; safety standard; material; conversion stages; mattress size; storage",
+          "styles": "nursery; modern; Scandinavian",
+          "room": "nursery"
+        }
+      ]
+    },
+    "Kids Decor": {
+      "Decor": [
+        {
+          "name": "Kids Wall Art",
+          "facets": "age; theme; material; wall mount; battery; size; color",
+          "styles": "kids; nursery; playful",
+          "room": "kids room; nursery"
+        },
+        {
+          "name": "Kids Mirrors",
+          "facets": "age; theme; material; wall mount; battery; size; color",
+          "styles": "kids; nursery; playful",
+          "room": "kids room; nursery"
+        },
+        {
+          "name": "Kids Lamps",
+          "facets": "age; theme; material; wall mount; battery; size; color",
+          "styles": "kids; nursery; playful",
+          "room": "kids room; nursery"
+        },
+        {
+          "name": "Night Lights",
+          "facets": "age; theme; material; wall mount; battery; size; color",
+          "styles": "kids; nursery; playful",
+          "room": "kids room; nursery"
+        }
+      ]
+    }
+  },
+  "Pet Home": {
+    "Pet Furniture": {
+      "Furniture": [
+        {
+          "name": "Dog Beds",
+          "facets": "pet type; pet size; material; washable cover; weight capacity; orthopedic; foldable",
+          "styles": "modern; neutral; pet friendly",
+          "room": "living room; bedroom"
+        },
+        {
+          "name": "Cat Beds",
+          "facets": "pet type; pet size; material; washable cover; weight capacity; orthopedic; foldable",
+          "styles": "modern; neutral; pet friendly",
+          "room": "living room; bedroom"
+        },
+        {
+          "name": "Orthopedic Pet Beds",
+          "facets": "pet type; pet size; material; washable cover; weight capacity; orthopedic; foldable",
+          "styles": "modern; neutral; pet friendly",
+          "room": "living room; bedroom"
+        },
+        {
+          "name": "Pet Sofas",
+          "facets": "pet type; pet size; material; washable cover; weight capacity; orthopedic; foldable",
+          "styles": "modern; neutral; pet friendly",
+          "room": "living room; bedroom"
+        },
+        {
+          "name": "Cat Trees",
+          "facets": "pet type; pet size; material; washable cover; weight capacity; orthopedic; foldable",
+          "styles": "modern; neutral; pet friendly",
+          "room": "living room; bedroom"
+        },
+        {
+          "name": "Cat Towers",
+          "facets": "pet type; pet size; material; washable cover; weight capacity; orthopedic; foldable",
+          "styles": "modern; neutral; pet friendly",
+          "room": "living room; bedroom"
+        },
+        {
+          "name": "Cat Scratching Posts",
+          "facets": "pet type; pet size; material; washable cover; weight capacity; orthopedic; foldable",
+          "styles": "modern; neutral; pet friendly",
+          "room": "living room; bedroom"
+        },
+        {
+          "name": "Pet Stairs",
+          "facets": "pet type; pet size; material; washable cover; weight capacity; orthopedic; foldable",
+          "styles": "modern; neutral; pet friendly",
+          "room": "living room; bedroom"
+        },
+        {
+          "name": "Pet Ramps",
+          "facets": "pet type; pet size; material; washable cover; weight capacity; orthopedic; foldable",
+          "styles": "modern; neutral; pet friendly",
+          "room": "living room; bedroom"
+        },
+        {
+          "name": "Pet Crates",
+          "facets": "pet type; pet size; material; washable cover; weight capacity; orthopedic; foldable",
+          "styles": "modern; neutral; pet friendly",
+          "room": "living room; bedroom"
+        },
+        {
+          "name": "Furniture Style Dog Crates",
+          "facets": "pet type; pet size; material; washable cover; weight capacity; orthopedic; foldable",
+          "styles": "modern; neutral; pet friendly",
+          "room": "living room; bedroom"
+        }
+      ]
+    },
+    "Pet Feeding": {
+      "Feeding": [
+        {
+          "name": "Pet Bowls",
+          "facets": "pet type; capacity; material; dishwasher safe; anti-slip; elevated height",
+          "styles": "",
+          "room": "kitchen; utility"
+        },
+        {
+          "name": "Elevated Pet Bowls",
+          "facets": "pet type; capacity; material; dishwasher safe; anti-slip; elevated height",
+          "styles": "",
+          "room": "kitchen; utility"
+        },
+        {
+          "name": "Slow Feeder Bowls",
+          "facets": "pet type; capacity; material; dishwasher safe; anti-slip; elevated height",
+          "styles": "",
+          "room": "kitchen; utility"
+        },
+        {
+          "name": "Pet Feeding Mats",
+          "facets": "pet type; capacity; material; dishwasher safe; anti-slip; elevated height",
+          "styles": "",
+          "room": "kitchen; utility"
+        },
+        {
+          "name": "Pet Food Storage",
+          "facets": "pet type; capacity; material; dishwasher safe; anti-slip; elevated height",
+          "styles": "",
+          "room": "kitchen; utility"
+        },
+        {
+          "name": "Water Fountains",
+          "facets": "pet type; capacity; material; dishwasher safe; anti-slip; elevated height",
+          "styles": "",
+          "room": "kitchen; utility"
+        }
+      ]
+    }
+  }
+}

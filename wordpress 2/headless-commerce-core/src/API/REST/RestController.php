@@ -11,12 +11,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 abstract class RestController extends \WP_REST_Controller {
 
-	protected string $namespace = HCC_REST_NAMESPACE;
+	protected $namespace = HCC_REST_NAMESPACE;
 
 	/**
 	 * Prepare standard JSON response
 	 */
-	protected function success_response( $data, int $status = 200 ): \WP_REST_Response {
+	protected function success_response( $data, $status = 200 ) {
 		return new \WP_REST_Response( array(
 			'success' => true,
 			'data'    => $data,
@@ -26,7 +26,7 @@ abstract class RestController extends \WP_REST_Controller {
 	/**
 	 * Prepare standard error JSON response
 	 */
-	protected function error_response( string $code, string $message, int $status = 400 ): \WP_Error {
+	protected function error_response( $code, $message, $status = 400 ) {
 		return new \WP_Error( $code, $message, array( 'status' => $status ) );
 	}
 }
