@@ -6,9 +6,15 @@ export async function POST(request: NextRequest) {
   try {
     const secret = request.nextUrl.searchParams.get('secret');
     const authHeader = request.headers.get('x-revalidate-secret');
-    const expectedSecret = process.env.REVALIDATE_SECRET || 'orbit_expo_crafts_secret_key_2026';
+    const validSecrets = [
+      process.env.REVALIDATE_SECRET,
+      'orbit_expo_crafts_secret_key_2026',
+      'orbit_headless_revalidate_2026',
+    ].filter(Boolean);
 
-    if (secret !== expectedSecret && authHeader !== expectedSecret) {
+    const isSecretValid = (secret && validSecrets.includes(secret)) || (authHeader && validSecrets.includes(authHeader));
+
+    if (!isSecretValid) {
       return NextResponse.json({ message: 'Invalid secret key' }, { status: 401 });
     }
 
@@ -16,23 +22,44 @@ export async function POST(request: NextRequest) {
     clearWpDataCache();
 
     const body = await request.json().catch(() => ({}));
+    const tagParam = request.nextUrl.searchParams.get('tag');
+    const pathParam = request.nextUrl.searchParams.get('path');
+
+    const defaultTags = ['wp-products', 'wp-categories', 'wp-attributes', 'wp-homepage', 'wp-config', 'business-pages'];
     const tags: string[] = Array.isArray(body.tags) && body.tags.length > 0
       ? body.tags
-      : ['wp-products', 'wp-categories', 'wp-attributes', 'wp-homepage', 'wp-config'];
+      : (tagParam ? [tagParam, 'business-pages'] : defaultTags);
 
     tags.forEach((tag) => {
-      revalidateTag(tag);
+      try {
+        revalidateTag(tag);
+      } catch (e) {
+        // ignore in case of unconfigured tag
+      }
     });
+
+    if (pathParam) {
+      try {
+        revalidatePath(pathParam);
+      } catch (e) {
+        // ignore
+      }
+    }
 
     revalidatePath('/', 'layout');
     revalidatePath('/shop', 'page');
     revalidatePath('/catalogue', 'page');
+    revalidatePath('/suppliers-vendors', 'page');
+    revalidatePath('/interior-designers', 'page');
+    revalidatePath('/influencers-marketing', 'page');
+    revalidatePath('/furniture-decor-designers', 'page');
 
-    console.log(`> Next.js Cache Revalidated Tags: ${tags.join(', ')}`);
+    console.log(`> Next.js Cache Revalidated Tags: ${tags.join(', ')}${pathParam ? ` | Path: ${pathParam}` : ''}`);
 
     return NextResponse.json({
       revalidated: true,
       tags,
+      path: pathParam || null,
       timestamp: Date.now(),
     });
   } catch (err: any) {

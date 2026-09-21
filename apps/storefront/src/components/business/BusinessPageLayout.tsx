@@ -254,12 +254,27 @@ export default function BusinessPageLayout({ config }: BusinessPageLayoutProps) 
         {/* 2. TWO-COLUMN GRID: LEFT IMAGE + RIGHT (TABS & FORM) */}
         <div className="business-main-grid">
 
-          {/* LEFT COLUMN: VISUAL IMAGE CARD */}
+          {/* LEFT COLUMN: VISUAL IMAGE CARD WITH EDITABLE LIVE OVERLAY */}
           <aside className="business-visual-card">
-            <img
-              src={config.visual.image_url}
-              alt={config.visual.headline || config.page_title}
-            />
+            <div className="business-visual-media">
+              <img
+                src={config.visual.image_url || '/business/business-card-bg.jpg'}
+                alt={config.visual.headline || config.page_title}
+                className="business-visual-img"
+              />
+              <div className="business-visual-overlay">
+                {config.visual.tag && (
+                  <span className="business-visual-tag">
+                    {config.visual.tag}
+                  </span>
+                )}
+                {config.visual.headline && (
+                  <h3 className="business-visual-headline">
+                    {config.visual.headline}
+                  </h3>
+                )}
+              </div>
+            </div>
           </aside>
 
           {/* RIGHT COLUMN: 2x2 TABS FLUSH AT TOP, FORM DIRECTLY BENEATH */}

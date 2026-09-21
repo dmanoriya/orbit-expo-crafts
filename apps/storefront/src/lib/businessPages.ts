@@ -73,7 +73,7 @@ export const DEFAULT_BUSINESS_PAGES: Record<string, BusinessPageConfig> = {
     page_subtitle: 'Share your materials, manufacturing capabilities or specialist services with our sourcing team.',
     enquiry_number: '01',
     visual: {
-      image_url: '/business/suppliers-vendors-card.jpg',
+      image_url: '/business/business-card-bg.jpg',
       tag: 'MADE IN JODHPUR · MADE FOR THE WORLD',
       headline: 'Responsible sourcing. Considered craft. Partnerships built for the long term.',
     },
@@ -228,7 +228,7 @@ export const DEFAULT_BUSINESS_PAGES: Record<string, BusinessPageConfig> = {
     page_subtitle: 'Collaborate on custom furniture, coordinated room packages and made-to-specification manufacturing.',
     enquiry_number: '02',
     visual: {
-      image_url: '/business/architects-id-card.jpg',
+      image_url: '/business/business-card-bg.jpg',
       tag: 'MADE IN JODHPUR · MADE FOR THE WORLD',
       headline: 'From drawings to finished pieces, we help translate spatial concepts into enduring furniture.',
     },
@@ -384,7 +384,7 @@ export const DEFAULT_BUSINESS_PAGES: Record<string, BusinessPageConfig> = {
     page_subtitle: 'For editorial features, content partnerships, creator collaborations and considered brand opportunities.',
     enquiry_number: '03',
     visual: {
-      image_url: '/business/influencers-marketing-card.jpg',
+      image_url: '/business/business-card-bg.jpg',
       tag: 'MADE IN JODHPUR · MADE FOR THE WORLD',
       headline: 'We value credible voices, original ideas and content that celebrates material, craft and thoughtful homes.',
     },
@@ -539,7 +539,7 @@ export const DEFAULT_BUSINESS_PAGES: Record<string, BusinessPageConfig> = {
     page_subtitle: 'Work with our development team on licensed collections, custom products or manufacturing partnerships.',
     enquiry_number: '04',
     visual: {
-      image_url: '/business/furniture-decor-card.jpg',
+      image_url: '/business/business-card-bg.jpg',
       tag: 'MADE IN JODHPUR · MADE FOR THE WORLD',
       headline: 'Distinct ideas deserve disciplined development—from first sketch and material study to repeatable production.',
     },
