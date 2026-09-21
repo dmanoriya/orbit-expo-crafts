@@ -95,18 +95,16 @@ export default function HomeClientView({
   const track1Points = parsePoints(hpData.track1_points);
   const track2Points = parsePoints(hpData.track2_points);
 
-  // Fallback 10 categories matching prototype & Image 2 (5 cols x 2 rows)
+  // Fallback 8 categories matching 4 cols x 2 rows
   const fallbackCategories = [
     { id: 'furniture', slug: 'furniture', name: 'Furniture', image: '/categories/every-room/furniture.webp' },
     { id: 'home-decor', slug: 'home-decor', name: 'Home Décor', image: '/categories/every-room/home-decor.webp' },
     { id: 'wall-decor-and-mirrors', slug: 'wall-decor-and-mirrors', name: 'Wall Décor & Mirrors', image: '/categories/every-room/wall-decor-mirrors.webp' },
     { id: 'lighting', slug: 'lighting', name: 'Lighting', image: '/categories/every-room/lighting.webp' },
-    { id: 'rugs-and-floor-coverings', slug: 'rugs-and-floor-coverings', name: 'Rugs & Floor Coverings', image: '/categories/every-room/rugs-floor-coverings.webp' },
     { id: 'storage-and-organization', slug: 'storage-and-organization', name: 'Storage & Organization', image: '/categories/every-room/storage-organization.webp' },
     { id: 'kitchen-and-tabletop', slug: 'kitchen-and-tabletop', name: 'Kitchen & Tabletop', image: '/categories/every-room/kitchen-tabletop.webp' },
     { id: 'outdoor-and-garden', slug: 'outdoor-and-garden', name: 'Outdoor & Garden', image: '/categories/every-room/outdoor-garden.webp' },
     { id: 'kids-and-baby-home', slug: 'kids-and-baby-home', name: 'Kids & Baby Home', image: '/categories/every-room/kids-baby-home.webp' },
-    { id: 'pet-home', slug: 'pet-home', name: 'Pet Home', image: '/categories/every-room/pet-home.webp' },
   ];
 
   const FALLBACK_DEPT_IMAGES: Record<string, string> = {
@@ -114,12 +112,10 @@ export default function HomeClientView({
     'home-decor': '/categories/every-room/home-decor.webp',
     'wall-decor-and-mirrors': '/categories/every-room/wall-decor-mirrors.webp',
     'lighting': '/categories/every-room/lighting.webp',
-    'rugs-and-floor-coverings': '/categories/every-room/rugs-floor-coverings.webp',
     'storage-and-organization': '/categories/every-room/storage-organization.webp',
     'kitchen-and-tabletop': '/categories/every-room/kitchen-tabletop.webp',
     'outdoor-and-garden': '/categories/every-room/outdoor-garden.webp',
     'kids-and-baby-home': '/categories/every-room/kids-baby-home.webp',
-    'pet-home': '/categories/every-room/pet-home.webp',
   };
 
   const DEPT_ORDER = [
@@ -127,12 +123,10 @@ export default function HomeClientView({
     'home-decor',
     'wall-decor-and-mirrors',
     'lighting',
-    'rugs-and-floor-coverings',
     'storage-and-organization',
     'kitchen-and-tabletop',
     'outdoor-and-garden',
     'kids-and-baby-home',
-    'pet-home',
   ];
 
   const DEPT_DISPLAY_NAMES: Record<string, string> = {
@@ -140,28 +134,41 @@ export default function HomeClientView({
     'home-decor': 'Home Décor',
     'wall-decor-and-mirrors': 'Wall Décor & Mirrors',
     'lighting': 'Lighting',
-    'rugs-and-floor-coverings': 'Rugs & Floor Coverings',
     'storage-and-organization': 'Storage & Organization',
     'kitchen-and-tabletop': 'Kitchen & Tabletop',
     'outdoor-and-garden': 'Outdoor & Garden',
     'kids-and-baby-home': 'Kids & Baby Home',
-    'pet-home': 'Pet Home',
   };
+
+  const EXCLUDED_SECTION_SLUGS = new Set([
+    'rugs-and-floor-coverings',
+    'rugs-and-flooring',
+    'rugs-flooring',
+    'pet-home',
+    'pet-living',
+    'pets',
+  ]);
 
   const displayCategories = React.useMemo(() => {
     if (categories && categories.length > 0) {
       const mainDepts = categories.filter(
-        (c) => (!c.parent || c.parent === 0 || c.level === 0) && c.slug !== 'uncategorized'
+        (c) =>
+          (!c.parent || c.parent === 0 || c.level === 0) &&
+          c.slug !== 'uncategorized' &&
+          !EXCLUDED_SECTION_SLUGS.has(c.slug) &&
+          !EXCLUDED_SECTION_SLUGS.has(String(c.id))
       );
       if (mainDepts.length > 0) {
-        return [...mainDepts].sort((a, b) => {
-          const idxA = DEPT_ORDER.indexOf(a.slug);
-          const idxB = DEPT_ORDER.indexOf(b.slug);
-          if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-          if (idxA !== -1) return -1;
-          if (idxB !== -1) return 1;
-          return a.name.localeCompare(b.name);
-        });
+        return [...mainDepts]
+          .sort((a, b) => {
+            const idxA = DEPT_ORDER.indexOf(a.slug);
+            const idxB = DEPT_ORDER.indexOf(b.slug);
+            if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+            if (idxA !== -1) return -1;
+            if (idxB !== -1) return 1;
+            return a.name.localeCompare(b.name);
+          })
+          .slice(0, 8);
       }
     }
     return fallbackCategories;
