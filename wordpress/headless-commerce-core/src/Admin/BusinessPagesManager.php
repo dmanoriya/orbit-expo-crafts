@@ -815,12 +815,14 @@ class BusinessPagesManager {
 			// Trigger on-demand revalidation on Next.js if configured
 			$slug = $all_pages[ $active_tab ]['slug'];
 			self::trigger_nextjs_revalidation( $slug );
+			$saved_live_url = self::get_frontend_url() . '/' . ltrim( $slug, '/' );
 
-			echo '<div class="notice notice-success is-dismissible"><p><strong>Settings & Form for ' . esc_html( $all_pages[ $active_tab ]['tab_label'] ) . ' updated successfully! Next.js cache revalidated.</strong></p></div>';
+			echo '<div class="notice notice-success is-dismissible"><p><strong>Settings & Form for ' . esc_html( $all_pages[ $active_tab ]['tab_label'] ) . ' updated successfully! Next.js cache revalidated.</strong> <a href="' . esc_url( $saved_live_url ) . '" target="_blank" style="margin-left:10px; font-weight:600; color:#0E5C63; text-decoration:underline;">👁️ View Live Page ↗</a></p></div>';
 		}
 
 		$all_pages   = self::get_all_pages_data();
 		$current_page = $all_pages[ $active_tab ];
+		$live_url     = self::get_frontend_url() . '/' . ltrim( $current_page['slug'], '/' );
 
 		$tab_titles = array(
 			'suppliers_vendors'         => '01 Suppliers & Vendors',
@@ -865,7 +867,7 @@ class BusinessPagesManager {
 								<span style="background:#f0f0f1; padding:6px 10px; border:1px solid #8c8f94; border-right:none; border-radius:4px 0 0 4px; font-family:monospace; font-size:13px;">/</span>
 								<input type="text" name="slug" value="<?php echo esc_attr( $current_page['slug'] ); ?>" style="flex:1; border-radius:0 4px 4px 0;" required />
 							</div>
-							<p class="description" style="font-size:11px; margin-top:4px;">SEO friendly URL on storefront.</p>
+							<p class="description" style="font-size:11px; margin-top:4px;">Live storefront URL: <a href="<?php echo esc_url( $live_url ); ?>" target="_blank" style="color:#0E5C63; font-weight:600; text-decoration:none;"><code><?php echo esc_html( $live_url ); ?> ↗</code></a></p>
 						</div>
 
 						<div>
@@ -1045,11 +1047,11 @@ class BusinessPagesManager {
 				<!-- SAVE BUTTON -->
 				<div style="position:sticky; bottom:20px; z-index:10; background:#fff; padding:16px 24px; border:1px solid #c3c4c7; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.08); display:flex; justify-content:space-between; align-items:center;">
 					<div style="font-size:13px; color:#50575e;">
-						Editing: <strong><?php echo esc_html( $current_page['tab_label'] ); ?></strong> (<code>/<?php echo esc_html( $current_page['slug'] ); ?></code>)
+						Editing: <strong><?php echo esc_html( $current_page['tab_label'] ); ?></strong> (<a href="<?php echo esc_url( $live_url ); ?>" target="_blank" style="color:#0E5C63; text-decoration:none;"><code><?php echo esc_html( $live_url ); ?> ↗</code></a>)
 					</div>
 					<div>
-						<a href="/<?php echo esc_attr( $current_page['slug'] ); ?>" target="_blank" class="button" style="margin-right:10px;">
-							👁️ View Live on Storefront
+						<a href="<?php echo esc_url( $live_url ); ?>" target="_blank" class="button" style="margin-right:10px; font-weight:600;">
+							👁️ View Live on Storefront ↗
 						</a>
 						<button type="submit" name="hcc_save_business_page" class="button button-primary button-large" style="background:#0E5C63; border-color:#0E5C63; font-weight:700; padding:4px 20px;">
 							💾 Save &amp; Publish Page
@@ -1358,6 +1360,25 @@ class BusinessPagesManager {
 	}
 
 	/**
+	 * Get the frontend storefront URL
+	 */
+	public static function get_frontend_url() {
+		$frontend_url = get_option( 'hcc_frontend_url', '' );
+		if ( empty( $frontend_url ) && defined( 'HCC_FRONTEND_URL' ) ) {
+			$frontend_url = HCC_FRONTEND_URL;
+		}
+
+		$host = isset( $_SERVER['HTTP_HOST'] ) ? sanitize_text_field( $_SERVER['HTTP_HOST'] ) : '';
+		$is_production_wp = ( strpos( $host, 'orbitexpocrafts.com' ) !== false );
+
+		if ( empty( $frontend_url ) || ( $is_production_wp && strpos( $frontend_url, 'localhost' ) !== false ) ) {
+			$frontend_url = 'https://orbitexpocrafts.com';
+		}
+
+		return rtrim( $frontend_url, '/' );
+	}
+
+	/**
 	 * Trigger Next.js on-demand revalidation
 	 */
 	public static function trigger_nextjs_revalidation( $slug ) {
@@ -1366,16 +1387,13 @@ class BusinessPagesManager {
 			$secret = defined( 'HCC_REVALIDATION_SECRET' ) ? HCC_REVALIDATION_SECRET : 'orbit_headless_revalidate_2026';
 		}
 
-		$frontend_url = get_option( 'hcc_frontend_url', '' );
-		if ( empty( $frontend_url ) ) {
-			$frontend_url = defined( 'HCC_FRONTEND_URL' ) ? HCC_FRONTEND_URL : 'http://localhost:3000';
-		}
+		$frontend_url = self::get_frontend_url();
 		
 		$url = add_query_arg( array(
 			'secret' => $secret,
 			'path'   => '/' . ltrim( $slug, '/' ),
 			'tag'    => 'business-pages',
-		), rtrim( $frontend_url, '/' ) . '/api/revalidate' );
+		), $frontend_url . '/api/revalidate' );
 
 		wp_remote_get( $url, array(
 			'timeout'   => 2,

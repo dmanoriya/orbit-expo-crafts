@@ -529,9 +529,12 @@ class HomepageManager {
 							</div>
 						</div>
 					</div>
+				<div style="display:flex; align-items:center; gap:12px; margin-top:20px;">
+					<?php submit_button( 'Save Homepage Content', 'primary', 'submit', false ); ?>
+					<a href="<?php echo esc_url( \HeadlessCommerceCore\Admin\BusinessPagesManager::get_frontend_url() ); ?>" target="_blank" class="button button-secondary" style="font-weight:600; padding:4px 14px;">
+						👁️ View Live Storefront ↗
+					</a>
 				</div>
-
-				<?php submit_button( 'Save Homepage Content' ); ?>
 			</form>
 		</div>
 		<?php

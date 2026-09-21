@@ -3,7 +3,7 @@
  * Plugin Name: Headless Commerce Core
  * Plugin URI: https://github.com/antigravity/headless-commerce-core
  * Description: Production-ready high-performance API, SEO, and store management layer for headless WooCommerce & Next.js storefronts.
- * Version: 1.2.0
+ * Version: 1.2.1
  * Author: Antigravity Engineering
  * Text Domain: headless-commerce-core
  * Domain Path: /languages
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'HCC_VERSION', '1.2.0' );
+define( 'HCC_VERSION', '1.2.1' );
 define( 'HCC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'HCC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'HCC_REST_NAMESPACE', 'hcc/v1' );
