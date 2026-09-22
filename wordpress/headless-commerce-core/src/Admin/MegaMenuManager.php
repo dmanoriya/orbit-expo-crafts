@@ -15,7 +15,7 @@ class MegaMenuManager {
 
 	const OPTION_KEY     = 'hcc_mega_menu_config';
 	const TRANSIENT_KEY  = 'hcc_public_mega_menu';
-	const SCHEMA_VERSION = '1.5.0';
+	const SCHEMA_VERSION = '1.6.0';
 
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'add_admin_menu' ), 15 );
@@ -24,6 +24,11 @@ class MegaMenuManager {
 
 		// Auto-migrate corrupted or outdated configuration on initial boot
 		add_action( 'init', array( __CLASS__, 'ensure_clean_schema' ), 20 );
+
+		// Synchronize dynamic category slugs whenever categories are edited, created or deleted in WooCommerce
+		add_action( 'edited_product_cat', array( __CLASS__, 'on_product_cat_updated' ), 10, 2 );
+		add_action( 'create_product_cat', array( __CLASS__, 'on_product_cat_updated' ), 10, 2 );
+		add_action( 'delete_product_cat', array( __CLASS__, 'on_product_cat_updated' ), 10, 2 );
 	}
 
 	public static function add_admin_menu() {
@@ -82,7 +87,7 @@ class MegaMenuManager {
 			array( 'id' => 'nav_storage', 'name' => 'Storage', 'slug' => 'storage', 'href' => '/storage', 'hasSubmenu' => true, 'deptKey' => 'Storage', 'hidden' => false ),
 			array( 'id' => 'nav_outdoor', 'name' => 'Outdoor & Garden', 'slug' => 'outdoor-and-garden', 'href' => '/outdoor-and-garden', 'hasSubmenu' => false, 'deptKey' => 'Outdoor & Garden', 'hidden' => false ),
 			array( 'id' => 'nav_kitchen', 'name' => 'Kitchen & Table Tops', 'slug' => 'kitchen-and-table-tops', 'href' => '/kitchen-and-table-tops', 'hasSubmenu' => false, 'deptKey' => 'Kitchen & Table Tops', 'hidden' => false ),
-			array( 'id' => 'nav_kids', 'name' => 'Kids', 'slug' => 'kids', 'href' => '/kids', 'hasSubmenu' => false, 'deptKey' => 'Kids', 'hidden' => false ),
+			array( 'id' => 'nav_kids', 'name' => 'Kids', 'slug' => 'kids-furniture', 'href' => '/kids-furniture', 'hasSubmenu' => false, 'deptKey' => 'Kids', 'hidden' => false ),
 		);
 	}
 
@@ -222,19 +227,150 @@ class MegaMenuManager {
 		$raw_nav    = $config['nav_items'] ?? self::get_default_nav_items();
 		$raw_depts  = $config['departments'] ?? self::get_default_departments_data();
 
-		// 1. Process active Nav Items
+		// Fetch all live WooCommerce product_cat terms to synchronize dynamic slugs and names
+		$all_woo_terms = get_terms( array(
+			'taxonomy'   => 'product_cat',
+			'hide_empty' => false,
+		) );
+
+		$woo_terms_by_name = array();
+		$woo_terms_by_slug = array();
+		$woo_terms_by_id   = array();
+
+		if ( ! is_wp_error( $all_woo_terms ) && is_array( $all_woo_terms ) ) {
+			foreach ( $all_woo_terms as $wt ) {
+				$clean_t_name = strtolower( self::clean_text( $wt->name ) );
+				$clean_t_slug = strtolower( $wt->slug );
+				$woo_terms_by_name[ $clean_t_name ] = $wt;
+				$woo_terms_by_slug[ $clean_t_slug ] = $wt;
+				$woo_terms_by_id[ $wt->term_id ]    = $wt;
+			}
+		}
+
+		// 1. Process active Nav Items with dynamic live WooCommerce slug sync
 		$active_nav = array();
 		foreach ( $raw_nav as $item ) {
 			if ( ! empty( $item['hidden'] ) ) {
 				continue;
 			}
+
+			$item_name = self::clean_text( $item['name'] ?? '' );
+			$item_slug = $item['slug'] ?? '';
+			$dept_key  = self::clean_text( $item['deptKey'] ?? '' );
+			$item_href = $item['href'] ?? ( '/' . $item_slug );
+
+			// Check if this item corresponds to a WooCommerce product category
+			if ( ( $item['id'] ?? '' ) !== 'nav_new_arrivals' ) {
+				$matched_term = null;
+
+				// Match by term_id if present
+				if ( ! empty( $item['term_id'] ) && isset( $woo_terms_by_id[ $item['term_id'] ] ) ) {
+					$matched_term = $woo_terms_by_id[ $item['term_id'] ];
+				}
+
+				// Match by current slug
+				if ( ! $matched_term && ! empty( $item_slug ) && isset( $woo_terms_by_slug[ strtolower( $item_slug ) ] ) ) {
+					$matched_term = $woo_terms_by_slug[ strtolower( $item_slug ) ];
+				}
+
+				// Match by name
+				if ( ! $matched_term && ! empty( $item_name ) && isset( $woo_terms_by_name[ strtolower( $item_name ) ] ) ) {
+					$matched_term = $woo_terms_by_name[ strtolower( $item_name ) ];
+				}
+
+				// Match by deptKey
+				if ( ! $matched_term && ! empty( $dept_key ) && isset( $woo_terms_by_name[ strtolower( $dept_key ) ] ) ) {
+					$matched_term = $woo_terms_by_name[ strtolower( $dept_key ) ];
+				}
+
+				// Alias and keyword matching for known departments:
+				// Kids / Kids Furniture
+				if ( ! $matched_term && ( strpos( strtolower( $item_name ), 'kid' ) !== false || strpos( strtolower( $item_slug ), 'kid' ) !== false || strpos( strtolower( $dept_key ), 'kid' ) !== false ) ) {
+					foreach ( array( 'kids-furniture', 'kids', 'kids-and-baby-home', 'kids & baby home', 'kids furniture' ) as $cand ) {
+						if ( isset( $woo_terms_by_slug[ $cand ] ) ) {
+							$matched_term = $woo_terms_by_slug[ $cand ];
+							break;
+						}
+						if ( isset( $woo_terms_by_name[ $cand ] ) ) {
+							$matched_term = $woo_terms_by_name[ $cand ];
+							break;
+						}
+					}
+				}
+
+				// Décor / Home Decor
+				if ( ! $matched_term && ( strpos( strtolower( $item_name ), 'decor' ) !== false || strpos( strtolower( $item_slug ), 'decor' ) !== false ) ) {
+					foreach ( array( 'home-decor', 'decor', 'décor' ) as $cand ) {
+						if ( isset( $woo_terms_by_slug[ $cand ] ) ) {
+							$matched_term = $woo_terms_by_slug[ $cand ];
+							break;
+						}
+						if ( isset( $woo_terms_by_name[ $cand ] ) ) {
+							$matched_term = $woo_terms_by_name[ $cand ];
+							break;
+						}
+					}
+				}
+
+				// Mirrors / Wall Decor & Mirrors
+				if ( ! $matched_term && ( strpos( strtolower( $item_name ), 'mirror' ) !== false || strpos( strtolower( $item_slug ), 'mirror' ) !== false ) ) {
+					foreach ( array( 'wall-decor-and-mirrors', 'mirrors' ) as $cand ) {
+						if ( isset( $woo_terms_by_slug[ $cand ] ) ) {
+							$matched_term = $woo_terms_by_slug[ $cand ];
+							break;
+						}
+						if ( isset( $woo_terms_by_name[ $cand ] ) ) {
+							$matched_term = $woo_terms_by_name[ $cand ];
+							break;
+						}
+					}
+				}
+
+				// Storage / Storage & Organization
+				if ( ! $matched_term && ( strpos( strtolower( $item_name ), 'storage' ) !== false || strpos( strtolower( $item_slug ), 'storage' ) !== false ) ) {
+					foreach ( array( 'storage-and-organization', 'storage' ) as $cand ) {
+						if ( isset( $woo_terms_by_slug[ $cand ] ) ) {
+							$matched_term = $woo_terms_by_slug[ $cand ];
+							break;
+						}
+						if ( isset( $woo_terms_by_name[ $cand ] ) ) {
+							$matched_term = $woo_terms_by_name[ $cand ];
+							break;
+						}
+					}
+				}
+
+				// Kitchen / Kitchen & Tabletop
+				if ( ! $matched_term && ( strpos( strtolower( $item_name ), 'kitchen' ) !== false || strpos( strtolower( $item_slug ), 'kitchen' ) !== false ) ) {
+					foreach ( array( 'kitchen-and-table-tops', 'kitchen-and-tabletop' ) as $cand ) {
+						if ( isset( $woo_terms_by_slug[ $cand ] ) ) {
+							$matched_term = $woo_terms_by_slug[ $cand ];
+							break;
+						}
+						if ( isset( $woo_terms_by_name[ $cand ] ) ) {
+							$matched_term = $woo_terms_by_name[ $cand ];
+							break;
+						}
+					}
+				}
+
+				// If dynamic live term is found in WooCommerce, adopt its exact slug, href, and name!
+				if ( $matched_term ) {
+					$item_slug = $matched_term->slug;
+					$item_href = '/' . $matched_term->slug;
+					if ( ! empty( $matched_term->name ) ) {
+						$item_name = self::clean_text( $matched_term->name );
+					}
+				}
+			}
+
 			$active_nav[] = array(
 				'id'         => $item['id'] ?? '',
-				'name'       => self::clean_text( $item['name'] ?? '' ),
-				'slug'       => $item['slug'] ?? '',
-				'href'       => $item['href'] ?? ( '/' . ( $item['slug'] ?? '' ) ),
+				'name'       => $item_name,
+				'slug'       => $item_slug,
+				'href'       => $item_href,
 				'hasSubmenu' => ! empty( $item['hasSubmenu'] ),
-				'deptKey'    => self::clean_text( $item['deptKey'] ?? '' ),
+				'deptKey'    => $dept_key,
 			);
 		}
 
@@ -367,10 +503,93 @@ class MegaMenuManager {
 	}
 
 	/**
+	 * Automatically sync mega menu whenever a WooCommerce category is created, edited, or deleted
+	 */
+	public static function on_product_cat_updated( $term_id, $tt_id = 0 ) {
+		delete_transient( self::TRANSIENT_KEY );
+
+		$term = get_term( $term_id, 'product_cat' );
+		if ( $term && ! is_wp_error( $term ) ) {
+			$config = get_option( self::OPTION_KEY, array() );
+			if ( ! empty( $config['nav_items'] ) && is_array( $config['nav_items'] ) ) {
+				$changed = false;
+				$term_name_lower = strtolower( self::clean_text( $term->name ) );
+				$term_slug_lower = strtolower( $term->slug );
+
+				foreach ( $config['nav_items'] as &$item ) {
+					$clean_item_name = strtolower( self::clean_text( $item['name'] ?? '' ) );
+					$clean_dept_key  = strtolower( self::clean_text( $item['deptKey'] ?? '' ) );
+					$clean_item_slug = strtolower( $item['slug'] ?? '' );
+
+					$matches = (
+						$clean_item_name === $term_name_lower ||
+						$clean_dept_key === $term_name_lower ||
+						$clean_item_slug === $term_slug_lower ||
+						( strpos( $term_name_lower, 'kid' ) !== false && ( strpos( $clean_item_name, 'kid' ) !== false || strpos( $clean_item_slug, 'kid' ) !== false ) ) ||
+						( strpos( $term_name_lower, 'decor' ) !== false && ( strpos( $clean_item_name, 'decor' ) !== false || strpos( $clean_item_slug, 'decor' ) !== false ) )
+					);
+
+					if ( $matches ) {
+						$item['slug'] = $term->slug;
+						$item['href'] = '/' . $term->slug;
+						$item['name'] = self::clean_text( $term->name );
+						$changed = true;
+					}
+				}
+				if ( $changed ) {
+					update_option( self::OPTION_KEY, $config );
+				}
+			}
+		}
+
+		self::trigger_nextjs_revalidation();
+	}
+
+	/**
 	 * Render the Admin Mega Menu Builder Page
 	 */
 	public static function render_admin_page() {
 		$live_url = BusinessPagesManager::get_frontend_url();
+
+		// Handle Manual Dynamic Sync from WooCommerce Categories
+		if ( isset( $_POST['hcc_sync_woo_slugs'] ) && check_admin_referer( 'hcc_mega_menu_action', 'hcc_mega_menu_nonce' ) ) {
+			delete_transient( self::TRANSIENT_KEY );
+			$config = self::get_menu_config();
+
+			$all_woo_terms = get_terms( array(
+				'taxonomy'   => 'product_cat',
+				'hide_empty' => false,
+			) );
+
+			if ( ! is_wp_error( $all_woo_terms ) && is_array( $all_woo_terms ) && ! empty( $config['nav_items'] ) ) {
+				foreach ( $config['nav_items'] as &$item ) {
+					if ( ( $item['id'] ?? '' ) === 'nav_new_arrivals' ) continue;
+					$clean_item_name = strtolower( self::clean_text( $item['name'] ?? '' ) );
+					$clean_dept_key  = strtolower( self::clean_text( $item['deptKey'] ?? '' ) );
+					$clean_item_slug = strtolower( $item['slug'] ?? '' );
+
+					foreach ( $all_woo_terms as $wt ) {
+						$wt_name = strtolower( self::clean_text( $wt->name ) );
+						$wt_slug = strtolower( $wt->slug );
+						if (
+							$clean_item_name === $wt_name ||
+							$clean_dept_key === $wt_name ||
+							$clean_item_slug === $wt_slug ||
+							( strpos( $wt_name, 'kid' ) !== false && ( strpos( $clean_item_name, 'kid' ) !== false || strpos( $clean_item_slug, 'kid' ) !== false ) )
+						) {
+							$item['slug'] = $wt->slug;
+							$item['href'] = '/' . $wt->slug;
+							$item['name'] = self::clean_text( $wt->name );
+							break;
+						}
+					}
+				}
+				update_option( self::OPTION_KEY, $config );
+			}
+
+			self::trigger_nextjs_revalidation();
+			echo '<div class="notice notice-success is-dismissible"><p><strong>Success:</strong> Storefront Mega Menu navigation slugs have been dynamically synchronized with your live WooCommerce categories!</p></div>';
+		}
 
 		// Handle Reset
 		if ( isset( $_POST['hcc_reset_mega_menu'] ) && check_admin_referer( 'hcc_mega_menu_action', 'hcc_mega_menu_nonce' ) ) {
@@ -523,6 +742,14 @@ class MegaMenuManager {
 						/>
 					</div>
 					<div style="display: flex; align-items: center; gap: 8px;">
+						<button
+							type="submit"
+							name="hcc_sync_woo_slugs"
+							class="button button-secondary"
+							title="Dynamically pull latest category names and slugs from WooCommerce Products -> Categories"
+						>
+							⚡ Sync Slugs from WooCommerce
+						</button>
 						<button
 							type="submit"
 							name="hcc_reset_mega_menu"

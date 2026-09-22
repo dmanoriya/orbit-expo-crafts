@@ -45,13 +45,21 @@ export const KNOWN_DEPARTMENTS: Record<string, string> = {
   'kitchen-and-table-tops': 'Kitchen & Table Tops',
   'kitchen-and-tabletop': 'Kitchen & Table Tops',
   'kids': 'Kids',
+  'kids-furniture': 'Kids',
   'kids-and-baby-home': 'Kids',
   'kids-and-pet-home': 'Kids',
 };
 
-export function isKnownDepartment(slug: string): boolean {
+export function isKnownDepartment(slug: string, dynamicCategories?: Array<{ slug?: string; name?: string }>): boolean {
   if (!slug) return false;
-  return Object.prototype.hasOwnProperty.call(KNOWN_DEPARTMENTS, slug.toLowerCase());
+  const lower = slug.toLowerCase().trim();
+  if (Object.prototype.hasOwnProperty.call(KNOWN_DEPARTMENTS, lower)) {
+    return true;
+  }
+  if (Array.isArray(dynamicCategories)) {
+    return dynamicCategories.some((c) => c.slug?.toLowerCase().trim() === lower);
+  }
+  return false;
 }
 
 // Pre-build indexed taxonomy map
@@ -188,6 +196,27 @@ function initializeTaxonomy() {
       ...(petDept?.childTerms || []),
     ],
   });
+
+  // Handle "kids-furniture" alias for Kids department
+  const kidsBaseDept = pathMap.get('kids') || pathMap.get('kids-and-baby-home') || pathMap.get('kids-and-pet-home');
+  if (kidsBaseDept) {
+    const kfSlug = 'kids-furniture';
+    const kfNode: TaxonomyNode = {
+      ...kidsBaseDept,
+      name: 'Kids',
+      slug: kfSlug,
+      pathSlug: kfSlug,
+      url: `/${kfSlug}`,
+      department: 'Kids',
+      breadcrumbs: [
+        { name: 'Home', url: '/' },
+        { name: 'Kids', url: `/${kfSlug}` },
+      ],
+      childTerms: Array.from(new Set([...kidsBaseDept.childTerms, 'kids', 'kids-furniture', 'kids furniture'])),
+    };
+    pathMap.set(kfSlug, kfNode);
+    leafSlugMap.set(kfSlug, kfNode);
+  }
 }
 
 // Initialize on import

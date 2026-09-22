@@ -27,7 +27,7 @@ export const DEFAULT_NAV_CATEGORIES: MegaMenuNavItem[] = [
   { id: 'nav_storage', name: 'Storage', slug: 'storage', href: '/storage', hasSubmenu: true, deptKey: 'Storage' },
   { id: 'nav_outdoor', name: 'Outdoor & Garden', slug: 'outdoor-and-garden', href: '/outdoor-and-garden', hasSubmenu: false, deptKey: 'Outdoor & Garden' },
   { id: 'nav_kitchen', name: 'Kitchen & Table Tops', slug: 'kitchen-and-table-tops', href: '/kitchen-and-table-tops', hasSubmenu: false, deptKey: 'Kitchen & Table Tops' },
-  { id: 'nav_kids', name: 'Kids', slug: 'kids', href: '/kids', hasSubmenu: false, deptKey: 'Kids' },
+  { id: 'nav_kids', name: 'Kids', slug: 'kids-furniture', href: '/kids-furniture', hasSubmenu: false, deptKey: 'Kids' },
 ];
 
 export const DEFAULT_MEGA_MENU_DATA: MegaMenuData = {
