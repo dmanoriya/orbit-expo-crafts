@@ -209,7 +209,7 @@ export const Footer: React.FC = () => {
                 {/* 3. EMAIL */}
                 <div className="footer-contact-item">
                   <a
-                    href={`mailto:${data.footer_email && data.footer_email !== 'trade@orbitexpocrafts.com' ? data.footer_email : 'sales@orbitexpocrafts.com'}`}
+                    href={`mailto:${data.footer_email && !data.footer_email.includes('trade@') ? data.footer_email : 'sales@orbitexpocrafts.com'}`}
                     className="footer-contact-link"
                   >
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="footer-contact-icon">
@@ -217,7 +217,7 @@ export const Footer: React.FC = () => {
                       <polyline points="22,6 12,13 2,6" />
                     </svg>
                     <span className="footer-contact-text">
-                      {data.footer_email && data.footer_email !== 'trade@orbitexpocrafts.com' ? data.footer_email : 'sales@orbitexpocrafts.com'}
+                      {data.footer_email && !data.footer_email.includes('trade@') ? data.footer_email : 'sales@orbitexpocrafts.com'}
                     </span>
                   </a>
                 </div>

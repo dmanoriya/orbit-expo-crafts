@@ -721,7 +721,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
       return;
     }
     // Synthesized document fallback download
-    const content = `ORBIT EXPO CRAFTS - PROJECT DOCUMENTATION MANUAL\n\nProject: ${selectedBooking?.projectName || 'Contract Booking'}\nBooking Reference: ${selectedBooking?.id}\nClient: ${selectedBooking?.clientName || 'Client'}\nDocument Name: ${doc.name}\nDescription (Purpose): ${doc.description}\nFile Name: ${doc.fileName || doc.name}\nFormat / Size: ${doc.fileType} (${doc.fileSize})\nUploaded By: ${doc.uploadedBy}\nUpload Date: ${doc.uploadedAt}\n\nStatus: Official Verified Document in Orbit Expo Crafts Documentation Trail.\nRIICO Industrial Area, Basni, Jodhpur, Rajasthan, India\nSupport: trade@orbitexpocrafts.com | WhatsApp: +91 99280 22151`;
+    const content = `ORBIT EXPO CRAFTS - PROJECT DOCUMENTATION MANUAL\n\nProject: ${selectedBooking?.projectName || 'Contract Booking'}\nBooking Reference: ${selectedBooking?.id}\nClient: ${selectedBooking?.clientName || 'Client'}\nDocument Name: ${doc.name}\nDescription (Purpose): ${doc.description}\nFile Name: ${doc.fileName || doc.name}\nFormat / Size: ${doc.fileType} (${doc.fileSize})\nUploaded By: ${doc.uploadedBy}\nUpload Date: ${doc.uploadedAt}\n\nStatus: Official Verified Document in Orbit Expo Crafts Documentation Trail.\nRIICO Industrial Area, Basni, Jodhpur, Rajasthan, India\nSupport: sales@orbitexpocrafts.com | WhatsApp: +91 99280 22151`;
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -843,7 +843,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                     <label style={{ fontSize: 12.5, fontWeight: 600, color: '#333333' }}>
                       Password
                     </label>
-                    <a href="mailto:trade@orbitexpocrafts.com?subject=Password%20Reset%20Request" style={{ fontSize: 12, color: 'var(--brand)', textDecoration: 'none' }}>
+                    <a href="mailto:sales@orbitexpocrafts.com?subject=Password%20Reset%20Request" style={{ fontSize: 12, color: 'var(--brand)', textDecoration: 'none' }}>
                       Forgot Password?
                     </a>
                   </div>
@@ -2259,7 +2259,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                           RIICO Industrial Area, Phase II, Basni<br />
                           Jodhpur 342005, Rajasthan, India<br />
                           GSTIN: 08AAECO4928M1Z4 &bull; IEC Code: 0514028912<br />
-                          Email: trade@orbitexpocrafts.com &bull; Tel: +91 99280 22151
+                          Email: sales@orbitexpocrafts.com &bull; Tel: +91 99280 22151
                         </div>
                       </div>
 

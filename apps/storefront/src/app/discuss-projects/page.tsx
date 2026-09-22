@@ -334,7 +334,7 @@ export default function DiscussProjectsPage() {
                   💬 Chat on WhatsApp
                 </a>
                 <a
-                  href="mailto:trade@orbitexpocrafts.com?subject=New%20Project%20Inquiry"
+                  href="mailto:sales@orbitexpocrafts.com?subject=New%20Project%20Inquiry"
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
