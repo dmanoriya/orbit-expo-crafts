@@ -66,8 +66,10 @@ export function getStoredBookings(userEmail?: string): BookingRecord[] {
       if (b.invoice && (!b.invoice.currency || b.invoice.currency === 'USD')) {
         b.invoice.currency = 'INR';
       }
-      if (!b.documents || !Array.isArray(b.documents)) {
-        b.documents = generateDefaultDocuments(b.id, b.projectName);
+      if (Array.isArray(b.documents)) {
+        b.documents = b.documents.filter((doc) => !doc.id.startsWith('doc_cad_') && !doc.id.startsWith('doc_boq_'));
+      } else {
+        b.documents = [];
       }
       if (!b.marketType) {
         b.marketType = (b.shippingAddress?.country && b.shippingAddress.country.toLowerCase() === 'india') ? 'domestic' : 'export';
@@ -91,7 +93,9 @@ export function saveBooking(booking: BookingRecord): void {
     if (!Array.isArray(all)) all = [];
     all = deduplicateBookings(all);
     if (!booking.documents || !Array.isArray(booking.documents)) {
-      booking.documents = generateDefaultDocuments(booking.id, booking.projectName);
+      booking.documents = [];
+    } else {
+      booking.documents = booking.documents.filter((doc) => !doc.id.startsWith('doc_cad_') && !doc.id.startsWith('doc_boq_'));
     }
     const existingIndex = all.findIndex((b) => b.id === booking.id);
     if (existingIndex >= 0) {

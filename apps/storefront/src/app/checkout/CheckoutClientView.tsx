@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEnquiry } from '../../context/EnquiryContext';
 import { useAuth } from '../../context/AuthContext';
-import { saveBooking, generateDefaultMilestones, generateDefaultDocuments } from '../../lib/bookingStore';
+import { saveBooking, generateDefaultMilestones } from '../../lib/bookingStore';
 import { BookingRecord } from '../../types/booking';
 import { submitFormEntry } from '../../lib/submitFormEntry';
 import PhoneInputField, { CountryCode, PHONE_COUNTRIES, validatePhoneNumber } from '../../components/PhoneInputField';
@@ -281,7 +281,7 @@ export const CheckoutClientView: React.FC = () => {
       },
       marketType: (country && country.toLowerCase() === 'india') ? 'domestic' : 'export',
       clientCategory: 'trade',
-      documents: generateDefaultDocuments(bookingNum, projectName || 'Trade & Client Project'),
+      documents: [],
       milestones: generateDefaultMilestones(),
       messages: [
         {
