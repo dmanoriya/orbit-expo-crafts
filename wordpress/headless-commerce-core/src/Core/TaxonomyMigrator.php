@@ -14,7 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class TaxonomyMigrator {
 
-	public static function run_migration() {
+	public static function run_migration( $purge = true ) {
+		@set_time_limit( 300 );
+
 		if ( ! function_exists( 'wp_insert_term' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/taxonomy.php';
 		}
@@ -27,6 +29,54 @@ class TaxonomyMigrator {
 		$raw_tax = json_decode( file_get_contents( $json_file ), true );
 		if ( ! is_array( $raw_tax ) || empty( $raw_tax ) ) {
 			return array( 'success' => false, 'error' => 'Invalid taxonomy json' );
+		}
+
+		$deleted_terms = 0;
+
+		// 0. PURGE EXISTING CATEGORIES IF REQUESTED
+		if ( $purge ) {
+			// Ensure default uncategorized term exists and is set as default
+			$uncat = get_term_by( 'slug', 'uncategorized', 'product_cat' );
+			$default_cat_id = 0;
+			if ( $uncat ) {
+				$default_cat_id = (int) $uncat->term_id;
+			} else {
+				$uncat_res = wp_insert_term( 'Uncategorized', 'product_cat', array( 'slug' => 'uncategorized' ) );
+				if ( ! is_wp_error( $uncat_res ) ) {
+					$default_cat_id = is_array( $uncat_res ) ? (int) $uncat_res['term_id'] : (int) $uncat_res;
+				}
+			}
+
+			if ( $default_cat_id ) {
+				update_option( 'default_product_cat', $default_cat_id );
+			}
+
+			// Clean deletion loop (leaves to root or multi-pass)
+			for ( $pass = 0; $pass < 6; $pass++ ) {
+				$all_terms = get_terms( array(
+					'taxonomy'   => 'product_cat',
+					'hide_empty' => false,
+					'fields'     => 'ids',
+				) );
+
+				if ( is_wp_error( $all_terms ) || empty( $all_terms ) ) {
+					break;
+				}
+
+				$to_delete = array_filter( $all_terms, function( $id ) use ( $default_cat_id ) {
+					return (int) $id !== (int) $default_cat_id;
+				} );
+
+				if ( empty( $to_delete ) ) {
+					break;
+				}
+
+				foreach ( $to_delete as $tid ) {
+					wp_delete_term( (int) $tid, 'product_cat' );
+					$deleted_terms++;
+				}
+				clean_term_cache( $to_delete, 'product_cat' );
+			}
 		}
 
 		$created_terms = 0;
@@ -125,9 +175,10 @@ class TaxonomyMigrator {
 			$l1_id   = $ensure_term( $l1_name, $dept_id );
 			$l2_id   = $ensure_term( $l2_name, $l1_id );
 
-			$assign_terms = array_filter( array_unique( array( $dept_id, $l1_id, $l2_id ) ) );
+			$assign_terms = array_values( array_filter( array_unique( array( $dept_id, $l1_id, $l2_id ) ) ) );
 			if ( ! empty( $assign_terms ) ) {
-				wp_set_object_terms( $pid, $assign_terms, 'product_cat' );
+				wp_set_object_terms( $pid, $assign_terms, 'product_cat', false );
+				wp_update_term_count_now( $assign_terms, 'product_cat' );
 				$updated_products++;
 				$categorization_log[] = array(
 					'id'       => $pid,
@@ -148,12 +199,37 @@ class TaxonomyMigrator {
 		// 4. Purge Transients and notify Next.js
 		delete_transient( MegaMenuManager::TRANSIENT_KEY );
 		delete_transient( 'hcc_products_query_*' );
+		if ( function_exists( 'wc_delete_product_transients' ) ) {
+			wc_delete_product_transients();
+		}
 		MegaMenuManager::trigger_nextjs_revalidation();
+
+		// 5. Fetch clean list of all terms with updated counts
+		$final_terms = get_terms( array(
+			'taxonomy'   => 'product_cat',
+			'hide_empty' => false,
+		) );
+		$terms_list = array();
+		if ( ! is_wp_error( $final_terms ) ) {
+			foreach ( $final_terms as $ft ) {
+				$terms_list[] = array(
+					'id'          => (int) $ft->term_id,
+					'name'        => html_entity_decode( $ft->name, ENT_QUOTES, 'UTF-8' ),
+					'slug'        => $ft->slug,
+					'parent'      => (int) $ft->parent,
+					'count'       => (int) $ft->count,
+					'description' => (string) $ft->description,
+				);
+			}
+		}
 
 		return array(
 			'success'          => true,
+			'deleted_terms'    => $deleted_terms,
 			'created_terms'    => $created_terms,
 			'updated_products' => $updated_products,
+			'total_terms_now'  => count( $terms_list ),
+			'terms'            => $terms_list,
 			'sample_products'  => array_slice( $categorization_log, 0, 10 ),
 		);
 	}
