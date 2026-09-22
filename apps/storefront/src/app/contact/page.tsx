@@ -12,6 +12,8 @@ import PhoneInputField, {
   getMaxDigits,
   validatePhoneNumber,
 } from '../../components/PhoneInputField';
+import './contact.css';
+
 
 const SPAM_KEYWORDS = [
   'casino', 'viagra', 'porn', 'sex', 'crypto', 'bitcoin', 'loan', 'investment',
@@ -23,6 +25,15 @@ export default function ContactPage() {
   const { user, login } = useAuth();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('step') === '2') setStep(2);
+      else if (params.get('step') === '3') setStep(3);
+    }
+  }, []);
+
 
   // Form State
   const [projectType, setProjectType] = useState('Hotel / Resort Fit-out');
@@ -310,28 +321,52 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="wrap">
-      <div className="crumbs">
-        <Link href="/">HOME</Link> / <span>ENQUIRY</span>
+    <div className="contact-page-root">
+      {/* FULL WIDTH HERO BANNER */}
+      <div className="contact-hero-banner">
+        <img
+          src="/contact-hero.webp"
+          alt="Orbit Expo Crafts Showroom Living & Dining"
+          className="contact-hero-img"
+        />
       </div>
 
-      <section className="blk" style={{ paddingTop: 20, paddingBottom: 80 }}>
-        <div className="two" style={{ alignItems: 'start', gap: 40 }}>
-          {/* LEFT: INFORMATION & SHORTLIST */}
-          <div>
-            <span className="mono" style={{ color: 'var(--brand)', letterSpacing: '0.14em', textTransform: 'uppercase', fontSize: 11, fontWeight: 700 }}>
-              Quote-First Contract Commerce
-            </span>
-            <h2 className="disp" style={{ fontSize: 'clamp(30px, 4vw, 44px)', margin: '10px 0 16px', fontWeight: 400 }}>
+      <div className="contact-main-wrap">
+        {/* BREADCRUMBS */}
+        <div className="contact-breadcrumbs">
+          <Link href="/">HOME</Link>
+          <span className="contact-crumb-sep">/</span>
+          <span className="contact-crumb-current">ENQUIRY</span>
+        </div>
+
+        {/* TWO-COLUMN EDITORIAL LAYOUT */}
+        <div className="contact-layout-grid">
+          {/* LEFT COLUMN: INFORMATION & WORKSHOP DETAILS */}
+          <div className="contact-left-col">
+            <h1 className="contact-main-heading">
               Tell us what you need. We&apos;ll price it properly.
-            </h2>
-            <p style={{ color: 'var(--ink-2)', marginBottom: 24, fontSize: 15, lineHeight: 1.6 }}>
-              We don&apos;t take payment online — because a fair contract price depends on quantity, finish, destination and lead time. Send this form and our project desk in Rajasthan replies within 24 working hours.
+            </h1>
+            <p className="contact-subtext">
+              A fair contract price depends on quantity, finish, destination and lead time. Send this form and our project desk replies within 24 working hours.
             </p>
 
+            <div className="contact-direct-info">
+              <a href="mailto:sales@orbitexpocrafts.com" className="contact-email-link">
+                sales@orbitexpocrafts.com
+              </a>
+              <p className="contact-working-hours">
+                Monday to Saturday, 10:00—19:00
+              </p>
+            </div>
+
+            <p className="contact-workshop-tagline">
+              Solid sheesham and teak, finished in our own workshop.
+            </p>
+
+            {/* SHORTLIST PREVIEW (IF ACTIVE SHORTLIST EXISTS) */}
             {enquiry.length > 0 ? (
-              <div className="quote-box" style={{ marginBottom: 24 }}>
-                <h4 style={{ fontSize: 15, marginBottom: 12 }}>
+              <div className="contact-shortlist-card">
+                <h4>
                   {enquiry.length} item{enquiry.length > 1 ? 's' : ''} on your shortlist
                 </h4>
                 {enquiry.map((i) => (
@@ -343,50 +378,51 @@ export default function ContactPage() {
                       <h5 style={{ fontSize: 13 }}>{i.name}</h5>
                       <small>{i.id} · qty {i.q}</small>
                     </div>
-                    <button className="rm" onClick={() => removeEnquiry(i.id)}>
+                    <button type="button" className="rm" onClick={() => removeEnquiry(i.id)}>
                       Remove
                     </button>
                   </div>
                 ))}
               </div>
-            ) : (
-              <div className="note" style={{ marginBottom: 24, padding: '16px 20px', background: 'var(--surface-2)', borderRadius: 'var(--r-md)', fontSize: 13.5, color: 'var(--ink-2)' }}>
-                Your shortlist is empty — that&apos;s fine! Describe your project requirements below, or{' '}
-                <Link href="/collections" style={{ color: 'var(--brand)', fontWeight: 700 }}>
-                  browse our collections
-                </Link>{' '}
-                to shortlist items.
-              </div>
-            )}
+            ) : null}
 
-            <div className="caps" style={{ gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-              {[
-                ['24-hr Response', 'Direct factory quote'],
-                ['NDA Available', 'Strict confidentiality'],
-                ['Export Freight', 'ISPM-15 & IEC compliant'],
-                ['Dedicated Manager', 'Named project desk contact'],
-              ].map((c, i) => (
-                <div key={i} className="cap" style={{ padding: 18 }}>
-                  <h4 style={{ fontSize: 14, margin: 0 }}>{c[0]}</h4>
-                  <p style={{ fontSize: 12, margin: 0, color: 'var(--ink-2)' }}>{c[1]}</p>
-                </div>
-              ))}
+            {/* FACTORY TRUST CAPABILITIES */}
+            <div className="contact-caps-grid">
+              <div className="contact-cap-item">
+                <h4>24-hr Response</h4>
+                <p>Direct factory quote</p>
+              </div>
+              <div className="contact-cap-item">
+                <h4>NDA Available</h4>
+                <p>Strict confidentiality</p>
+              </div>
+              <div className="contact-cap-item">
+                <h4>Export Freight</h4>
+                <p>ISPM-15 &amp; IEC compliant</p>
+              </div>
+              <div className="contact-cap-item">
+                <h4>Dedicated Manager</h4>
+                <p>Named project desk contact</p>
+              </div>
             </div>
           </div>
 
-          {/* RIGHT: MULTI-STEP PROJECT ENQUIRY FORM */}
-          <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 'var(--r-lg)', padding: 32, boxShadow: 'var(--shadow-lg)' }}>
+          {/* RIGHT COLUMN: STYLED FORM CARD */}
+          <div className="contact-form-card">
             {/* STEP PROGRESS INDICATOR */}
             {step < 3 && (
-              <div style={{ marginBottom: 24, paddingBottom: 16, borderBottom: '1px solid var(--line)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--brand)', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 8 }}>
+              <div className="contact-step-header">
+                <div className="contact-step-meta">
                   <span>STEP {step} OF 2</span>
-                  <span style={{ marginLeft: 'auto', color: 'var(--ink-3)' }}>
-                    {step === 1 ? 'Project Requirements' : 'Contact & Phone Details'}
+                  <span style={{ color: '#8C847B' }}>
+                    {step === 1 ? 'Project Requirements' : 'Contact Details'}
                   </span>
                 </div>
-                <div style={{ height: 4, background: 'var(--surface-2)', borderRadius: 2, overflow: 'hidden' }}>
-                  <div style={{ height: '100%', background: 'var(--brand)', width: step === 1 ? '50%' : '100%', transition: 'width 0.3s var(--ease)' }} />
+                <div className="contact-step-track">
+                  <div
+                    className="contact-step-fill"
+                    style={{ width: step === 1 ? '50%' : '100%' }}
+                  />
                 </div>
               </div>
             )}
@@ -394,16 +430,11 @@ export default function ContactPage() {
             {/* STEP 1: PROJECT REQUIREMENTS */}
             {step === 1 && (
               <div>
-                <h3 className="disp" style={{ fontSize: 24, marginBottom: 6, fontWeight: 400 }}>
-                  Project Specifications
-                </h3>
-                <p style={{ fontSize: 13, color: 'var(--ink-3)', marginBottom: 22 }}>
-                  Select your project scope and estimated quantities.
-                </p>
-
-                <div className="field" style={{ marginBottom: 18 }}>
-                  <label>PROJECT TYPE / REQUIREMENT</label>
+                <div className="contact-field">
+                  <label htmlFor="contact-project-type">PROJECT TYPE / REQUIREMENT</label>
                   <select
+                    id="contact-project-type"
+                    className="contact-select"
                     value={projectType}
                     onChange={(e) => setProjectType(e.target.value)}
                   >
@@ -415,22 +446,26 @@ export default function ContactPage() {
                   </select>
                 </div>
 
-                <div className="field" style={{ marginBottom: 18 }}>
-                  <label>ESTIMATED QUANTITY (UNITS)</label>
+                <div className="contact-field">
+                  <label htmlFor="contact-quantity">ESTIMATED QUANTITY (UNITS)</label>
                   <input
+                    id="contact-quantity"
                     type="number"
                     min="1"
+                    className="contact-input"
                     value={quantity}
                     onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
                   />
                   {errors.quantity && <span className="field-error">{errors.quantity}</span>}
                 </div>
 
-                <div className="field" style={{ marginBottom: 24 }}>
-                  <label>PROJECT / SPECIFICATION NOTES (OPTIONAL)</label>
+                <div className="contact-field" style={{ marginBottom: 24 }}>
+                  <label htmlFor="contact-notes">REQUIREMENT</label>
                   <textarea
+                    id="contact-notes"
                     rows={4}
-                    placeholder="e.g. 42-room resort in Goa — guestroom furniture, restaurant tables & poolside loungers. Custom teak finish preferred."
+                    className="contact-textarea"
+                    placeholder="What you need, quantity and location"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   />
@@ -440,30 +475,27 @@ export default function ContactPage() {
                 <button
                   type="button"
                   onClick={handleNextStep}
-                  className="btn btn-primary btn-lg"
-                  style={{ width: '100%', justifyContent: 'center' }}
+                  className="contact-btn-submit"
                 >
-                  Next: Contact Details →
+                  NEXT: CONTACT DETAILS →
                 </button>
+                <p className="contact-form-privacy">
+                  Your details are used only to respond to this enquiry.
+                </p>
               </div>
             )}
 
             {/* STEP 2: CONTACT DETAILS WITH COUNTRY FLAG SELECTOR */}
             {step === 2 && (
               <form onSubmit={handleSubmit}>
-                <h3 className="disp" style={{ fontSize: 24, marginBottom: 6, fontWeight: 400 }}>
-                  Contact Information
-                </h3>
-                <p style={{ fontSize: 13, color: 'var(--ink-3)', marginBottom: 22 }}>
-                  Fields marked * are required.
-                </p>
-
                 {/* FULL NAME */}
-                <div className="field" style={{ marginBottom: 16 }}>
-                  <label>FULL NAME *</label>
+                <div className="contact-field">
+                  <label htmlFor="contact-name">NAME *</label>
                   <input
+                    id="contact-name"
                     type="text"
-                    placeholder="e.g. Arch. Priya Sharma"
+                    className="contact-input"
+                    placeholder="Your name"
                     value={fullName}
                     onChange={(e) => {
                       setFullName(e.target.value);
@@ -475,10 +507,12 @@ export default function ContactPage() {
                 </div>
 
                 {/* COMPANY / FIRM NAME */}
-                <div className="field" style={{ marginBottom: 16 }}>
-                  <label>COMPANY / ARCHITECTURAL FIRM (OPTIONAL)</label>
+                <div className="contact-field">
+                  <label htmlFor="contact-company">COMPANY / ARCHITECTURAL FIRM (OPTIONAL)</label>
                   <input
+                    id="contact-company"
                     type="text"
+                    className="contact-input"
                     placeholder="e.g. Studio Lotus Architects"
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
@@ -486,11 +520,13 @@ export default function ContactPage() {
                 </div>
 
                 {/* BUSINESS EMAIL */}
-                <div className="field" style={{ marginBottom: 16 }}>
-                  <label>BUSINESS EMAIL *</label>
+                <div className="contact-field">
+                  <label htmlFor="contact-email">EMAIL *</label>
                   <input
+                    id="contact-email"
                     type="email"
-                    placeholder="priya@studiolotus.in"
+                    className="contact-input"
+                    placeholder="How we reach you (name@company.com)"
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
@@ -502,11 +538,12 @@ export default function ContactPage() {
                 </div>
 
                 {/* PHONE / WHATSAPP WITH DYNAMIC COUNTRY FLAG SELECTOR */}
-                <div className="field" style={{ marginBottom: 24 }}>
+                <div className="contact-field" style={{ marginBottom: 20 }}>
                   <label>PHONE / WHATSAPP NUMBER *</label>
-                  <div className="sample-phone-group">
-                    <div className="sample-flag-selector">
+                  <div className="contact-phone-group">
+                    <div className="contact-flag-selector">
                       <select
+                        aria-label="Select Country Dial Code"
                         value={selectedCountry.iso}
                         onChange={(e) => {
                           const found = PHONE_COUNTRIES.find((c) => c.iso === e.target.value) || PHONE_COUNTRIES[0];
@@ -526,7 +563,7 @@ export default function ContactPage() {
                           </option>
                         ))}
                       </select>
-                      <span className="flag-display">
+                      <span className="contact-flag-display">
                         {selectedCountry.flag} {selectedCountry.code}
                       </span>
                     </div>
@@ -534,6 +571,7 @@ export default function ContactPage() {
                       type="tel"
                       inputMode="numeric"
                       pattern="[0-9]*"
+                      className="contact-input"
                       maxLength={getMaxDigits(selectedCountry)}
                       placeholder={getPhonePlaceholder(selectedCountry)}
                       value={phone}
@@ -559,7 +597,7 @@ export default function ContactPage() {
 
                 {/* TRADE PORTAL ACCOUNT SETUP (REQUIRED) */}
                 {user ? (
-                  <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 6, padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                  <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 4, padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                     <span style={{ fontSize: 12.5, color: '#166534', fontWeight: 500 }}>
                       ✓ Linked to Trade Account: <strong>{user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : (user.username || user.email)}</strong>
                     </span>
@@ -570,7 +608,7 @@ export default function ContactPage() {
                 ) : (
                   <div style={{ background: '#FAF9F5', border: '1px solid #ECE7DE', borderRadius: 6, padding: '14px 16px', marginBottom: 20 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                      <span style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#111111' }}>
+                      <span style={{ fontSize: 11.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#111111' }}>
                         Trade Portal Account (Required)
                       </span>
                       <button
@@ -604,27 +642,29 @@ export default function ContactPage() {
                         )}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10 }}>
                           <div>
-                            <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
+                            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
                               Email or Username *
                             </label>
                             <input
                               type="text"
+                              className="contact-input"
                               placeholder="your@email.com"
                               value={loginEmail}
                               onChange={(e) => setLoginEmail(e.target.value)}
-                              style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13, background: '#FFFFFF' }}
+                              style={{ padding: '9px 11px', background: '#FFFFFF' }}
                             />
                           </div>
                           <div>
-                            <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
+                            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
                               Password *
                             </label>
                             <input
                               type="password"
+                              className="contact-input"
                               placeholder="••••••••"
                               value={loginPassword}
                               onChange={(e) => setLoginPassword(e.target.value)}
-                              style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13, background: '#FFFFFF' }}
+                              style={{ padding: '9px 11px', background: '#FFFFFF' }}
                             />
                           </div>
                         </div>
@@ -637,9 +677,9 @@ export default function ContactPage() {
                               background: '#111111',
                               color: '#FFFFFF',
                               border: 'none',
-                              borderRadius: 6,
+                              borderRadius: 4,
                               padding: '8px 16px',
-                              fontSize: 12.5,
+                              fontSize: 12,
                               fontWeight: 600,
                               cursor: isLoggingIn ? 'not-allowed' : 'pointer',
                             }}
@@ -657,33 +697,35 @@ export default function ContactPage() {
                         )}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10 }}>
                           <div>
-                            <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
+                            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
                               Account Password *
                             </label>
                             <input
                               type="password"
+                              className="contact-input"
                               placeholder="Min 6 characters"
                               value={password}
                               onChange={(e) => {
                                 setPassword(e.target.value);
                                 if (passwordError) setPasswordError('');
                               }}
-                              style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13, background: '#FFFFFF' }}
+                              style={{ padding: '9px 11px', background: '#FFFFFF' }}
                             />
                           </div>
                           <div>
-                            <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
+                            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
                               Confirm Password *
                             </label>
                             <input
                               type="password"
+                              className="contact-input"
                               placeholder="Re-enter password"
                               value={confirmPassword}
                               onChange={(e) => {
                                 setConfirmPassword(e.target.value);
                                 if (passwordError) setPasswordError('');
                               }}
-                              style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13, background: '#FFFFFF' }}
+                              style={{ padding: '9px 11px', background: '#FFFFFF' }}
                             />
                           </div>
                         </div>
@@ -692,10 +734,10 @@ export default function ContactPage() {
                   </div>
                 )}
 
-                <div style={{ display: 'flex', gap: 12 }}>
+                <div style={{ display: 'flex', gap: 10, marginTop: 12 }}>
                   <button
                     type="button"
-                    className="btn btn-soft"
+                    className="contact-btn-back"
                     onClick={() => setStep(1)}
                   >
                     ← Back
@@ -703,40 +745,43 @@ export default function ContactPage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="btn btn-primary btn-lg"
-                    style={{ flex: 1, justifyContent: 'center' }}
+                    className="contact-btn-submit"
+                    style={{ flex: 1 }}
                   >
-                    {isSubmitting ? 'Sending Enquiry…' : 'Send Enquiry & Get Quote'}
+                    {isSubmitting ? 'Sending Enquiry…' : 'SEND ENQUIRY'}
                   </button>
                 </div>
+                <p className="contact-form-privacy">
+                  Your details are used only to respond to this enquiry.
+                </p>
               </form>
             )}
 
             {/* STEP 3: SUCCESS CONFIRMATION SCREEN */}
             {step === 3 && (
-              <div style={{ textAlign: 'center', padding: '30px 10px' }}>
+              <div style={{ textAlign: 'center', padding: '24px 8px' }}>
                 <div
                   style={{
-                    width: 64,
-                    height: 64,
+                    width: 60,
+                    height: 60,
                     borderRadius: '50%',
                     background: '#e6f4ea',
                     color: '#137333',
-                    fontSize: 32,
+                    fontSize: 28,
                     fontWeight: 700,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    margin: '0 auto 20px',
+                    margin: '0 auto 18px',
                   }}
                 >
                   ✓
                 </div>
-                <h3 className="disp" style={{ fontSize: 28, marginBottom: 8, fontWeight: 400 }}>
+                <h3 style={{ fontFamily: 'var(--font-display, Georgia, serif)', fontSize: 26, marginBottom: 8, fontWeight: 400 }}>
                   Enquiry Sent Successfully!
                 </h3>
                 <p className="sample-ref" style={{ marginBottom: 12 }}>Reference ID: <strong>{refId}</strong></p>
-                <p style={{ color: 'var(--ink-2)', marginBottom: 24, fontSize: 15, lineHeight: 1.6 }}>
+                <p style={{ color: '#55504A', marginBottom: 24, fontSize: 14.5, lineHeight: 1.6 }}>
                   Thank you, <strong>{fullName}</strong>. Our project desk in Rajasthan will review your requirements for <strong>{projectType}</strong> and reply with a formal costed proposal within <strong>24 working hours</strong>.
                 </p>
 
@@ -747,14 +792,15 @@ export default function ContactPage() {
                   <div><span>Email:</span> <strong>{email}</strong></div>
                 </div>
 
-                <Link href="/collections" className="btn btn-primary btn-lg">
-                  Return to Collections
+                <Link href="/collections" className="contact-btn-submit" style={{ textDecoration: 'none' }}>
+                  RETURN TO COLLECTIONS
                 </Link>
               </div>
             )}
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 }
+
