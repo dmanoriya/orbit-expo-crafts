@@ -24,19 +24,14 @@
       ],
       "categories": [
         {
-          "id": 983,
+          "id": 1172,
           "name": "Décor",
           "slug": "decor"
         },
         {
-          "id": 997,
+          "id": 1182,
           "name": "Wall Art",
           "slug": "wall-art"
-        },
-        {
-          "id": 998,
-          "name": "Wall Art",
-          "slug": "wall-art-wall-art"
         }
       ],
       "attributes": {
@@ -179,19 +174,14 @@
       ],
       "categories": [
         {
-          "id": 983,
+          "id": 1172,
           "name": "Décor",
           "slug": "decor"
         },
         {
-          "id": 997,
+          "id": 1182,
           "name": "Wall Art",
           "slug": "wall-art"
-        },
-        {
-          "id": 998,
-          "name": "Wall Art",
-          "slug": "wall-art-wall-art"
         }
       ],
       "attributes": {
@@ -334,17 +324,17 @@
       ],
       "categories": [
         {
-          "id": 966,
+          "id": 1163,
           "name": "Accents",
           "slug": "accents"
         },
         {
-          "id": 969,
+          "id": 1166,
           "name": "Bar Trolley",
           "slug": "bar-trolley"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -489,17 +479,17 @@
       ],
       "categories": [
         {
-          "id": 966,
+          "id": 1163,
           "name": "Accents",
           "slug": "accents"
         },
         {
-          "id": 969,
+          "id": 1166,
           "name": "Bar Trolley",
           "slug": "bar-trolley"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -644,17 +634,17 @@
       ],
       "categories": [
         {
-          "id": 966,
+          "id": 1163,
           "name": "Accents",
           "slug": "accents"
         },
         {
-          "id": 969,
+          "id": 1166,
           "name": "Bar Trolley",
           "slug": "bar-trolley"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -799,17 +789,17 @@
       ],
       "categories": [
         {
-          "id": 966,
+          "id": 1163,
           "name": "Accents",
           "slug": "accents"
         },
         {
-          "id": 969,
+          "id": 1166,
           "name": "Bar Trolley",
           "slug": "bar-trolley"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -954,17 +944,17 @@
       ],
       "categories": [
         {
-          "id": 966,
+          "id": 1163,
           "name": "Accents",
           "slug": "accents"
         },
         {
-          "id": 969,
+          "id": 1166,
           "name": "Bar Trolley",
           "slug": "bar-trolley"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -1109,17 +1099,17 @@
       ],
       "categories": [
         {
-          "id": 966,
+          "id": 1163,
           "name": "Accents",
           "slug": "accents"
         },
         {
-          "id": 969,
+          "id": 1166,
           "name": "Bar Trolley",
           "slug": "bar-trolley"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -1264,17 +1254,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 958,
+          "id": 1155,
           "name": "Sideboards",
           "slug": "sideboards"
         }
@@ -1419,17 +1409,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 958,
+          "id": 1155,
           "name": "Sideboards",
           "slug": "sideboards"
         }
@@ -1574,17 +1564,17 @@
       ],
       "categories": [
         {
-          "id": 966,
+          "id": 1163,
           "name": "Accents",
           "slug": "accents"
         },
         {
-          "id": 969,
+          "id": 1166,
           "name": "Bar Trolley",
           "slug": "bar-trolley"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -1729,17 +1719,17 @@
       ],
       "categories": [
         {
-          "id": 966,
+          "id": 1163,
           "name": "Accents",
           "slug": "accents"
         },
         {
-          "id": 969,
+          "id": 1166,
           "name": "Bar Trolley",
           "slug": "bar-trolley"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -1884,17 +1874,17 @@
       ],
       "categories": [
         {
-          "id": 966,
+          "id": 1163,
           "name": "Accents",
           "slug": "accents"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 968,
+          "id": 1165,
           "name": "Trolleys & Carts",
           "slug": "trolleys-and-carts"
         }
@@ -2039,17 +2029,17 @@
       ],
       "categories": [
         {
-          "id": 966,
+          "id": 1163,
           "name": "Accents",
           "slug": "accents"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 968,
+          "id": 1165,
           "name": "Trolleys & Carts",
           "slug": "trolleys-and-carts"
         }
@@ -2194,17 +2184,17 @@
       ],
       "categories": [
         {
-          "id": 966,
+          "id": 1163,
           "name": "Accents",
           "slug": "accents"
         },
         {
-          "id": 969,
+          "id": 1166,
           "name": "Bar Trolley",
           "slug": "bar-trolley"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -2349,17 +2339,17 @@
       ],
       "categories": [
         {
-          "id": 966,
+          "id": 1163,
           "name": "Accents",
           "slug": "accents"
         },
         {
-          "id": 969,
+          "id": 1166,
           "name": "Bar Trolley",
           "slug": "bar-trolley"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -2504,17 +2494,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 962,
+          "id": 1159,
           "name": "Wardrobes",
           "slug": "wardrobes"
         }
@@ -2659,17 +2649,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 962,
+          "id": 1159,
           "name": "Wardrobes",
           "slug": "wardrobes"
         }
@@ -2814,17 +2804,17 @@
       ],
       "categories": [
         {
-          "id": 944,
+          "id": 1141,
           "name": "Benches",
           "slug": "benches"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -2969,17 +2959,17 @@
       ],
       "categories": [
         {
-          "id": 944,
+          "id": 1141,
           "name": "Benches",
           "slug": "benches"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -3124,17 +3114,17 @@
       ],
       "categories": [
         {
-          "id": 944,
+          "id": 1141,
           "name": "Benches",
           "slug": "benches"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -3279,17 +3269,17 @@
       ],
       "categories": [
         {
-          "id": 944,
+          "id": 1141,
           "name": "Benches",
           "slug": "benches"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -3434,17 +3424,17 @@
       ],
       "categories": [
         {
-          "id": 944,
+          "id": 1141,
           "name": "Benches",
           "slug": "benches"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -3589,19 +3579,9 @@
       ],
       "categories": [
         {
-          "id": 1032,
-          "name": "Garden Benches",
-          "slug": "garden-benches"
-        },
-        {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1031,
-          "name": "Outdoor Seating",
-          "slug": "outdoor-seating"
         }
       ],
       "attributes": {
@@ -3744,19 +3724,9 @@
       ],
       "categories": [
         {
-          "id": 1032,
-          "name": "Garden Benches",
-          "slug": "garden-benches"
-        },
-        {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1031,
-          "name": "Outdoor Seating",
-          "slug": "outdoor-seating"
         }
       ],
       "attributes": {
@@ -3899,17 +3869,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 945,
+          "id": 1142,
           "name": "Ottomans & Poufs",
           "slug": "ottomans-and-poufs"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -4054,17 +4024,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 945,
+          "id": 1142,
           "name": "Ottomans & Poufs",
           "slug": "ottomans-and-poufs"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -4209,17 +4179,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 943,
+          "id": 1140,
           "name": "Stools",
           "slug": "stools"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -4364,17 +4334,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 943,
+          "id": 1140,
           "name": "Stools",
           "slug": "stools"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -4519,19 +4489,9 @@
       ],
       "categories": [
         {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1036,
-          "name": "Outdoor Dining",
-          "slug": "outdoor-dining"
-        },
-        {
-          "id": 1037,
-          "name": "Outdoor Dining Sets",
-          "slug": "outdoor-dining-sets"
         }
       ],
       "attributes": {
@@ -4674,19 +4634,9 @@
       ],
       "categories": [
         {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1036,
-          "name": "Outdoor Dining",
-          "slug": "outdoor-dining"
-        },
-        {
-          "id": 1037,
-          "name": "Outdoor Dining Sets",
-          "slug": "outdoor-dining-sets"
         }
       ],
       "attributes": {
@@ -4829,19 +4779,9 @@
       ],
       "categories": [
         {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1031,
-          "name": "Outdoor Seating",
-          "slug": "outdoor-seating"
-        },
-        {
-          "id": 1033,
-          "name": "Outdoor Sofas",
-          "slug": "outdoor-sofas"
         }
       ],
       "attributes": {
@@ -4984,19 +4924,9 @@
       ],
       "categories": [
         {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1031,
-          "name": "Outdoor Seating",
-          "slug": "outdoor-seating"
-        },
-        {
-          "id": 1033,
-          "name": "Outdoor Sofas",
-          "slug": "outdoor-sofas"
         }
       ],
       "attributes": {
@@ -5139,19 +5069,9 @@
       ],
       "categories": [
         {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1034,
-          "name": "Outdoor Chairs",
-          "slug": "outdoor-chairs"
-        },
-        {
-          "id": 1031,
-          "name": "Outdoor Seating",
-          "slug": "outdoor-seating"
         }
       ],
       "attributes": {
@@ -5294,19 +5214,9 @@
       ],
       "categories": [
         {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1034,
-          "name": "Outdoor Chairs",
-          "slug": "outdoor-chairs"
-        },
-        {
-          "id": 1031,
-          "name": "Outdoor Seating",
-          "slug": "outdoor-seating"
         }
       ],
       "attributes": {
@@ -5449,19 +5359,9 @@
       ],
       "categories": [
         {
-          "id": 1032,
-          "name": "Garden Benches",
-          "slug": "garden-benches"
-        },
-        {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1031,
-          "name": "Outdoor Seating",
-          "slug": "outdoor-seating"
         }
       ],
       "attributes": {
@@ -5604,19 +5504,9 @@
       ],
       "categories": [
         {
-          "id": 1032,
-          "name": "Garden Benches",
-          "slug": "garden-benches"
-        },
-        {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1031,
-          "name": "Outdoor Seating",
-          "slug": "outdoor-seating"
         }
       ],
       "attributes": {
@@ -5759,17 +5649,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 940,
+          "id": 1137,
           "name": "Swings & Hammocks",
           "slug": "swings-and-hammocks"
         }
@@ -5914,17 +5804,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 940,
+          "id": 1137,
           "name": "Swings & Hammocks",
           "slug": "swings-and-hammocks"
         }
@@ -6069,19 +5959,9 @@
       ],
       "categories": [
         {
-          "id": 1041,
-          "name": "Garden Planters",
-          "slug": "garden-planters"
-        },
-        {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1040,
-          "name": "Planters & Pots",
-          "slug": "planters-and-pots"
         }
       ],
       "attributes": {
@@ -6224,19 +6104,9 @@
       ],
       "categories": [
         {
-          "id": 1041,
-          "name": "Garden Planters",
-          "slug": "garden-planters"
-        },
-        {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1040,
-          "name": "Planters & Pots",
-          "slug": "planters-and-pots"
         }
       ],
       "attributes": {
@@ -6379,19 +6249,9 @@
       ],
       "categories": [
         {
-          "id": 1044,
-          "name": "Gazebos & Cabanas",
-          "slug": "gazebos-and-cabanas"
-        },
-        {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1043,
-          "name": "Shade & Shelter",
-          "slug": "shade-and-shelter"
         }
       ],
       "attributes": {
@@ -6534,19 +6394,9 @@
       ],
       "categories": [
         {
-          "id": 1044,
-          "name": "Gazebos & Cabanas",
-          "slug": "gazebos-and-cabanas"
-        },
-        {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1043,
-          "name": "Shade & Shelter",
-          "slug": "shade-and-shelter"
         }
       ],
       "attributes": {
@@ -6689,19 +6539,9 @@
       ],
       "categories": [
         {
-          "id": 1044,
-          "name": "Gazebos & Cabanas",
-          "slug": "gazebos-and-cabanas"
-        },
-        {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1043,
-          "name": "Shade & Shelter",
-          "slug": "shade-and-shelter"
         }
       ],
       "attributes": {
@@ -6844,19 +6684,9 @@
       ],
       "categories": [
         {
-          "id": 1044,
-          "name": "Gazebos & Cabanas",
-          "slug": "gazebos-and-cabanas"
-        },
-        {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1043,
-          "name": "Shade & Shelter",
-          "slug": "shade-and-shelter"
         }
       ],
       "attributes": {
@@ -6999,19 +6829,9 @@
       ],
       "categories": [
         {
-          "id": 1044,
-          "name": "Gazebos & Cabanas",
-          "slug": "gazebos-and-cabanas"
-        },
-        {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1043,
-          "name": "Shade & Shelter",
-          "slug": "shade-and-shelter"
         }
       ],
       "attributes": {
@@ -7154,19 +6974,9 @@
       ],
       "categories": [
         {
-          "id": 1044,
-          "name": "Gazebos & Cabanas",
-          "slug": "gazebos-and-cabanas"
-        },
-        {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1043,
-          "name": "Shade & Shelter",
-          "slug": "shade-and-shelter"
         }
       ],
       "attributes": {
@@ -7309,17 +7119,12 @@
       ],
       "categories": [
         {
-          "id": 973,
-          "name": "Ceiling & Wall Fixtures",
-          "slug": "ceiling-and-wall-fixtures"
-        },
-        {
-          "id": 970,
+          "id": 1167,
           "name": "Lighting",
           "slug": "lighting"
         },
         {
-          "id": 971,
+          "id": 1168,
           "name": "Wall",
           "slug": "wall"
         }
@@ -7464,17 +7269,12 @@
       ],
       "categories": [
         {
-          "id": 973,
-          "name": "Ceiling & Wall Fixtures",
-          "slug": "ceiling-and-wall-fixtures"
-        },
-        {
-          "id": 970,
+          "id": 1167,
           "name": "Lighting",
           "slug": "lighting"
         },
         {
-          "id": 971,
+          "id": 1168,
           "name": "Wall",
           "slug": "wall"
         }
@@ -7619,17 +7419,12 @@
       ],
       "categories": [
         {
-          "id": 978,
+          "id": 1170,
           "name": "Floor Lamps",
           "slug": "floor-lamps"
         },
         {
-          "id": 979,
-          "name": "Floor Lamps",
-          "slug": "floor-lamps-floor-lamps"
-        },
-        {
-          "id": 970,
+          "id": 1167,
           "name": "Lighting",
           "slug": "lighting"
         }
@@ -7774,17 +7569,12 @@
       ],
       "categories": [
         {
-          "id": 978,
+          "id": 1170,
           "name": "Floor Lamps",
           "slug": "floor-lamps"
         },
         {
-          "id": 979,
-          "name": "Floor Lamps",
-          "slug": "floor-lamps-floor-lamps"
-        },
-        {
-          "id": 970,
+          "id": 1167,
           "name": "Lighting",
           "slug": "lighting"
         }
@@ -7929,19 +7719,14 @@
       ],
       "categories": [
         {
-          "id": 970,
+          "id": 1167,
           "name": "Lighting",
           "slug": "lighting"
         },
         {
-          "id": 975,
+          "id": 1169,
           "name": "Table Lamps",
           "slug": "table-lamps"
-        },
-        {
-          "id": 976,
-          "name": "Table Lamps",
-          "slug": "table-lamps-table-lamps"
         }
       ],
       "attributes": {
@@ -8084,19 +7869,14 @@
       ],
       "categories": [
         {
-          "id": 970,
+          "id": 1167,
           "name": "Lighting",
           "slug": "lighting"
         },
         {
-          "id": 975,
+          "id": 1169,
           "name": "Table Lamps",
           "slug": "table-lamps"
-        },
-        {
-          "id": 976,
-          "name": "Table Lamps",
-          "slug": "table-lamps-table-lamps"
         }
       ],
       "attributes": {
@@ -8239,19 +8019,14 @@
       ],
       "categories": [
         {
-          "id": 970,
+          "id": 1167,
           "name": "Lighting",
           "slug": "lighting"
         },
         {
-          "id": 971,
+          "id": 1168,
           "name": "Wall",
           "slug": "wall"
-        },
-        {
-          "id": 972,
-          "name": "Wall Sconces",
-          "slug": "wall-sconces"
         }
       ],
       "attributes": {
@@ -8394,19 +8169,14 @@
       ],
       "categories": [
         {
-          "id": 970,
+          "id": 1167,
           "name": "Lighting",
           "slug": "lighting"
         },
         {
-          "id": 971,
+          "id": 1168,
           "name": "Wall",
           "slug": "wall"
-        },
-        {
-          "id": 972,
-          "name": "Wall Sconces",
-          "slug": "wall-sconces"
         }
       ],
       "attributes": {
@@ -8549,17 +8319,12 @@
       ],
       "categories": [
         {
-          "id": 973,
-          "name": "Ceiling & Wall Fixtures",
-          "slug": "ceiling-and-wall-fixtures"
-        },
-        {
-          "id": 970,
+          "id": 1167,
           "name": "Lighting",
           "slug": "lighting"
         },
         {
-          "id": 971,
+          "id": 1168,
           "name": "Wall",
           "slug": "wall"
         }
@@ -8704,17 +8469,12 @@
       ],
       "categories": [
         {
-          "id": 973,
-          "name": "Ceiling & Wall Fixtures",
-          "slug": "ceiling-and-wall-fixtures"
-        },
-        {
-          "id": 970,
+          "id": 1167,
           "name": "Lighting",
           "slug": "lighting"
         },
         {
-          "id": 971,
+          "id": 1168,
           "name": "Wall",
           "slug": "wall"
         }
@@ -8859,19 +8619,14 @@
       ],
       "categories": [
         {
-          "id": 970,
+          "id": 1167,
           "name": "Lighting",
           "slug": "lighting"
         },
         {
-          "id": 975,
+          "id": 1169,
           "name": "Table Lamps",
           "slug": "table-lamps"
-        },
-        {
-          "id": 976,
-          "name": "Table Lamps",
-          "slug": "table-lamps-table-lamps"
         }
       ],
       "attributes": {
@@ -9014,19 +8769,14 @@
       ],
       "categories": [
         {
-          "id": 970,
+          "id": 1167,
           "name": "Lighting",
           "slug": "lighting"
         },
         {
-          "id": 975,
+          "id": 1169,
           "name": "Table Lamps",
           "slug": "table-lamps"
-        },
-        {
-          "id": 976,
-          "name": "Table Lamps",
-          "slug": "table-lamps-table-lamps"
         }
       ],
       "attributes": {
@@ -9169,17 +8919,12 @@
       ],
       "categories": [
         {
-          "id": 978,
+          "id": 1170,
           "name": "Floor Lamps",
           "slug": "floor-lamps"
         },
         {
-          "id": 979,
-          "name": "Floor Lamps",
-          "slug": "floor-lamps-floor-lamps"
-        },
-        {
-          "id": 970,
+          "id": 1167,
           "name": "Lighting",
           "slug": "lighting"
         }
@@ -9324,17 +9069,12 @@
       ],
       "categories": [
         {
-          "id": 978,
+          "id": 1170,
           "name": "Floor Lamps",
           "slug": "floor-lamps"
         },
         {
-          "id": 979,
-          "name": "Floor Lamps",
-          "slug": "floor-lamps-floor-lamps"
-        },
-        {
-          "id": 970,
+          "id": 1167,
           "name": "Lighting",
           "slug": "lighting"
         }
@@ -9479,19 +9219,14 @@
       ],
       "categories": [
         {
-          "id": 999,
+          "id": 1183,
           "name": "Mirrors",
           "slug": "mirrors"
         },
         {
-          "id": 1000,
+          "id": 1184,
           "name": "Wall Mirrors",
           "slug": "wall-mirrors"
-        },
-        {
-          "id": 1001,
-          "name": "Wall Mirrors",
-          "slug": "wall-mirrors-wall-mirrors"
         }
       ],
       "attributes": {
@@ -9634,19 +9369,14 @@
       ],
       "categories": [
         {
-          "id": 999,
+          "id": 1183,
           "name": "Mirrors",
           "slug": "mirrors"
         },
         {
-          "id": 1000,
+          "id": 1184,
           "name": "Wall Mirrors",
           "slug": "wall-mirrors"
-        },
-        {
-          "id": 1001,
-          "name": "Wall Mirrors",
-          "slug": "wall-mirrors-wall-mirrors"
         }
       ],
       "attributes": {
@@ -9789,19 +9519,14 @@
       ],
       "categories": [
         {
-          "id": 983,
+          "id": 1172,
           "name": "Décor",
           "slug": "decor"
         },
         {
-          "id": 997,
+          "id": 1182,
           "name": "Wall Art",
           "slug": "wall-art"
-        },
-        {
-          "id": 998,
-          "name": "Wall Art",
-          "slug": "wall-art-wall-art"
         }
       ],
       "attributes": {
@@ -9944,19 +9669,14 @@
       ],
       "categories": [
         {
-          "id": 983,
+          "id": 1172,
           "name": "Décor",
           "slug": "decor"
         },
         {
-          "id": 997,
+          "id": 1182,
           "name": "Wall Art",
           "slug": "wall-art"
-        },
-        {
-          "id": 998,
-          "name": "Wall Art",
-          "slug": "wall-art-wall-art"
         }
       ],
       "attributes": {
@@ -10099,19 +9819,14 @@
       ],
       "categories": [
         {
-          "id": 983,
+          "id": 1172,
           "name": "Décor",
           "slug": "decor"
         },
         {
-          "id": 997,
+          "id": 1182,
           "name": "Wall Art",
           "slug": "wall-art"
-        },
-        {
-          "id": 998,
-          "name": "Wall Art",
-          "slug": "wall-art-wall-art"
         }
       ],
       "attributes": {
@@ -10254,19 +9969,14 @@
       ],
       "categories": [
         {
-          "id": 983,
+          "id": 1172,
           "name": "Décor",
           "slug": "decor"
         },
         {
-          "id": 997,
+          "id": 1182,
           "name": "Wall Art",
           "slug": "wall-art"
-        },
-        {
-          "id": 998,
-          "name": "Wall Art",
-          "slug": "wall-art-wall-art"
         }
       ],
       "attributes": {
@@ -10409,17 +10119,17 @@
       ],
       "categories": [
         {
-          "id": 966,
+          "id": 1163,
           "name": "Accents",
           "slug": "accents"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 967,
+          "id": 1164,
           "name": "Screens & Dividers",
           "slug": "screens-and-dividers"
         }
@@ -10564,17 +10274,17 @@
       ],
       "categories": [
         {
-          "id": 966,
+          "id": 1163,
           "name": "Accents",
           "slug": "accents"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 967,
+          "id": 1164,
           "name": "Screens & Dividers",
           "slug": "screens-and-dividers"
         }
@@ -10719,19 +10429,14 @@
       ],
       "categories": [
         {
-          "id": 983,
+          "id": 1172,
           "name": "Décor",
           "slug": "decor"
         },
         {
-          "id": 993,
+          "id": 1180,
           "name": "Frames",
           "slug": "frames"
-        },
-        {
-          "id": 994,
-          "name": "Frames",
-          "slug": "frames-frames"
         }
       ],
       "attributes": {
@@ -10874,19 +10579,14 @@
       ],
       "categories": [
         {
-          "id": 983,
+          "id": 1172,
           "name": "Décor",
           "slug": "decor"
         },
         {
-          "id": 993,
+          "id": 1180,
           "name": "Frames",
           "slug": "frames"
-        },
-        {
-          "id": 994,
-          "name": "Frames",
-          "slug": "frames-frames"
         }
       ],
       "attributes": {
@@ -11029,17 +10729,17 @@
       ],
       "categories": [
         {
-          "id": 984,
+          "id": 1173,
           "name": "Accents",
           "slug": "accents-decor"
         },
         {
-          "id": 983,
+          "id": 1172,
           "name": "Décor",
           "slug": "decor"
         },
         {
-          "id": 987,
+          "id": 1176,
           "name": "Decorative Trays",
           "slug": "decorative-trays"
         }
@@ -11184,17 +10884,17 @@
       ],
       "categories": [
         {
-          "id": 984,
+          "id": 1173,
           "name": "Accents",
           "slug": "accents-decor"
         },
         {
-          "id": 983,
+          "id": 1172,
           "name": "Décor",
           "slug": "decor"
         },
         {
-          "id": 987,
+          "id": 1176,
           "name": "Decorative Trays",
           "slug": "decorative-trays"
         }
@@ -11339,17 +11039,17 @@
       ],
       "categories": [
         {
-          "id": 984,
+          "id": 1173,
           "name": "Accents",
           "slug": "accents-decor"
         },
         {
-          "id": 983,
+          "id": 1172,
           "name": "Décor",
           "slug": "decor"
         },
         {
-          "id": 986,
+          "id": 1175,
           "name": "Decorative Bowls",
           "slug": "decorative-bowls"
         }
@@ -11494,17 +11194,17 @@
       ],
       "categories": [
         {
-          "id": 984,
+          "id": 1173,
           "name": "Accents",
           "slug": "accents-decor"
         },
         {
-          "id": 983,
+          "id": 1172,
           "name": "Décor",
           "slug": "decor"
         },
         {
-          "id": 986,
+          "id": 1175,
           "name": "Decorative Bowls",
           "slug": "decorative-bowls"
         }
@@ -11649,17 +11349,17 @@
       ],
       "categories": [
         {
-          "id": 937,
+          "id": 1134,
           "name": "Armchairs",
           "slug": "armchairs"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -11804,17 +11504,17 @@
       ],
       "categories": [
         {
-          "id": 937,
+          "id": 1134,
           "name": "Armchairs",
           "slug": "armchairs"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -11959,17 +11659,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 935,
+          "id": 1132,
           "name": "Sofas",
           "slug": "sofas"
         }
@@ -12114,17 +11814,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 935,
+          "id": 1132,
           "name": "Sofas",
           "slug": "sofas"
         }
@@ -12269,17 +11969,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 935,
+          "id": 1132,
           "name": "Sofas",
           "slug": "sofas"
         }
@@ -12424,17 +12124,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 935,
+          "id": 1132,
           "name": "Sofas",
           "slug": "sofas"
         }
@@ -12579,17 +12279,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 935,
+          "id": 1132,
           "name": "Sofas",
           "slug": "sofas"
         }
@@ -12734,17 +12434,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 935,
+          "id": 1132,
           "name": "Sofas",
           "slug": "sofas"
         }
@@ -12889,19 +12589,9 @@
       ],
       "categories": [
         {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1031,
-          "name": "Outdoor Seating",
-          "slug": "outdoor-seating"
-        },
-        {
-          "id": 1033,
-          "name": "Outdoor Sofas",
-          "slug": "outdoor-sofas"
         }
       ],
       "attributes": {
@@ -13044,19 +12734,9 @@
       ],
       "categories": [
         {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1031,
-          "name": "Outdoor Seating",
-          "slug": "outdoor-seating"
-        },
-        {
-          "id": 1033,
-          "name": "Outdoor Sofas",
-          "slug": "outdoor-sofas"
         }
       ],
       "attributes": {
@@ -13199,17 +12879,17 @@
       ],
       "categories": [
         {
-          "id": 954,
+          "id": 1151,
           "name": "Beds",
           "slug": "beds"
         },
         {
-          "id": 955,
+          "id": 1152,
           "name": "Beds",
           "slug": "beds-beds"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -13354,17 +13034,17 @@
       ],
       "categories": [
         {
-          "id": 954,
+          "id": 1151,
           "name": "Beds",
           "slug": "beds"
         },
         {
-          "id": 955,
+          "id": 1152,
           "name": "Beds",
           "slug": "beds-beds"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -13509,17 +13189,17 @@
       ],
       "categories": [
         {
-          "id": 954,
+          "id": 1151,
           "name": "Beds",
           "slug": "beds"
         },
         {
-          "id": 955,
+          "id": 1152,
           "name": "Beds",
           "slug": "beds-beds"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -13664,17 +13344,17 @@
       ],
       "categories": [
         {
-          "id": 954,
+          "id": 1151,
           "name": "Beds",
           "slug": "beds"
         },
         {
-          "id": 955,
+          "id": 1152,
           "name": "Beds",
           "slug": "beds-beds"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -13819,17 +13499,17 @@
       ],
       "categories": [
         {
-          "id": 954,
+          "id": 1151,
           "name": "Beds",
           "slug": "beds"
         },
         {
-          "id": 955,
+          "id": 1152,
           "name": "Beds",
           "slug": "beds-beds"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -13974,17 +13654,17 @@
       ],
       "categories": [
         {
-          "id": 954,
+          "id": 1151,
           "name": "Beds",
           "slug": "beds"
         },
         {
-          "id": 955,
+          "id": 1152,
           "name": "Beds",
           "slug": "beds-beds"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -14129,17 +13809,17 @@
       ],
       "categories": [
         {
-          "id": 954,
+          "id": 1151,
           "name": "Beds",
           "slug": "beds"
         },
         {
-          "id": 955,
+          "id": 1152,
           "name": "Beds",
           "slug": "beds-beds"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -14284,17 +13964,17 @@
       ],
       "categories": [
         {
-          "id": 954,
+          "id": 1151,
           "name": "Beds",
           "slug": "beds"
         },
         {
-          "id": 955,
+          "id": 1152,
           "name": "Beds",
           "slug": "beds-beds"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -14439,17 +14119,17 @@
       ],
       "categories": [
         {
-          "id": 954,
+          "id": 1151,
           "name": "Beds",
           "slug": "beds"
         },
         {
-          "id": 955,
+          "id": 1152,
           "name": "Beds",
           "slug": "beds-beds"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -14594,17 +14274,17 @@
       ],
       "categories": [
         {
-          "id": 954,
+          "id": 1151,
           "name": "Beds",
           "slug": "beds"
         },
         {
-          "id": 955,
+          "id": 1152,
           "name": "Beds",
           "slug": "beds-beds"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -14749,17 +14429,17 @@
       ],
       "categories": [
         {
-          "id": 954,
+          "id": 1151,
           "name": "Beds",
           "slug": "beds"
         },
         {
-          "id": 955,
+          "id": 1152,
           "name": "Beds",
           "slug": "beds-beds"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -14904,17 +14584,17 @@
       ],
       "categories": [
         {
-          "id": 954,
+          "id": 1151,
           "name": "Beds",
           "slug": "beds"
         },
         {
-          "id": 955,
+          "id": 1152,
           "name": "Beds",
           "slug": "beds-beds"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -15059,17 +14739,17 @@
       ],
       "categories": [
         {
-          "id": 954,
+          "id": 1151,
           "name": "Beds",
           "slug": "beds"
         },
         {
-          "id": 956,
+          "id": 1153,
           "name": "Bunk Beds",
           "slug": "bunk-beds"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -15214,17 +14894,17 @@
       ],
       "categories": [
         {
-          "id": 954,
+          "id": 1151,
           "name": "Beds",
           "slug": "beds"
         },
         {
-          "id": 956,
+          "id": 1153,
           "name": "Bunk Beds",
           "slug": "bunk-beds"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -15369,17 +15049,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 948,
+          "id": 1145,
           "name": "Side Tables",
           "slug": "side-tables"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -15524,17 +15204,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 948,
+          "id": 1145,
           "name": "Side Tables",
           "slug": "side-tables"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -15679,17 +15359,17 @@
       ],
       "categories": [
         {
-          "id": 953,
+          "id": 1150,
           "name": "Dressing Tables",
           "slug": "dressing-tables"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -15834,17 +15514,17 @@
       ],
       "categories": [
         {
-          "id": 953,
+          "id": 1150,
           "name": "Dressing Tables",
           "slug": "dressing-tables"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -15989,17 +15669,17 @@
       ],
       "categories": [
         {
-          "id": 1017,
+          "id": 1195,
           "name": "Garment Racks",
           "slug": "garment-racks"
         },
         {
-          "id": 1013,
+          "id": 1191,
           "name": "Hooks & Racks",
           "slug": "hooks-and-racks"
         },
         {
-          "id": 1006,
+          "id": 1187,
           "name": "Storage",
           "slug": "storage"
         }
@@ -16144,17 +15824,17 @@
       ],
       "categories": [
         {
-          "id": 1017,
+          "id": 1195,
           "name": "Garment Racks",
           "slug": "garment-racks"
         },
         {
-          "id": 1013,
+          "id": 1191,
           "name": "Hooks & Racks",
           "slug": "hooks-and-racks"
         },
         {
-          "id": 1006,
+          "id": 1187,
           "name": "Storage",
           "slug": "storage"
         }
@@ -16299,17 +15979,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 962,
+          "id": 1159,
           "name": "Wardrobes",
           "slug": "wardrobes"
         }
@@ -16454,17 +16134,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 962,
+          "id": 1159,
           "name": "Wardrobes",
           "slug": "wardrobes"
         }
@@ -16609,17 +16289,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 962,
+          "id": 1159,
           "name": "Wardrobes",
           "slug": "wardrobes"
         }
@@ -16764,17 +16444,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 962,
+          "id": 1159,
           "name": "Wardrobes",
           "slug": "wardrobes"
         }
@@ -16919,17 +16599,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 960,
+          "id": 1157,
           "name": "Chests & Dressers",
           "slug": "chests-and-dressers"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -17074,17 +16754,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 960,
+          "id": 1157,
           "name": "Chests & Dressers",
           "slug": "chests-and-dressers"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -17229,17 +16909,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 958,
+          "id": 1155,
           "name": "Sideboards",
           "slug": "sideboards"
         }
@@ -17384,17 +17064,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 958,
+          "id": 1155,
           "name": "Sideboards",
           "slug": "sideboards"
         }
@@ -17539,17 +17219,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 958,
+          "id": 1155,
           "name": "Sideboards",
           "slug": "sideboards"
         }
@@ -17694,17 +17374,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 958,
+          "id": 1155,
           "name": "Sideboards",
           "slug": "sideboards"
         }
@@ -17849,17 +17529,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 959,
+          "id": 1156,
           "name": "Cabinets",
           "slug": "cabinets-cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -18004,17 +17684,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 959,
+          "id": 1156,
           "name": "Cabinets",
           "slug": "cabinets-cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -18159,17 +17839,17 @@
       ],
       "categories": [
         {
-          "id": 965,
+          "id": 1162,
           "name": "Bar Cabinets",
           "slug": "bar-cabinets"
         },
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -18314,17 +17994,17 @@
       ],
       "categories": [
         {
-          "id": 965,
+          "id": 1162,
           "name": "Bar Cabinets",
           "slug": "bar-cabinets"
         },
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -18469,17 +18149,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 963,
+          "id": 1160,
           "name": "TV Units",
           "slug": "tv-units"
         }
@@ -18624,17 +18304,17 @@
       ],
       "categories": [
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 963,
+          "id": 1160,
           "name": "TV Units",
           "slug": "tv-units"
         }
@@ -18779,17 +18459,17 @@
       ],
       "categories": [
         {
-          "id": 964,
+          "id": 1161,
           "name": "Bookcases",
           "slug": "bookcases"
         },
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -18934,17 +18614,17 @@
       ],
       "categories": [
         {
-          "id": 964,
+          "id": 1161,
           "name": "Bookcases",
           "slug": "bookcases"
         },
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -19089,17 +18769,17 @@
       ],
       "categories": [
         {
-          "id": 1013,
+          "id": 1191,
           "name": "Hooks & Racks",
           "slug": "hooks-and-racks"
         },
         {
-          "id": 1016,
+          "id": 1194,
           "name": "Shoe Racks",
           "slug": "shoe-racks"
         },
         {
-          "id": 1006,
+          "id": 1187,
           "name": "Storage",
           "slug": "storage"
         }
@@ -19244,17 +18924,17 @@
       ],
       "categories": [
         {
-          "id": 1013,
+          "id": 1191,
           "name": "Hooks & Racks",
           "slug": "hooks-and-racks"
         },
         {
-          "id": 1016,
+          "id": 1194,
           "name": "Shoe Racks",
           "slug": "shoe-racks"
         },
         {
-          "id": 1006,
+          "id": 1187,
           "name": "Storage",
           "slug": "storage"
         }
@@ -19399,17 +19079,17 @@
       ],
       "categories": [
         {
-          "id": 966,
+          "id": 1163,
           "name": "Accents",
           "slug": "accents"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 967,
+          "id": 1164,
           "name": "Screens & Dividers",
           "slug": "screens-and-dividers"
         }
@@ -19554,17 +19234,17 @@
       ],
       "categories": [
         {
-          "id": 966,
+          "id": 1163,
           "name": "Accents",
           "slug": "accents"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 967,
+          "id": 1164,
           "name": "Screens & Dividers",
           "slug": "screens-and-dividers"
         }
@@ -19709,17 +19389,17 @@
       ],
       "categories": [
         {
-          "id": 965,
+          "id": 1162,
           "name": "Bar Cabinets",
           "slug": "bar-cabinets"
         },
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -19864,17 +19544,17 @@
       ],
       "categories": [
         {
-          "id": 965,
+          "id": 1162,
           "name": "Bar Cabinets",
           "slug": "bar-cabinets"
         },
         {
-          "id": 957,
+          "id": 1154,
           "name": "Cabinets",
           "slug": "cabinets"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         }
@@ -20019,17 +19699,17 @@
       ],
       "categories": [
         {
-          "id": 944,
+          "id": 1141,
           "name": "Benches",
           "slug": "benches"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -20174,17 +19854,17 @@
       ],
       "categories": [
         {
-          "id": 944,
+          "id": 1141,
           "name": "Benches",
           "slug": "benches"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -20329,17 +20009,17 @@
       ],
       "categories": [
         {
-          "id": 944,
+          "id": 1141,
           "name": "Benches",
           "slug": "benches"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -20484,17 +20164,17 @@
       ],
       "categories": [
         {
-          "id": 942,
+          "id": 1139,
           "name": "Bar Stools",
           "slug": "bar-stools"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -20639,17 +20319,17 @@
       ],
       "categories": [
         {
-          "id": 942,
+          "id": 1139,
           "name": "Bar Stools",
           "slug": "bar-stools"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -20794,17 +20474,17 @@
       ],
       "categories": [
         {
-          "id": 938,
+          "id": 1135,
           "name": "Dining Chairs",
           "slug": "dining-chairs"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -20949,17 +20629,17 @@
       ],
       "categories": [
         {
-          "id": 938,
+          "id": 1135,
           "name": "Dining Chairs",
           "slug": "dining-chairs"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -21104,17 +20784,17 @@
       ],
       "categories": [
         {
-          "id": 937,
+          "id": 1134,
           "name": "Armchairs",
           "slug": "armchairs"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -21259,17 +20939,17 @@
       ],
       "categories": [
         {
-          "id": 937,
+          "id": 1134,
           "name": "Armchairs",
           "slug": "armchairs"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -21414,17 +21094,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 939,
+          "id": 1136,
           "name": "Rocking Chairs",
           "slug": "rocking-chairs"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -21569,17 +21249,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 939,
+          "id": 1136,
           "name": "Rocking Chairs",
           "slug": "rocking-chairs"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -21724,19 +21404,9 @@
       ],
       "categories": [
         {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1034,
-          "name": "Outdoor Chairs",
-          "slug": "outdoor-chairs"
-        },
-        {
-          "id": 1031,
-          "name": "Outdoor Seating",
-          "slug": "outdoor-seating"
         }
       ],
       "attributes": {
@@ -21879,19 +21549,9 @@
       ],
       "categories": [
         {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1034,
-          "name": "Outdoor Chairs",
-          "slug": "outdoor-chairs"
-        },
-        {
-          "id": 1031,
-          "name": "Outdoor Seating",
-          "slug": "outdoor-seating"
         }
       ],
       "attributes": {
@@ -22034,17 +21694,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 943,
+          "id": 1140,
           "name": "Stools",
           "slug": "stools"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -22189,17 +21849,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 943,
+          "id": 1140,
           "name": "Stools",
           "slug": "stools"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -22344,17 +22004,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 945,
+          "id": 1142,
           "name": "Ottomans & Poufs",
           "slug": "ottomans-and-poufs"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -22499,17 +22159,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 945,
+          "id": 1142,
           "name": "Ottomans & Poufs",
           "slug": "ottomans-and-poufs"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -22654,19 +22314,9 @@
       ],
       "categories": [
         {
-          "id": 1019,
+          "id": 1198,
           "name": "Kids",
           "slug": "kids"
-        },
-        {
-          "id": 1022,
-          "name": "Kids Chairs",
-          "slug": "kids-chairs"
-        },
-        {
-          "id": 1020,
-          "name": "Kids Furniture",
-          "slug": "kids-furniture"
         }
       ],
       "attributes": {
@@ -22809,19 +22459,9 @@
       ],
       "categories": [
         {
-          "id": 1019,
+          "id": 1198,
           "name": "Kids",
           "slug": "kids"
-        },
-        {
-          "id": 1022,
-          "name": "Kids Chairs",
-          "slug": "kids-chairs"
-        },
-        {
-          "id": 1020,
-          "name": "Kids Furniture",
-          "slug": "kids-furniture"
         }
       ],
       "attributes": {
@@ -22964,17 +22604,17 @@
       ],
       "categories": [
         {
-          "id": 937,
+          "id": 1134,
           "name": "Armchairs",
           "slug": "armchairs"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -23119,17 +22759,17 @@
       ],
       "categories": [
         {
-          "id": 937,
+          "id": 1134,
           "name": "Armchairs",
           "slug": "armchairs"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -23274,17 +22914,17 @@
       ],
       "categories": [
         {
-          "id": 950,
+          "id": 1147,
           "name": "Dining Tables",
           "slug": "dining-tables"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -23429,17 +23069,17 @@
       ],
       "categories": [
         {
-          "id": 950,
+          "id": 1147,
           "name": "Dining Tables",
           "slug": "dining-tables"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -23584,17 +23224,17 @@
       ],
       "categories": [
         {
-          "id": 947,
+          "id": 1144,
           "name": "Coffee Tables",
           "slug": "coffee-tables"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -23739,17 +23379,17 @@
       ],
       "categories": [
         {
-          "id": 947,
+          "id": 1144,
           "name": "Coffee Tables",
           "slug": "coffee-tables"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -23894,17 +23534,17 @@
       ],
       "categories": [
         {
-          "id": 947,
+          "id": 1144,
           "name": "Coffee Tables",
           "slug": "coffee-tables"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -24049,17 +23689,17 @@
       ],
       "categories": [
         {
-          "id": 947,
+          "id": 1144,
           "name": "Coffee Tables",
           "slug": "coffee-tables"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -24204,17 +23844,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 948,
+          "id": 1145,
           "name": "Side Tables",
           "slug": "side-tables"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -24359,17 +23999,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 948,
+          "id": 1145,
           "name": "Side Tables",
           "slug": "side-tables"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -24514,17 +24154,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 948,
+          "id": 1145,
           "name": "Side Tables",
           "slug": "side-tables"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -24669,17 +24309,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 948,
+          "id": 1145,
           "name": "Side Tables",
           "slug": "side-tables"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -24824,17 +24464,17 @@
       ],
       "categories": [
         {
-          "id": 949,
+          "id": 1146,
           "name": "Console Tables",
           "slug": "console-tables"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -24979,17 +24619,17 @@
       ],
       "categories": [
         {
-          "id": 949,
+          "id": 1146,
           "name": "Console Tables",
           "slug": "console-tables"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -25134,17 +24774,17 @@
       ],
       "categories": [
         {
-          "id": 951,
+          "id": 1148,
           "name": "Bar Tables",
           "slug": "bar-tables"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -25289,17 +24929,17 @@
       ],
       "categories": [
         {
-          "id": 951,
+          "id": 1148,
           "name": "Bar Tables",
           "slug": "bar-tables"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -25444,17 +25084,17 @@
       ],
       "categories": [
         {
-          "id": 951,
-          "name": "Bar Tables",
-          "slug": "bar-tables"
+          "id": 1149,
+          "name": "Desks",
+          "slug": "desks"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -25599,17 +25239,17 @@
       ],
       "categories": [
         {
-          "id": 951,
-          "name": "Bar Tables",
-          "slug": "bar-tables"
+          "id": 1149,
+          "name": "Desks",
+          "slug": "desks"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -25754,17 +25394,17 @@
       ],
       "categories": [
         {
-          "id": 952,
+          "id": 1149,
           "name": "Desks",
           "slug": "desks"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -25909,17 +25549,17 @@
       ],
       "categories": [
         {
-          "id": 952,
+          "id": 1149,
           "name": "Desks",
           "slug": "desks"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -26064,17 +25704,17 @@
       ],
       "categories": [
         {
-          "id": 952,
+          "id": 1149,
           "name": "Desks",
           "slug": "desks"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -26219,17 +25859,17 @@
       ],
       "categories": [
         {
-          "id": 952,
+          "id": 1149,
           "name": "Desks",
           "slug": "desks"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -26374,17 +26014,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 948,
+          "id": 1145,
           "name": "Side Tables",
           "slug": "side-tables"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -26529,17 +26169,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 948,
+          "id": 1145,
           "name": "Side Tables",
           "slug": "side-tables"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -26684,17 +26324,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 948,
+          "id": 1145,
           "name": "Side Tables",
           "slug": "side-tables"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -26839,17 +26479,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 948,
+          "id": 1145,
           "name": "Side Tables",
           "slug": "side-tables"
         },
         {
-          "id": 946,
+          "id": 1143,
           "name": "Tables",
           "slug": "tables"
         }
@@ -26994,19 +26634,9 @@
       ],
       "categories": [
         {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1036,
-          "name": "Outdoor Dining",
-          "slug": "outdoor-dining"
-        },
-        {
-          "id": 1038,
-          "name": "Outdoor Dining Tables",
-          "slug": "outdoor-dining-tables"
         }
       ],
       "attributes": {
@@ -27149,19 +26779,9 @@
       ],
       "categories": [
         {
-          "id": 1030,
+          "id": 1199,
           "name": "Outdoor & Garden",
           "slug": "outdoor-and-garden"
-        },
-        {
-          "id": 1036,
-          "name": "Outdoor Dining",
-          "slug": "outdoor-dining"
-        },
-        {
-          "id": 1038,
-          "name": "Outdoor Dining Tables",
-          "slug": "outdoor-dining-tables"
         }
       ],
       "attributes": {
@@ -27304,17 +26924,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 935,
+          "id": 1132,
           "name": "Sofas",
           "slug": "sofas"
         }
@@ -27459,17 +27079,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 935,
+          "id": 1132,
           "name": "Sofas",
           "slug": "sofas"
         }
@@ -27614,17 +27234,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 935,
+          "id": 1132,
           "name": "Sofas",
           "slug": "sofas"
         }
@@ -27769,17 +27389,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 935,
+          "id": 1132,
           "name": "Sofas",
           "slug": "sofas"
         }
@@ -27924,17 +27544,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 935,
+          "id": 1132,
           "name": "Sofas",
           "slug": "sofas"
         }
@@ -28079,17 +27699,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 935,
+          "id": 1132,
           "name": "Sofas",
           "slug": "sofas"
         }
@@ -28234,17 +27854,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 935,
+          "id": 1132,
           "name": "Sofas",
           "slug": "sofas"
         }
@@ -28389,17 +28009,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 935,
+          "id": 1132,
           "name": "Sofas",
           "slug": "sofas"
         }
@@ -28544,17 +28164,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 935,
+          "id": 1132,
           "name": "Sofas",
           "slug": "sofas"
         }
@@ -28699,17 +28319,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 935,
+          "id": 1132,
           "name": "Sofas",
           "slug": "sofas"
         }
@@ -28854,17 +28474,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 936,
+          "id": 1133,
           "name": "Sofa Beds",
           "slug": "sofa-beds"
         }
@@ -29009,17 +28629,17 @@
       ],
       "categories": [
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         },
         {
-          "id": 936,
+          "id": 1133,
           "name": "Sofa Beds",
           "slug": "sofa-beds"
         }
@@ -29164,17 +28784,17 @@
       ],
       "categories": [
         {
-          "id": 938,
+          "id": 1135,
           "name": "Dining Chairs",
           "slug": "dining-chairs"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -29319,17 +28939,17 @@
       ],
       "categories": [
         {
-          "id": 938,
+          "id": 1135,
           "name": "Dining Chairs",
           "slug": "dining-chairs"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -29474,17 +29094,17 @@
       ],
       "categories": [
         {
-          "id": 937,
+          "id": 1134,
           "name": "Armchairs",
           "slug": "armchairs"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -29629,17 +29249,17 @@
       ],
       "categories": [
         {
-          "id": 937,
+          "id": 1134,
           "name": "Armchairs",
           "slug": "armchairs"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -29784,17 +29404,17 @@
       ],
       "categories": [
         {
-          "id": 937,
+          "id": 1134,
           "name": "Armchairs",
           "slug": "armchairs"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -29939,17 +29559,17 @@
       ],
       "categories": [
         {
-          "id": 937,
+          "id": 1134,
           "name": "Armchairs",
           "slug": "armchairs"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -30094,17 +29714,17 @@
       ],
       "categories": [
         {
-          "id": 937,
+          "id": 1134,
           "name": "Armchairs",
           "slug": "armchairs"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -30249,17 +29869,17 @@
       ],
       "categories": [
         {
-          "id": 937,
+          "id": 1134,
           "name": "Armchairs",
           "slug": "armchairs"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 934,
+          "id": 1131,
           "name": "Seating",
           "slug": "seating"
         }
@@ -30404,17 +30024,17 @@
       ],
       "categories": [
         {
-          "id": 942,
+          "id": 1139,
           "name": "Bar Stools",
           "slug": "bar-stools"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }
@@ -30559,17 +30179,17 @@
       ],
       "categories": [
         {
-          "id": 942,
+          "id": 1139,
           "name": "Bar Stools",
           "slug": "bar-stools"
         },
         {
-          "id": 933,
+          "id": 1130,
           "name": "Furniture",
           "slug": "furniture"
         },
         {
-          "id": 941,
+          "id": 1138,
           "name": "Stools & Benches",
           "slug": "stools-and-benches"
         }

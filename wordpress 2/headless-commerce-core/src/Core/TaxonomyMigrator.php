@@ -136,7 +136,7 @@ class TaxonomyMigrator {
 			return $term_id;
 		};
 
-		// 1. Build Taxonomy Terms in WooCommerce
+		// 1. Build Taxonomy Terms in WooCommerce strictly from master_category_taxonomy.json
 		foreach ( $raw_tax as $dept_name => $l1_map ) {
 			$dept_id = $ensure_term( $dept_name, 0 );
 
@@ -145,7 +145,7 @@ class TaxonomyMigrator {
 					$l1_id = $ensure_term( $l1_name, $dept_id );
 
 					if ( is_array( $l2_map ) ) {
-						foreach ( $l2_map as $l2_name => $l3_items ) {
+						foreach ( $l2_map as $l2_name => $unused ) {
 							$l2_id = $ensure_term( $l2_name, $l1_id );
 						}
 					}
@@ -153,7 +153,7 @@ class TaxonomyMigrator {
 			}
 		}
 
-		// 2. Map all published products to new categories
+		// 2. Map all published products strictly to sheet categories
 		$all_products = get_posts( array(
 			'post_type'      => 'product',
 			'post_status'    => 'publish',
@@ -167,15 +167,27 @@ class TaxonomyMigrator {
 		foreach ( $all_products as $pid ) {
 			$pname = get_the_title( $pid );
 			$cat_info = self::categorize_product_name( $pname );
-			$dept_name = $cat_info[0];
-			$l1_name   = $cat_info[1];
-			$l2_name   = $cat_info[2];
+			$dept_name = $cat_info[0] ?? null;
+			$l1_name   = $cat_info[1] ?? null;
+			$l2_name   = $cat_info[2] ?? null;
 
-			$dept_id = $ensure_term( $dept_name, 0 );
-			$l1_id   = $ensure_term( $l1_name, $dept_id );
-			$l2_id   = $ensure_term( $l2_name, $l1_id );
+			$assign_terms = array();
+			$dept_id = 0;
+			$l1_id = 0;
+			if ( ! empty( $dept_name ) ) {
+				$dept_id = $ensure_term( $dept_name, 0 );
+				if ( $dept_id ) $assign_terms[] = $dept_id;
+			}
+			if ( ! empty( $dept_name ) && ! empty( $l1_name ) && $dept_id ) {
+				$l1_id = $ensure_term( $l1_name, $dept_id );
+				if ( $l1_id ) $assign_terms[] = $l1_id;
+			}
+			if ( ! empty( $dept_name ) && ! empty( $l1_name ) && ! empty( $l2_name ) && $l1_id ) {
+				$l2_id = $ensure_term( $l2_name, $l1_id );
+				if ( $l2_id ) $assign_terms[] = $l2_id;
+			}
 
-			$assign_terms = array_values( array_filter( array_unique( array( $dept_id, $l1_id, $l2_id ) ) ) );
+			$assign_terms = array_values( array_filter( array_unique( $assign_terms ) ) );
 			if ( ! empty( $assign_terms ) ) {
 				wp_set_object_terms( $pid, $assign_terms, 'product_cat', false );
 				wp_update_term_count_now( $assign_terms, 'product_cat' );
@@ -183,7 +195,7 @@ class TaxonomyMigrator {
 				$categorization_log[] = array(
 					'id'       => $pid,
 					'name'     => $pname,
-					'category' => "{$dept_name} > {$l1_name} > {$l2_name}",
+					'category' => implode( ' > ', array_filter( array( $dept_name, $l1_name, $l2_name ) ) ),
 				);
 			}
 		}
@@ -237,44 +249,54 @@ class TaxonomyMigrator {
 	public static function categorize_product_name( $name ) {
 		$n = strtolower( (string) $name );
 
-		// 1. OUTDOOR & GARDEN
-		if ( strpos( $n, 'garden bench' ) !== false ) return array( 'Outdoor & Garden', 'Outdoor Seating', 'Garden Benches' );
-		if ( strpos( $n, 'outdoor sofa' ) !== false ) return array( 'Outdoor & Garden', 'Outdoor Seating', 'Outdoor Sofas' );
-		if ( strpos( $n, 'outdoor chair' ) !== false || strpos( $n, 'sun lounger' ) !== false ) return array( 'Outdoor & Garden', 'Outdoor Seating', 'Outdoor Chairs' );
-		if ( strpos( $n, 'outdoor dining set' ) !== false ) return array( 'Outdoor & Garden', 'Outdoor Dining', 'Outdoor Dining Sets' );
-		if ( strpos( $n, 'outdoor dining table' ) !== false ) return array( 'Outdoor & Garden', 'Outdoor Dining', 'Outdoor Dining Tables' );
-		if ( strpos( $n, 'planter' ) !== false ) return array( 'Outdoor & Garden', 'Planters & Pots', 'Garden Planters' );
-		if ( strpos( $n, 'gazebo' ) !== false || strpos( $n, 'cabana' ) !== false || strpos( $n, 'parasol' ) !== false ) return array( 'Outdoor & Garden', 'Shade & Shelter', 'Gazebos & Cabanas' );
-
-		// 2. LIGHTING
-		if ( strpos( $n, 'wall sconce' ) !== false ) return array( 'Lighting', 'Wall', 'Wall Sconces' );
-		if ( strpos( $n, 'pendant' ) !== false || strpos( $n, 'chandelier' ) !== false ) return array( 'Lighting', 'Wall', 'Ceiling & Wall Fixtures' );
-		if ( strpos( $n, 'floor lamp' ) !== false || strpos( $n, 'lamp stand' ) !== false ) return array( 'Lighting', 'Floor Lamps', 'Floor Lamps' );
-		if ( strpos( $n, 'table lamp' ) !== false || strpos( $n, 'lampshade' ) !== false ) return array( 'Lighting', 'Table Lamps', 'Table Lamps' );
-		if ( strpos( $n, 'desk lamp' ) !== false ) return array( 'Lighting', 'Desk Lamps', 'Desk Lamps' );
-
-		// 3. MIRRORS
-		if ( strpos( $n, 'mirror' ) !== false ) {
-			if ( strpos( $n, 'floor' ) !== false ) return array( 'Mirrors', 'Floor Mirrors', 'Floor Mirrors' );
-			if ( strpos( $n, 'table' ) !== false || strpos( $n, 'vanity' ) !== false ) return array( 'Mirrors', 'Table Mirrors', 'Table Mirrors' );
-			return array( 'Mirrors', 'Wall Mirrors', 'Wall Mirrors' );
+		// 1. OUTDOOR & GARDEN (Root level only in sheet)
+		if ( strpos( $n, 'garden' ) !== false || strpos( $n, 'outdoor' ) !== false || strpos( $n, 'planter' ) !== false || strpos( $n, 'gazebo' ) !== false || strpos( $n, 'cabana' ) !== false || strpos( $n, 'sun lounger' ) !== false || strpos( $n, 'parasol' ) !== false ) {
+			return array( 'Outdoor & Garden', null, null );
 		}
 
-		// 4. STORAGE
+		// 2. KIDS (Root level only in sheet)
+		if ( strpos( $n, 'nursing chair' ) !== false || strpos( $n, 'kids' ) !== false ) {
+			return array( 'Kids', null, null );
+		}
+
+		// 3. LIGHTING (Level 1: Wall, Table Lamps, Floor Lamps, Desk Lamps)
+		if ( strpos( $n, 'wall sconce' ) !== false || strpos( $n, 'pendant' ) !== false || strpos( $n, 'chandelier' ) !== false ) {
+			return array( 'Lighting', 'Wall', null );
+		}
+		if ( strpos( $n, 'floor lamp' ) !== false || strpos( $n, 'lamp stand' ) !== false ) {
+			return array( 'Lighting', 'Floor Lamps', null );
+		}
+		if ( strpos( $n, 'table lamp' ) !== false || strpos( $n, 'lampshade' ) !== false ) {
+			return array( 'Lighting', 'Table Lamps', null );
+		}
+		if ( strpos( $n, 'desk lamp' ) !== false ) {
+			return array( 'Lighting', 'Desk Lamps', null );
+		}
+
+		// 4. MIRRORS (Level 1: Wall Mirrors, Floor Mirrors, Table Mirrors)
+		if ( strpos( $n, 'mirror' ) !== false ) {
+			if ( strpos( $n, 'floor' ) !== false ) return array( 'Mirrors', 'Floor Mirrors', null );
+			if ( strpos( $n, 'table' ) !== false || strpos( $n, 'vanity' ) !== false ) return array( 'Mirrors', 'Table Mirrors', null );
+			return array( 'Mirrors', 'Wall Mirrors', null );
+		}
+
+		// 5. STORAGE (Level 1: Baskets & Bins, Boxes, Wall Shelves, Hooks & Racks)
 		if ( strpos( $n, 'shoe rack' ) !== false ) return array( 'Storage', 'Hooks & Racks', 'Shoe Racks' );
 		if ( strpos( $n, 'luggage rack' ) !== false ) return array( 'Storage', 'Hooks & Racks', 'Garment Racks' );
-		if ( strpos( $n, 'wall shelf' ) !== false || strpos( $n, 'shelves' ) !== false ) return array( 'Storage', 'Wall Shelves', 'Wall Shelves' );
-		if ( strpos( $n, 'basket' ) !== false ) return array( 'Storage', 'Baskets & Bins', 'Baskets & Bins' );
-		if ( strpos( $n, 'box' ) !== false ) return array( 'Storage', 'Boxes', 'Boxes' );
+		if ( strpos( $n, 'wall shelf' ) !== false || strpos( $n, 'shelves' ) !== false ) return array( 'Storage', 'Wall Shelves', null );
+		if ( strpos( $n, 'basket' ) !== false ) return array( 'Storage', 'Baskets & Bins', null );
+		if ( strpos( $n, 'box' ) !== false ) return array( 'Storage', 'Boxes', null );
 
-		// 5. DÉCOR
+		// 6. DÉCOR (Level 1: Accents, Candle Holders, Clocks, Frames, Pooja Mandir, Wall Art)
 		if ( strpos( $n, 'tray' ) !== false ) return array( 'Décor', 'Accents', 'Decorative Trays' );
 		if ( strpos( $n, 'vase' ) !== false ) return array( 'Décor', 'Accents', 'Decorative Bowls' );
-		if ( strpos( $n, 'art frame' ) !== false ) return array( 'Décor', 'Frames', 'Frames' );
-		if ( strpos( $n, 'wall panel' ) !== false || strpos( $n, 'wall cladding' ) !== false || strpos( $n, 'woven panel' ) !== false ) return array( 'Décor', 'Wall Art', 'Wall Art' );
-
-		// 6. KIDS
-		if ( strpos( $n, 'nursing chair' ) !== false ) return array( 'Kids', 'Kids Furniture', 'Kids Chairs' );
+		if ( strpos( $n, 'art frame' ) !== false ) return array( 'Décor', 'Frames', null );
+		if ( strpos( $n, 'wall panel' ) !== false || strpos( $n, 'wall cladding' ) !== false || strpos( $n, 'woven panel' ) !== false || strpos( $n, 'tapestry' ) !== false ) {
+			return array( 'Décor', 'Wall Art', null );
+		}
+		if ( strpos( $n, 'candle' ) !== false || strpos( $n, 'lantern' ) !== false ) return array( 'Décor', 'Candle Holders', null );
+		if ( strpos( $n, 'clock' ) !== false ) return array( 'Décor', 'Clocks', null );
+		if ( strpos( $n, 'mandir' ) !== false || strpos( $n, 'temple' ) !== false ) return array( 'Décor', 'Pooja Mandir', null );
 
 		// 7. FURNITURE
 		// 7a. Seating
@@ -300,8 +322,8 @@ class TaxonomyMigrator {
 		if ( strpos( $n, 'side table' ) !== false || strpos( $n, 'end table' ) !== false || strpos( $n, 'drink table' ) !== false || strpos( $n, 'nesting table' ) !== false ) return array( 'Furniture', 'Tables', 'Side Tables' );
 		if ( strpos( $n, 'console table' ) !== false ) return array( 'Furniture', 'Tables', 'Console Tables' );
 		if ( strpos( $n, 'dining table' ) !== false ) return array( 'Furniture', 'Tables', 'Dining Tables' );
-		if ( strpos( $n, 'bar table' ) !== false || strpos( $n, 'conference table' ) !== false ) return array( 'Furniture', 'Tables', 'Bar Tables' );
-		if ( strpos( $n, 'desk' ) !== false ) return array( 'Furniture', 'Tables', 'Desks' );
+		if ( strpos( $n, 'bar table' ) !== false ) return array( 'Furniture', 'Tables', 'Bar Tables' );
+		if ( strpos( $n, 'desk' ) !== false || strpos( $n, 'conference table' ) !== false ) return array( 'Furniture', 'Tables', 'Desks' );
 		if ( strpos( $n, 'dressing table' ) !== false || strpos( $n, 'dresser' ) !== false ) return array( 'Furniture', 'Tables', 'Dressing Tables' );
 
 		// 7d. Beds
@@ -321,10 +343,10 @@ class TaxonomyMigrator {
 		// 7f. Accents
 		if ( strpos( $n, 'jaali screen' ) !== false || strpos( $n, 'room divider' ) !== false || strpos( $n, 'screen' ) !== false || strpos( $n, 'divider' ) !== false ) return array( 'Furniture', 'Accents', 'Screens & Dividers' );
 		if ( strpos( $n, 'trolley' ) !== false || strpos( $n, 'cart' ) !== false ) return array( 'Furniture', 'Accents', 'Trolleys & Carts' );
-		if ( strpos( $n, 'bar counter' ) !== false || strpos( $n, 'serving counter' ) !== false || strpos( $n, 'reception counter' ) !== false || strpos( $n, 'buffet counter' ) !== false || strpos( $n, 'host station' ) !== false || strpos( $n, 'fixed joinery' ) !== false ) {
+		if ( strpos( $n, 'bar counter' ) !== false || strpos( $n, 'serving counter' ) !== false || strpos( $n, 'reception counter' ) !== false || strpos( $n, 'host station' ) !== false || strpos( $n, 'fixed joinery' ) !== false ) {
 			return array( 'Furniture', 'Accents', 'Bar Trolley' );
 		}
 
-		return array( 'Furniture', 'Accents', 'Accents' );
+		return array( 'Furniture', 'Accents', 'Screens & Dividers' );
 	}
 }
