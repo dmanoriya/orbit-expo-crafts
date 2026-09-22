@@ -459,6 +459,122 @@ class FormEntriesManager {
 	}
 
 	/**
+	 * Permanently delete a project document from an entry's booking_data and user meta.
+	 *
+	 * @param int    $entry_id
+	 * @param string $doc_id
+	 * @return bool
+	 */
+	public static function delete_project_document( $entry_id, $doc_id ) {
+		global $wpdb;
+		$table_name = self::get_table_name();
+
+		$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_name} WHERE id = %d", $entry_id ) );
+		if ( ! $row ) {
+			return false;
+		}
+
+		$b_data = ! empty( $row->booking_data ) ? json_decode( $row->booking_data, true ) : array();
+		if ( ! is_array( $b_data ) || empty( $b_data['documents'] ) || ! is_array( $b_data['documents'] ) ) {
+			return false;
+		}
+
+		$deleted_doc_name = '';
+		$remaining_docs   = array();
+		foreach ( $b_data['documents'] as $doc ) {
+			if ( isset( $doc['id'] ) && (string) $doc['id'] === (string) $doc_id ) {
+				$deleted_doc_name = $doc['name'] ?? 'Document';
+				// Clean up uploaded file if it resides in the WordPress uploads directory
+				if ( ! empty( $doc['fileUrl'] ) && filter_var( $doc['fileUrl'], FILTER_VALIDATE_URL ) ) {
+					$upload_dir = wp_upload_dir();
+					$base_url   = $upload_dir['baseurl'];
+					if ( strpos( $doc['fileUrl'], $base_url ) === 0 ) {
+						$rel_path  = str_replace( $base_url, '', $doc['fileUrl'] );
+						$full_path = $upload_dir['basedir'] . $rel_path;
+						if ( file_exists( $full_path ) ) {
+							@unlink( $full_path );
+						}
+					}
+				}
+			} else {
+				$remaining_docs[] = $doc;
+			}
+		}
+
+		$b_data['documents'] = $remaining_docs;
+
+		// Audit log to conversation messages
+		if ( ! isset( $b_data['messages'] ) || ! is_array( $b_data['messages'] ) ) {
+			$b_data['messages'] = array();
+		}
+		$b_data['messages'][] = array(
+			'id'         => 'msg_' . time() . '_' . wp_rand( 100, 999 ),
+			'sender'     => 'team',
+			'senderName' => 'Orbit Engineering Team',
+			'timestamp'  => date( 'M j, Y, g:i a' ),
+			'text'       => '🗑️ Document Removed: "' . ( $deleted_doc_name ?: 'Project Document' ) . '" was removed from the documentation trail.',
+		);
+
+		// Update database row
+		$wpdb->update(
+			$table_name,
+			array( 'booking_data' => wp_json_encode( $b_data ) ),
+			array( 'id' => $entry_id )
+		);
+
+		// Synchronize to WordPress User Meta or Guest Option
+		$b_id    = $b_data['id'] ?? ( $row->reference_id ?? '' );
+		$u_id    = intval( $row->user_id );
+		$u_email = sanitize_email( $row->email );
+
+		if ( ! $u_id && ! empty( $u_email ) ) {
+			$u = get_user_by( 'email', $u_email );
+			if ( $u ) {
+				$u_id = $u->ID;
+			}
+		}
+
+		if ( $u_id ) {
+			$meta_bookings = get_user_meta( $u_id, '_orbit_commercial_bookings', true );
+			if ( ! is_array( $meta_bookings ) ) {
+				$meta_bookings = array();
+			}
+			$found = false;
+			foreach ( $meta_bookings as $mk => $mb ) {
+				if ( ( isset( $mb['id'] ) && $mb['id'] === $b_id ) || ( isset( $mb['reference_id'] ) && $mb['reference_id'] === $b_id ) ) {
+					$meta_bookings[ $mk ] = $b_data;
+					$found = true;
+					break;
+				}
+			}
+			if ( ! $found ) {
+				array_unshift( $meta_bookings, $b_data );
+			}
+			update_user_meta( $u_id, '_orbit_commercial_bookings', $meta_bookings );
+		} elseif ( ! empty( $u_email ) ) {
+			$key  = '_orbit_anon_bookings_' . md5( $u_email );
+			$anon = get_option( $key, array() );
+			if ( ! is_array( $anon ) ) {
+				$anon = array();
+			}
+			$found = false;
+			foreach ( $anon as $ak => $ab ) {
+				if ( ( isset( $ab['id'] ) && $ab['id'] === $b_id ) || ( isset( $ab['reference_id'] ) && $ab['reference_id'] === $b_id ) ) {
+					$anon[ $ak ] = $b_data;
+					$found = true;
+					break;
+				}
+			}
+			if ( ! $found ) {
+				array_unshift( $anon, $b_data );
+			}
+			update_option( $key, $anon, false );
+		}
+
+		return true;
+	}
+
+	/**
 	 * Update milestone progression, logistics, and sync to user meta
 	 */
 	public static function update_booking_milestone_and_sync( $entry_id, $stage_index, $milestone_note = '', $logistics = array(), $db_status_override = '', $pricing = array() ) {
@@ -699,12 +815,24 @@ class FormEntriesManager {
 			exit;
 		}
 
+		// Handle Delete Document Action
+		if ( ! empty( $_POST['hcc_delete_doc_id'] ) && isset( $_POST['entry_id'] ) && check_admin_referer( 'hcc_milestone_nonce' ) ) {
+			$entry_id = intval( $_POST['entry_id'] );
+			$doc_id   = sanitize_text_field( $_POST['hcc_delete_doc_id'] );
+
+			self::delete_project_document( $entry_id, $doc_id );
+
+			wp_safe_redirect( admin_url( 'admin.php?page=hcc-form-submissions&doc_deleted=1&entry_id=' . $entry_id ) );
+			exit;
+		}
+
 		// Handle Dedicated Trade & Client Project Portal Update Form (Documents, Market Type, Pricing, Chat)
-		if ( ( isset( $_POST['hcc_update_milestones'] ) || isset( $_POST['hcc_update_project_portal'] ) ) && isset( $_POST['entry_id'] ) && check_admin_referer( 'hcc_milestone_nonce' ) ) {
+		if ( ( isset( $_POST['hcc_update_milestones'] ) || isset( $_POST['hcc_update_project_portal'] ) || ( isset( $_POST['hcc_action'] ) && $_POST['hcc_action'] === 'upload_doc' ) ) && isset( $_POST['entry_id'] ) && check_admin_referer( 'hcc_milestone_nonce' ) ) {
 			$entry_id        = intval( $_POST['entry_id'] );
 			$project_status  = sanitize_text_field( $_POST['project_status'] ?? '' );
 			$market_type     = sanitize_text_field( $_POST['market_type'] ?? '' );
 			$client_category = sanitize_text_field( $_POST['client_category'] ?? '' );
+			$is_upload_click = isset( $_POST['hcc_action'] ) && $_POST['hcc_action'] === 'upload_doc';
 
 			// Document upload processing
 			$new_doc_name = sanitize_text_field( $_POST['new_doc_name'] ?? '' );
@@ -713,6 +841,11 @@ class FormEntriesManager {
 			$file_name    = '';
 			$file_size    = '1.2 MB';
 			$file_type    = 'application/pdf';
+
+			if ( $is_upload_click && ( empty( $new_doc_name ) || empty( $new_doc_desc ) ) ) {
+				wp_safe_redirect( admin_url( 'admin.php?page=hcc-form-submissions&doc_error=missing_fields&entry_id=' . $entry_id ) );
+				exit;
+			}
 
 			if ( ! empty( $_FILES['new_doc_file'] ) && ! empty( $_FILES['new_doc_file']['name'] ) ) {
 				if ( ! function_exists( 'wp_handle_upload' ) ) {
@@ -769,7 +902,11 @@ class FormEntriesManager {
 			// Synchronize project portal settings, documents, messages & pricing
 			self::update_project_portal_and_sync( $entry_id, $project_status, $market_type, $client_category, $new_doc, $new_msg, $pricing );
 
-			wp_safe_redirect( admin_url( 'admin.php?page=hcc-form-submissions&portal_updated=1' ) );
+			if ( $is_upload_click && ! empty( $new_doc ) ) {
+				wp_safe_redirect( admin_url( 'admin.php?page=hcc-form-submissions&doc_uploaded=1&entry_id=' . $entry_id ) );
+			} else {
+				wp_safe_redirect( admin_url( 'admin.php?page=hcc-form-submissions&portal_updated=1&entry_id=' . $entry_id ) );
+			}
 			exit;
 		}
 
@@ -919,6 +1056,15 @@ class FormEntriesManager {
 			<?php endif; ?>
 			<?php if ( isset( $_GET['updated'] ) ) : ?>
 				<div class="updated"><p>Status updated successfully.</p></div>
+			<?php endif; ?>
+			<?php if ( isset( $_GET['doc_uploaded'] ) ) : ?>
+				<div class="updated" style="border-left-color:#0E5C63;"><p><strong>📤 Document Uploaded:</strong> Project document has been successfully uploaded and attached to the project trail and customer portal.</p></div>
+			<?php endif; ?>
+			<?php if ( isset( $_GET['doc_deleted'] ) ) : ?>
+				<div class="updated" style="border-left-color:#DC2626;"><p><strong>🗑️ Document Deleted:</strong> The selected document has been permanently deleted from the project documentation trail and customer portal.</p></div>
+			<?php endif; ?>
+			<?php if ( isset( $_GET['doc_error'] ) && $_GET['doc_error'] === 'missing_fields' ) : ?>
+				<div class="error"><p><strong>Upload Error:</strong> Both Document Name (Title) and Compulsory Description / Purpose are required to upload a project document.</p></div>
 			<?php endif; ?>
 			<?php if ( isset( $_GET['portal_updated'] ) || isset( $_GET['milestone_updated'] ) ) : ?>
 				<div class="updated"><p><strong>Success:</strong> Project portal updated successfully. Classification, documents, conversation, and commercial pricing synchronized with client portal.</p></div>
@@ -1193,7 +1339,7 @@ class FormEntriesManager {
 								</td>
 								<td><span style="font-size:12px;"><?php echo esc_html( date( 'M j, Y g:i a', strtotime( $entry->created_at ) ) ); ?></span></td>
 								<td>
-									<button type="button" class="button button-secondary button-small" onclick="hccShowDetails(<?php echo htmlspecialchars( wp_json_encode( $entry ), ENT_QUOTES, 'UTF-8' ); ?>)" style="margin-bottom:4px; font-size:11px;">
+									<button type="button" id="hcc-details-btn-<?php echo intval( $entry->id ); ?>" class="button button-secondary button-small" onclick="hccShowDetails(<?php echo htmlspecialchars( wp_json_encode( $entry ), ENT_QUOTES, 'UTF-8' ); ?>)" style="margin-bottom:4px; font-size:11px;">
 										🔍 Details
 									</button>
 									<br>
@@ -1552,6 +1698,14 @@ class FormEntriesManager {
 						html += '<input type="url" name="new_doc_url" placeholder="https://drive.google.com/..." style="width:100%; font-size:12px; padding:5px 8px; border:1px solid #CBD5E1; border-radius:4px;" />';
 						html += '</div>';
 						html += '</div>';
+
+						// DEDICATED UPLOAD BUTTON
+						html += '<div style="margin-top:12px; padding-top:12px; border-top:1px solid #E2E8F0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">';
+						html += '<span style="font-size:11.5px; color:#64748B;">Enter title &amp; description, choose file or link, then click to upload immediately.</span>';
+						html += '<button type="submit" name="hcc_action" value="upload_doc" class="button button-primary" style="background:#0E5C63; border-color:#0E5C63; font-weight:700; font-size:12.5px; padding:6px 18px; display:inline-flex; align-items:center; gap:6px;" onclick="var n=document.querySelector(\'input[name=new_doc_name]\'); var d=document.querySelector(\'textarea[name=new_doc_desc]\'); if(!n || !n.value.trim() || !d || !d.value.trim()){ alert(\'Please enter both Document Name and Compulsory Description / Purpose before uploading.\'); if(n && !n.value.trim()){ n.focus(); } else if(d){ d.focus(); } return false; }">';
+						html += '📤 Upload &amp; Add Document';
+						html += '</button>';
+						html += '</div>';
 						html += '</div>';
 
 						// PERMANENT DOCUMENT TRAIL TABLE
@@ -1561,10 +1715,11 @@ class FormEntriesManager {
 							html += '<p style="margin:0; font-size:12px; color:#94A3B8; font-style:italic;">No project documents uploaded yet. Use the upload box above to add manuals, CAD drawings, or warranties.</p>';
 						} else {
 							html += '<div style="overflow-x:auto;"><table class="widefat striped" style="margin:0; font-size:12px;">';
-							html += '<thead><tr><th>Document Name</th><th>Compulsory Description / Purpose</th><th>Uploaded By &amp; Date</th><th style="width:70px;">Size</th><th style="width:170px; text-align:right;">Actions</th></tr></thead><tbody>';
+							html += '<thead><tr><th>Document Name</th><th>Compulsory Description / Purpose</th><th>Uploaded By &amp; Date</th><th style="width:70px;">Size</th><th style="width:220px; text-align:right;">Actions</th></tr></thead><tbody>';
 							docList.forEach(function(doc) {
 								var waDocMsg = encodeURIComponent('Hello ' + (entry.full_name || 'Client') + ',\n\nPlease find the project document "' + (doc.name || 'Document') + '" for ' + (entry.reference_id || 'your order') + ':\nPurpose: ' + (doc.description || 'Project document') + '\nLink: ' + (doc.fileUrl || '#') + '\n\n— Orbit Expo Crafts');
 								var waDocHref = cleanPhone ? ('https://wa.me/' + cleanPhone + '?text=' + waDocMsg) : ('https://wa.me/?text=' + waDocMsg);
+								var docNameClean = (doc.name || 'this document').replace(/'/g, "\\'").replace(/"/g, '&quot;');
 								html += '<tr>';
 								html += '<td><strong>' + (doc.name || 'Untitled Document') + '</strong><br><span style="font-size:11px; color:#64748B;">' + (doc.fileName || 'document.pdf') + '</span></td>';
 								html += '<td style="color:#334155; font-size:11.5px;">' + (doc.description || '<em style="color:#94A3B8;">No description provided</em>') + '</td>';
@@ -1576,7 +1731,8 @@ class FormEntriesManager {
 								} else {
 									html += '<span class="button button-small disabled" style="margin-right:4px; font-size:11px; opacity:0.6;">⬇ Direct</span>';
 								}
-								html += '<a href="' + waDocHref + '" target="_blank" class="button button-small" style="color:#25D366; border-color:#25D366; font-size:11px;" title="Share this document on WhatsApp">📱 WhatsApp</a>';
+								html += '<a href="' + waDocHref + '" target="_blank" class="button button-small" style="color:#25D366; border-color:#25D366; font-size:11px; margin-right:4px;" title="Share this document on WhatsApp">📱 WhatsApp</a>';
+								html += '<button type="submit" name="hcc_delete_doc_id" value="' + (doc.id || '') + '" formnovalidate onclick="return confirm(\'Are you sure you want to permanently delete &quot;' + docNameClean + '&quot;? This will immediately remove it from both admin and customer portals.\');" class="button button-small" style="color:#DC2626; border-color:#DC2626; font-size:11px; background:#FEF2F2;" title="Permanently delete this document">🗑️ Delete</button>';
 								html += '</td>';
 								html += '</tr>';
 							});
@@ -1709,6 +1865,22 @@ class FormEntriesManager {
 		function hccCloseDetails() {
 			document.getElementById('hcc-detail-modal-overlay').style.display = 'none';
 		}
+
+		// Auto-open details modal if entry_id parameter is present in URL
+		(function() {
+			try {
+				var urlParams = new URLSearchParams(window.location.search);
+				var autoEntryId = urlParams.get('entry_id');
+				if (autoEntryId) {
+					var btn = document.getElementById('hcc-details-btn-' + autoEntryId);
+					if (btn) {
+						setTimeout(function() {
+							btn.click();
+						}, 100);
+					}
+				}
+			} catch(e) {}
+		})();
 		</script>
 		<?php
 	}
