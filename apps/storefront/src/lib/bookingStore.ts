@@ -1,4 +1,4 @@
-import { BookingRecord, BookingMessage, BookingMilestone } from '../types/booking';
+import { BookingRecord, BookingMessage, BookingMilestone, BookingDocument } from '../types/booking';
 
 const STORAGE_KEY = 'orbit_customer_bookings';
 
@@ -15,6 +15,34 @@ export function deduplicateBookings(bookings: BookingRecord[]): BookingRecord[] 
     }
   }
   return result;
+}
+
+export function generateDefaultDocuments(bookingId: string = 'OEC-PROJ', projectName: string = 'Custom Project'): BookingDocument[] {
+  const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  return [
+    {
+      id: 'doc_cad_' + (bookingId || '1'),
+      name: 'Approved CAD Technical Specifications',
+      description: `Signed joinery drawing and dimensional specifications approved for "${projectName}".`,
+      fileUrl: '/catalogue/Orbit-Expo-Crafts-Spec-Sheet.pdf',
+      fileName: 'CAD-Joinery-Specs.pdf',
+      fileType: 'pdf',
+      fileSize: '2.4 MB',
+      uploadedBy: 'company',
+      uploadedAt: today,
+    },
+    {
+      id: 'doc_boq_' + (bookingId || '2'),
+      name: 'Itemized Project BOQ & Cost Proposal',
+      description: 'Formal bill of quantities with wood species, hardware, PU finishes, and delivery schedule.',
+      fileUrl: '/catalogue/Orbit-Project-BOQ.xlsx',
+      fileName: 'Project-Quotation-BOQ.xlsx',
+      fileType: 'xlsx',
+      fileSize: '1.2 MB',
+      uploadedBy: 'company',
+      uploadedAt: today,
+    },
+  ];
 }
 
 export function getStoredBookings(userEmail?: string): BookingRecord[] {
@@ -38,6 +66,12 @@ export function getStoredBookings(userEmail?: string): BookingRecord[] {
       if (b.invoice && (!b.invoice.currency || b.invoice.currency === 'USD')) {
         b.invoice.currency = 'INR';
       }
+      if (!b.documents || !Array.isArray(b.documents)) {
+        b.documents = generateDefaultDocuments(b.id, b.projectName);
+      }
+      if (!b.marketType) {
+        b.marketType = (b.shippingAddress?.country && b.shippingAddress.country.toLowerCase() === 'india') ? 'domestic' : 'export';
+      }
     });
     if (!userEmail) return all;
     return all.filter(
@@ -56,6 +90,9 @@ export function saveBooking(booking: BookingRecord): void {
     let all: BookingRecord[] = raw ? JSON.parse(raw) : [];
     if (!Array.isArray(all)) all = [];
     all = deduplicateBookings(all);
+    if (!booking.documents || !Array.isArray(booking.documents)) {
+      booking.documents = generateDefaultDocuments(booking.id, booking.projectName);
+    }
     const existingIndex = all.findIndex((b) => b.id === booking.id);
     if (existingIndex >= 0) {
       all[existingIndex] = booking;
@@ -77,10 +114,63 @@ export function saveBooking(booking: BookingRecord): void {
   }
 }
 
+export function addDocumentToBooking(
+  bookingId: string,
+  doc: {
+    name: string;
+    description: string;
+    fileUrl: string;
+    fileName?: string;
+    fileType?: string;
+    fileSize?: string;
+    uploadedBy?: 'company' | 'client' | string;
+  }
+): BookingRecord | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const all: BookingRecord[] = JSON.parse(raw);
+    const target = all.find((b) => b.id === bookingId);
+    if (!target) return null;
+
+    if (!Array.isArray(target.documents)) {
+      target.documents = [];
+    }
+
+    const newDoc: BookingDocument = {
+      id: 'doc_' + Date.now(),
+      name: doc.name.trim(),
+      description: doc.description.trim(),
+      fileUrl: doc.fileUrl,
+      fileName: doc.fileName || doc.name.trim(),
+      fileType: doc.fileType || 'pdf',
+      fileSize: doc.fileSize || '1.5 MB',
+      uploadedBy: doc.uploadedBy || 'client',
+      uploadedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    };
+
+    target.documents.unshift(newDoc);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+
+    // Background sync to backend
+    fetch(`/api/wp/customers/bookings/${bookingId}/documents`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newDoc),
+    }).catch(() => {});
+
+    return target;
+  } catch (e) {
+    console.error('Error adding document to booking:', e);
+    return null;
+  }
+}
+
 export function appendMessageToBooking(
   bookingId: string,
   text: string,
-  sender: 'client' | 'concierge' = 'client',
+  sender: 'client' | 'concierge' | 'team' = 'client',
   senderName: string = 'You (Client)'
 ): BookingRecord | null {
   if (typeof window === 'undefined') return null;
@@ -90,6 +180,10 @@ export function appendMessageToBooking(
     const all: BookingRecord[] = JSON.parse(raw);
     const target = all.find((b) => b.id === bookingId);
     if (!target) return null;
+
+    if (!Array.isArray(target.messages)) {
+      target.messages = [];
+    }
 
     const newMessage: BookingMessage = {
       id: 'msg_' + Date.now(),
@@ -117,51 +211,5 @@ export function appendMessageToBooking(
 }
 
 export function generateDefaultMilestones(): BookingMilestone[] {
-  const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  return [
-    {
-      key: 'received',
-      label: 'Commercial Booking Received',
-      date: today,
-      completed: true,
-      active: false,
-      note: 'Bill of quantities registered in Rajasthan factory queue.',
-    },
-    {
-      key: 'cad_review',
-      label: 'CAD Engineering & Material Verification',
-      date: 'In Progress (24h turnaround)',
-      completed: false,
-      active: true,
-      note: 'Technical specifier reviewing wood species, joinery, and moisture level.',
-    },
-    {
-      key: 'proforma_issued',
-      label: 'Commercial Proposal & Proforma Invoice Issued',
-      completed: false,
-      active: false,
-      note: 'Official invoice generated with RTGS / SWIFT wire instructions.',
-    },
-    {
-      key: 'production',
-      label: 'Timber Seasoning & Joinery Crafting',
-      completed: false,
-      active: false,
-      note: 'Kiln-drying to 8-10% EMC followed by master carving and inlay assembly.',
-    },
-    {
-      key: 'qc_packing',
-      label: 'Final QC Inspection & Export Crating',
-      completed: false,
-      active: false,
-      note: 'Fumigated wooden box crating (ISPM-15 compliant) with moisture barrier.',
-    },
-    {
-      key: 'dispatch',
-      label: 'Container Loaded & Dispatched (Mundra Port)',
-      completed: false,
-      active: false,
-      note: 'Bill of Lading and vessel consignment tracking activated.',
-    },
-  ];
+  return [];
 }

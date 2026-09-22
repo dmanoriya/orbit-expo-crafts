@@ -1,9 +1,21 @@
 export interface BookingMessage {
   id: string;
-  sender: 'client' | 'concierge';
+  sender: 'client' | 'concierge' | 'team';
   senderName: string;
   timestamp: string;
   text: string;
+}
+
+export interface BookingDocument {
+  id: string;
+  name: string; // Compulsory Document Name
+  description: string; // Compulsory Description / Purpose
+  fileUrl: string; // Direct download URL
+  fileName?: string;
+  fileType?: string; // 'pdf' | 'dwg' | 'xlsx' | 'jpg' | 'png' | 'other'
+  fileSize?: string;
+  uploadedBy: 'company' | 'client' | string;
+  uploadedAt: string;
 }
 
 export interface BookingMilestone {
@@ -37,6 +49,8 @@ export interface BookingRecord {
   email: string;
   phone: string;
   gstOrTaxId?: string;
+  marketType?: 'domestic' | 'export';
+  clientCategory?: 'trade' | 'direct';
   shippingAddress: {
     street: string;
     city: string;
@@ -51,23 +65,19 @@ export interface BookingRecord {
   totalPieces: number;
   estimatedCbm: string;
   status:
+    | 'Inquiry Received'
+    | 'Quotation & Specs Shared'
+    | 'In Production'
+    | 'Ready for Dispatch'
+    | 'Delivered'
     | 'Booking Received'
     | 'Engineering & CAD Review'
     | 'Proforma Issued'
-    | 'In Production'
     | 'Quality Control & Packing'
-    | 'Dispatched'
-    | 'Delivered';
-  logistics: {
-    carrier?: string;
-    trackingNumber?: string;
-    originPort?: string;
-    destinationPort?: string;
-    vesselName?: string;
-    estimatedDelivery?: string;
-    currentMilestoneNote?: string;
-  };
-  invoice: {
+    | 'Dispatched';
+  documents: BookingDocument[];
+  messages: BookingMessage[];
+  invoice?: {
     invoiceNumber: string;
     issueDate: string;
     subtotal: number;
@@ -76,7 +86,7 @@ export interface BookingRecord {
     totalAmount: number;
     currency: string;
     paymentTerms: string;
-    bankDetails: {
+    bankDetails?: {
       accountName: string;
       bankName: string;
       accountNumber: string;
@@ -85,6 +95,15 @@ export interface BookingRecord {
       branch: string;
     };
   };
-  milestones: BookingMilestone[];
-  messages: BookingMessage[];
+  logistics?: {
+    carrier?: string;
+    trackingNumber?: string;
+    originPort?: string;
+    destinationPort?: string;
+    vesselName?: string;
+    estimatedDelivery?: string;
+    currentMilestoneNote?: string;
+  };
+  milestones?: BookingMilestone[];
 }
+

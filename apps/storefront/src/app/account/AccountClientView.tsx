@@ -3,11 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth, CustomerUser } from '../../context/AuthContext';
 import { useFavorites } from '../../context/FavoritesContext';
 import { useEnquiry } from '../../context/EnquiryContext';
-import { BookingRecord, BookingMessage } from '../../types/booking';
-import { getStoredBookings, saveBooking, appendMessageToBooking, generateDefaultMilestones, deduplicateBookings } from '../../lib/bookingStore';
+import { BookingRecord, BookingMessage, BookingDocument } from '../../types/booking';
+import { getStoredBookings, saveBooking, appendMessageToBooking, addDocumentToBooking, generateDefaultMilestones, deduplicateBookings } from '../../lib/bookingStore';
 import PhoneInputField, { CountryCode, PHONE_COUNTRIES, validatePhoneNumber } from '../../components/PhoneInputField';
 
 interface AccountClientViewProps {
@@ -36,6 +36,9 @@ function parsePhone(rawPhone?: string): { country: CountryCode; digits: string }
 export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab = 'overview' }) => {
   const router = useRouter();
   const { user, isAuthenticated, isLoading, login, register, logout, updateProfile } = useAuth();
+  const [testUser, setTestUser] = useState<CustomerUser | null>(null);
+  const activeUser = user || testUser;
+  const isUserAuthenticated = isAuthenticated || !!testUser;
   const { favorites, removeFavorite, clearFavorites, moveAllToEnquiry } = useFavorites();
   const { addEnquiry } = useEnquiry();
 
@@ -64,10 +67,20 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
   // Bookings & Transactions State
   const [bookings, setBookings] = useState<BookingRecord[]>([]);
   const [selectedBooking, setSelectedBooking] = useState<BookingRecord | null>(null);
-  const [inspectorTab, setInspectorTab] = useState<'timeline' | 'items' | 'invoice' | 'conversation'>('timeline');
+  const [inspectorTab, setInspectorTab] = useState<'items' | 'documents' | 'conversation' | 'invoice'>('documents');
   const [newQueryMessage, setNewQueryMessage] = useState('');
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+
+  // Document Upload State
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [docUploadName, setDocUploadName] = useState('');
+  const [docUploadDesc, setDocUploadDesc] = useState('');
+  const [docUploadFile, setDocUploadFile] = useState<File | null>(null);
+  const [docUploadUrl, setDocUploadUrl] = useState('');
+  const [docUploadLoading, setDocUploadLoading] = useState(false);
+  const [docUploadError, setDocUploadError] = useState<string | null>(null);
+  const [docUploadSuccess, setDocUploadSuccess] = useState<string | null>(null);
 
   // Profile Form State
   const [profileFirstName, setProfileFirstName] = useState('');
@@ -102,6 +115,232 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
     if (typeof window === 'undefined') return;
     const readUrlState = () => {
       const params = new URLSearchParams(window.location.search);
+      if (params.get('testPortal') === '1') {
+        const mock: CustomerUser = {
+          id: 999,
+          username: 'vikram.singhania',
+          email: 'vikram@singhania-architects.in',
+          firstName: 'Vikram',
+          lastName: 'Singhania',
+          company: 'Singhania Architecture & Interiors',
+          phone: '+91 98290 12345',
+          role: 'Verified Trade Partner (Architectural Lead)',
+        };
+        setTestUser(mock);
+
+        const demoDomestic: BookingRecord = {
+          id: 'BK-2026-IND-8801',
+          createdAt: '2026-09-18T10:30:00.000Z',
+          projectName: 'The Leela Palace Suites — Bespoke Sheesham Collection',
+          clientName: 'Vikram Singhania',
+          companyName: 'Singhania Architecture & Interiors',
+          email: 'vikram@singhania-architects.in',
+          phone: '+91 98290 12345',
+          status: 'In Production',
+          totalPieces: 18,
+          estimatedCbm: '4.80',
+          targetDeliveryDate: 'Within 45 working days',
+          marketType: 'domestic',
+          clientCategory: 'trade',
+          shippingAddress: {
+            street: 'Block A, Diplomatic Enclave, Chanakyapuri',
+            city: 'New Delhi',
+            state: 'Delhi',
+            postalCode: '110021',
+            country: 'India',
+          },
+          items: [
+            {
+              id: 'item-1',
+              name: 'Imperial Hand-Carved Sheesham Dining Table (8-Seater)',
+              quantity: 2,
+              material: 'Solid Seasoned Sheesham (Indian Rosewood)',
+              finish: 'Rich Walnut Matte Polyurethane',
+              unitPrice: 78000,
+              totalPrice: 156000,
+            },
+            {
+              id: 'item-2',
+              name: 'Acanthus Leaf Upholstered Carver Dining Chairs',
+              quantity: 16,
+              material: 'Solid Sheesham & Belgian Brass Castings',
+              finish: 'Natural Honey Sheesham / Velvet Sage',
+              unitPrice: 14500,
+              totalPrice: 232000,
+            },
+          ],
+          invoice: {
+            invoiceNumber: 'TAX-DOM-2026-0814',
+            issueDate: '19 Sep 2026',
+            subtotal: 388000,
+            packingAndCrating: 19400,
+            estimatedFreight: 22000,
+            totalAmount: 429400,
+            currency: 'INR',
+            paymentTerms: '50% Advance via NEFT/RTGS upon CAD approval, 50% prior to dispatch from Basni Jodhpur.',
+          },
+          documents: [
+            {
+              id: 'doc-dom-1',
+              name: 'Master Joinery Manual & Finish Schedule',
+              description: 'Comprehensive workshop joinery manual detailing mortise-and-tenon specifications, seasonal wood movement allowances, and polyurethane coating care.',
+              fileUrl: '/catalogue/Orbit-Expo-Crafts-Spec-Sheet.pdf',
+              fileName: 'Leela-Suites-Joinery-Manual.pdf',
+              fileType: 'application/pdf',
+              fileSize: '3.4 MB',
+              uploadedBy: 'Orbit Engineering Team',
+              uploadedAt: '19 Sep 2026',
+            },
+            {
+              id: 'doc-dom-2',
+              name: 'GST Tax Invoice & E-Way Bill Consignment Schedule',
+              description: 'Statutory GST tax schedule (HSN 9403, 18% CGST/SGST) and interstate road transit consignment declaration for Basni (Jodhpur) to New Delhi corridor.',
+              fileUrl: '/catalogue/Orbit-Project-BOQ.xlsx',
+              fileName: 'GST-Tax-Schedule-0814.pdf',
+              fileType: 'application/pdf',
+              fileSize: '1.8 MB',
+              uploadedBy: 'Orbit Accounts Desk',
+              uploadedAt: '20 Sep 2026',
+            },
+            {
+              id: 'doc-dom-3',
+              name: 'Timber Kiln-Seasoning & Moisture Compliance Certificate',
+              description: 'Calibrated laboratory test certificate confirming equilibrium moisture content (EMC) stabilized between 8.2% and 9.4% for North Indian climate.',
+              fileUrl: '/catalogue/Orbit-Expo-Crafts-Spec-Sheet.pdf',
+              fileName: 'Wood-Moisture-QC-Cert.pdf',
+              fileType: 'application/pdf',
+              fileSize: '1.2 MB',
+              uploadedBy: 'QC Inspection Head (Basni)',
+              uploadedAt: '21 Sep 2026',
+            },
+          ],
+          messages: [
+            {
+              id: 'm-1',
+              sender: 'team',
+              senderName: 'Orbit Engineering Desk',
+              timestamp: 'Sep 18, 2026, 11:30 am',
+              text: 'Welcome to your Trade & Client Project Portal. We have confirmed receipt of the preliminary BOQ for The Leela Palace Suites.',
+            },
+            {
+              id: 'm-2',
+              sender: 'client',
+              senderName: 'Vikram Singhania (Architect)',
+              timestamp: 'Sep 19, 2026, 02:15 pm',
+              text: 'Thank you. Please ensure the finish matches the sample chip sent to our Delhi studio earlier this week.',
+            },
+            {
+              id: 'm-3',
+              sender: 'team',
+              senderName: 'Orbit Engineering Desk',
+              timestamp: 'Sep 21, 2026, 10:00 am',
+              text: 'Sample chip approved. Master Joinery Manual and Kiln Moisture Certificate have been uploaded to the Manual / Documents tab for your review.',
+            },
+          ],
+        };
+
+        const demoExport: BookingRecord = {
+          id: 'BK-2026-EXP-9204',
+          createdAt: '2026-09-15T08:00:00.000Z',
+          projectName: 'Mayfair Penthouse Residence & Lounge',
+          clientName: 'Olivia Laurent',
+          companyName: 'Laurent Interiors London',
+          email: 'olivia@laurent-interiors.co.uk',
+          phone: '+44 20 7946 0912',
+          status: 'Quality Control & Packing',
+          totalPieces: 12,
+          estimatedCbm: '3.60',
+          targetDeliveryDate: 'Within 60 working days',
+          marketType: 'export',
+          clientCategory: 'trade',
+          shippingAddress: {
+            street: 'Flat 4B, 18 Grosvenor Square',
+            city: 'London',
+            state: 'Greater London',
+            postalCode: 'W1K 6LD',
+            country: 'United Kingdom',
+          },
+          items: [
+            {
+              id: 'exp-1',
+              name: 'Grand Chesterfield Solid Teak Library Bookcase',
+              quantity: 2,
+              material: 'First-Grade Reclaimed Teak & Hand-Cast Antique Ironmongery',
+              finish: 'Smoked Oak Hand-Rubbed Wax',
+              unitPrice: 115000,
+              totalPrice: 230000,
+            },
+            {
+              id: 'exp-2',
+              name: 'Artisan Turned-Leg Coffee Table with Inlaid Bone Accents',
+              quantity: 2,
+              material: 'Solid Acacia & Sustainably Sourced Camel Bone Inlay',
+              finish: 'Matte Ebony & Bone',
+              unitPrice: 42000,
+              totalPrice: 84000,
+            },
+          ],
+          invoice: {
+            invoiceNumber: 'EXP-CIF-2026-042',
+            issueDate: '15 Sep 2026',
+            subtotal: 314000,
+            packingAndCrating: 15700,
+            estimatedFreight: 38000,
+            totalAmount: 367700,
+            currency: 'USD',
+            paymentTerms: '50% SWIFT Wire upon CAD sign-off, 50% against original Bill of Lading copy.',
+          },
+          documents: [
+            {
+              id: 'doc-exp-1',
+              name: 'ISPM-15 Phytosanitary Fumigation Certificate',
+              description: 'Government certified fumigation clearance and heat-treatment certificate required by UK and European Port Authorities for solid wood crates.',
+              fileUrl: '/catalogue/Orbit-Expo-Crafts-Spec-Sheet.pdf',
+              fileName: 'ISPM-15-Phytosanitary-Cert.pdf',
+              fileType: 'application/pdf',
+              fileSize: '2.1 MB',
+              uploadedBy: 'Customs & Port Logistics',
+              uploadedAt: '17 Sep 2026',
+            },
+            {
+              id: 'doc-exp-2',
+              name: 'Ocean Freight Consignment Manifest & Port Declaration',
+              description: 'Shipping line sea container manifest with Mundra Port (INMUN1) customs clearance stamp and verified gross mass (VGM) container slip.',
+              fileUrl: '/catalogue/Orbit-Project-BOQ.xlsx',
+              fileName: 'Ocean-Manifest-INMUN1.pdf',
+              fileType: 'application/pdf',
+              fileSize: '2.8 MB',
+              uploadedBy: 'Maersk Export Desk',
+              uploadedAt: '18 Sep 2026',
+            },
+          ],
+          messages: [
+            {
+              id: 'm-exp-1',
+              sender: 'team',
+              senderName: 'Orbit Export Concierge',
+              timestamp: 'Sep 15, 2026, 09:00 am',
+              text: 'Export booking confirmed. ISPM-15 export-grade packaging is scheduled following final QC inspection.',
+            },
+          ],
+        };
+
+        setBookings([demoDomestic, demoExport]);
+        const targetBookingId = params.get('bookingId');
+        if (targetBookingId === demoExport.id) {
+          setSelectedBooking(demoExport);
+        } else {
+          setSelectedBooking(demoDomestic);
+        }
+        setActiveTab('orders');
+        setInspectorTab('documents');
+
+        if (params.get('testUpload') === '1') {
+          setIsUploadModalOpen(true);
+        }
+        return;
+      }
+
       const tabParam = params.get('tab');
       if (tabParam === 'favorites' || tabParam === 'orders' || tabParam === 'profile' || tabParam === 'overview') {
         setActiveTab(tabParam);
@@ -132,11 +371,11 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
 
   // Sync profile form when user logs in with deep fallback & auto-healing
   useEffect(() => {
-    if (user) {
-      let fName = user.firstName || '';
-      let lName = user.lastName || '';
-      let phone = user.phone || '';
-      let comp = user.company || '';
+    if (activeUser) {
+      let fName = activeUser.firstName || '';
+      let lName = activeUser.lastName || '';
+      let phone = activeUser.phone || '';
+      let comp = activeUser.company || '';
 
       // Check fallback cached in localStorage if any field is missing
       if (!fName || !lName || !comp || !phone) {
@@ -152,7 +391,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
         } catch (e) {}
 
         if (!fName || !lName || !comp || !phone) {
-          const allBookings = getStoredBookings(user.email);
+          const allBookings = getStoredBookings(activeUser.email);
           const withClient = allBookings.find((b) => b.clientName || b.phone || b.companyName);
           if (withClient) {
             if (!fName && withClient.clientName) {
@@ -166,11 +405,11 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
         }
 
         // Auto-heal user profile across auth context and backend if missing data was discovered
-        const hasNewFName = fName && !user.firstName;
-        const hasNewLName = lName && !user.lastName;
-        const hasNewComp = comp && !user.company;
-        const hasNewPhone = phone && !user.phone;
-        if (hasNewFName || hasNewLName || hasNewComp || hasNewPhone) {
+        const hasNewFName = fName && !activeUser.firstName;
+        const hasNewLName = lName && !activeUser.lastName;
+        const hasNewComp = comp && !activeUser.company;
+        const hasNewPhone = phone && !activeUser.phone;
+        if (user && (hasNewFName || hasNewLName || hasNewComp || hasNewPhone)) {
           updateProfile({
             firstName: fName || user.firstName,
             lastName: lName || user.lastName,
@@ -187,10 +426,11 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
       setProfilePhoneDigits(parsedP.digits);
       setProfileCompany(comp);
     }
-  }, [user]);
+  }, [activeUser]);
 
   // Refresh bookings on mount & when user changes, plus fetch live updates from WordPress with zero delay
   const refreshBookings = async () => {
+    if (testUser) return;
     // 1. Instantly populate from local storage so the page is immediately responsive
     const localList = deduplicateBookings(getStoredBookings());
     const urlBookingParam = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('bookingId') : null;
@@ -208,8 +448,8 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
     setIsSyncing(true);
     try {
       const params = new URLSearchParams();
-      if (user?.email) {
-        params.set('email', user.email);
+      if (activeUser?.email) {
+        params.set('email', activeUser.email);
       }
       if (localList.length > 0) {
         const ids = localList.map((b) => b.id).filter(Boolean).join(',');
@@ -284,15 +524,15 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
       document.removeEventListener('visibilitychange', handleVisibility);
       if (interval) clearInterval(interval);
     };
-  }, [user, activeTab]);
+  }, [activeUser, activeTab]);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedBooking || !newQueryMessage.trim()) return;
 
     setIsSendingMessage(true);
-    const clientNameStr = user?.firstName
-      ? `${user.firstName} (Client)`
+    const clientNameStr = activeUser?.firstName
+      ? `${activeUser.firstName} (Client)`
       : (selectedBooking.clientName ? `${selectedBooking.clientName} (Client)` : 'You (Client)');
     const textToSend = newQueryMessage.trim();
     const updated = appendMessageToBooking(selectedBooking.id, textToSend, 'client', clientNameStr);
@@ -306,8 +546,8 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
 
       // Open WhatsApp directly with pre-filled order context & client query
       const orderRef = selectedBooking.id || 'Commercial Order';
-      const companyStr = selectedBooking.companyName || user?.company || '';
-      const clientStr = selectedBooking.clientName || user?.firstName || 'Client';
+      const companyStr = selectedBooking.companyName || activeUser?.company || '';
+      const clientStr = selectedBooking.clientName || activeUser?.firstName || 'Client';
       const projectStr = selectedBooking.projectName || '';
 
       const lines = [
@@ -457,7 +697,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
           lastName: profileLastName.trim(),
           company: profileCompany.trim(),
           phone: fullProfilePhone,
-          email: user?.email || '',
+          email: activeUser?.email || '',
         })
       );
     } catch (e) {}
@@ -478,10 +718,160 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
     setTimeout(() => setAddedFavId(null), 1800);
   };
 
+  const handleUploadDocument = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedBooking) return;
+
+    const cleanName = docUploadName.trim();
+    const cleanDesc = docUploadDesc.trim();
+
+    if (!cleanName) {
+      setDocUploadError('Document Name is required.');
+      return;
+    }
+    if (!cleanDesc) {
+      setDocUploadError('Description (Purpose) is compulsory for all project document uploads.');
+      return;
+    }
+
+    setDocUploadLoading(true);
+    setDocUploadError(null);
+
+    try {
+      let fileUrl = docUploadUrl.trim() || '#';
+      let fileName = cleanName.toLowerCase().replace(/[^a-z0-9]/g, '-') + '.pdf';
+      let fileSize = '1.2 MB';
+      let fileType = 'application/pdf';
+
+      if (docUploadFile) {
+        fileName = docUploadFile.name;
+        fileType = docUploadFile.type || 'application/octet-stream';
+        fileSize = `${(docUploadFile.size / (1024 * 1024)).toFixed(2)} MB`;
+
+        fileUrl = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.onerror = () => resolve('#');
+          reader.readAsDataURL(docUploadFile);
+        });
+      }
+
+      const clientNameStr = activeUser?.firstName
+        ? `${activeUser.firstName} (Client)`
+        : (selectedBooking.clientName ? `${selectedBooking.clientName} (Client)` : 'Client');
+
+      const newDoc: BookingDocument = {
+        id: `doc-${Date.now()}`,
+        name: cleanName,
+        description: cleanDesc,
+        fileUrl,
+        fileName,
+        fileType,
+        fileSize,
+        uploadedBy: clientNameStr,
+        uploadedAt: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      };
+
+      const updated = addDocumentToBooking(selectedBooking.id, newDoc);
+
+      // Append notice to conversation trail
+      appendMessageToBooking(
+        selectedBooking.id,
+        `📁 New Document Uploaded: ${cleanName} — ${cleanDesc}`,
+        'client',
+        clientNameStr
+      );
+
+      if (updated) {
+        setSelectedBooking({ ...updated });
+        refreshBookings();
+      }
+
+      setDocUploadSuccess('Document successfully added to the project trail!');
+      setTimeout(() => {
+        setDocUploadSuccess(null);
+        setIsUploadModalOpen(false);
+        setDocUploadName('');
+        setDocUploadDesc('');
+        setDocUploadFile(null);
+        setDocUploadUrl('');
+      }, 1000);
+
+      // Link to WhatsApp
+      const waText = [
+        `*New Project Document Uploaded*`,
+        ``,
+        `*Project / Order:* ${selectedBooking.id} - ${selectedBooking.projectName}`,
+        `*Client:* ${clientNameStr}`,
+        `*Document Name:* ${cleanName}`,
+        `*Description:* ${cleanDesc}`,
+        `*File:* ${fileName} (${fileSize})`,
+        ``,
+        `_Viewed in Orbit Expo Crafts Trade & Client Portal_`
+      ].join('\n');
+
+      const waUrl = `https://wa.me/919928022151?text=${encodeURIComponent(waText)}`;
+      try {
+        window.open(waUrl, '_blank', 'noopener,noreferrer');
+      } catch (err) {
+        console.error('Failed to open WhatsApp:', err);
+      }
+    } catch (err: any) {
+      setDocUploadError(err.message || 'Failed to process document upload.');
+    } finally {
+      setDocUploadLoading(false);
+    }
+  };
+
+  const handleDownloadDoc = (doc: BookingDocument) => {
+    if (doc.fileUrl && doc.fileUrl.startsWith('data:')) {
+      const a = document.createElement('a');
+      a.href = doc.fileUrl;
+      a.download = doc.fileName || `${doc.name}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      return;
+    }
+    if (doc.fileUrl && doc.fileUrl.startsWith('http')) {
+      window.open(doc.fileUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    // Synthesized document fallback download
+    const content = `ORBIT EXPO CRAFTS - PROJECT DOCUMENTATION MANUAL\n\nProject: ${selectedBooking?.projectName || 'Contract Booking'}\nBooking Reference: ${selectedBooking?.id}\nClient: ${selectedBooking?.clientName || 'Client'}\nDocument Name: ${doc.name}\nDescription (Purpose): ${doc.description}\nFile Name: ${doc.fileName || doc.name}\nFormat / Size: ${doc.fileType} (${doc.fileSize})\nUploaded By: ${doc.uploadedBy}\nUpload Date: ${doc.uploadedAt}\n\nStatus: Official Verified Document in Orbit Expo Crafts Documentation Trail.\nRIICO Industrial Area, Basni, Jodhpur, Rajasthan, India\nSupport: trade@orbitexpocrafts.com | WhatsApp: +91 99280 22151`;
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${doc.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_document.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleShareDocOnWhatsApp = (doc: BookingDocument) => {
+    if (!selectedBooking) return;
+    const clientNameStr = activeUser?.firstName || selectedBooking.clientName || 'Client';
+    const text = [
+      `*Project Document Reference: ${selectedBooking.id}*`,
+      ``,
+      `*Client:* ${clientNameStr}`,
+      `*Project:* ${selectedBooking.projectName}`,
+      `*Document Name:* ${doc.name}`,
+      `*Description / Purpose:* ${doc.description}`,
+      `*Format & Size:* ${doc.fileType} (${doc.fileSize})`,
+      `*Uploaded By:* ${doc.uploadedBy} on ${doc.uploadedAt}`,
+      ``,
+      `_Shared via Orbit Expo Crafts Trade & Client Documentation Portal_`
+    ].join('\n');
+    window.open(`https://wa.me/919928022151?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+  };
+
   // =========================================================================
   // VIEW 1: UNAUTHENTICATED LOGIN / REGISTER PORTAL
   // =========================================================================
-  if (!isAuthenticated || !user) {
+  if (!isUserAuthenticated || !activeUser) {
     return (
       <div key="unauthenticated-portal" style={{ backgroundColor: '#FAF9F5', minHeight: '85vh', padding: '48px 16px 80px' }}>
         <div className="wrap" style={{ maxWidth: 520, margin: '0 auto' }}>
@@ -790,7 +1180,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
               <h1 className="disp" style={{ fontSize: 'clamp(28px, 3.5vw, 42px)', fontWeight: 400, color: '#111111', margin: 0 }}>
-                Welcome, {profileFirstName || user.firstName || user.username}
+                Welcome, {profileFirstName || activeUser.firstName || activeUser.username}
               </h1>
               <span
                 style={{
@@ -804,11 +1194,11 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                   borderRadius: 999,
                 }}
               >
-                {user.role || 'Verified Trade Client'}
+                {activeUser.role || 'Verified Trade Client'}
               </span>
             </div>
             <p style={{ fontSize: 14.5, color: '#666666', margin: 0 }}>
-              {(profileCompany || user.company) ? `${profileCompany || user.company} • ` : ''}{user.email}
+              {(profileCompany || activeUser.company) ? `${profileCompany || activeUser.company} • ` : ''}{activeUser.email}
             </p>
           </div>
 
@@ -1061,9 +1451,9 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
               <div style={{ marginTop: 32 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                   <div>
-                    <h3 style={{ fontSize: 18, fontWeight: 600, margin: 0 }}>Active Commercial Bookings & Consignments</h3>
+                    <h3 style={{ fontSize: 18, fontWeight: 600, margin: 0 }}>Trade & Client Project Portal</h3>
                     <p style={{ fontSize: 13.5, color: '#666666', margin: '2px 0 0' }}>
-                      Real-time factory milestones, container logistics, and official proforma invoices.
+                      Project documentation trail, itemized bill of materials (BOQ), and direct engineering communication.
                     </p>
                   </div>
                   <button
@@ -1076,88 +1466,101 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  {bookings.slice(0, 3).map((bk, idx) => (
-                    <div
-                      key={`ov-${bk.id || idx}-${idx}`}
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        flexWrap: 'wrap',
-                        gap: 16,
-                        padding: '18px 22px',
-                        background: '#FAF9F5',
-                        border: '1px solid var(--line)',
-                        borderRadius: 'var(--r-md)',
-                      }}
-                    >
-                      <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                          <span style={{ fontWeight: 700, fontSize: 15 }}>{bk.id}</span>
-                          <span style={{
-                            background: bk.status === 'Dispatched' ? '#E8F5E9' : '#FFF3E0',
-                            color: bk.status === 'Dispatched' ? '#2E7D32' : '#B45309',
-                            padding: '2px 8px',
-                            borderRadius: 999,
-                            fontSize: 12,
-                            fontWeight: 700,
-                          }}>
-                            {bk.status}
-                          </span>
-                          <span style={{ fontSize: 12, color: '#666666' }}>
-                            PI #{bk.invoice?.invoiceNumber}
-                          </span>
+                  {bookings.slice(0, 3).map((bk, idx) => {
+                    const isDomestic = bk.marketType === 'domestic' || bk.shippingAddress?.country?.toLowerCase() === 'india';
+                    return (
+                      <div
+                        key={`ov-${bk.id || idx}-${idx}`}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          flexWrap: 'wrap',
+                          gap: 16,
+                          padding: '18px 22px',
+                          background: '#FAF9F5',
+                          border: '1px solid var(--line)',
+                          borderRadius: 'var(--r-md)',
+                        }}
+                      >
+                        <div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                            <span style={{ fontWeight: 700, fontSize: 15 }}>{bk.id}</span>
+                            <span style={{
+                              background: bk.status === 'Dispatched' || bk.status === 'Delivered' ? '#E8F5E9' : '#FFF3E0',
+                              color: bk.status === 'Dispatched' || bk.status === 'Delivered' ? '#2E7D32' : '#B45309',
+                              padding: '2px 8px',
+                              borderRadius: 999,
+                              fontSize: 12,
+                              fontWeight: 700,
+                            }}>
+                              {bk.status}
+                            </span>
+                            <span style={{
+                              background: isDomestic ? '#EFF6FF' : '#F5F3FF',
+                              color: isDomestic ? '#1D4ED8' : '#6D28D9',
+                              padding: '2px 8px',
+                              borderRadius: 999,
+                              fontSize: 11.5,
+                              fontWeight: 700,
+                            }}>
+                              {isDomestic ? '🇮🇳 Domestic Trade' : '🌐 Export Trade'}
+                            </span>
+                            <span style={{ fontSize: 12, color: '#666666' }}>
+                              PI #{bk.invoice?.invoiceNumber}
+                            </span>
+                          </div>
+                          <div style={{ fontSize: 13.5, color: '#444444', marginTop: 4 }}>
+                            Project: <strong>{bk.projectName}</strong> &bull; {bk.totalPieces} pcs ({bk.estimatedCbm} CBM) &bull; {bk.shippingAddress.city}, {bk.shippingAddress.country}
+                          </div>
                         </div>
-                        <div style={{ fontSize: 13.5, color: '#444444', marginTop: 4 }}>
-                          Project: <strong>{bk.projectName}</strong> &bull; {bk.totalPieces} pcs ({bk.estimatedCbm} CBM) &bull; {bk.shippingAddress.city}, {bk.shippingAddress.country}
-                        </div>
-                      </div>
 
-                      <div style={{ display: 'flex', gap: 8 }}>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSelectedBooking(bk);
-                            setInspectorTab('timeline');
-                            handleTabChange('orders', bk.id);
-                          }}
-                          style={{
-                            background: '#111111',
-                            color: '#FFFFFF',
-                            border: 'none',
-                            borderRadius: 4,
-                            padding: '8px 14px',
-                            fontSize: 12.5,
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                          }}
-                        >
-                          Milestones & Logistics →
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSelectedBooking(bk);
-                            setInspectorTab('conversation');
-                            handleTabChange('orders', bk.id);
-                          }}
-                          style={{
-                            background: '#FFFFFF',
-                            color: '#111111',
-                            border: '1px solid #CCCCCC',
-                            borderRadius: 4,
-                            padding: '8px 12px',
-                            fontSize: 12.5,
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                          }}
-                          title="Open query thread"
-                        >
-                          💬 ({bk.messages?.length || 0})
-                        </button>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedBooking(bk);
+                              setInspectorTab('documents');
+                              handleTabChange('orders', bk.id);
+                            }}
+                            style={{
+                              background: '#111111',
+                              color: '#FFFFFF',
+                              border: 'none',
+                              borderRadius: 4,
+                              padding: '8px 14px',
+                              fontSize: 12.5,
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                            }}
+                          >
+                            Project Documents & BOQ →
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedBooking(bk);
+                              setInspectorTab('conversation');
+                              handleTabChange('orders', bk.id);
+                            }}
+                            style={{
+                              background: '#FFFFFF',
+                              color: '#111111',
+                              border: '1px solid #CCCCCC',
+                              borderRadius: 4,
+                              padding: '8px 12px',
+                              fontSize: 12.5,
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                            }}
+                            title="Open query thread"
+                          >
+                            💬 ({bk.messages?.length || 0})
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -1359,7 +1762,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                         gap: 6,
                       }}
                     >
-                      ← Back to All Orders
+                      ← Back to All Projects
                     </button>
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
@@ -1367,8 +1770,8 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                           {selectedBooking.id}
                         </h2>
                         <span style={{
-                          background: selectedBooking.status === 'Dispatched' ? '#E8F5E9' : '#FFF3E0',
-                          color: selectedBooking.status === 'Dispatched' ? '#2E7D32' : '#B45309',
+                          background: selectedBooking.status === 'Dispatched' || selectedBooking.status === 'Delivered' ? '#E8F5E9' : '#FFF3E0',
+                          color: selectedBooking.status === 'Dispatched' || selectedBooking.status === 'Delivered' ? '#2E7D32' : '#B45309',
                           padding: '3px 10px',
                           borderRadius: 999,
                           fontSize: 12,
@@ -1376,6 +1779,29 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                         }}>
                           {selectedBooking.status}
                         </span>
+                        {((selectedBooking.marketType === 'domestic') || (selectedBooking.shippingAddress?.country?.toLowerCase() === 'india')) ? (
+                          <span style={{
+                            background: '#EFF6FF',
+                            color: '#1D4ED8',
+                            padding: '3px 10px',
+                            borderRadius: 999,
+                            fontSize: 12,
+                            fontWeight: 700,
+                          }}>
+                            🇮🇳 Domestic Contract
+                          </span>
+                        ) : (
+                          <span style={{
+                            background: '#F5F3FF',
+                            color: '#6D28D9',
+                            padding: '3px 10px',
+                            borderRadius: 999,
+                            fontSize: 12,
+                            fontWeight: 700,
+                          }}>
+                            🌐 Export Consignment
+                          </span>
+                        )}
                         <span style={{
                           background: '#F0ECE4',
                           color: 'var(--ink-2)',
@@ -1384,16 +1810,36 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                           fontSize: 12,
                           fontWeight: 600,
                         }}>
-                          PI #{selectedBooking.invoice?.invoiceNumber || 'Pending'}
+                          {selectedBooking.clientCategory === 'direct' ? 'Direct Client' : 'Trade Partner'} &bull; PI #{selectedBooking.invoice?.invoiceNumber || 'Pending'}
                         </span>
                       </div>
                       <p style={{ fontSize: 13.5, color: '#666666', margin: '4px 0 0' }}>
-                        Project: <strong>{selectedBooking.projectName}</strong> &bull; Booked on {selectedBooking.createdAt}
+                        Project: <strong>{selectedBooking.projectName}</strong> &bull; Booked on {selectedBooking.createdAt} &bull; {selectedBooking.shippingAddress?.city}, {selectedBooking.shippingAddress?.country}
                       </p>
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: 10 }}>
+                  <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                    <button
+                      type="button"
+                      onClick={() => setIsUploadModalOpen(true)}
+                      style={{
+                        background: '#111111',
+                        color: '#FFFFFF',
+                        border: 'none',
+                        borderRadius: 6,
+                        padding: '9px 16px',
+                        fontSize: 13,
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+                      }}
+                    >
+                      + Upload Document
+                    </button>
                     <button
                       type="button"
                       onClick={() => {
@@ -1416,7 +1862,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                       🖨️ Print Proforma Invoice
                     </button>
                     <a
-                      href={`https://wa.me/919928022151?text=Hello%2C%20I%20have%20an%20inquiry%20regarding%20Booking%20${selectedBooking.id}%20(${selectedBooking.projectName})`}
+                      href={`https://wa.me/919928022151?text=${encodeURIComponent(`*Hello Orbit Technical Desk*\n\nI am inquiring regarding Project *${selectedBooking.id}* (${selectedBooking.projectName}).\nClient: ${activeUser?.firstName || selectedBooking.clientName || 'Client'}\nLocation: ${selectedBooking.shippingAddress?.city}, ${selectedBooking.shippingAddress?.country}`)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
@@ -1440,10 +1886,10 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                 {/* INSPECTOR SUB-TABS */}
                 <div style={{ display: 'flex', gap: 8, borderBottom: '2px solid #ECE7DE', marginBottom: 28, overflowX: 'auto' }}>
                   {[
-                    { key: 'timeline', label: '🚚 Milestone Tracking & Logistics' },
-                    { key: 'items', label: '📦 Itemized Bill of Materials' },
-                    { key: 'invoice', label: '📄 Commercial Proforma Invoice' },
+                    { key: 'documents', label: `📁 Manual & Project Documents (${selectedBooking.documents?.length || 0})` },
+                    { key: 'items', label: '📦 Itemized Bill of Materials (BOQ)' },
                     { key: 'conversation', label: `💬 Conversation & Queries (${selectedBooking.messages?.length || 0})` },
+                    { key: 'invoice', label: '📄 Commercial Proforma Invoice' },
                   ].map((t) => (
                     <button
                       key={t.key}
@@ -1470,65 +1916,48 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                   ))}
                 </div>
 
-                {/* SUBTAB 1: TIMELINE & TRACKING */}
-                {inspectorTab === 'timeline' && (
+                {/* SUBTAB 1: PROJECT DOCUMENTS & MANUAL REPOSITORY */}
+                {inspectorTab === 'documents' && (
                   <div>
-                    {/* CONTAINER & FREIGHT LOGISTICS CARD */}
-                    <div style={{ background: '#111111', color: '#FFFFFF', borderRadius: 'var(--r-md)', padding: 24, marginBottom: 32 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16, borderBottom: '1px solid rgba(255,255,255,0.12)', paddingBottom: 16, marginBottom: 20 }}>
+                    {/* DOMESTIC VS EXPORT NOTICE BANNER */}
+                    {((selectedBooking.marketType === 'domestic') || (selectedBooking.shippingAddress?.country?.toLowerCase() === 'india')) ? (
+                      <div style={{ background: '#F8FAFC', border: '1px solid #CBD5E1', borderRadius: 'var(--r-md)', padding: '16px 20px', marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
                         <div>
-                          <div style={{ fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--brand)', fontWeight: 700, marginBottom: 4 }}>
-                            OCEAN FREIGHT & CONSIGNMENT DISPATCH
+                          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#1E40AF', marginBottom: 2 }}>
+                            🇮🇳 Domestic Contract Supply & Dispatch Terms
                           </div>
-                          <div style={{ fontSize: 18, fontWeight: 600 }}>
-                            {selectedBooking.logistics?.carrier || 'Maersk Global Logistics'}
+                          <div style={{ fontSize: 13.5, color: '#334155' }}>
+                            Dedicated Surface Road Transport Dispatch from Basni, Jodhpur to <strong>{selectedBooking.shippingAddress?.city}, {selectedBooking.shippingAddress?.state || ''}</strong> &bull; GST / Tax ID: <strong>{selectedBooking.gstOrTaxId || 'Included in Official GST Proforma'}</strong>
                           </div>
                         </div>
-                        <div style={{ textAlign: 'right' }}>
-                          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase' }}>
-                            CONTAINER / TRACKING #
-                          </div>
-                          <div style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF', fontFamily: 'monospace', letterSpacing: '0.05em' }}>
-                            {selectedBooking.logistics?.trackingNumber || 'MSKU-820491-9'}
-                          </div>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: '#0F766E', background: '#F0FDFA', padding: '5px 12px', borderRadius: 6, border: '1px solid #99F6E4' }}>
+                          ✓ Domestic Transport Dispatch
                         </div>
                       </div>
-
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 18 }}>
+                    ) : (
+                      <div style={{ background: '#FAF5FF', border: '1px solid #E9D5FF', borderRadius: 'var(--r-md)', padding: '16px 20px', marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
                         <div>
-                          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 4 }}>Origin Port</div>
-                          <div style={{ fontSize: 14, fontWeight: 600 }}>{selectedBooking.logistics?.originPort || 'Mundra Port, Gujarat (INMUN1)'}</div>
+                          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#6B21A8', marginBottom: 2 }}>
+                            🌐 International Export Consignment Terms
+                          </div>
+                          <div style={{ fontSize: 13.5, color: '#4C1D95' }}>
+                            FOB Mundra Port (INMUN1) / CIF Destination: <strong>{selectedBooking.shippingAddress?.city}, {selectedBooking.shippingAddress?.country}</strong> &bull; Tax ID / Customs: <strong>{selectedBooking.gstOrTaxId || 'Export Documentation Ready'}</strong>
+                          </div>
                         </div>
-                        <div>
-                          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 4 }}>Consignee Destination</div>
-                          <div style={{ fontSize: 14, fontWeight: 600 }}>{selectedBooking.shippingAddress?.city}, {selectedBooking.shippingAddress?.country}</div>
-                        </div>
-                        <div>
-                          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 4 }}>Vessel / Fleet</div>
-                          <div style={{ fontSize: 14, fontWeight: 600 }}>{selectedBooking.logistics?.vesselName || 'MV Rajasthan Express (Voyage 2608)'}</div>
-                        </div>
-                        <div>
-                          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', marginBottom: 4 }}>Target Delivery Window</div>
-                          <div style={{ fontSize: 14, fontWeight: 600, color: '#81C784' }}>{selectedBooking.targetDeliveryDate || 'Within 60 working days'}</div>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: '#6B21A8', background: '#F3E8FF', padding: '5px 12px', borderRadius: 6, border: '1px solid #D8B4FE' }}>
+                          ✓ Export Port Clearance
                         </div>
                       </div>
+                    )}
 
-                      <div style={{ marginTop: 20, padding: '12px 16px', background: 'rgba(255,255,255,0.06)', borderRadius: 6, fontSize: 13, color: 'rgba(255,255,255,0.85)', display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <span style={{ fontSize: 16 }}>📍</span>
-                        <span>
-                          <strong>Current Live Note:</strong> {selectedBooking.logistics?.currentMilestoneNote || 'Consolidated booking received in Rajasthan factory queue. Awaiting CAD review.'}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* 6-STAGE MILESTONES STEPPER */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+                    {/* ACTION & SUMMARY BAR */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18, flexWrap: 'wrap', gap: 12 }}>
                       <div>
                         <h3 style={{ fontSize: 18, fontWeight: 600, margin: 0 }}>
-                          Production & Export Milestone Progression
+                          Manual & Project Documents Repository
                         </h3>
                         <p style={{ fontSize: 13, color: '#666666', margin: '2px 0 0' }}>
-                          Real-time factory floor & customs export lifecycle tracking.
+                          Official drawings, specifications, invoices, finish swatches, and quality certificates. All files are securely kept and permanently downloadable.
                         </p>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
@@ -1551,7 +1980,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                             boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
                             transition: 'all 0.15s ease',
                           }}
-                          title="Instant sync latest production milestone and freight status from factory floor"
+                          title="Instant sync latest documents from team desk"
                         >
                           <span
                             style={{
@@ -1563,88 +1992,256 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                           >
                             ⟳
                           </span>
-                          {isSyncing ? 'Syncing...' : 'Sync Live Status'}
+                          {isSyncing ? 'Syncing...' : 'Sync Documents'}
                         </button>
-                        <span
+                        <button
+                          type="button"
+                          onClick={() => setIsUploadModalOpen(true)}
                           style={{
+                            background: '#111111',
+                            color: '#FFFFFF',
+                            border: 'none',
+                            borderRadius: 6,
+                            padding: '8px 16px',
+                            fontSize: 13,
+                            fontWeight: 600,
+                            cursor: 'pointer',
                             display: 'inline-flex',
                             alignItems: 'center',
-                            gap: 7,
-                            fontSize: 12,
-                            fontWeight: 600,
-                            color: '#0E5C63',
-                            background: '#E6F4EA',
-                            border: '1px solid #A8DAB5',
-                            padding: '6px 14px',
-                            borderRadius: 20,
-                            letterSpacing: '0.02em',
+                            gap: 6,
                           }}
                         >
-                          <span
-                            style={{
-                              display: 'inline-block',
-                              width: 8,
-                              height: 8,
-                              borderRadius: '50%',
-                              background: '#2E7D32',
-                            }}
-                          />
-                          Verified Factory Tracking
-                        </span>
+                          + Upload Document
+                        </button>
                       </div>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                      {(selectedBooking.milestones || []).map((m, idx) => (
-                        <div
-                          key={m.key || idx}
-                          style={{
-                            display: 'flex',
-                            gap: 16,
-                            padding: '16px 20px',
-                            background: m.active ? '#FFFDF8' : m.completed ? '#FAFAF7' : '#FFFFFF',
-                            borderRadius: 'var(--r-md)',
-                            border: m.active ? '1.5px solid #D97706' : m.completed ? '1px solid #C8E6C9' : '1px solid #EAE6DF',
-                            boxShadow: m.active ? '0 2px 8px rgba(217,119,6,0.1)' : 'none',
-                          }}
-                        >
-                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 32 }}>
+
+                    {/* DOCUMENTS TRAIL TABLE (DESKTOP) */}
+                    {selectedBooking.documents && selectedBooking.documents.length > 0 ? (
+                      <>
+                        <div className="portal-desktop-only portal-table-scroll">
+                          <table style={{ width: '100%', minWidth: 760, borderCollapse: 'collapse', textAlign: 'left', background: '#FFFFFF', borderRadius: 'var(--r-md)', overflow: 'hidden', border: '1px solid var(--line)' }}>
+                            <thead>
+                              <tr style={{ background: '#FAF9F5', borderBottom: '2px solid var(--line)' }}>
+                                <th style={{ padding: '14px 18px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', width: '26%' }}>
+                                  Document Name
+                                </th>
+                                <th style={{ padding: '14px 18px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', width: '34%' }}>
+                                  Description / Purpose (Compulsory)
+                                </th>
+                                <th style={{ padding: '14px 18px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', width: '18%' }}>
+                                  Uploaded By & Date
+                                </th>
+                                <th style={{ padding: '14px 18px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', width: '10%' }}>
+                                  Format
+                                </th>
+                                <th style={{ padding: '14px 18px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'right', width: '12%' }}>
+                                  Actions
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {selectedBooking.documents.map((doc, idx) => (
+                                <tr key={doc.id || idx} style={{ borderBottom: '1px solid #ECE7DE' }}>
+                                  <td style={{ padding: '16px 18px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                      <span style={{ fontSize: 22 }}>
+                                        {doc.fileType?.includes('image') ? '🖼️' : doc.fileType?.includes('cad') || doc.name.toLowerCase().includes('cad') ? '📐' : '📄'}
+                                      </span>
+                                      <div>
+                                        <div style={{ fontWeight: 700, fontSize: 14, color: '#111111' }}>
+                                          {doc.name}
+                                        </div>
+                                        <div style={{ fontSize: 12, color: '#777777', marginTop: 2, fontFamily: 'monospace' }}>
+                                          {doc.fileName || `${doc.name}.pdf`}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td style={{ padding: '16px 18px', fontSize: 13.5, color: '#333333', lineHeight: 1.5 }}>
+                                    <div style={{ background: '#FAF9F5', padding: '8px 12px', borderRadius: 6, border: '1px solid #F0ECE4' }}>
+                                      {doc.description}
+                                    </div>
+                                  </td>
+                                  <td style={{ padding: '16px 18px', fontSize: 13 }}>
+                                    <div style={{ fontWeight: 600, color: '#222222' }}>
+                                      {doc.uploadedBy || 'Team'}
+                                    </div>
+                                    <div style={{ fontSize: 12, color: '#777777', marginTop: 2 }}>
+                                      📅 {doc.uploadedAt || 'Recent'}
+                                    </div>
+                                  </td>
+                                  <td style={{ padding: '16px 18px', fontSize: 12.5 }}>
+                                    <span style={{ background: '#ECE7DE', color: '#333333', padding: '3px 8px', borderRadius: 4, fontWeight: 600, textTransform: 'uppercase', fontSize: 11 }}>
+                                      {doc.fileType?.toUpperCase().replace('APPLICATION/', '') || 'PDF'}
+                                    </span>
+                                    <div style={{ fontSize: 11.5, color: '#777777', marginTop: 4 }}>
+                                      {doc.fileSize || '1.2 MB'}
+                                    </div>
+                                  </td>
+                                  <td style={{ padding: '16px 18px', textAlign: 'right' }}>
+                                    <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleDownloadDoc(doc)}
+                                        style={{
+                                          background: '#111111',
+                                          color: '#FFFFFF',
+                                          border: 'none',
+                                          borderRadius: 4,
+                                          padding: '7px 12px',
+                                          fontSize: 12,
+                                          fontWeight: 600,
+                                          cursor: 'pointer',
+                                          display: 'inline-flex',
+                                          alignItems: 'center',
+                                          gap: 5,
+                                          whiteSpace: 'nowrap',
+                                        }}
+                                        title="Download document to device"
+                                      >
+                                        <span>📥</span> Download
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleShareDocOnWhatsApp(doc)}
+                                        style={{
+                                          background: '#25D366',
+                                          color: '#FFFFFF',
+                                          border: 'none',
+                                          borderRadius: 4,
+                                          padding: '7px 10px',
+                                          fontSize: 12,
+                                          fontWeight: 600,
+                                          cursor: 'pointer',
+                                          display: 'inline-flex',
+                                          alignItems: 'center',
+                                          gap: 4,
+                                        }}
+                                        title="Share reference on WhatsApp"
+                                      >
+                                        <span>💬</span>
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* DOCUMENTS CARDS (MOBILE) */}
+                        <div className="portal-mobile-only" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                          {selectedBooking.documents.map((doc, idx) => (
                             <div
+                              key={`mob-doc-${doc.id || idx}`}
                               style={{
-                                width: 32,
-                                height: 32,
-                                borderRadius: '50%',
-                                background: m.completed ? '#2E7D32' : m.active ? '#D97706' : '#E0E0E0',
-                                color: '#FFFFFF',
-                                display: 'grid',
-                                placeItems: 'center',
-                                fontSize: 13,
-                                fontWeight: 700,
+                                background: '#FFFFFF',
+                                border: '1px solid var(--line)',
+                                borderRadius: 'var(--r-md)',
+                                padding: '16px',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 12,
                               }}
                             >
-                              {m.completed ? '✓' : idx + 1}
-                            </div>
-                          </div>
-
-                          <div style={{ flex: 1 }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8, marginBottom: 4 }}>
-                              <h4 style={{ fontSize: 15, fontWeight: 600, margin: 0, color: m.completed ? '#1B5E20' : m.active ? '#B45309' : '#333333' }}>
-                                {m.label}
-                              </h4>
-                              {m.date && (
-                                <span style={{ fontSize: 12.5, fontWeight: 600, color: m.active ? '#D97706' : '#777777' }}>
-                                  {m.date}
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                  <span style={{ fontSize: 22 }}>
+                                    {doc.fileType?.includes('image') ? '🖼️' : doc.fileType?.includes('cad') || doc.name.toLowerCase().includes('cad') ? '📐' : '📄'}
+                                  </span>
+                                  <div>
+                                    <div style={{ fontWeight: 700, fontSize: 14.5, color: '#111111' }}>{doc.name}</div>
+                                    <div style={{ fontSize: 11.5, color: '#777777', fontFamily: 'monospace' }}>{doc.fileName || `${doc.name}.pdf`}</div>
+                                  </div>
+                                </div>
+                                <span style={{ background: '#ECE7DE', color: '#333333', padding: '2px 7px', borderRadius: 4, fontWeight: 700, fontSize: 11, textTransform: 'uppercase' }}>
+                                  {doc.fileSize || 'PDF'}
                                 </span>
-                              )}
+                              </div>
+
+                              <div style={{ background: '#FAF9F5', padding: '10px 12px', borderRadius: 6, fontSize: 13, color: '#333333', lineHeight: 1.5, border: '1px solid #ECE7DE' }}>
+                                <strong style={{ display: 'block', fontSize: 11, textTransform: 'uppercase', color: '#777777', marginBottom: 2 }}>Description (Purpose):</strong>
+                                {doc.description}
+                              </div>
+
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12, color: '#666666' }}>
+                                <span>Uploaded by <strong>{doc.uploadedBy || 'Team'}</strong></span>
+                                <span>📅 {doc.uploadedAt || 'Recent'}</span>
+                              </div>
+
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 8, paddingTop: 6, borderTop: '1px solid #ECE7DE' }}>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDownloadDoc(doc)}
+                                  style={{
+                                    background: '#111111',
+                                    color: '#FFFFFF',
+                                    border: 'none',
+                                    borderRadius: 6,
+                                    padding: '9px 14px',
+                                    fontSize: 13,
+                                    fontWeight: 600,
+                                    cursor: 'pointer',
+                                    textAlign: 'center',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: 6,
+                                  }}
+                                >
+                                  <span>📥</span> Download Document
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleShareDocOnWhatsApp(doc)}
+                                  style={{
+                                    background: '#25D366',
+                                    color: '#FFFFFF',
+                                    border: 'none',
+                                    borderRadius: 6,
+                                    padding: '9px 14px',
+                                    fontSize: 13,
+                                    fontWeight: 600,
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 6,
+                                  }}
+                                  title="Share on WhatsApp"
+                                >
+                                  <span>💬</span> WhatsApp
+                                </button>
+                              </div>
                             </div>
-                            {m.note && (
-                              <p style={{ fontSize: 13.5, color: '#666666', margin: 0 }}>
-                                {m.note}
-                              </p>
-                            )}
-                          </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </>
+                    ) : (
+                      <div style={{ textAlign: 'center', padding: '56px 20px', background: '#FAF9F5', borderRadius: 'var(--r-md)', border: '1px dashed #D6D0C4' }}>
+                        <div style={{ fontSize: 36, marginBottom: 12 }}>📁</div>
+                        <h4 style={{ fontSize: 18, fontWeight: 600, margin: '0 0 6px' }}>No Documents Uploaded Yet</h4>
+                        <p style={{ fontSize: 14, color: '#666666', maxWidth: '48ch', margin: '0 auto 20px' }}>
+                          Specification drawings, finish sample approvals, CAD plans, and formal proforma invoices will appear here in the project documentation trail.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => setIsUploadModalOpen(true)}
+                          style={{
+                            background: '#111111',
+                            color: '#FFFFFF',
+                            border: 'none',
+                            borderRadius: 6,
+                            padding: '10px 20px',
+                            fontSize: 13.5,
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          + Upload First Document
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -1980,12 +2577,12 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                           OFFICIAL BANK WIRE DETAILS (SWIFT / RTGS)
                         </div>
                         <div style={{ fontSize: 13, lineHeight: 1.6 }}>
-                          <div><strong>Account:</strong> {selectedBooking.invoice?.bankDetails.accountName}</div>
-                          <div><strong>Bank:</strong> {selectedBooking.invoice?.bankDetails.bankName}</div>
-                          <div><strong>Account Number:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{selectedBooking.invoice?.bankDetails.accountNumber}</span></div>
-                          <div><strong>IFSC / RTGS:</strong> <span style={{ fontFamily: 'monospace' }}>{selectedBooking.invoice?.bankDetails.ifscCode}</span></div>
-                          <div><strong>SWIFT / BIC:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{selectedBooking.invoice?.bankDetails.swiftCode}</span></div>
-                          <div><strong>Branch:</strong> {selectedBooking.invoice?.bankDetails.branch}</div>
+                          <div><strong>Account:</strong> {selectedBooking.invoice?.bankDetails?.accountName || 'Orbit Expo Crafts'}</div>
+                          <div><strong>Bank:</strong> {selectedBooking.invoice?.bankDetails?.bankName || 'State Bank of India'}</div>
+                          <div><strong>Account Number:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{selectedBooking.invoice?.bankDetails?.accountNumber || '38901248921'}</span></div>
+                          <div><strong>IFSC / RTGS:</strong> <span style={{ fontFamily: 'monospace' }}>{selectedBooking.invoice?.bankDetails?.ifscCode || 'SBIN0003241'}</span></div>
+                          <div><strong>SWIFT / BIC:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{selectedBooking.invoice?.bankDetails?.swiftCode || 'SBININBBXXX'}</span></div>
+                          <div><strong>Branch:</strong> {selectedBooking.invoice?.bankDetails?.branch || 'Basni Industrial Area, Jodhpur'}</div>
                         </div>
                       </div>
 
@@ -2021,7 +2618,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                           Live Thread Synced
                         </span>
                         <a
-                          href={`https://wa.me/919928022151?text=${encodeURIComponent(`*Hello Orbit Technical Desk*\n\nI am inquiring about Commercial Order *${selectedBooking.id}*.\nClient: ${user?.firstName || selectedBooking.clientName || 'Client'}`)}`}
+                          href={`https://wa.me/919928022151?text=${encodeURIComponent(`*Hello Orbit Technical Desk*\n\nI am inquiring about Commercial Order *${selectedBooking.id}*.\nClient: ${activeUser?.firstName || selectedBooking.clientName || 'Client'}`)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           style={{
@@ -2133,10 +2730,10 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 24 }}>
                   <div>
                     <h2 style={{ fontSize: 22, fontWeight: 600, margin: 0 }}>
-                      Commercial Order Bookings & Consignments
+                      Trade & Client Project Portal
                     </h2>
                     <p style={{ fontSize: 14, color: '#666666', marginTop: 4 }}>
-                      Complete transaction transparency, milestone tracking, and proforma invoices for your project orders.
+                      Contract projects, itemized specifications, manual document trails, and direct engineering communication for domestic and export trade.
                     </p>
                   </div>
                   {bookings.length > 0 && (
@@ -2161,210 +2758,246 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                   <>
                     {/* DESKTOP TABLE */}
                     <div className="portal-desktop-only portal-table-scroll">
-                      <table style={{ width: '100%', minWidth: 720, borderCollapse: 'collapse', textAlign: 'left' }}>
+                      <table style={{ width: '100%', minWidth: 760, borderCollapse: 'collapse', textAlign: 'left' }}>
                         <thead>
                           <tr style={{ background: '#FAF9F5', borderBottom: '2px solid var(--line)' }}>
                             <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Booking Ref & PI #</th>
                             <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Date</th>
                             <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Project & Location</th>
-                            <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Consignment Specs</th>
-                            <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Status</th>
+                            <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Specifications & Docs</th>
+                            <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Trade & Status</th>
                             <th style={{ padding: '14px 16px', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: 'right' }}>Actions</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {bookings.map((bk, idx) => (
-                            <tr key={`tbl-${bk.id || idx}-${idx}`} style={{ borderBottom: '1px solid #ECE7DE' }}>
-                              <td style={{ padding: '16px' }}>
-                                <div style={{ fontWeight: 700, fontSize: 14 }}>{bk.id}</div>
-                                <div style={{ fontSize: 12, color: '#777777', marginTop: 2 }}>
-                                  PI #{bk.invoice?.invoiceNumber || 'Pending'}
-                                </div>
-                              </td>
-                              <td style={{ padding: '16px', fontSize: 13.5, color: '#666666' }}>
-                                {bk.createdAt}
-                              </td>
-                              <td style={{ padding: '16px' }}>
-                                <div style={{ fontWeight: 600, fontSize: 14 }}>{bk.projectName}</div>
-                                <div style={{ fontSize: 12, color: '#777777' }}>
-                                  {bk.shippingAddress?.city}, {bk.shippingAddress?.country}
-                                </div>
-                              </td>
-                              <td style={{ padding: '16px', fontSize: 13.5 }}>
-                                <div><strong>{bk.totalPieces} pcs</strong> &bull; {bk.estimatedCbm} CBM</div>
-                                <div style={{ fontSize: 12, color: '#777777' }}>
-                                  {bk.items.length} unique specification{bk.items.length > 1 ? 's' : ''}
-                                </div>
-                              </td>
-                              <td style={{ padding: '16px' }}>
-                                <span
-                                  style={{
-                                    background: bk.status === 'Dispatched' ? '#E8F5E9' : '#FFF3E0',
-                                    color: bk.status === 'Dispatched' ? '#2E7D32' : '#B45309',
-                                    padding: '4px 10px',
-                                    borderRadius: 999,
-                                    fontSize: 12,
-                                    fontWeight: 700,
-                                  }}
-                                >
-                                  {bk.status}
-                                </span>
-                              </td>
-                              <td style={{ padding: '16px', textAlign: 'right' }}>
-                                <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setSelectedBooking(bk);
-                                      setInspectorTab('timeline');
-                                      handleTabChange('orders', bk.id);
-                                    }}
-                                    style={{
-                                      background: '#111111',
-                                      color: '#FFFFFF',
-                                      border: 'none',
-                                      borderRadius: 4,
-                                      padding: '7px 12px',
-                                      fontSize: 12.5,
-                                      fontWeight: 600,
-                                      cursor: 'pointer',
-                                    }}
-                                  >
-                                    Inspect & Track →
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setSelectedBooking(bk);
-                                      setInspectorTab('conversation');
-                                      handleTabChange('orders', bk.id);
-                                    }}
-                                    style={{
-                                      background: '#FAF9F5',
-                                      color: '#111111',
-                                      border: '1px solid #CCC',
-                                      borderRadius: 4,
-                                      padding: '7px 10px',
-                                      fontSize: 12.5,
-                                      fontWeight: 600,
-                                      cursor: 'pointer',
-                                    }}
-                                    title="Open conversation thread"
-                                  >
-                                    💬 ({bk.messages?.length || 0})
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
+                          {bookings.map((bk, idx) => {
+                            const isDomestic = bk.marketType === 'domestic' || bk.shippingAddress?.country?.toLowerCase() === 'india';
+                            return (
+                              <tr key={`tbl-${bk.id || idx}-${idx}`} style={{ borderBottom: '1px solid #ECE7DE' }}>
+                                <td style={{ padding: '16px' }}>
+                                  <div style={{ fontWeight: 700, fontSize: 14 }}>{bk.id}</div>
+                                  <div style={{ fontSize: 12, color: '#777777', marginTop: 2 }}>
+                                    PI #{bk.invoice?.invoiceNumber || 'Pending'}
+                                  </div>
+                                </td>
+                                <td style={{ padding: '16px', fontSize: 13.5, color: '#666666' }}>
+                                  {bk.createdAt}
+                                </td>
+                                <td style={{ padding: '16px' }}>
+                                  <div style={{ fontWeight: 600, fontSize: 14 }}>{bk.projectName}</div>
+                                  <div style={{ fontSize: 12, color: '#777777' }}>
+                                    {bk.shippingAddress?.city}, {bk.shippingAddress?.country}
+                                  </div>
+                                </td>
+                                <td style={{ padding: '16px', fontSize: 13.5 }}>
+                                  <div><strong>{bk.totalPieces} pcs</strong> &bull; {bk.estimatedCbm} CBM</div>
+                                  <div style={{ fontSize: 12, color: '#0E5C63', marginTop: 2, fontWeight: 600 }}>
+                                    📁 {bk.documents?.length || 0} project document{bk.documents?.length === 1 ? '' : 's'}
+                                  </div>
+                                </td>
+                                <td style={{ padding: '16px' }}>
+                                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-start' }}>
+                                    <span
+                                      style={{
+                                        background: bk.status === 'Dispatched' || bk.status === 'Delivered' ? '#E8F5E9' : '#FFF3E0',
+                                        color: bk.status === 'Dispatched' || bk.status === 'Delivered' ? '#2E7D32' : '#B45309',
+                                        padding: '3px 9px',
+                                        borderRadius: 999,
+                                        fontSize: 11.5,
+                                        fontWeight: 700,
+                                      }}
+                                    >
+                                      {bk.status}
+                                    </span>
+                                    <span
+                                      style={{
+                                        background: isDomestic ? '#EFF6FF' : '#F5F3FF',
+                                        color: isDomestic ? '#1D4ED8' : '#6D28D9',
+                                        padding: '2px 8px',
+                                        borderRadius: 999,
+                                        fontSize: 11,
+                                        fontWeight: 700,
+                                      }}
+                                    >
+                                      {isDomestic ? '🇮🇳 Domestic Trade' : '🌐 Export Trade'}
+                                    </span>
+                                  </div>
+                                </td>
+                                <td style={{ padding: '16px', textAlign: 'right' }}>
+                                  <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setSelectedBooking(bk);
+                                        setInspectorTab('documents');
+                                        handleTabChange('orders', bk.id);
+                                      }}
+                                      style={{
+                                        background: '#111111',
+                                        color: '#FFFFFF',
+                                        border: 'none',
+                                        borderRadius: 4,
+                                        padding: '7px 12px',
+                                        fontSize: 12.5,
+                                        fontWeight: 600,
+                                        cursor: 'pointer',
+                                      }}
+                                    >
+                                      Project Documents & BOQ →
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setSelectedBooking(bk);
+                                        setInspectorTab('conversation');
+                                        handleTabChange('orders', bk.id);
+                                      }}
+                                      style={{
+                                        background: '#FAF9F5',
+                                        color: '#111111',
+                                        border: '1px solid #CCC',
+                                        borderRadius: 4,
+                                        padding: '7px 10px',
+                                        fontSize: 12.5,
+                                        fontWeight: 600,
+                                        cursor: 'pointer',
+                                      }}
+                                      title="Open conversation thread"
+                                    >
+                                      💬 ({bk.messages?.length || 0})
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>
 
                     {/* MOBILE CARDS */}
                     <div className="portal-mobile-only" style={{ marginBottom: 28 }}>
-                      {bookings.map((bk, idx) => (
-                        <div
-                          key={`mob-${bk.id || idx}-${idx}`}
-                          style={{
-                            background: '#FFFFFF',
-                            border: '1px solid var(--line)',
-                            borderRadius: 'var(--r-md)',
-                            padding: '16px',
-                            boxShadow: 'var(--shadow-sm)',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 12,
-                          }}
-                        >
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
-                            <div>
-                              <div style={{ fontWeight: 700, fontSize: 15, color: '#111111' }}>{bk.id}</div>
-                              <div style={{ fontSize: 12, color: '#777777', marginTop: 2 }}>
-                                PI #{bk.invoice?.invoiceNumber || 'Pending'} &bull; {bk.createdAt}
+                      {bookings.map((bk, idx) => {
+                        const isDomestic = bk.marketType === 'domestic' || bk.shippingAddress?.country?.toLowerCase() === 'india';
+                        return (
+                          <div
+                            key={`mob-${bk.id || idx}-${idx}`}
+                            style={{
+                              background: '#FFFFFF',
+                              border: '1px solid var(--line)',
+                              borderRadius: 'var(--r-md)',
+                              padding: '16px',
+                              boxShadow: 'var(--shadow-sm)',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: 12,
+                            }}
+                          >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                              <div>
+                                <div style={{ fontWeight: 700, fontSize: 15, color: '#111111' }}>{bk.id}</div>
+                                <div style={{ fontSize: 12, color: '#777777', marginTop: 2 }}>
+                                  PI #{bk.invoice?.invoiceNumber || 'Pending'} &bull; {bk.createdAt}
+                                </div>
+                              </div>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end' }}>
+                                <span
+                                  style={{
+                                    background: bk.status === 'Dispatched' || bk.status === 'Delivered' ? '#E8F5E9' : '#FFF3E0',
+                                    color: bk.status === 'Dispatched' || bk.status === 'Delivered' ? '#2E7D32' : '#B45309',
+                                    padding: '3px 10px',
+                                    borderRadius: 999,
+                                    fontSize: 11.5,
+                                    fontWeight: 700,
+                                    whiteSpace: 'nowrap',
+                                  }}
+                                >
+                                  {bk.status}
+                                </span>
+                                <span
+                                  style={{
+                                    background: isDomestic ? '#EFF6FF' : '#F5F3FF',
+                                    color: isDomestic ? '#1D4ED8' : '#6D28D9',
+                                    padding: '2px 8px',
+                                    borderRadius: 999,
+                                    fontSize: 10.5,
+                                    fontWeight: 700,
+                                    whiteSpace: 'nowrap',
+                                  }}
+                                >
+                                  {isDomestic ? '🇮🇳 Domestic Trade' : '🌐 Export Trade'}
+                                </span>
                               </div>
                             </div>
-                            <span
-                              style={{
-                                background: bk.status === 'Dispatched' ? '#E8F5E9' : '#FFF3E0',
-                                color: bk.status === 'Dispatched' ? '#2E7D32' : '#B45309',
-                                padding: '3px 10px',
-                                borderRadius: 999,
-                                fontSize: 11.5,
-                                fontWeight: 700,
-                                whiteSpace: 'nowrap',
-                              }}
-                            >
-                              {bk.status}
-                            </span>
-                          </div>
 
-                          <div style={{ borderTop: '1px solid #F0ECE4', borderBottom: '1px solid #F0ECE4', padding: '10px 0', fontSize: 13 }}>
-                            <div style={{ fontWeight: 600, color: '#222222', marginBottom: 2 }}>{bk.projectName}</div>
-                            <div style={{ fontSize: 12, color: '#666666' }}>
-                              📍 {bk.shippingAddress?.city || 'Project Site'}, {bk.shippingAddress?.country || ''}
+                            <div style={{ borderTop: '1px solid #F0ECE4', borderBottom: '1px solid #F0ECE4', padding: '10px 0', fontSize: 13 }}>
+                              <div style={{ fontWeight: 600, color: '#222222', marginBottom: 2 }}>{bk.projectName}</div>
+                              <div style={{ fontSize: 12, color: '#666666' }}>
+                                📍 {bk.shippingAddress?.city || 'Project Site'}, {bk.shippingAddress?.country || ''}
+                              </div>
+                              <div style={{ fontSize: 12, color: '#444444', marginTop: 6, display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                                <span>📦 <strong>{bk.totalPieces} pcs</strong></span>
+                                <span>📐 <strong>{bk.estimatedCbm} CBM</strong></span>
+                                <span style={{ color: '#0E5C63', fontWeight: 600 }}>📁 <strong>{bk.documents?.length || 0} Docs</strong></span>
+                                {bk.invoice && <span>💵 <strong>{getCurrencySymbol(bk.invoice.currency)}{(bk.invoice.totalAmount || 0).toLocaleString()} {bk.invoice.currency || 'INR'}</strong></span>}
+                              </div>
                             </div>
-                            <div style={{ fontSize: 12, color: '#444444', marginTop: 6, display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-                              <span>📦 <strong>{bk.totalPieces} pcs</strong></span>
-                              <span>📐 <strong>{bk.estimatedCbm} CBM</strong></span>
-                              {bk.invoice && <span>💵 <strong>{getCurrencySymbol(bk.invoice.currency)}{(bk.invoice.totalAmount || 0).toLocaleString()} {bk.invoice.currency || 'INR'}</strong></span>}
-                            </div>
-                          </div>
 
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 8 }}>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setSelectedBooking(bk);
-                                setInspectorTab('timeline');
-                                handleTabChange('orders', bk.id);
-                              }}
-                              style={{
-                                background: '#111111',
-                                color: '#FFFFFF',
-                                border: 'none',
-                                borderRadius: 6,
-                                padding: '9px 14px',
-                                fontSize: 13,
-                                fontWeight: 600,
-                                cursor: 'pointer',
-                                textAlign: 'center',
-                              }}
-                            >
-                              Inspect & Track →
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setSelectedBooking(bk);
-                                setInspectorTab('conversation');
-                                handleTabChange('orders', bk.id);
-                              }}
-                              style={{
-                                background: '#FAF9F5',
-                                color: '#111111',
-                                border: '1px solid #CCC',
-                                borderRadius: 6,
-                                padding: '9px 12px',
-                                fontSize: 12.5,
-                                fontWeight: 600,
-                                cursor: 'pointer',
-                                whiteSpace: 'nowrap',
-                              }}
-                            >
-                              💬 ({bk.messages?.length || 0})
-                            </button>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 8 }}>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSelectedBooking(bk);
+                                  setInspectorTab('documents');
+                                  handleTabChange('orders', bk.id);
+                                }}
+                                style={{
+                                  background: '#111111',
+                                  color: '#FFFFFF',
+                                  border: 'none',
+                                  borderRadius: 6,
+                                  padding: '9px 14px',
+                                  fontSize: 13,
+                                  fontWeight: 600,
+                                  cursor: 'pointer',
+                                  textAlign: 'center',
+                                }}
+                              >
+                                Project Documents & BOQ →
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSelectedBooking(bk);
+                                  setInspectorTab('conversation');
+                                  handleTabChange('orders', bk.id);
+                                }}
+                                style={{
+                                  background: '#FAF9F5',
+                                  color: '#111111',
+                                  border: '1px solid #CCC',
+                                  borderRadius: 6,
+                                  padding: '9px 12px',
+                                  fontSize: 12.5,
+                                  fontWeight: 600,
+                                  cursor: 'pointer',
+                                  whiteSpace: 'nowrap',
+                                }}
+                              >
+                                💬 ({bk.messages?.length || 0})
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </>
                 ) : (
                   <div style={{ textAlign: 'center', padding: '64px 20px', background: '#F9F8F5', borderRadius: 'var(--r-md)', border: '1px solid #ECE7DE' }}>
                     <div style={{ fontSize: 40, marginBottom: 12 }}>📋</div>
-                    <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 8 }}>No Commercial Orders Booked Yet</h3>
+                    <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 8 }}>No Project Orders Booked Yet</h3>
                     <p style={{ fontSize: 14.5, color: '#666666', maxWidth: '45ch', margin: '0 auto 24px' }}>
-                      Orbit Expo Crafts routes complete contract orders through our catalog portal without requiring online credit card payment. Add items to your enquiry bag and proceed to order booking to generate your Proforma Invoice and tracking.
+                      Orbit Expo Crafts routes contract projects through our portal with direct proforma generation, CAD documentation trail, and personalized engineering support. Add pieces to your enquiry bag and confirm booking.
                     </p>
                     <Link
                       href="/collections"
@@ -2379,10 +3012,232 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                         fontWeight: 600,
                       }}
                     >
-                      Browse Catalog & Book Order →
+                      Browse Catalog & Book Project →
                     </Link>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* UPLOAD DOCUMENT MODAL (COMPULSORY NAME & DESCRIPTION) */}
+            {isUploadModalOpen && (
+              <div
+                style={{
+                  position: 'fixed',
+                  inset: 0,
+                  background: 'rgba(0, 0, 0, 0.55)',
+                  backdropFilter: 'blur(3px)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 9999,
+                  padding: 16,
+                }}
+                onClick={(e) => {
+                  if (e.target === e.currentTarget) setIsUploadModalOpen(false);
+                }}
+              >
+                <div
+                  style={{
+                    background: '#FFFFFF',
+                    borderRadius: 12,
+                    maxWidth: 540,
+                    width: '100%',
+                    padding: '28px 24px',
+                    boxShadow: '0 20px 50px rgba(0,0,0,0.25)',
+                    position: 'relative',
+                    maxHeight: '90vh',
+                    overflowY: 'auto',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 18 }}>
+                    <div>
+                      <h3 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: '#111111' }}>
+                        Upload Project Document
+                      </h3>
+                      <p style={{ fontSize: 13, color: '#666666', margin: '4px 0 0' }}>
+                        Add specification sheets, CAD elevation drawings, or sample sign-offs to Project <strong>{selectedBooking?.id}</strong>.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsUploadModalOpen(false)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        fontSize: 22,
+                        lineHeight: 1,
+                        cursor: 'pointer',
+                        color: '#888888',
+                        padding: '4px 8px',
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  {docUploadError && (
+                    <div style={{ background: '#FEE2E2', border: '1px solid #F87171', color: '#991B1B', padding: '10px 14px', borderRadius: 6, fontSize: 13, marginBottom: 16 }}>
+                      ⚠️ {docUploadError}
+                    </div>
+                  )}
+
+                  {docUploadSuccess && (
+                    <div style={{ background: '#DCFCE7', border: '1px solid #86EFAC', color: '#166534', padding: '10px 14px', borderRadius: 6, fontSize: 13, marginBottom: 16, fontWeight: 600 }}>
+                      ✓ {docUploadSuccess}
+                    </div>
+                  )}
+
+                  <form onSubmit={handleUploadDocument} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    {/* COMPULSORY COLUMN 1: DOCUMENT NAME */}
+                    <div>
+                      <label style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, fontWeight: 700, marginBottom: 6, color: '#111111' }}>
+                        <span>Document Name (Title) *</span>
+                        <span style={{ fontSize: 11, color: '#DC2626', fontWeight: 600 }}>COMPULSORY</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={docUploadName}
+                        onChange={(e) => setDocUploadName(e.target.value)}
+                        placeholder="e.g. CAD Elevation Plan - Living Room Suite"
+                        style={{
+                          width: '100%',
+                          padding: '11px 14px',
+                          borderRadius: 6,
+                          border: '1.5px solid #CBD5E1',
+                          fontSize: 14,
+                          outline: 'none',
+                        }}
+                      />
+                    </div>
+
+                    {/* COMPULSORY COLUMN 2: DESCRIPTION / PURPOSE */}
+                    <div>
+                      <label style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, fontWeight: 700, marginBottom: 6, color: '#111111' }}>
+                        <span>Description / Purpose (Audit Trail) *</span>
+                        <span style={{ fontSize: 11, color: '#DC2626', fontWeight: 600 }}>COMPULSORY</span>
+                      </label>
+                      <textarea
+                        required
+                        rows={3}
+                        value={docUploadDesc}
+                        onChange={(e) => setDocUploadDesc(e.target.value)}
+                        placeholder="e.g. Revision 2 with updated solid brass inlays and natural teak oil finish as confirmed with specifier."
+                        style={{
+                          width: '100%',
+                          padding: '11px 14px',
+                          borderRadius: 6,
+                          border: '1.5px solid #CBD5E1',
+                          fontSize: 13.5,
+                          outline: 'none',
+                          fontFamily: 'inherit',
+                          resize: 'vertical',
+                        }}
+                      />
+                    </div>
+
+                    {/* FILE SELECTOR */}
+                    <div>
+                      <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: '#111111' }}>
+                        Attach File (PDF, DWG, DXF, PNG, JPG, ZIP)
+                      </label>
+                      <div
+                        style={{
+                          border: '2px dashed #CBD5E1',
+                          borderRadius: 8,
+                          padding: '18px 16px',
+                          textAlign: 'center',
+                          background: '#F8FAFC',
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => {
+                          const fileInput = document.getElementById('orbit-doc-file-input');
+                          if (fileInput) fileInput.click();
+                        }}
+                      >
+                        <input
+                          id="orbit-doc-file-input"
+                          type="file"
+                          accept=".pdf,.dwg,.dxf,.png,.jpg,.jpeg,.zip,.docx"
+                          style={{ display: 'none' }}
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              setDocUploadFile(e.target.files[0]);
+                              if (!docUploadName) {
+                                setDocUploadName(e.target.files[0].name.replace(/\.[^/.]+$/, ''));
+                              }
+                            }
+                          }}
+                        />
+                        <div style={{ fontSize: 28, marginBottom: 4 }}>📎</div>
+                        <div style={{ fontSize: 13.5, fontWeight: 600, color: '#0F172A' }}>
+                          {docUploadFile ? `Selected: ${docUploadFile.name}` : 'Click to select project file from device'}
+                        </div>
+                        <div style={{ fontSize: 12, color: '#64748B', marginTop: 3 }}>
+                          {docUploadFile ? `${(docUploadFile.size / (1024 * 1024)).toFixed(2)} MB &bull; Ready to upload` : 'PDF, AutoCAD DWG, High-Res CAD Renders, or Specification Sheets'}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* OPTIONAL EXTERNAL LINK */}
+                    <div>
+                      <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 4, color: '#555555' }}>
+                        Or External Cloud Link (Drive, Dropbox, BIM 360)
+                      </label>
+                      <input
+                        type="url"
+                        value={docUploadUrl}
+                        onChange={(e) => setDocUploadUrl(e.target.value)}
+                        placeholder="https://..."
+                        style={{
+                          width: '100%',
+                          padding: '9px 12px',
+                          borderRadius: 6,
+                          border: '1px solid #CBD5E1',
+                          fontSize: 13,
+                          outline: 'none',
+                        }}
+                      />
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 10 }}>
+                      <button
+                        type="button"
+                        onClick={() => setIsUploadModalOpen(false)}
+                        style={{
+                          background: '#F1F5F9',
+                          color: '#475569',
+                          border: 'none',
+                          borderRadius: 6,
+                          padding: '11px 20px',
+                          fontSize: 13.5,
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={docUploadLoading || !docUploadName.trim() || !docUploadDesc.trim()}
+                        style={{
+                          background: '#111111',
+                          color: '#FFFFFF',
+                          border: 'none',
+                          borderRadius: 6,
+                          padding: '11px 24px',
+                          fontSize: 13.5,
+                          fontWeight: 700,
+                          cursor: docUploadLoading || !docUploadName.trim() || !docUploadDesc.trim() ? 'not-allowed' : 'pointer',
+                          opacity: docUploadLoading || !docUploadName.trim() || !docUploadDesc.trim() ? 0.6 : 1,
+                        }}
+                      >
+                        {docUploadLoading ? 'Uploading...' : 'Upload & Add to Project Trail →'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
             )}
           </div>
@@ -2462,7 +3317,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                   <input
                     type="email"
                     disabled
-                    value={user.email}
+                    value={activeUser.email}
                     style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #DDD', fontSize: 14, background: '#F5F5F5', color: '#777' }}
                   />
                 </div>

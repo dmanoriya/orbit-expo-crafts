@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEnquiry } from '../../context/EnquiryContext';
 import { useAuth } from '../../context/AuthContext';
+import { saveBooking, generateDefaultMilestones, generateDefaultDocuments } from '../../lib/bookingStore';
 import { BookingRecord } from '../../types/booking';
-import { saveBooking, generateDefaultMilestones } from '../../lib/bookingStore';
 import { submitFormEntry } from '../../lib/submitFormEntry';
 import PhoneInputField, { CountryCode, PHONE_COUNTRIES, validatePhoneNumber } from '../../components/PhoneInputField';
 
@@ -279,14 +279,17 @@ export const CheckoutClientView: React.FC = () => {
           branch: 'Industrial Area, Udaipur, Rajasthan, India',
         },
       },
+      marketType: (country && country.toLowerCase() === 'india') ? 'domestic' : 'export',
+      clientCategory: 'trade',
+      documents: generateDefaultDocuments(bookingNum, projectName || 'Trade & Client Project'),
       milestones: generateDefaultMilestones(),
       messages: [
         {
           id: 'msg_welcome',
           sender: 'concierge',
-          senderName: 'Orbit Engineering Concierge',
+          senderName: 'Orbit Project Concierge',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' }),
-          text: `Namaste! We have received your commercial order booking for "${projectName || 'Your Project'}". Our technical specifiers are reviewing the timber seasoning requirements, finish swatches, and knock-down joinery details. Your formal Proforma Invoice has been prepared and is available below. You can send questions directly in this thread anytime!`,
+          text: `Namaste! We have received your project booking for "${projectName || 'Your Project'}". Our technical team is reviewing the BOQ, timber specifications, and dimensional requirements. Project documents (drawings, quotations, and invoices) will be uploaded to your Document Trail. Feel free to ask questions or share project updates directly in this thread or via WhatsApp!`,
         },
       ],
     };
@@ -399,7 +402,7 @@ export const CheckoutClientView: React.FC = () => {
               </div>
               <div>
                 <span style={{ fontSize: 11, color: '#888888', textTransform: 'uppercase', display: 'block' }}>Proforma Invoice</span>
-                <strong style={{ fontSize: 15, color: 'var(--brand)' }}>{submittedBooking.invoice.invoiceNumber}</strong>
+                <strong style={{ fontSize: 15, color: 'var(--brand)' }}>{submittedBooking.invoice?.invoiceNumber || 'Generated'}</strong>
               </div>
               <div>
                 <span style={{ fontSize: 11, color: '#888888', textTransform: 'uppercase', display: 'block' }}>Batch Size</span>

@@ -75,6 +75,12 @@ class AuthController extends RestController {
 			'callback'            => array( $this, 'add_booking_message' ),
 			'permission_callback' => '__return_true',
 		) );
+
+		register_rest_route( $this->namespace, '/customers/bookings/(?P<id>[a-zA-Z0-9_-]+)/documents', array(
+			'methods'             => \WP_REST_Server::CREATABLE,
+			'callback'            => array( $this, 'add_booking_document' ),
+			'permission_callback' => '__return_true',
+		) );
 	}
 
 	public function login( $request ) {
@@ -625,6 +631,28 @@ class AuthController extends RestController {
 		$message    = ! empty( $params ) ? $params : $request->get_params();
 		$user_id    = get_current_user_id();
 
+		// 1. Sync to Form Entries database table
+		global $wpdb;
+		$entries_tbl = class_exists( '\HeadlessCommerceCore\Admin\FormEntriesManager' )
+			? \HeadlessCommerceCore\Admin\FormEntriesManager::get_table_name()
+			: $wpdb->prefix . 'hcc_form_entries';
+
+		$row = $wpdb->get_row( $wpdb->prepare( "SELECT id, user_id, email, booking_data FROM {$entries_tbl} WHERE reference_id = %s OR id = %d LIMIT 1", $booking_id, intval( $booking_id ) ) );
+		if ( $row && ! empty( $row->booking_data ) ) {
+			$b_data = json_decode( $row->booking_data, true );
+			if ( is_array( $b_data ) ) {
+				if ( ! isset( $b_data['messages'] ) || ! is_array( $b_data['messages'] ) ) {
+					$b_data['messages'] = array();
+				}
+				$b_data['messages'][] = $message;
+				$wpdb->update( $entries_tbl, array( 'booking_data' => wp_json_encode( $b_data ) ), array( 'id' => $row->id ) );
+			}
+			if ( ! $user_id && ! empty( $row->user_id ) ) {
+				$user_id = intval( $row->user_id );
+			}
+		}
+
+		// 2. Sync to WordPress User Meta if user exists
 		if ( $user_id ) {
 			$bookings = get_user_meta( $user_id, '_orbit_commercial_bookings', true );
 			if ( is_array( $bookings ) ) {
@@ -643,6 +671,90 @@ class AuthController extends RestController {
 
 		return $this->success_response( array(
 			'message' => 'Message registered to booking conversation.',
+		) );
+	}
+
+	public function add_booking_document( $request ) {
+		$booking_id = sanitize_text_field( $request->get_param( 'id' ) );
+		$params     = $request->get_json_params();
+		if ( empty( $params ) ) {
+			$params = $request->get_params();
+		}
+
+		$doc_name = ! empty( $params['name'] ) ? sanitize_text_field( $params['name'] ) : '';
+		$doc_desc = ! empty( $params['description'] ) ? sanitize_textarea_field( $params['description'] ) : '';
+
+		if ( empty( $doc_name ) || empty( $doc_desc ) ) {
+			return $this->error_response( 'missing_required_fields', 'Both Document Name and Description (Purpose) are compulsory.', 400 );
+		}
+
+		$new_doc = array(
+			'id'          => ! empty( $params['id'] ) ? sanitize_text_field( $params['id'] ) : ( 'doc_' . time() . '_' . wp_rand( 100, 999 ) ),
+			'name'        => $doc_name,
+			'description' => $doc_desc,
+			'fileUrl'     => ! empty( $params['fileUrl'] ) ? esc_url_raw( $params['fileUrl'] ) : '#',
+			'fileName'    => ! empty( $params['fileName'] ) ? sanitize_file_name( $params['fileName'] ) : ( sanitize_title( $doc_name ) . '.pdf' ),
+			'fileType'    => ! empty( $params['fileType'] ) ? sanitize_text_field( $params['fileType'] ) : 'application/pdf',
+			'fileSize'    => ! empty( $params['fileSize'] ) ? sanitize_text_field( $params['fileSize'] ) : '1.2 MB',
+			'uploadedBy'  => ! empty( $params['uploadedBy'] ) ? sanitize_text_field( $params['uploadedBy'] ) : 'client',
+			'uploadedAt'  => ! empty( $params['uploadedAt'] ) ? sanitize_text_field( $params['uploadedAt'] ) : date( 'd M Y' ),
+		);
+
+		// 1. Sync to Form Entries database table
+		global $wpdb;
+		$entries_tbl = class_exists( '\HeadlessCommerceCore\Admin\FormEntriesManager' )
+			? \HeadlessCommerceCore\Admin\FormEntriesManager::get_table_name()
+			: $wpdb->prefix . 'hcc_form_entries';
+
+		$user_id = get_current_user_id();
+		$row     = $wpdb->get_row( $wpdb->prepare( "SELECT id, user_id, email, booking_data FROM {$entries_tbl} WHERE reference_id = %s OR id = %d LIMIT 1", $booking_id, intval( $booking_id ) ) );
+		if ( $row && ! empty( $row->booking_data ) ) {
+			$b_data = json_decode( $row->booking_data, true );
+			if ( is_array( $b_data ) ) {
+				if ( ! isset( $b_data['documents'] ) || ! is_array( $b_data['documents'] ) ) {
+					$b_data['documents'] = array();
+				}
+				array_unshift( $b_data['documents'], $new_doc );
+
+				// Also add chat note for the uploaded document
+				if ( ! isset( $b_data['messages'] ) || ! is_array( $b_data['messages'] ) ) {
+					$b_data['messages'] = array();
+				}
+				$b_data['messages'][] = array(
+					'id'         => 'msg_' . time() . '_' . wp_rand( 100, 999 ),
+					'sender'     => 'client',
+					'senderName' => $new_doc['uploadedBy'],
+					'timestamp'  => date( 'M j, Y, g:i a' ),
+					'text'       => '📁 Uploaded Document: ' . $new_doc['name'] . ' — ' . $new_doc['description'],
+				);
+
+				$wpdb->update( $entries_tbl, array( 'booking_data' => wp_json_encode( $b_data ) ), array( 'id' => $row->id ) );
+			}
+			if ( ! $user_id && ! empty( $row->user_id ) ) {
+				$user_id = intval( $row->user_id );
+			}
+		}
+
+		// 2. Sync to WordPress User Meta if user exists
+		if ( $user_id ) {
+			$bookings = get_user_meta( $user_id, '_orbit_commercial_bookings', true );
+			if ( is_array( $bookings ) ) {
+				foreach ( $bookings as &$b ) {
+					if ( isset( $b['id'] ) && $b['id'] === $booking_id ) {
+						if ( ! isset( $b['documents'] ) || ! is_array( $b['documents'] ) ) {
+							$b['documents'] = array();
+						}
+						array_unshift( $b['documents'], $new_doc );
+						break;
+					}
+				}
+				update_user_meta( $user_id, '_orbit_commercial_bookings', $bookings );
+			}
+		}
+
+		return $this->success_response( array(
+			'message'  => 'Document recorded to project documentation trail.',
+			'document' => $new_doc,
 		) );
 	}
 

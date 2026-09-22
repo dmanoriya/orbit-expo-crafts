@@ -274,6 +274,191 @@ class FormEntriesManager {
 	}
 
 	/**
+	 * Update project portal: Market Type (Domestic vs Export), Client Category, Project Status,
+	 * Documents Trail (with compulsory Name & Description), and Conversation Trail, then sync to DB & user meta.
+	 */
+	public static function update_project_portal_and_sync( $entry_id, $project_status = '', $market_type = '', $client_category = '', $new_document = array(), $new_message = array(), $pricing = array() ) {
+		global $wpdb;
+		$table_name = self::get_table_name();
+
+		$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_name} WHERE id = %d", $entry_id ) );
+		if ( ! $row ) {
+			return false;
+		}
+
+		$b_data = ! empty( $row->booking_data ) ? json_decode( $row->booking_data, true ) : array();
+		if ( ! is_array( $b_data ) ) {
+			$b_data = array();
+		}
+
+		// Update Market Type (Domestic vs Export)
+		if ( ! empty( $market_type ) ) {
+			$b_data['marketType'] = sanitize_text_field( $market_type );
+		}
+
+		// Update Client Category (Trade vs Direct)
+		if ( ! empty( $client_category ) ) {
+			$b_data['clientCategory'] = sanitize_text_field( $client_category );
+		}
+
+		// Update Project Status
+		if ( ! empty( $project_status ) ) {
+			$b_data['status'] = sanitize_text_field( $project_status );
+		}
+
+		// Append new document to trail if name and description are present
+		if ( ! empty( $new_document['name'] ) && ! empty( $new_document['description'] ) ) {
+			if ( ! isset( $b_data['documents'] ) || ! is_array( $b_data['documents'] ) ) {
+				$b_data['documents'] = array();
+			}
+
+			$doc_id = 'doc_' . time() . '_' . wp_rand( 100, 999 );
+			$doc_entry = array(
+				'id'          => $doc_id,
+				'name'        => sanitize_text_field( $new_document['name'] ),
+				'description' => sanitize_textarea_field( $new_document['description'] ),
+				'fileUrl'     => ! empty( $new_document['fileUrl'] ) ? esc_url_raw( $new_document['fileUrl'] ) : '#',
+				'fileName'    => ! empty( $new_document['fileName'] ) ? sanitize_file_name( $new_document['fileName'] ) : ( sanitize_title( $new_document['name'] ) . '.pdf' ),
+				'fileType'    => sanitize_text_field( $new_document['fileType'] ?? 'application/pdf' ),
+				'fileSize'    => sanitize_text_field( $new_document['fileSize'] ?? '1.2 MB' ),
+				'uploadedBy'  => sanitize_text_field( $new_document['uploadedBy'] ?? 'Orbit Engineering Team' ),
+				'uploadedAt'  => date( 'd M Y' ),
+			);
+
+			array_unshift( $b_data['documents'], $doc_entry );
+
+			// Also log to conversation trail for audit
+			if ( ! isset( $b_data['messages'] ) || ! is_array( $b_data['messages'] ) ) {
+				$b_data['messages'] = array();
+			}
+			$b_data['messages'][] = array(
+				'id'         => 'msg_' . time() . '_' . wp_rand( 100, 999 ),
+				'sender'     => 'team',
+				'senderName' => 'Orbit Engineering Team',
+				'timestamp'  => date( 'M j, Y, g:i a' ),
+				'text'       => '📁 New Document Uploaded: ' . $doc_entry['name'] . ' — ' . $doc_entry['description'],
+			);
+		}
+
+		// Append new message to conversation trail if present
+		if ( ! empty( $new_message['text'] ) ) {
+			if ( ! isset( $b_data['messages'] ) || ! is_array( $b_data['messages'] ) ) {
+				$b_data['messages'] = array();
+			}
+			$b_data['messages'][] = array(
+				'id'         => 'msg_' . time() . '_' . wp_rand( 100, 999 ),
+				'sender'     => $new_message['sender'] ?? 'team',
+				'senderName' => $new_message['senderName'] ?? 'Orbit Technical Desk',
+				'timestamp'  => date( 'M j, Y, g:i a' ),
+				'text'       => sanitize_textarea_field( $new_message['text'] ),
+			);
+		}
+
+		// Commercial Pricing & Invoice Updates
+		if ( ! empty( $pricing ) && is_array( $pricing ) ) {
+			if ( ! isset( $b_data['invoice'] ) || ! is_array( $b_data['invoice'] ) ) {
+				$b_data['invoice'] = array();
+			}
+			if ( ! empty( $pricing['currency'] ) ) {
+				$b_data['invoice']['currency'] = sanitize_text_field( $pricing['currency'] );
+			}
+			if ( isset( $pricing['subtotal'] ) ) {
+				$b_data['invoice']['subtotal'] = floatval( $pricing['subtotal'] );
+			}
+			if ( isset( $pricing['packingAndCrating'] ) ) {
+				$b_data['invoice']['packingAndCrating'] = floatval( $pricing['packingAndCrating'] );
+			}
+			if ( isset( $pricing['estimatedFreight'] ) ) {
+				$b_data['invoice']['estimatedFreight'] = floatval( $pricing['estimatedFreight'] );
+			}
+			if ( isset( $pricing['totalAmount'] ) ) {
+				$b_data['invoice']['totalAmount'] = floatval( $pricing['totalAmount'] );
+			}
+			if ( ! empty( $pricing['invoiceNumber'] ) ) {
+				$b_data['invoice']['invoiceNumber'] = sanitize_text_field( $pricing['invoiceNumber'] );
+			}
+			if ( ! empty( $pricing['paymentTerms'] ) ) {
+				$b_data['invoice']['paymentTerms'] = sanitize_textarea_field( $pricing['paymentTerms'] );
+			}
+
+			if ( ! empty( $pricing['item_prices'] ) && is_array( $pricing['item_prices'] ) && isset( $b_data['items'] ) && is_array( $b_data['items'] ) ) {
+				foreach ( $b_data['items'] as $ik => $it ) {
+					$it_id = ! empty( $it['id'] ) ? $it['id'] : (string) $ik;
+					if ( isset( $pricing['item_prices'][ $it_id ] ) ) {
+						$new_u_price = floatval( $pricing['item_prices'][ $it_id ] );
+						$it_qty      = isset( $it['quantity'] ) ? intval( $it['quantity'] ) : 1;
+						$b_data['items'][ $ik ]['unitPrice']  = $new_u_price;
+						$b_data['items'][ $ik ]['totalPrice'] = $new_u_price * $it_qty;
+					}
+				}
+			}
+		}
+
+		$db_status_val = ! empty( $project_status ) ? strtolower( str_replace( ' ', '_', $project_status ) ) : $row->status;
+
+		// Update database row
+		$wpdb->update(
+			$table_name,
+			array(
+				'booking_data' => wp_json_encode( $b_data ),
+				'status'       => $db_status_val,
+			),
+			array( 'id' => $entry_id )
+		);
+
+		// Synchronize to WordPress User Meta or Guest Option
+		$b_id    = $b_data['id'] ?? ( $row->reference_id ?? '' );
+		$u_id    = intval( $row->user_id );
+		$u_email = sanitize_email( $row->email );
+
+		if ( ! $u_id && ! empty( $u_email ) ) {
+			$u = get_user_by( 'email', $u_email );
+			if ( $u ) {
+				$u_id = $u->ID;
+			}
+		}
+
+		if ( $u_id ) {
+			$meta_bookings = get_user_meta( $u_id, '_orbit_commercial_bookings', true );
+			if ( ! is_array( $meta_bookings ) ) {
+				$meta_bookings = array();
+			}
+			$found = false;
+			foreach ( $meta_bookings as $mk => $mb ) {
+				if ( ( isset( $mb['id'] ) && $mb['id'] === $b_id ) || ( isset( $mb['reference_id'] ) && $mb['reference_id'] === $b_id ) ) {
+					$meta_bookings[ $mk ] = $b_data;
+					$found = true;
+					break;
+				}
+			}
+			if ( ! $found ) {
+				array_unshift( $meta_bookings, $b_data );
+			}
+			update_user_meta( $u_id, '_orbit_commercial_bookings', $meta_bookings );
+		} elseif ( ! empty( $u_email ) ) {
+			$key  = '_orbit_anon_bookings_' . md5( $u_email );
+			$anon = get_option( $key, array() );
+			if ( ! is_array( $anon ) ) {
+				$anon = array();
+			}
+			$found = false;
+			foreach ( $anon as $ak => $ab ) {
+				if ( ( isset( $ab['id'] ) && $ab['id'] === $b_id ) || ( isset( $ab['reference_id'] ) && $ab['reference_id'] === $b_id ) ) {
+					$anon[ $ak ] = $b_data;
+					$found = true;
+					break;
+				}
+			}
+			if ( ! $found ) {
+				array_unshift( $anon, $b_data );
+			}
+			update_option( $key, $anon, false );
+		}
+
+		return $b_data;
+	}
+
+	/**
 	 * Update milestone progression, logistics, and sync to user meta
 	 */
 	public static function update_booking_milestone_and_sync( $entry_id, $stage_index, $milestone_note = '', $logistics = array(), $db_status_override = '', $pricing = array() ) {
@@ -514,19 +699,58 @@ class FormEntriesManager {
 			exit;
 		}
 
-		// Handle Dedicated Milestone Progression & Commercial Pricing Update Form from Details Modal
-		if ( isset( $_POST['hcc_update_milestones'] ) && isset( $_POST['entry_id'] ) && check_admin_referer( 'hcc_milestone_nonce' ) ) {
-			$entry_id    = intval( $_POST['entry_id'] );
-			$stage_index = isset( $_POST['milestone_stage'] ) ? intval( $_POST['milestone_stage'] ) : 1;
-			$stage_note  = sanitize_textarea_field( $_POST['milestone_note'] ?? '' );
-			$logistics   = array(
-				'trackingNumber'    => sanitize_text_field( $_POST['tracking_number'] ?? '' ),
-				'carrier'           => sanitize_text_field( $_POST['carrier'] ?? '' ),
-				'vesselName'        => sanitize_text_field( $_POST['vessel_name'] ?? '' ),
-				'originPort'        => sanitize_text_field( $_POST['origin_port'] ?? '' ),
-				'destinationPort'   => sanitize_text_field( $_POST['destination_port'] ?? '' ),
-				'estimatedDelivery' => sanitize_text_field( $_POST['estimated_delivery'] ?? '' ),
-			);
+		// Handle Dedicated Trade & Client Project Portal Update Form (Documents, Market Type, Pricing, Chat)
+		if ( ( isset( $_POST['hcc_update_milestones'] ) || isset( $_POST['hcc_update_project_portal'] ) ) && isset( $_POST['entry_id'] ) && check_admin_referer( 'hcc_milestone_nonce' ) ) {
+			$entry_id        = intval( $_POST['entry_id'] );
+			$project_status  = sanitize_text_field( $_POST['project_status'] ?? '' );
+			$market_type     = sanitize_text_field( $_POST['market_type'] ?? '' );
+			$client_category = sanitize_text_field( $_POST['client_category'] ?? '' );
+
+			// Document upload processing
+			$new_doc_name = sanitize_text_field( $_POST['new_doc_name'] ?? '' );
+			$new_doc_desc = sanitize_textarea_field( $_POST['new_doc_desc'] ?? '' );
+			$new_doc_url  = esc_url_raw( $_POST['new_doc_url'] ?? '' );
+			$file_name    = '';
+			$file_size    = '1.2 MB';
+			$file_type    = 'application/pdf';
+
+			if ( ! empty( $_FILES['new_doc_file'] ) && ! empty( $_FILES['new_doc_file']['name'] ) ) {
+				if ( ! function_exists( 'wp_handle_upload' ) ) {
+					require_once ABSPATH . 'wp-admin/includes/file.php';
+				}
+				$upload_overrides = array( 'test_form' => false );
+				$movefile = wp_handle_upload( $_FILES['new_doc_file'], $upload_overrides );
+				if ( $movefile && ! isset( $movefile['error'] ) ) {
+					$new_doc_url = $movefile['url'];
+					$file_name   = sanitize_file_name( $_FILES['new_doc_file']['name'] );
+					$file_type   = $movefile['type'] ?? 'application/pdf';
+					$file_size   = round( ( $_FILES['new_doc_file']['size'] ?? 1024000 ) / ( 1024 * 1024 ), 2 ) . ' MB';
+				}
+			}
+
+			$new_doc = array();
+			if ( ! empty( $new_doc_name ) && ! empty( $new_doc_desc ) ) {
+				$new_doc = array(
+					'name'        => $new_doc_name,
+					'description' => $new_doc_desc,
+					'fileUrl'     => $new_doc_url ?: '#',
+					'fileName'    => $file_name ?: ( sanitize_title( $new_doc_name ) . '.pdf' ),
+					'fileType'    => $file_type,
+					'fileSize'    => $file_size,
+					'uploadedBy'  => 'Orbit Engineering Team (Admin)',
+				);
+			}
+
+			// Admin message processing
+			$admin_msg = sanitize_textarea_field( $_POST['new_admin_message'] ?? '' );
+			$new_msg   = array();
+			if ( ! empty( $admin_msg ) ) {
+				$new_msg = array(
+					'text'       => $admin_msg,
+					'sender'     => 'team',
+					'senderName' => 'Orbit Technical Desk',
+				);
+			}
 
 			$pricing = array();
 			if ( isset( $_POST['invoice_total'] ) || isset( $_POST['invoice_currency'] ) ) {
@@ -542,9 +766,10 @@ class FormEntriesManager {
 				);
 			}
 
-			self::update_booking_milestone_and_sync( $entry_id, $stage_index, $stage_note, $logistics, '', $pricing );
+			// Synchronize project portal settings, documents, messages & pricing
+			self::update_project_portal_and_sync( $entry_id, $project_status, $market_type, $client_category, $new_doc, $new_msg, $pricing );
 
-			wp_safe_redirect( admin_url( 'admin.php?page=hcc-form-submissions&milestone_updated=1' ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=hcc-form-submissions&portal_updated=1' ) );
 			exit;
 		}
 
@@ -695,8 +920,8 @@ class FormEntriesManager {
 			<?php if ( isset( $_GET['updated'] ) ) : ?>
 				<div class="updated"><p>Status updated successfully.</p></div>
 			<?php endif; ?>
-			<?php if ( isset( $_GET['milestone_updated'] ) ) : ?>
-				<div class="updated"><p><strong>Success:</strong> Production milestone progression, factory notes, and freight tracking updated and synchronized to customer portal.</p></div>
+			<?php if ( isset( $_GET['portal_updated'] ) || isset( $_GET['milestone_updated'] ) ) : ?>
+				<div class="updated"><p><strong>Success:</strong> Project portal updated successfully. Classification, documents, conversation, and commercial pricing synchronized with client portal.</p></div>
 			<?php endif; ?>
 
 			<!-- FILTER TABS -->
@@ -989,7 +1214,7 @@ class FormEntriesManager {
 			<?php wp_nonce_field( 'hcc_milestone_nonce', 'hcc_milestone_nonce_field' ); ?>
 		</div>
 		<div id="hcc-detail-modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:99999; align-items:center; justify-content:center; padding:20px;">
-			<div style="background:#fff; border-radius:8px; width:min(720px, 95vw); max-height:90vh; overflow-y:auto; padding:24px; box-shadow:0 10px 30px rgba(0,0,0,0.3); position:relative;">
+			<div style="background:#fff; border-radius:8px; width:min(860px, 95vw); max-height:90vh; overflow-y:auto; padding:24px; box-shadow:0 10px 30px rgba(0,0,0,0.3); position:relative;">
 				<button type="button" onclick="hccCloseDetails()" style="position:absolute; top:16px; right:16px; background:none; border:none; font-size:22px; cursor:pointer; color:#666;">✕</button>
 				<h2 id="hcc-modal-title" style="margin-top:0; font-size:20px; color:#0E5C63;">Submission Details</h2>
 				<hr>
@@ -1148,31 +1373,23 @@ class FormEntriesManager {
 						var curTotal = (bData.invoice && typeof bData.invoice.totalAmount === 'number') ? bData.invoice.totalAmount : (curSubtotal + curPacking + curFreight);
 						var curTerms = (bData.invoice && bData.invoice.paymentTerms) ? bData.invoice.paymentTerms : '50% Advance via Bank Wire / SWIFT upon CAD sign-off, 50% balance against Bill of Lading copy.';
 
-						// MILESTONE & LOGISTICS MANAGEMENT CARD FOR WEBSITE OWNER / ADMIN
-						var activeStage = 1;
-						if (Array.isArray(bData.milestones)) {
-							var activeIdx = bData.milestones.findIndex(function(m) { return m.active; });
-							if (activeIdx >= 0) {
-								activeStage = activeIdx + 1;
-							} else {
-								var allDone = bData.milestones.every(function(m) { return m.completed; });
-								if (allDone) activeStage = 6;
-							}
+						var curMarketType = bData.marketType || (entry.shipping_address && /india/i.test(JSON.stringify(entry.shipping_address)) ? 'domestic' : 'export');
+						var curClientCategory = bData.clientCategory || 'trade';
+						var curProjectStatus = bData.status || entry.status || 'Under Engineering Review';
+						var docList = Array.isArray(bData.documents) ? bData.documents : [];
+						var msgList = Array.isArray(bData.messages) ? bData.messages : [];
+						var rawPhone = entry.phone || '';
+						var cleanPhone = rawPhone.replace(/[^0-9]/g, '');
+						if (cleanPhone.length === 10) {
+							cleanPhone = '91' + cleanPhone;
 						}
-
-						var curNote = (bData.logistics && bData.logistics.currentMilestoneNote) ? bData.logistics.currentMilestoneNote : '';
-						var curTracking = (bData.logistics && bData.logistics.trackingNumber) ? bData.logistics.trackingNumber : '';
-						var curCarrier = (bData.logistics && bData.logistics.carrier) ? bData.logistics.carrier : 'Maersk Global Logistics';
-						var curVessel = (bData.logistics && bData.logistics.vesselName) ? bData.logistics.vesselName : '';
-						var curOriginPort = (bData.logistics && bData.logistics.originPort) ? bData.logistics.originPort : 'Mundra Port, Gujarat (INMUN1)';
-						var curDestPort = (bData.logistics && bData.logistics.destinationPort) ? bData.logistics.destinationPort : '';
-						var curEta = (bData.logistics && bData.logistics.estimatedDelivery) ? bData.logistics.estimatedDelivery : (bData.targetDeliveryDate || 'Within 60 working days');
 						var nonceEl = document.getElementById('hcc_milestone_nonce_field');
 						var nonceVal = nonceEl ? nonceEl.value : '';
 
-						html += '<form method="post" action="admin.php?page=hcc-form-submissions">';
+						html += '<form method="post" action="admin.php?page=hcc-form-submissions" enctype="multipart/form-data">';
 						html += '<input type="hidden" name="_wpnonce" value="' + nonceVal + '" />';
-						html += '<input type="hidden" name="hcc_update_milestones" value="1" />';
+						html += '<input type="hidden" name="hcc_milestone_nonce_field" value="' + nonceVal + '" />';
+						html += '<input type="hidden" name="hcc_update_project_portal" value="1" />';
 						html += '<input type="hidden" name="entry_id" value="' + entry.id + '" />';
 
 						// 1. COMMERCIAL VALUATION & QUOTATION CARD
@@ -1258,68 +1475,151 @@ class FormEntriesManager {
 						html += '</div>';
 						html += '</div>';
 
-						// 2. PRODUCTION & EXPORT MILESTONE CONTROL CARD
+						// 2. TRADE & CLIENT PROJECT PORTAL MANAGEMENT CARD
 						html += '<div style="margin-top:20px; background:#F8FAFC; border:1.5px solid #0E5C63; border-radius:8px; padding:18px; box-shadow:0 2px 6px rgba(14,92,99,0.08);">';
 						html += '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">';
-						html += '<h3 style="margin:0; font-size:16px; color:#0E5C63; display:flex; align-items:center; gap:8px;"><span>🏭</span> Production &amp; Export Milestone Control</h3>';
-						html += '<span style="background:#0E5C63; color:#fff; font-size:11px; padding:3px 8px; border-radius:4px; font-weight:600;">Live Customer Portal Sync</span>';
+						html += '<h3 style="margin:0; font-size:16px; color:#0E5C63; display:flex; align-items:center; gap:8px;"><span>📁</span> Trade &amp; Client Project Portal Management</h3>';
+						html += '<span style="background:#0E5C63; color:#fff; font-size:11px; padding:3px 8px; border-radius:4px; font-weight:600;">Domestic &amp; Export Tone &bull; Live Client Sync</span>';
 						html += '</div>';
-						html += '<p style="margin:0 0 16px; font-size:12.5px; color:#475569;">Update manufacturing stage, factory floor notes, and ocean logistics. Changes immediately synchronize to the customer\'s order tracking portal.</p>';
+						html += '<p style="margin:0 0 16px; font-size:12.5px; color:#475569;">Configure trade classification, upload project manuals and documents with mandatory titles and descriptions, and communicate directly with the client via portal chat and WhatsApp.</p>';
 
-						// STAGE SELECTOR
-						html += '<div style="margin-bottom:14px;">';
-						html += '<label style="display:block; font-weight:600; font-size:13px; margin-bottom:4px; color:#0F172A;">Active Production Stage:</label>';
-						html += '<select name="milestone_stage" style="width:100%; max-width:480px; font-size:13px; font-weight:600; padding:6px 10px; border-radius:5px; border:1px solid #94A3B8;">';
-						var stages = [
-							{ val: 1, label: 'Stage 1: Commercial Booking Received (Factory Queue)' },
-							{ val: 2, label: 'Stage 2: CAD Engineering & Material Verification' },
-							{ val: 3, label: 'Stage 3: Commercial Proposal & Proforma Invoice Issued' },
-							{ val: 4, label: 'Stage 4: Timber Seasoning & Joinery Crafting' },
-							{ val: 5, label: 'Stage 5: Final QC Inspection & Export Crating' },
-							{ val: 6, label: 'Stage 6: Container Loaded & Dispatched (Mundra Port)' }
-						];
-						stages.forEach(function(s) {
-							html += '<option value="' + s.val + '"' + (activeStage === s.val ? ' selected' : '') + '>' + s.label + '</option>';
-						});
+						// CLASSIFICATION ROW (Market Type, Client Category, Status)
+						html += '<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px; background:#FFFFFF; padding:12px; border-radius:6px; border:1px solid #CBD5E1;">';
+						html += '<div>';
+						html += '<label style="display:block; font-size:12px; font-weight:700; color:#0E5C63; margin-bottom:4px;">Market Classification</label>';
+						html += '<select name="market_type" style="width:100%; font-size:12.5px; font-weight:600; padding:5px 8px; border-radius:4px; border:1px solid #94A3B8;">';
+						html += '<option value="domestic"' + (curMarketType === 'domestic' ? ' selected' : '') + '>🇮🇳 Domestic Contract (India / GST)</option>';
+						html += '<option value="export"' + (curMarketType === 'export' ? ' selected' : '') + '>🌐 Export Consignment (CIF / Port)</option>';
 						html += '</select>';
 						html += '</div>';
 
-						// LIVE FACTORY NOTE
-						html += '<div style="margin-bottom:14px;">';
-						html += '<label style="display:block; font-weight:600; font-size:13px; margin-bottom:4px; color:#0F172A;">Current Live Note / Factory Update (Visible to Client):</label>';
-						html += '<textarea name="milestone_note" rows="2" style="width:100%; font-size:13px; padding:8px 10px; border-radius:5px; border:1px solid #94A3B8;" placeholder="e.g. Kiln-drying completed to 8.5% EMC. Master carving and joinery active on shop floor.">' + curNote + '</textarea>';
+						html += '<div>';
+						html += '<label style="display:block; font-size:12px; font-weight:700; color:#0E5C63; margin-bottom:4px;">Client Relationship</label>';
+						html += '<select name="client_category" style="width:100%; font-size:12.5px; font-weight:600; padding:5px 8px; border-radius:4px; border:1px solid #94A3B8;">';
+						html += '<option value="trade"' + (curClientCategory === 'trade' ? ' selected' : '') + '>🏛 Trade Professional (Architect / Wholesaler)</option>';
+						html += '<option value="direct"' + (curClientCategory === 'direct' ? ' selected' : '') + '>👤 Direct Client (Private / Bespoke)</option>';
+						html += '</select>';
 						html += '</div>';
 
-						// LOGISTICS GRID
-						html += '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">';
 						html += '<div>';
-						html += '<label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:3px;">Container / Tracking #</label>';
-						html += '<input type="text" name="tracking_number" value="' + curTracking + '" style="width:100%; font-family:monospace; font-size:13px; font-weight:600;" placeholder="e.g. MSKU-820491-9" />';
-						html += '</div>';
-						html += '<div>';
-						html += '<label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:3px;">Carrier / Ocean Line</label>';
-						html += '<input type="text" name="carrier" value="' + curCarrier + '" style="width:100%; font-size:13px;" placeholder="e.g. Maersk Global Logistics" />';
-						html += '</div>';
-						html += '<div>';
-						html += '<label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:3px;">Vessel Name &amp; Voyage</label>';
-						html += '<input type="text" name="vessel_name" value="' + curVessel + '" style="width:100%; font-size:13px;" placeholder="e.g. MV Rajasthan Express (Voyage 2608)" />';
-						html += '</div>';
-						html += '<div>';
-						html += '<label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:3px;">Estimated Handover / ETD</label>';
-						html += '<input type="text" name="estimated_delivery" value="' + curEta + '" style="width:100%; font-size:13px;" placeholder="e.g. Within 60 working days" />';
-						html += '</div>';
-						html += '<div>';
-						html += '<label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:3px;">Port of Loading (POL)</label>';
-						html += '<input type="text" name="origin_port" value="' + curOriginPort + '" style="width:100%; font-size:13px;" placeholder="e.g. Mundra Port, Gujarat (INMUN1)" />';
-						html += '</div>';
-						html += '<div>';
-						html += '<label style="display:block; font-size:12px; font-weight:600; color:#334155; margin-bottom:3px;">Port of Discharge (POD)</label>';
-						html += '<input type="text" name="destination_port" value="' + curDestPort + '" style="width:100%; font-size:13px;" placeholder="e.g. Destination Port" />';
+						html += '<label style="display:block; font-size:12px; font-weight:700; color:#0E5C63; margin-bottom:4px;">Project Lifecycle Status</label>';
+						html += '<select name="project_status" style="width:100%; font-size:12.5px; font-weight:600; padding:5px 8px; border-radius:4px; border:1px solid #94A3B8;">';
+						var statuses = [
+							'Under Engineering Review',
+							'Proforma Proposal Issued',
+							'Material Sourcing & Timber Seasoning',
+							'In Workshop Production',
+							'Quality Inspection & Packaging',
+							'Ready for Dispatch / Dispatched',
+							'Delivered / Completed'
+						];
+						statuses.forEach(function(st) {
+							var isSel = (curProjectStatus.toLowerCase() === st.toLowerCase() || (entry.status && entry.status.toLowerCase() === st.toLowerCase()));
+							html += '<option value="' + st + '"' + (isSel ? ' selected' : '') + '>' + st + '</option>';
+						});
+						html += '</select>';
 						html += '</div>';
 						html += '</div>';
 
-						html += '<button type="submit" class="button button-primary" style="background:#0E5C63; border-color:#0E5C63; font-weight:700; padding:8px 22px; font-size:13.5px; height:auto; display:flex; align-items:center; gap:8px;">';
-						html += '💾 Save Commercial Valuation, Milestones &amp; Sync to Customer Portal';
+						// UPLOAD DOCUMENT DESK (Under heading Manual / Project Documents)
+						html += '<div style="background:#FFFFFF; border:1px solid #0E5C63; border-radius:6px; padding:14px; margin-bottom:16px;">';
+						html += '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">';
+						html += '<h4 style="margin:0; font-size:14px; color:#0E5C63; display:flex; align-items:center; gap:6px;"><span>📤</span> Upload to "Manual / Project Documents"</h4>';
+						html += '<span style="font-size:11px; color:#DC2626; font-weight:600;">* Name &amp; Description are compulsory</span>';
+						html += '</div>';
+						html += '<p style="margin:0 0 10px; font-size:11.5px; color:#64748B;">Documents uploaded here are immediately available for client download in their account dashboard with complete audit trail.</p>';
+
+						// Compulsory Doc Name
+						html += '<div style="margin-bottom:10px;">';
+						html += '<label style="display:block; font-size:12px; font-weight:700; color:#1E293B; margin-bottom:3px;">Document Name (Title) <span style="color:#DC2626;">*</span></label>';
+						html += '<input type="text" name="new_doc_name" placeholder="e.g. Master Woodwork Joinery Manual &amp; Material Warranty" style="width:100%; font-size:12.5px; padding:6px 8px; border:1px solid #CBD5E1; border-radius:4px;" />';
+						html += '</div>';
+
+						// Compulsory Doc Description
+						html += '<div style="margin-bottom:10px;">';
+						html += '<label style="display:block; font-size:12px; font-weight:700; color:#1E293B; margin-bottom:3px;">Document Description / Purpose (Compulsory Column) <span style="color:#DC2626;">*</span></label>';
+						html += '<textarea name="new_doc_desc" rows="2" placeholder="e.g. Technical engineering drawings, wood moisture verification certificates (8-10% EMC), and on-site care guidelines." style="width:100%; font-size:12px; padding:6px 8px; border:1px solid #CBD5E1; border-radius:4px;"></textarea>';
+						html += '</div>';
+
+						// Attachment file & Cloud URL
+						html += '<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">';
+						html += '<div>';
+						html += '<label style="display:block; font-size:11.5px; font-weight:600; color:#475569; margin-bottom:3px;">Upload Local File (PDF, CAD, DWG, JPG, ZIP)</label>';
+						html += '<input type="file" name="new_doc_file" accept=".pdf,.dwg,.dxf,.cad,.zip,.jpg,.jpeg,.png,.docx" style="font-size:12px; width:100%;" />';
+						html += '</div>';
+						html += '<div>';
+						html += '<label style="display:block; font-size:11.5px; font-weight:600; color:#475569; margin-bottom:3px;">Or External Cloud Document URL</label>';
+						html += '<input type="url" name="new_doc_url" placeholder="https://drive.google.com/..." style="width:100%; font-size:12px; padding:5px 8px; border:1px solid #CBD5E1; border-radius:4px;" />';
+						html += '</div>';
+						html += '</div>';
+						html += '</div>';
+
+						// PERMANENT DOCUMENT TRAIL TABLE
+						html += '<div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:6px; padding:14px; margin-bottom:16px;">';
+						html += '<h4 style="margin:0 0 10px; font-size:13.5px; color:#0F172A; display:flex; align-items:center; gap:6px;"><span>📋</span> Complete Document Trail (' + docList.length + ' Documents)</h4>';
+						if (docList.length === 0) {
+							html += '<p style="margin:0; font-size:12px; color:#94A3B8; font-style:italic;">No project documents uploaded yet. Use the upload box above to add manuals, CAD drawings, or warranties.</p>';
+						} else {
+							html += '<div style="overflow-x:auto;"><table class="widefat striped" style="margin:0; font-size:12px;">';
+							html += '<thead><tr><th>Document Name</th><th>Compulsory Description / Purpose</th><th>Uploaded By &amp; Date</th><th style="width:70px;">Size</th><th style="width:170px; text-align:right;">Actions</th></tr></thead><tbody>';
+							docList.forEach(function(doc) {
+								var waDocMsg = encodeURIComponent('Hello ' + (entry.full_name || 'Client') + ',\n\nPlease find the project document "' + (doc.name || 'Document') + '" for ' + (entry.reference_id || 'your order') + ':\nPurpose: ' + (doc.description || 'Project document') + '\nLink: ' + (doc.fileUrl || '#') + '\n\n— Orbit Expo Crafts');
+								var waDocHref = cleanPhone ? ('https://wa.me/' + cleanPhone + '?text=' + waDocMsg) : ('https://wa.me/?text=' + waDocMsg);
+								html += '<tr>';
+								html += '<td><strong>' + (doc.name || 'Untitled Document') + '</strong><br><span style="font-size:11px; color:#64748B;">' + (doc.fileName || 'document.pdf') + '</span></td>';
+								html += '<td style="color:#334155; font-size:11.5px;">' + (doc.description || '<em style="color:#94A3B8;">No description provided</em>') + '</td>';
+								html += '<td style="font-size:11px; color:#64748B;">' + (doc.uploadedBy || 'Team') + '<br>' + (doc.uploadedAt || 'Recently') + '</td>';
+								html += '<td style="font-size:11px; font-weight:600; color:#475569;">' + (doc.fileSize || '1.2 MB') + '</td>';
+								html += '<td style="text-align:right; white-space:nowrap;">';
+								if (doc.fileUrl && doc.fileUrl !== '#') {
+									html += '<a href="' + doc.fileUrl + '" target="_blank" class="button button-small" style="margin-right:4px; font-size:11px;">⬇ Download</a>';
+								} else {
+									html += '<span class="button button-small disabled" style="margin-right:4px; font-size:11px; opacity:0.6;">⬇ Direct</span>';
+								}
+								html += '<a href="' + waDocHref + '" target="_blank" class="button button-small" style="color:#25D366; border-color:#25D366; font-size:11px;" title="Share this document on WhatsApp">📱 WhatsApp</a>';
+								html += '</td>';
+								html += '</tr>';
+							});
+							html += '</tbody></table></div>';
+						}
+						html += '</div>';
+
+						// CONVERSATION TRAIL & WHATSAPP DESK
+						html += '<div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:6px; padding:14px; margin-bottom:16px;">';
+						html += '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">';
+						html += '<h4 style="margin:0; font-size:13.5px; color:#0F172A; display:flex; align-items:center; gap:6px;"><span>💬</span> Conversation Trail &amp; WhatsApp Integration</h4>';
+						if (cleanPhone) {
+							var waGeneralMsg = encodeURIComponent('Hello ' + (entry.full_name || 'Client') + ', regarding your Orbit Expo Crafts project ' + (entry.reference_id || '') + ' (' + (bData.projectName || 'Commercial Booking') + ')...');
+							html += '<a href="https://wa.me/' + cleanPhone + '?text=' + waGeneralMsg + '" target="_blank" class="button" style="background:#25D366; color:#fff; border-color:#25D366; font-weight:700; font-size:11.5px; display:inline-flex; align-items:center; gap:5px;"><span style="font-size:14px;">📱</span> Direct WhatsApp to ' + (entry.phone || cleanPhone) + '</a>';
+						}
+						html += '</div>';
+
+						// Message trail display
+						if (msgList.length > 0) {
+							html += '<div style="max-height:160px; overflow-y:auto; background:#F8FAFC; border:1px solid #CBD5E1; border-radius:4px; padding:10px; margin-bottom:10px; display:flex; flex-direction:column; gap:8px;">';
+							msgList.forEach(function(m) {
+								var isTeam = (m.sender === 'team' || m.sender === 'company');
+								html += '<div style="background:' + (isTeam ? '#EFF6FF' : '#FFFFFF') + '; border-left:3px solid ' + (isTeam ? '#0284C7' : '#0E5C63') + '; padding:6px 10px; border-radius:3px;">';
+								html += '<div style="display:flex; justify-content:space-between; font-size:10.5px; color:#64748B; margin-bottom:2px;">';
+								html += '<strong>' + (m.senderName || (isTeam ? 'Orbit Team' : 'Client')) + '</strong>';
+								html += '<span>' + (m.timestamp || '') + '</span>';
+								html += '</div>';
+								html += '<div style="font-size:12px; color:#1E293B;">' + m.text + '</div>';
+								html += '</div>';
+							});
+							html += '</div>';
+						} else {
+							html += '<p style="margin:0 0 10px; font-size:11.5px; color:#94A3B8; font-style:italic;">No messages logged in conversation trail yet.</p>';
+						}
+
+						// New reply box
+						html += '<label style="display:block; font-size:11.5px; font-weight:600; color:#475569; margin-bottom:3px;">Post Update to Portal Conversation Trail:</label>';
+						html += '<textarea name="new_admin_message" rows="2" placeholder="Send an update or technical query to the client portal..." style="width:100%; font-size:12px; padding:6px 8px; border:1px solid #CBD5E1; border-radius:4px;"></textarea>';
+						html += '</div>';
+
+						// SUBMIT BUTTON
+						html += '<button type="submit" class="button button-primary" style="background:#0E5C63; border-color:#0E5C63; font-weight:700; padding:9px 24px; font-size:13.5px; height:auto; display:inline-flex; align-items:center; gap:8px;">';
+						html += '💾 Save Project Portal, Documents &amp; Commercial Valuation';
 						html += '</button>';
 						html += '</div>';
 						html += '</form>';
