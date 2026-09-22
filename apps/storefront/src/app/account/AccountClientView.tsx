@@ -7,7 +7,7 @@ import { useAuth, CustomerUser } from '../../context/AuthContext';
 import { useFavorites } from '../../context/FavoritesContext';
 import { useEnquiry } from '../../context/EnquiryContext';
 import { BookingRecord, BookingMessage, BookingDocument } from '../../types/booking';
-import { getStoredBookings, saveBooking, appendMessageToBooking, addDocumentToBooking, generateDefaultMilestones, deduplicateBookings } from '../../lib/bookingStore';
+import { getStoredBookings, saveBooking, appendMessageToBooking, generateDefaultMilestones, deduplicateBookings } from '../../lib/bookingStore';
 import PhoneInputField, { CountryCode, PHONE_COUNTRIES, validatePhoneNumber } from '../../components/PhoneInputField';
 
 interface AccountClientViewProps {
@@ -72,15 +72,6 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  // Document Upload State
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  const [docUploadName, setDocUploadName] = useState('');
-  const [docUploadDesc, setDocUploadDesc] = useState('');
-  const [docUploadFile, setDocUploadFile] = useState<File | null>(null);
-  const [docUploadUrl, setDocUploadUrl] = useState('');
-  const [docUploadLoading, setDocUploadLoading] = useState(false);
-  const [docUploadError, setDocUploadError] = useState<string | null>(null);
-  const [docUploadSuccess, setDocUploadSuccess] = useState<string | null>(null);
 
   // Profile Form State
   const [profileFirstName, setProfileFirstName] = useState('');
@@ -335,9 +326,6 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
         setActiveTab('orders');
         setInspectorTab('documents');
 
-        if (params.get('testUpload') === '1') {
-          setIsUploadModalOpen(true);
-        }
         return;
       }
 
@@ -718,110 +706,6 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
     setTimeout(() => setAddedFavId(null), 1800);
   };
 
-  const handleUploadDocument = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedBooking) return;
-
-    const cleanName = docUploadName.trim();
-    const cleanDesc = docUploadDesc.trim();
-
-    if (!cleanName) {
-      setDocUploadError('Document Name is required.');
-      return;
-    }
-    if (!cleanDesc) {
-      setDocUploadError('Description (Purpose) is compulsory for all project document uploads.');
-      return;
-    }
-
-    setDocUploadLoading(true);
-    setDocUploadError(null);
-
-    try {
-      let fileUrl = docUploadUrl.trim() || '#';
-      let fileName = cleanName.toLowerCase().replace(/[^a-z0-9]/g, '-') + '.pdf';
-      let fileSize = '1.2 MB';
-      let fileType = 'application/pdf';
-
-      if (docUploadFile) {
-        fileName = docUploadFile.name;
-        fileType = docUploadFile.type || 'application/octet-stream';
-        fileSize = `${(docUploadFile.size / (1024 * 1024)).toFixed(2)} MB`;
-
-        fileUrl = await new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.onerror = () => resolve('#');
-          reader.readAsDataURL(docUploadFile);
-        });
-      }
-
-      const clientNameStr = activeUser?.firstName
-        ? `${activeUser.firstName} (Client)`
-        : (selectedBooking.clientName ? `${selectedBooking.clientName} (Client)` : 'Client');
-
-      const newDoc: BookingDocument = {
-        id: `doc-${Date.now()}`,
-        name: cleanName,
-        description: cleanDesc,
-        fileUrl,
-        fileName,
-        fileType,
-        fileSize,
-        uploadedBy: clientNameStr,
-        uploadedAt: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-      };
-
-      const updated = addDocumentToBooking(selectedBooking.id, newDoc);
-
-      // Append notice to conversation trail
-      appendMessageToBooking(
-        selectedBooking.id,
-        `📁 New Document Uploaded: ${cleanName} — ${cleanDesc}`,
-        'client',
-        clientNameStr
-      );
-
-      if (updated) {
-        setSelectedBooking({ ...updated });
-        refreshBookings();
-      }
-
-      setDocUploadSuccess('Document successfully added to the project trail!');
-      setTimeout(() => {
-        setDocUploadSuccess(null);
-        setIsUploadModalOpen(false);
-        setDocUploadName('');
-        setDocUploadDesc('');
-        setDocUploadFile(null);
-        setDocUploadUrl('');
-      }, 1000);
-
-      // Link to WhatsApp
-      const waText = [
-        `*New Project Document Uploaded*`,
-        ``,
-        `*Project / Order:* ${selectedBooking.id} - ${selectedBooking.projectName}`,
-        `*Client:* ${clientNameStr}`,
-        `*Document Name:* ${cleanName}`,
-        `*Description:* ${cleanDesc}`,
-        `*File:* ${fileName} (${fileSize})`,
-        ``,
-        `_Viewed in Orbit Expo Crafts Trade & Client Portal_`
-      ].join('\n');
-
-      const waUrl = `https://wa.me/919928022151?text=${encodeURIComponent(waText)}`;
-      try {
-        window.open(waUrl, '_blank', 'noopener,noreferrer');
-      } catch (err) {
-        console.error('Failed to open WhatsApp:', err);
-      }
-    } catch (err: any) {
-      setDocUploadError(err.message || 'Failed to process document upload.');
-    } finally {
-      setDocUploadLoading(false);
-    }
-  };
 
   const handleDownloadDoc = (doc: BookingDocument) => {
     if (doc.fileUrl && doc.fileUrl.startsWith('data:')) {
@@ -1820,26 +1704,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                   </div>
 
                   <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                    <button
-                      type="button"
-                      onClick={() => setIsUploadModalOpen(true)}
-                      style={{
-                        background: '#111111',
-                        color: '#FFFFFF',
-                        border: 'none',
-                        borderRadius: 6,
-                        padding: '9px 16px',
-                        fontSize: 13,
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 6,
-                        boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-                      }}
-                    >
-                      + Upload Document
-                    </button>
+
                     <button
                       type="button"
                       onClick={() => {
@@ -1994,25 +1859,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                           </span>
                           {isSyncing ? 'Syncing...' : 'Sync Documents'}
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => setIsUploadModalOpen(true)}
-                          style={{
-                            background: '#111111',
-                            color: '#FFFFFF',
-                            border: 'none',
-                            borderRadius: 6,
-                            padding: '8px 16px',
-                            fontSize: 13,
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 6,
-                          }}
-                        >
-                          + Upload Document
-                        </button>
+
                       </div>
                     </div>
 
@@ -2221,25 +2068,9 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                       <div style={{ textAlign: 'center', padding: '56px 20px', background: '#FAF9F5', borderRadius: 'var(--r-md)', border: '1px dashed #D6D0C4' }}>
                         <div style={{ fontSize: 36, marginBottom: 12 }}>📁</div>
                         <h4 style={{ fontSize: 18, fontWeight: 600, margin: '0 0 6px' }}>No Documents Uploaded Yet</h4>
-                        <p style={{ fontSize: 14, color: '#666666', maxWidth: '48ch', margin: '0 auto 20px' }}>
-                          Specification drawings, finish sample approvals, CAD plans, and formal proforma invoices will appear here in the project documentation trail.
+                        <p style={{ fontSize: 14, color: '#666666', maxWidth: '52ch', margin: '0 auto' }}>
+                          Specification drawings, finish sample approvals, CAD plans, and formal invoices uploaded by our project desk will appear here in your permanent documentation trail.
                         </p>
-                        <button
-                          type="button"
-                          onClick={() => setIsUploadModalOpen(true)}
-                          style={{
-                            background: '#111111',
-                            color: '#FFFFFF',
-                            border: 'none',
-                            borderRadius: 6,
-                            padding: '10px 20px',
-                            fontSize: 13.5,
-                            fontWeight: 600,
-                            cursor: 'pointer',
-                          }}
-                        >
-                          + Upload First Document
-                        </button>
                       </div>
                     )}
                   </div>
@@ -3019,227 +2850,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
               </div>
             )}
 
-            {/* UPLOAD DOCUMENT MODAL (COMPULSORY NAME & DESCRIPTION) */}
-            {isUploadModalOpen && (
-              <div
-                style={{
-                  position: 'fixed',
-                  inset: 0,
-                  background: 'rgba(0, 0, 0, 0.55)',
-                  backdropFilter: 'blur(3px)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 9999,
-                  padding: 16,
-                }}
-                onClick={(e) => {
-                  if (e.target === e.currentTarget) setIsUploadModalOpen(false);
-                }}
-              >
-                <div
-                  style={{
-                    background: '#FFFFFF',
-                    borderRadius: 12,
-                    maxWidth: 540,
-                    width: '100%',
-                    padding: '28px 24px',
-                    boxShadow: '0 20px 50px rgba(0,0,0,0.25)',
-                    position: 'relative',
-                    maxHeight: '90vh',
-                    overflowY: 'auto',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 18 }}>
-                    <div>
-                      <h3 style={{ fontSize: 20, fontWeight: 700, margin: 0, color: '#111111' }}>
-                        Upload Project Document
-                      </h3>
-                      <p style={{ fontSize: 13, color: '#666666', margin: '4px 0 0' }}>
-                        Add specification sheets, CAD elevation drawings, or sample sign-offs to Project <strong>{selectedBooking?.id}</strong>.
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setIsUploadModalOpen(false)}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        fontSize: 22,
-                        lineHeight: 1,
-                        cursor: 'pointer',
-                        color: '#888888',
-                        padding: '4px 8px',
-                      }}
-                    >
-                      ✕
-                    </button>
-                  </div>
 
-                  {docUploadError && (
-                    <div style={{ background: '#FEE2E2', border: '1px solid #F87171', color: '#991B1B', padding: '10px 14px', borderRadius: 6, fontSize: 13, marginBottom: 16 }}>
-                      ⚠️ {docUploadError}
-                    </div>
-                  )}
-
-                  {docUploadSuccess && (
-                    <div style={{ background: '#DCFCE7', border: '1px solid #86EFAC', color: '#166534', padding: '10px 14px', borderRadius: 6, fontSize: 13, marginBottom: 16, fontWeight: 600 }}>
-                      ✓ {docUploadSuccess}
-                    </div>
-                  )}
-
-                  <form onSubmit={handleUploadDocument} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                    {/* COMPULSORY COLUMN 1: DOCUMENT NAME */}
-                    <div>
-                      <label style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, fontWeight: 700, marginBottom: 6, color: '#111111' }}>
-                        <span>Document Name (Title) *</span>
-                        <span style={{ fontSize: 11, color: '#DC2626', fontWeight: 600 }}>COMPULSORY</span>
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={docUploadName}
-                        onChange={(e) => setDocUploadName(e.target.value)}
-                        placeholder="e.g. CAD Elevation Plan - Living Room Suite"
-                        style={{
-                          width: '100%',
-                          padding: '11px 14px',
-                          borderRadius: 6,
-                          border: '1.5px solid #CBD5E1',
-                          fontSize: 14,
-                          outline: 'none',
-                        }}
-                      />
-                    </div>
-
-                    {/* COMPULSORY COLUMN 2: DESCRIPTION / PURPOSE */}
-                    <div>
-                      <label style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, fontWeight: 700, marginBottom: 6, color: '#111111' }}>
-                        <span>Description / Purpose (Audit Trail) *</span>
-                        <span style={{ fontSize: 11, color: '#DC2626', fontWeight: 600 }}>COMPULSORY</span>
-                      </label>
-                      <textarea
-                        required
-                        rows={3}
-                        value={docUploadDesc}
-                        onChange={(e) => setDocUploadDesc(e.target.value)}
-                        placeholder="e.g. Revision 2 with updated solid brass inlays and natural teak oil finish as confirmed with specifier."
-                        style={{
-                          width: '100%',
-                          padding: '11px 14px',
-                          borderRadius: 6,
-                          border: '1.5px solid #CBD5E1',
-                          fontSize: 13.5,
-                          outline: 'none',
-                          fontFamily: 'inherit',
-                          resize: 'vertical',
-                        }}
-                      />
-                    </div>
-
-                    {/* FILE SELECTOR */}
-                    <div>
-                      <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6, color: '#111111' }}>
-                        Attach File (PDF, DWG, DXF, PNG, JPG, ZIP)
-                      </label>
-                      <div
-                        style={{
-                          border: '2px dashed #CBD5E1',
-                          borderRadius: 8,
-                          padding: '18px 16px',
-                          textAlign: 'center',
-                          background: '#F8FAFC',
-                          cursor: 'pointer',
-                        }}
-                        onClick={() => {
-                          const fileInput = document.getElementById('orbit-doc-file-input');
-                          if (fileInput) fileInput.click();
-                        }}
-                      >
-                        <input
-                          id="orbit-doc-file-input"
-                          type="file"
-                          accept=".pdf,.dwg,.dxf,.png,.jpg,.jpeg,.zip,.docx"
-                          style={{ display: 'none' }}
-                          onChange={(e) => {
-                            if (e.target.files && e.target.files[0]) {
-                              setDocUploadFile(e.target.files[0]);
-                              if (!docUploadName) {
-                                setDocUploadName(e.target.files[0].name.replace(/\.[^/.]+$/, ''));
-                              }
-                            }
-                          }}
-                        />
-                        <div style={{ fontSize: 28, marginBottom: 4 }}>📎</div>
-                        <div style={{ fontSize: 13.5, fontWeight: 600, color: '#0F172A' }}>
-                          {docUploadFile ? `Selected: ${docUploadFile.name}` : 'Click to select project file from device'}
-                        </div>
-                        <div style={{ fontSize: 12, color: '#64748B', marginTop: 3 }}>
-                          {docUploadFile ? `${(docUploadFile.size / (1024 * 1024)).toFixed(2)} MB &bull; Ready to upload` : 'PDF, AutoCAD DWG, High-Res CAD Renders, or Specification Sheets'}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* OPTIONAL EXTERNAL LINK */}
-                    <div>
-                      <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 4, color: '#555555' }}>
-                        Or External Cloud Link (Drive, Dropbox, BIM 360)
-                      </label>
-                      <input
-                        type="url"
-                        value={docUploadUrl}
-                        onChange={(e) => setDocUploadUrl(e.target.value)}
-                        placeholder="https://..."
-                        style={{
-                          width: '100%',
-                          padding: '9px 12px',
-                          borderRadius: 6,
-                          border: '1px solid #CBD5E1',
-                          fontSize: 13,
-                          outline: 'none',
-                        }}
-                      />
-                    </div>
-
-                    <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 10 }}>
-                      <button
-                        type="button"
-                        onClick={() => setIsUploadModalOpen(false)}
-                        style={{
-                          background: '#F1F5F9',
-                          color: '#475569',
-                          border: 'none',
-                          borderRadius: 6,
-                          padding: '11px 20px',
-                          fontSize: 13.5,
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="submit"
-                        disabled={docUploadLoading || !docUploadName.trim() || !docUploadDesc.trim()}
-                        style={{
-                          background: '#111111',
-                          color: '#FFFFFF',
-                          border: 'none',
-                          borderRadius: 6,
-                          padding: '11px 24px',
-                          fontSize: 13.5,
-                          fontWeight: 700,
-                          cursor: docUploadLoading || !docUploadName.trim() || !docUploadDesc.trim() ? 'not-allowed' : 'pointer',
-                          opacity: docUploadLoading || !docUploadName.trim() || !docUploadDesc.trim() ? 0.6 : 1,
-                        }}
-                      >
-                        {docUploadLoading ? 'Uploading...' : 'Upload & Add to Project Trail →'}
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            )}
           </div>
         )}
 
