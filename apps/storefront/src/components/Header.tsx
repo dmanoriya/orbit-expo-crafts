@@ -95,7 +95,7 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
 
   const mobileDepartments: MobileDept[] = React.useMemo(() => {
     return navCategories
-      .filter((cat) => cat.hasSubmenu && (cat.deptKey || cat.slug === 'kids-and-pet-home'))
+      .filter((cat) => cat.slug !== 'new-arrivals')
       .map((cat) => {
         const key = cat.deptKey || (cat.slug === 'kids-and-pet-home' ? 'Kids & Pet Home' : cat.name);
         const count = Object.keys((taxonomyData as Record<string, any>)[key] || {}).length;
@@ -653,7 +653,7 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
 
                   {/* SECTION DIVIDER */}
                   <div className="mobile-menu-divider-label">
-                    ALL DEPARTMENTS ({mobileDepartments.length})
+                    ALL DEPARTMENTS
                   </div>
 
                   {/* NEW ARRIVALS DIRECT ROW */}
@@ -701,7 +701,6 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
                           onClick={() => handleOpenDept(dept.name, dept.slug, dept.deptKey)}
                         >
                           <span className="row-title">{dept.name}</span>
-                          <span className="row-count-badge">{l1Keys.length}</span>
                           <svg className="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                             <path d="M9 18l6-6-6-6" />
                           </svg>
@@ -783,7 +782,6 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
                             onClick={() => handleOpenL1(l1Name, l1Slug)}
                           >
                             <span className="row-title">{l1Name}</span>
-                            <span className="row-count-badge">{l2Keys.length}</span>
                             <svg className="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                               <path d="M9 18l6-6-6-6" />
                             </svg>
@@ -867,7 +865,7 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
                     return (
                       <>
                         <div className="mobile-menu-divider-label">
-                          ALL ITEMS ({l3List.length})
+                          ALL ITEMS
                         </div>
 
                         <div className="mobile-drill-leaves-list">
