@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEnquiry } from '../context/EnquiryContext';
@@ -197,8 +197,13 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Close mobile drawer on route change
+  // Close mobile drawer on route change (after initial mount)
+  const isMountedRef = useRef(false);
   useEffect(() => {
+    if (!isMountedRef.current) {
+      isMountedRef.current = true;
+      return;
+    }
     closeMobileDrawer();
   }, [pathname]);
 
@@ -420,11 +425,20 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
                     }
                   : null;
 
+                const l1Keys = subData ? Object.keys(subData) : [];
+                const hasChildren = cat.hasSubmenu !== false && l1Keys.length > 0;
+                const hasAnyL2 = hasChildren && l1Keys.some((l1) => {
+                  const l2 = subData[l1];
+                  return l2 && typeof l2 === 'object' && Object.keys(l2).length > 0;
+                });
+
                 return (
                   <li
                     key={cat.slug}
-                    className={`category-nav-item ${isHovered ? 'active' : ''}`}
-                    onMouseEnter={() => cat.hasSubmenu && setActiveCategory(cat.name)}
+                    className={`category-nav-item ${isHovered ? 'active' : ''} ${hasChildren && !hasAnyL2 ? 'has-compact-dropdown' : ''}`}
+                    onMouseEnter={() => {
+                      if (hasChildren) setActiveCategory(cat.name);
+                    }}
                     onMouseLeave={() => setActiveCategory(null)}
                   >
                     <Link
@@ -435,68 +449,86 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
                       <span>{cat.name}</span>
                     </Link>
 
-                    {/* DROPDOWN / MEGA MENU */}
-                    {cat.hasSubmenu && subData && (
+                    {/* 1. COMPACT FLOATING DROPDOWN (For Level-1 only departments e.g. Lighting, Mirrors) */}
+                    {hasChildren && !hasAnyL2 && (
+                      <div className={`category-dropdown-compact ${isHovered ? 'is-active' : ''}`}>
+                        <ul className="compact-dropdown-list">
+                          {l1Keys.map((l1Name) => {
+                            const l1Slug = slugifyCategory(l1Name);
+                            return (
+                              <li key={l1Name}>
+                                <Link
+                                  href={`/${cat.slug}/${l1Slug}`}
+                                  className="compact-dropdown-item"
+                                  onClick={() => setActiveCategory(null)}
+                                >
+                                  <span>{l1Name}</span>
+                                  <svg className="compact-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                                    <path d="M9 18l6-6-6-6" />
+                                  </svg>
+                                </Link>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* 2. MULTI-COLUMN MEGA MENU (For Multi-tier departments e.g. Furniture, Décor, Storage) */}
+                    {hasChildren && hasAnyL2 && (
                       <div className={`category-dropdown-panel ${isHovered ? 'is-active' : ''}`}>
-                        <div className="dropdown-cols-grid">
-                          {Object.keys(subData).map((l1Name) => {
+                        <div className={`dropdown-cols-grid ${l1Keys.length <= 4 ? 'grid-cols-4' : 'grid-cols-6'}`}>
+                          {l1Keys.map((l1Name) => {
                             const l1Slug = slugifyCategory(l1Name);
                             const l2Map = subData[l1Name] || {};
                             const l2Names = Object.keys(l2Map);
+                            const hasL2 = l2Names.length > 0;
 
                             return (
                               <div key={l1Name} className="dropdown-col">
-                                <Link
-                                  href={`/${cat.slug}/${l1Slug}`}
-                                  className="dropdown-l1-title"
-                                  onClick={() => setActiveCategory(null)}
-                                  style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
-                                >
-                                  {l1Name}
-                                </Link>
-                                <div className="dropdown-l2-wrapper">
-                                  {l2Names.map((l2Name) => {
-                                    const l2Slug = slugifyCategory(l2Name);
-                                    const l3Items = l2Map[l2Name] || [];
-                                    const isScrollable = l3Items.length > 7;
+                                {/* LEVEL 1: PARENT CATEGORY HEADING (No bottom line, distinct parent styling) */}
+                                <div className="dropdown-l1-header">
+                                  <Link
+                                    href={`/${cat.slug}/${l1Slug}`}
+                                    className="dropdown-l1-title"
+                                    onClick={() => setActiveCategory(null)}
+                                  >
+                                    <span>{l1Name}</span>
+                                    <span className="l1-view-arrow">→</span>
+                                  </Link>
+                                </div>
 
-                                    return (
-                                      <div key={l2Name} className="dropdown-l2-block">
-                                        <div className="dropdown-l2-header">
+                                {/* LEVEL 2: CHILD SUBCATEGORIES / TYPES */}
+                                {hasL2 ? (
+                                  <ul className="dropdown-l2-list">
+                                    {l2Names.map((l2Name) => {
+                                      const l2Slug = slugifyCategory(l2Name);
+                                      return (
+                                        <li key={l2Name}>
                                           <Link
                                             href={`/${cat.slug}/${l1Slug}/${l2Slug}`}
-                                            className="dropdown-l2-subtitle"
+                                            className="dropdown-l2-link"
                                             onClick={() => setActiveCategory(null)}
-                                            style={{ textDecoration: 'none', color: 'inherit' }}
                                           >
-                                            {l2Name}
+                                            <span className="bullet-dot" />
+                                            <span>{l2Name}</span>
                                           </Link>
-                                        </div>
-                                        <ul
-                                          className={`dropdown-l3-list ${isScrollable ? 'is-scrollable' : ''}`}
-                                          onScroll={isScrollable ? handleScrollActive : undefined}
-                                        >
-                                          {l3Items.map((l3Name: string) => {
-                                            const l3Slug = slugifyCategory(l3Name);
-                                            const leafHref = `/${cat.slug}/${l1Slug}/${l2Slug}/${l3Slug}`;
-
-                                            return (
-                                              <li key={l3Name}>
-                                                <Link
-                                                  href={leafHref}
-                                                  className="dropdown-l3-link"
-                                                  onClick={() => setActiveCategory(null)}
-                                                >
-                                                  {l3Name}
-                                                </Link>
-                                              </li>
-                                            );
-                                          })}
-                                        </ul>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
+                                        </li>
+                                      );
+                                    })}
+                                  </ul>
+                                ) : (
+                                  <div className="dropdown-single-explore">
+                                    <Link
+                                      href={`/${cat.slug}/${l1Slug}`}
+                                      className="dropdown-explore-link"
+                                      onClick={() => setActiveCategory(null)}
+                                    >
+                                      <span>Explore Collection</span>
+                                      <span className="arrow">→</span>
+                                    </Link>
+                                  </div>
+                                )}
                               </div>
                             );
                           })}
@@ -642,19 +674,40 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
 
                   {/* DEPARTMENTS DRILL LIST */}
                   <div className="mobile-drill-list">
-                    {mobileDepartments.map((dept) => (
-                      <button
-                        key={dept.slug}
-                        type="button"
-                        className="mobile-drill-row"
-                        onClick={() => handleOpenDept(dept.name, dept.slug, dept.deptKey)}
-                      >
-                        <span className="row-title">{dept.name}</span>
-                        <svg className="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                          <path d="M9 18l6-6-6-6" />
-                        </svg>
-                      </button>
-                    ))}
+                    {mobileDepartments.map((dept) => {
+                      const subData = (taxonomyData as Record<string, any>)[dept.deptKey] || {};
+                      const l1Keys = Object.keys(subData);
+                      const hasSub = l1Keys.length > 0;
+
+                      if (!hasSub) {
+                        return (
+                          <Link
+                            key={dept.slug}
+                            href={`/${dept.slug}`}
+                            className="mobile-drill-row mobile-direct-row"
+                            onClick={closeMobileDrawer}
+                          >
+                            <span className="row-title">{dept.name}</span>
+                            <span className="mobile-direct-arrow">→</span>
+                          </Link>
+                        );
+                      }
+
+                      return (
+                        <button
+                          key={dept.slug}
+                          type="button"
+                          className="mobile-drill-row"
+                          onClick={() => handleOpenDept(dept.name, dept.slug, dept.deptKey)}
+                        >
+                          <span className="row-title">{dept.name}</span>
+                          <span className="row-count-badge">{l1Keys.length}</span>
+                          <svg className="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                            <path d="M9 18l6-6-6-6" />
+                          </svg>
+                        </button>
+                      );
+                    })}
                   </div>
 
                   {/* DIRECT EXTRA LINKS */}
@@ -675,7 +728,7 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
                 </div>
               )}
 
-              {/* STEP 1: DEPARTMENT LEVEL (e.g. Furniture) */}
+              {/* STEP 1: DEPARTMENT LEVEL (e.g. Furniture, Lighting) */}
               {currentStep.level === 1 && currentStep.deptKey && (
                 <div className="mobile-drill-view">
                   {/* HERO CARD - VIEW ALL DEPARTMENT */}
@@ -705,7 +758,22 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
                       return l1Keys.map((l1Name) => {
                         const l1Slug = slugifyCategory(l1Name);
                         const l2Map = subData[l1Name] || {};
-                        const l2Count = Object.keys(l2Map).length;
+                        const l2Keys = Object.keys(l2Map);
+                        const hasL2 = l2Keys.length > 0;
+
+                        if (!hasL2) {
+                          return (
+                            <Link
+                              key={l1Name}
+                              href={`/${currentStep.deptSlug}/${l1Slug}`}
+                              className="mobile-drill-row mobile-direct-row"
+                              onClick={closeMobileDrawer}
+                            >
+                              <span className="row-title">{l1Name}</span>
+                              <span className="mobile-direct-arrow">→</span>
+                            </Link>
+                          );
+                        }
 
                         return (
                           <button
@@ -715,6 +783,7 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
                             onClick={() => handleOpenL1(l1Name, l1Slug)}
                           >
                             <span className="row-title">{l1Name}</span>
+                            <span className="row-count-badge">{l2Keys.length}</span>
                             <svg className="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                               <path d="M9 18l6-6-6-6" />
                             </svg>
@@ -726,7 +795,7 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
                 </div>
               )}
 
-              {/* STEP 2: SUBCATEGORY L1 (e.g. Living Room Furniture) */}
+              {/* STEP 2: SUBCATEGORY L1 (e.g. Seating, Tables) */}
               {currentStep.level === 2 && currentStep.deptKey && currentStep.l1Name && (
                 <div className="mobile-drill-view">
                   {/* HERO CARD - VIEW ALL L1 */}
@@ -744,7 +813,7 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
 
                   {/* SECTION LABEL */}
                   <div className="mobile-menu-divider-label">
-                    SUB-CATEGORIES
+                    SUB-CATEGORIES IN {currentStep.l1Name?.toUpperCase()}
                   </div>
 
                   {/* LIST OF L2 ITEMS */}
@@ -756,21 +825,17 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
 
                       return l2Keys.map((l2Name) => {
                         const l2Slug = slugifyCategory(l2Name);
-                        const l3List = l2Map[l2Name] || [];
-                        const l3Count = l3List.length;
-
                         return (
-                          <button
+                          <Link
                             key={l2Name}
-                            type="button"
-                            className="mobile-drill-row"
-                            onClick={() => handleOpenL2(l2Name, l2Slug)}
+                            href={`/${currentStep.deptSlug}/${currentStep.l1Slug}/${l2Slug}`}
+                            className="mobile-drill-row mobile-direct-row mobile-l2-sub-row"
+                            onClick={closeMobileDrawer}
                           >
+                            <span className="sub-bullet">•</span>
                             <span className="row-title">{l2Name}</span>
-                            <svg className="row-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                              <path d="M9 18l6-6-6-6" />
-                            </svg>
-                          </button>
+                            <span className="mobile-direct-arrow">→</span>
+                          </Link>
                         );
                       });
                     })()}

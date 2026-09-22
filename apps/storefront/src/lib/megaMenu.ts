@@ -25,9 +25,9 @@ export const DEFAULT_NAV_CATEGORIES: MegaMenuNavItem[] = [
   { id: 'nav_decor', name: 'Décor', slug: 'decor', href: '/decor', hasSubmenu: true, deptKey: 'Décor' },
   { id: 'nav_mirrors', name: 'Mirrors', slug: 'mirrors', href: '/mirrors', hasSubmenu: true, deptKey: 'Mirrors' },
   { id: 'nav_storage', name: 'Storage', slug: 'storage', href: '/storage', hasSubmenu: true, deptKey: 'Storage' },
-  { id: 'nav_outdoor', name: 'Outdoor & Garden', slug: 'outdoor-and-garden', href: '/outdoor-and-garden', hasSubmenu: true, deptKey: 'Outdoor & Garden' },
-  { id: 'nav_kitchen', name: 'Kitchen & Table Tops', slug: 'kitchen-and-table-tops', href: '/kitchen-and-table-tops', hasSubmenu: true, deptKey: 'Kitchen & Table Tops' },
-  { id: 'nav_kids', name: 'Kids', slug: 'kids', href: '/kids', hasSubmenu: true, deptKey: 'Kids' },
+  { id: 'nav_outdoor', name: 'Outdoor & Garden', slug: 'outdoor-and-garden', href: '/outdoor-and-garden', hasSubmenu: false, deptKey: 'Outdoor & Garden' },
+  { id: 'nav_kitchen', name: 'Kitchen & Table Tops', slug: 'kitchen-and-table-tops', href: '/kitchen-and-table-tops', hasSubmenu: false, deptKey: 'Kitchen & Table Tops' },
+  { id: 'nav_kids', name: 'Kids', slug: 'kids', href: '/kids', hasSubmenu: false, deptKey: 'Kids' },
 ];
 
 export const DEFAULT_MEGA_MENU_DATA: MegaMenuData = {

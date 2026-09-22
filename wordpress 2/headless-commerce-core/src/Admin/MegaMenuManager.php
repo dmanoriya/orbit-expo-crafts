@@ -80,9 +80,9 @@ class MegaMenuManager {
 			array( 'id' => 'nav_decor', 'name' => 'Décor', 'slug' => 'decor', 'href' => '/decor', 'hasSubmenu' => true, 'deptKey' => 'Décor', 'hidden' => false ),
 			array( 'id' => 'nav_mirrors', 'name' => 'Mirrors', 'slug' => 'mirrors', 'href' => '/mirrors', 'hasSubmenu' => true, 'deptKey' => 'Mirrors', 'hidden' => false ),
 			array( 'id' => 'nav_storage', 'name' => 'Storage', 'slug' => 'storage', 'href' => '/storage', 'hasSubmenu' => true, 'deptKey' => 'Storage', 'hidden' => false ),
-			array( 'id' => 'nav_outdoor', 'name' => 'Outdoor & Garden', 'slug' => 'outdoor-and-garden', 'href' => '/outdoor-and-garden', 'hasSubmenu' => true, 'deptKey' => 'Outdoor & Garden', 'hidden' => false ),
-			array( 'id' => 'nav_kitchen', 'name' => 'Kitchen & Table Tops', 'slug' => 'kitchen-and-table-tops', 'href' => '/kitchen-and-table-tops', 'hasSubmenu' => true, 'deptKey' => 'Kitchen & Table Tops', 'hidden' => false ),
-			array( 'id' => 'nav_kids', 'name' => 'Kids', 'slug' => 'kids', 'href' => '/kids', 'hasSubmenu' => true, 'deptKey' => 'Kids', 'hidden' => false ),
+			array( 'id' => 'nav_outdoor', 'name' => 'Outdoor & Garden', 'slug' => 'outdoor-and-garden', 'href' => '/outdoor-and-garden', 'hasSubmenu' => false, 'deptKey' => 'Outdoor & Garden', 'hidden' => false ),
+			array( 'id' => 'nav_kitchen', 'name' => 'Kitchen & Table Tops', 'slug' => 'kitchen-and-table-tops', 'href' => '/kitchen-and-table-tops', 'hasSubmenu' => false, 'deptKey' => 'Kitchen & Table Tops', 'hidden' => false ),
+			array( 'id' => 'nav_kids', 'name' => 'Kids', 'slug' => 'kids', 'href' => '/kids', 'hasSubmenu' => false, 'deptKey' => 'Kids', 'hidden' => false ),
 		);
 	}
 
