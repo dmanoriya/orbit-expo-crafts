@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth, CustomerUser } from '../../context/AuthContext';
@@ -71,8 +71,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
   const [newQueryMessage, setNewQueryMessage] = useState('');
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
-
-
+  const lastSyncRef = useRef<number>(0);
   // Profile Form State
   const [profileFirstName, setProfileFirstName] = useState('');
   const [profileLastName, setProfileLastName] = useState('');
@@ -416,9 +415,18 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
     }
   }, [activeUser]);
 
-  // Refresh bookings on mount & when user changes, plus fetch live updates from WordPress with zero delay
-  const refreshBookings = async () => {
+  // Refresh bookings on mount, on explicit user click, or when tab becomes visible (debounced)
+  const refreshBookings = async (options?: { force?: boolean }) => {
     if (testUser) return;
+
+    // Rate-limit automated background checks (minimum 30 seconds between auto-refreshes)
+    // Explicit clicks (force: true) always run immediately
+    const now = Date.now();
+    if (!options?.force && now - lastSyncRef.current < 30000) {
+      return;
+    }
+    lastSyncRef.current = now;
+
     // 1. Instantly populate from local storage so the page is immediately responsive
     const localList = deduplicateBookings(getStoredBookings());
     const urlBookingParam = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('bookingId') : null;
@@ -480,16 +488,16 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
     }
   };
 
-  // Multi-trigger zero-delay synchronization:
+  // Synchronize on mount and tab change, and on tab visibility (debounced, NO continuous polling interval)
   useEffect(() => {
-    refreshBookings();
+    refreshBookings({ force: true });
 
-    // 1. Instant sync when browser tab or window gains focus
+    // 1. Sync when user returns to window/tab (debounced by lastSyncRef >= 30s)
     const handleFocus = () => {
       refreshBookings();
     };
 
-    // 2. Instant sync when page becomes visible
+    // 2. Sync when page becomes visible (debounced by lastSyncRef >= 30s)
     const handleVisibility = () => {
       if (!document.hidden) {
         refreshBookings();
@@ -499,18 +507,9 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
     window.addEventListener('focus', handleFocus);
     document.addEventListener('visibilitychange', handleVisibility);
 
-    // 3. Active 3-second heartbeat polling when on the Orders tab
-    let interval: NodeJS.Timeout | null = null;
-    if (activeTab === 'orders') {
-      interval = setInterval(() => {
-        refreshBookings();
-      }, 3000);
-    }
-
     return () => {
       window.removeEventListener('focus', handleFocus);
       document.removeEventListener('visibilitychange', handleVisibility);
-      if (interval) clearInterval(interval);
     };
   }, [activeUser, activeTab]);
 
@@ -530,7 +529,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
     
     if (updated) {
       setSelectedBooking({ ...updated });
-      refreshBookings();
+      refreshBookings({ force: true });
 
       // Open WhatsApp directly with pre-filled order context & client query
       const orderRef = selectedBooking.id || 'Commercial Order';
@@ -567,7 +566,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
         );
         if (deskReply) {
           setSelectedBooking({ ...deskReply });
-          refreshBookings();
+          refreshBookings({ force: true });
         }
       }, 700);
     }
@@ -1828,7 +1827,7 @@ export const AccountClientView: React.FC<AccountClientViewProps> = ({ initialTab
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
                         <button
                           type="button"
-                          onClick={() => refreshBookings()}
+                          onClick={() => refreshBookings({ force: true })}
                           disabled={isSyncing}
                           style={{
                             display: 'inline-flex',
