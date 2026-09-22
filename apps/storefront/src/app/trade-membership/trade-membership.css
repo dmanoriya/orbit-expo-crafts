@@ -535,6 +535,63 @@
   display: flex;
   gap: 8px;
   width: 100%;
+  align-items: stretch;
+}
+
+.trade-flag-wrapper {
+  position: relative;
+  flex: none;
+  width: 120px;
+  min-height: 42px;
+}
+
+.trade-flag-select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.trade-flag-display {
+  width: 100%;
+  height: 100%;
+  padding: 0 10px;
+  background-color: #FCFAF7;
+  border: 1px solid #E2DDD5;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #1E1A17;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  box-sizing: border-box;
+  pointer-events: none;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.trade-flag-display.has-error {
+  border-color: #DC2626 !important;
+  background-color: #FFF8F8 !important;
+}
+
+.trade-flag-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.trade-flag-code {
+  font-weight: 600;
+  color: #1E1A17;
+  font-size: 13px;
+}
+
+.trade-flag-chevron {
+  color: #8C7E72;
+  font-size: 10px;
 }
 
 .trade-phone-select {
@@ -555,13 +612,52 @@
   border-color: #9E693E;
 }
 
+/* Error states for inputs and selects */
+.trade-input.has-error,
+.trade-select.has-error {
+  border-color: #DC2626 !important;
+  background-color: #FFF8F8 !important;
+}
+
+.trade-input.has-error:focus,
+.trade-select.has-error:focus {
+  border-color: #DC2626 !important;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.12) !important;
+}
+
+.trade-field-error {
+  font-size: 12px;
+  color: #DC2626;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.trade-field-error-icon {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+}
+
 .trade-checkbox-row {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  margin: 12px 0 20px;
+  margin: 14px 0 20px;
   cursor: pointer;
   user-select: none;
+}
+
+.trade-checkbox-row.has-error .trade-checkbox-text {
+  color: #DC2626;
+}
+
+.trade-checkbox-row.has-error .trade-checkbox-input {
+  outline: 2px solid #DC2626;
+  outline-offset: 1px;
 }
 
 .trade-checkbox-input {
