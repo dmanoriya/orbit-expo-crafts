@@ -1,867 +1,484 @@
 {
   "Furniture": {
-    "Living Room Furniture": {
-      "Sofas & Seating": [
-        "Sofas & Couches",
+    "Seating": {
+      "Sofas": [
         "Sectional Sofas",
-        "Loveseats",
-        "Sofa Beds & Sleeper Sofas",
-        "Reclining Sofas",
         "Chesterfield Sofas",
-        "Tuxedo Sofas",
-        "Camelback Sofas",
+        "Modular Lounges",
         "Settees",
-        "Accent Chairs",
-        "Armchairs",
-        "Club Chairs",
-        "Wingback Chairs",
+        "Single Seaters",
+        "Two Seaters",
+        "Three Seaters"
+      ],
+      "Sofa Beds": [
+        "Sofa cum Beds",
+        "Day Beds"
+      ],
+      "Armchairs": [
         "Lounge Chairs",
+        "Accent Chairs",
         "Recliners",
-        "Rocking Chairs",
-        "Swivel Chairs",
-        "Barrel Chairs",
-        "Slipper Chairs",
         "Chaise Lounges",
-        "Daybeds",
-        "Ottomans",
-        "Poufs",
-        "Footstools",
-        "Benches"
+        "Desk Chairs"
       ],
-      "Living Room Tables": [
-        "Coffee Tables",
-        "Lift-Top Coffee Tables",
-        "Nesting Coffee Tables",
-        "Drum Coffee Tables",
-        "Side Tables",
-        "End Tables",
-        "C Tables",
-        "Drink Tables",
-        "Console Tables",
-        "Sofa Tables",
-        "Accent Tables",
-        "Pedestal Tables"
-      ],
-      "Media & Display Furniture": [
-        "TV Stands & Media Consoles",
-        "Entertainment Centers",
-        "Media Cabinets",
-        "Record Player Stands",
-        "Display Cabinets",
-        "Curio Cabinets",
-        "Bookcases",
-        "\u00c9tag\u00e8res",
-        "Wall Units"
-      ]
-    },
-    "Bedroom Furniture": {
-      "Beds": [
-        "Bed Frames",
-        "Platform Beds",
-        "Upholstered Beds",
-        "Panel Beds",
-        "Sleigh Beds",
-        "Canopy Beds",
-        "Four Poster Beds",
-        "Storage Beds",
-        "Divan Beds",
-        "Murphy Beds",
-        "Trundle Beds",
-        "Daybeds",
-        "Folding Beds"
-      ],
-      "Headboards & Bed Components": [
-        "Headboards",
-        "Upholstered Headboards",
-        "Wood Headboards",
-        "Metal Headboards",
-        "Footboards",
-        "Bed Slats",
-        "Bed Bases"
-      ],
-      "Bedroom Storage": [
-        "Nightstands",
-        "Bedside Tables",
-        "Dressers",
-        "Chests of Drawers",
-        "Tallboys",
-        "Wardrobes & Armoires",
-        "Sliding Door Wardrobes",
-        "Open Wardrobes",
-        "Vanities & Dressing Tables",
-        "Jewelry Armoires",
-        "Bedroom Benches",
-        "Blanket Chests"
-      ]
-    },
-    "Dining & Kitchen Furniture": {
-      "Dining Tables": [
-        "Dining Tables",
-        "Extendable Dining Tables",
-        "Round Dining Tables",
-        "Rectangular Dining Tables",
-        "Oval Dining Tables",
-        "Square Dining Tables",
-        "Pedestal Dining Tables",
-        "Trestle Dining Tables",
-        "Drop-Leaf Dining Tables",
-        "Counter Height Dining Tables"
-      ],
-      "Dining Seating": [
-        "Dining Chairs",
+      "Dining Chairs": [
         "Upholstered Dining Chairs",
-        "Wood Dining Chairs",
-        "Arm Dining Chairs",
-        "Side Dining Chairs",
-        "Dining Benches",
-        "Bar Stools",
+        "Solid Wood Dining Chairs",
+        "Side Chairs"
+      ],
+      "Rocking Chairs": [
+        "Carved Rocking Chairs",
+        "Upholstered Rocking Chairs"
+      ],
+      "Swings & Hammocks": [
+        "Carved Wooden Swings",
+        "Jhulas",
+        "Hanging Swings"
+      ]
+    },
+    "Stools & Benches": {
+      "Bar Stools": [
         "Counter Stools",
         "Swivel Bar Stools",
-        "Backless Stools"
+        "Solid Wood Bar Stools"
       ],
-      "Dining Storage": [
-        "Sideboards & Buffets",
-        "Credenzas",
-        "China Cabinets",
-        "Hutches",
-        "Bar Cabinets",
-        "Wine Cabinets",
-        "Kitchen Carts & Islands",
-        "Pantry Cabinets",
-        "Baker's Racks"
+      "Stools": [
+        "Foot Stools",
+        "Low Stools",
+        "Counter Stools"
+      ],
+      "Benches": [
+        "Wooden Benches",
+        "Dining Benches",
+        "Storage Benches",
+        "Upholstered Benches"
+      ],
+      "Ottomans & Poufs": [
+        "Upholstered Ottomans",
+        "Leather Poufs",
+        "Round Poufs"
       ]
     },
-    "Home Office Furniture": {
-      "Desks": [
-        "Writing Desks",
-        "Computer Desks",
-        "Executive Desks",
-        "Standing Desks",
-        "Height Adjustable Desks",
-        "L-Shaped Desks",
-        "Corner Desks",
-        "Secretary Desks",
-        "Wall-Mounted Desks",
-        "Floating Desks",
-        "Lap Desks",
-        "Kids Desks"
+    "Tables": {
+      "Coffee Tables": [
+        "Centre Tables",
+        "Round Coffee Tables",
+        "Solid Wood Coffee Tables"
       ],
-      "Office Seating & Storage": [
-        "Office Chairs",
-        "Ergonomic Office Chairs",
-        "Executive Office Chairs",
-        "Task Chairs",
-        "Drafting Chairs",
-        "Office Stools",
-        "File Cabinets",
-        "Mobile Pedestals",
-        "Office Bookcases",
-        "Desk Hutches",
-        "Printer Stands"
-      ]
-    },
-    "Entryway & Hallway Furniture": {
-      "Entryway Furniture": [
-        "Entryway Benches",
-        "Hall Trees",
-        "Coat Racks",
-        "Shoe Cabinets",
-        "Shoe Benches",
-        "Umbrella Stands",
+      "Side Tables": [
+        "End Tables",
+        "Nesting Tables",
+        "Drink Tables"
+      ],
+      "Console Tables": [
         "Entryway Consoles",
-        "Wall-Mounted Entryway Shelves",
-        "Keys & Mail Organizers"
-      ]
-    },
-    "Accent & Utility Furniture": {
-      "Accent Furniture": [
-        "Accent Cabinets",
-        "Pedestal Stands",
-        "Plant Stands",
-        "Magazine Racks",
-        "Room Dividers",
-        "Folding Screens",
-        "Serving Carts",
-        "Bar Carts",
-        "Telephone Tables",
-        "Nest of Tables"
-      ]
-    },
-    "Outdoor Furniture": {
-      "Outdoor Seating": [
-        "Outdoor Sofas",
-        "Outdoor Sectionals",
-        "Patio Chairs",
-        "Outdoor Lounge Chairs",
-        "Adirondack Chairs",
-        "Outdoor Rocking Chairs",
-        "Outdoor Recliners",
-        "Chaise Lounges",
-        "Hammock Chairs",
-        "Porch Swings",
-        "Outdoor Benches",
-        "Outdoor Ottomans",
-        "Outdoor Poufs"
+        "Carved Consoles",
+        "Narrow Consoles"
       ],
-      "Outdoor Tables & Dining": [
-        "Outdoor Dining Tables",
-        "Outdoor Dining Sets",
-        "Outdoor Coffee Tables",
-        "Outdoor Side Tables",
-        "Outdoor Bar Tables",
-        "Outdoor Bistro Tables",
-        "Picnic Tables",
-        "Fire Pit Tables"
-      ]
-    }
-  },
-  "Home Decor": {
-    "Decorative Accessories": {
-      "Decorative Objects": [
-        "Decorative Objects",
-        "Sculptures & Figurines",
-        "Showpieces",
-        "Busts",
-        "Decorative Boxes",
-        "Decorative Trays",
-        "Decorative Bowls",
-        "Orbs & Spheres",
-        "Bookends",
-        "Hourglasses",
-        "Sand Timers",
-        "Decorative Ladders",
-        "Decorative Screens",
-        "Collectibles"
+      "Dining Tables": [
+        "Extendable Dining Tables",
+        "6-Seater Tables",
+        "8-Seater Tables",
+        "Round Dining Tables"
+      ],
+      "Bar Tables": [
+        "High Bar Tables",
+        "Bistro Tables"
+      ],
+      "Desks": [
+        "Study Desks",
+        "Executive Desks",
+        "Reception Desks",
+        "Conference Tables"
+      ],
+      "Dressing Tables": [
+        "Vanity Tables",
+        "Dressers with Mirror"
       ]
     },
-    "Vases & Vessels": {
-      "Vases": [
-        "Flower Vases",
-        "Bud Vases",
-        "Floor Vases",
-        "Ceramic Vases",
-        "Glass Vases",
-        "Metal Vases",
-        "Wood Vases",
-        "Terracotta Vases",
-        "Decorative Jars",
-        "Ginger Jars",
-        "Urns"
+    "Beds": {
+      "Beds": [
+        "King Size Beds",
+        "Queen Size Beds",
+        "Upholstered Beds",
+        "Storage Beds",
+        "Platform Beds",
+        "Carved Headboards"
+      ],
+      "Bunk Beds": [
+        "Loft Beds",
+        "Twin Bunk Beds"
       ]
     },
-    "Candle Decor": {
-      "Candle Holders": [
-        "Candle Holders",
-        "Candlesticks",
-        "Pillar Candle Holders",
-        "Tealight Holders",
-        "Votive Holders",
-        "Lanterns",
-        "Hurricanes",
-        "Candelabras",
-        "Wall Candle Holders"
+    "Cabinets": {
+      "Sideboards": [
+        "Dining Buffets",
+        "Credenzas",
+        "Carved Sideboards"
+      ],
+      "Cabinets": [
+        "Display Cabinets",
+        "Curio Cabinets",
+        "Storage Cabinets"
+      ],
+      "Chests & Dressers": [
+        "Chest of Drawers",
+        "Tallboys",
+        "Bedroom Dressers"
+      ],
+      "Nightstands": [
+        "Bedside Tables",
+        "Drawer Nightstands"
+      ],
+      "Wardrobes": [
+        "Armoires",
+        "Almirahs",
+        "Wall Wardrobes",
+        "Walk-in Wardrobe Units"
+      ],
+      "TV Units": [
+        "Entertainment Units",
+        "Media Consoles",
+        "TV Stands"
+      ],
+      "Bookcases": [
+        "Bookshelves",
+        "Library Units",
+        "Open Shelving"
+      ],
+      "Bar Cabinets": [
+        "Wine Cabinets",
+        "Minibar Units",
+        "Bar Counters"
       ]
     },
-    "Clocks": {
-      "Decorative Clocks": [
-        "Wall Clocks",
-        "Table Clocks",
-        "Mantel Clocks",
-        "Alarm Clocks",
-        "Grandfather Clocks",
-        "Digital Clocks"
-      ]
-    },
-    "Frames & Display": {
-      "Photo & Display": [
-        "Photo Frames",
-        "Picture Frames",
-        "Collage Frames",
-        "Shadow Boxes",
-        "Display Domes",
-        "Plate Stands",
-        "Easels",
-        "Memo Boards"
-      ]
-    },
-    "Botanicals": {
-      "Artificial Plants & Flowers": [
-        "Faux Plants",
-        "Artificial Flowers",
-        "Artificial Trees",
-        "Dried Flowers",
-        "Dried Grasses",
-        "Wreaths",
-        "Garlands",
-        "Floral Stems"
-      ]
-    },
-    "Religious & Spiritual Decor": {
-      "Spiritual Decor": [
-        "Idols & Statues",
-        "Puja Accessories",
-        "Incense Holders",
-        "Prayer Beads Display",
-        "Meditation Altars",
-        "Spiritual Wall Decor",
-        "Feng Shui Decor",
-        "Vastu Decor"
-      ]
-    }
-  },
-  "Wall Decor & Mirrors": {
-    "Wall Art": {
-      "Art Prints & Artwork": [
-        "Art Prints",
-        "Framed Art",
-        "Canvas Art",
-        "Paintings",
-        "Original Art",
-        "Photography Prints",
-        "Illustrations",
-        "Posters",
-        "Typography Art",
-        "Abstract Art",
-        "Botanical Art",
-        "Landscape Art",
-        "Portrait Art"
-      ]
-    },
-    "Wall Decor": {
-      "Decorative Wall Pieces": [
-        "Wall Sculptures",
-        "Metal Wall Art",
-        "Wood Wall Art",
-        "Woven Wall Hangings",
-        "Macram\u00e9 Wall Hangings",
-        "Wall Plates",
-        "Wall Baskets",
-        "Tapestries",
-        "Wall Decals",
-        "Wallpaper",
-        "Wall Panels",
-        "Decorative Signs"
-      ]
-    },
-    "Mirrors": {
-      "Mirrors": [
-        "Wall Mirrors",
-        "Floor Mirrors",
-        "Full-Length Mirrors",
-        "Lean Mirrors",
-        "Vanity Mirrors",
-        "Dressing Mirrors",
-        "Round Mirrors",
-        "Arch Mirrors",
-        "Rectangular Mirrors",
-        "Oval Mirrors",
-        "Sunburst Mirrors",
-        "Decorative Mirrors"
+    "Accents": {
+      "Screens & Dividers": [
+        "Jaali Screens",
+        "Folding Room Dividers",
+        "Carved Partitions"
+      ],
+      "Trolleys & Carts": [
+        "Serving Carts",
+        "Hostess Trolleys"
+      ],
+      "Bar Trolley": [
+        "Bar Carts",
+        "Cocktail Trolleys",
+        "Serving Counters"
       ]
     }
   },
   "Lighting": {
-    "Ceiling Lighting": {
-      "Ceiling Lights": [
-        "Chandeliers",
+    "Wall": {
+      "Wall Sconces": [
+        "Single Sconces",
+        "Double Sconces",
+        "Brass Sconces"
+      ],
+      "Ceiling & Wall Fixtures": [
         "Pendant Lights",
-        "Mini Pendants",
-        "Cluster Pendants",
-        "Linear Pendants",
-        "Flush Mount Lights",
-        "Semi-Flush Mount Lights",
-        "Ceiling Spotlights",
-        "Track Lighting",
-        "Ceiling Fans with Lights"
-      ]
-    },
-    "Wall Lighting": {
-      "Wall Lights": [
-        "Wall Sconces",
-        "Picture Lights",
-        "Swing Arm Wall Lamps",
-        "Up/Down Lights",
-        "Wall Reading Lights",
+        "Chandeliers",
+        "Flush Mounts"
+      ],
+      "Picture Lights": [
+        "Art Lights",
         "Vanity Lights"
       ]
     },
-    "Portable Lighting": {
-      "Lamps": [
-        "Table Lamps",
-        "Desk Lamps",
+    "Table Lamps": {
+      "Table Lamps": [
         "Bedside Lamps",
-        "Floor Lamps",
-        "Arc Floor Lamps",
+        "Accent Lamps",
+        "Lampshades"
+      ],
+      "Study Lamps": [
+        "Desk Reading Lamps",
+        "Task Lamps"
+      ]
+    },
+    "Floor Lamps": {
+      "Floor Lamps": [
         "Tripod Floor Lamps",
-        "Torchiere Lamps",
-        "Reading Lamps",
-        "Cordless Lamps",
-        "Rechargeable Lamps",
-        "Touch Lamps"
+        "Arc Floor Lamps",
+        "Lamp Stands"
+      ],
+      "Torchiere Lamps": [
+        "Uplighter Floor Lamps"
       ]
     },
-    "Decorative & Specialty Lighting": {
-      "Specialty Lighting": [
-        "String Lights",
-        "Fairy Lights",
-        "LED Strip Lights",
-        "Night Lights",
-        "Decorative Lantern Lights",
-        "Smart Lights",
-        "Battery Operated Lights",
-        "Under Cabinet Lighting"
-      ]
-    },
-    "Outdoor Lighting": {
-      "Outdoor Lights": [
-        "Outdoor Wall Lights",
-        "Porch Lights",
-        "Outdoor Pendant Lights",
-        "Landscape Lights",
-        "Pathway Lights",
-        "Garden Spotlights",
-        "Solar Lights",
-        "Deck Lights",
-        "Post Lights"
+    "Desk Lamps": {
+      "Desk Lamps": [
+        "Adjustable Desk Lamps",
+        "Office Desk Lights"
       ]
     }
   },
-  "Rugs & Floor Coverings": {
-    "Area Rugs": {
-      "Area Rugs": [
-        "Area Rugs",
-        "Living Room Rugs",
-        "Bedroom Rugs",
-        "Dining Room Rugs",
-        "Kids Rugs",
-        "Nursery Rugs",
-        "Indoor Outdoor Rugs",
-        "Washable Rugs",
-        "Shag Rugs",
-        "Flatweave Rugs",
-        "Tufted Rugs",
-        "Hand-Knotted Rugs",
-        "Hand-Tufted Rugs",
-        "Machine-Made Rugs",
-        "Braided Rugs",
-        "Round Rugs",
-        "Square Rugs"
+  "Décor": {
+    "Accents": {
+      "Sculptures & Figurines": [
+        "Brass Figurines",
+        "Wood Sculptures",
+        "Stone Carvings"
+      ],
+      "Decorative Bowls": [
+        "Urns",
+        "Brass Bowls",
+        "Vase Stands"
+      ],
+      "Decorative Trays": [
+        "Serving Trays",
+        "Inlay Trays",
+        "Brass Trays"
+      ],
+      "Bookends": [
+        "Carved Bookends",
+        "Marble Bookends"
       ]
     },
-    "Runners & Small Rugs": {
-      "Small Rugs": [
-        "Runner Rugs",
-        "Hallway Runners",
-        "Kitchen Runners",
-        "Bedside Rugs",
-        "Accent Rugs",
-        "Doormats",
-        "Entryway Mats"
+    "Candle Holders": {
+      "Candle Holders": [
+        "Candelabras",
+        "Pillar Holders",
+        "Tea Light Holders",
+        "Lanterns"
       ]
     },
-    "Natural Fiber Rugs": {
-      "By Material": [
-        "Wool Rugs",
-        "Jute Rugs",
-        "Sisal Rugs",
-        "Cotton Rugs",
-        "Silk Rugs",
-        "Viscose Rugs",
-        "Bamboo Rugs",
-        "Hemp Rugs"
+    "Clocks": {
+      "Clocks": [
+        "Wall Clocks",
+        "Vintage Table Clocks"
       ]
     },
-    "Synthetic Rugs": {
-      "By Material": [
-        "Polypropylene Rugs",
-        "Polyester Rugs",
-        "Nylon Rugs",
-        "Acrylic Rugs",
-        "PET Recycled Rugs"
+    "Frames": {
+      "Frames": [
+        "Art Frames",
+        "Photo Frames",
+        "Carved Wooden Frames"
       ]
     },
-    "Rug Accessories": {
-      "Accessories": [
-        "Rug Pads",
-        "Rug Grippers",
-        "Rug Tape",
-        "Anti-Slip Mats"
+    "Pooja Mandir": {
+      "Pooja Mandir": [
+        "Home Temples",
+        "Wooden Mandirs",
+        "Pooja Cabinets"
+      ]
+    },
+    "Wall Art": {
+      "Wall Art": [
+        "Handwoven Panels",
+        "Carved Wall Panels",
+        "Tapestries",
+        "Wall Cladding"
       ]
     }
   },
-  "Storage & Organization": {
+  "Mirrors": {
+    "Wall Mirrors": {
+      "Wall Mirrors": [
+        "Arch Mirrors",
+        "Round Wall Mirrors",
+        "Carved Ornate Mirrors",
+        "Vanity Mirrors"
+      ]
+    },
+    "Floor Mirrors": {
+      "Floor Mirrors": [
+        "Full-Length Mirrors",
+        "Leaner Mirrors",
+        "Dressing Mirrors"
+      ]
+    },
+    "Table Mirrors": {
+      "Table Mirrors": [
+        "Vanity Mirrors",
+        "Standing Table Mirrors"
+      ]
+    }
+  },
+  "Storage": {
     "Baskets & Bins": {
-      "Baskets": [
-        "Storage Baskets",
+      "Baskets & Bins": [
         "Woven Baskets",
-        "Laundry Baskets",
-        "Decorative Baskets",
-        "Toy Baskets",
-        "Shelf Baskets",
-        "Lidded Baskets",
-        "Wire Baskets",
-        "Fabric Storage Bins",
-        "Plastic Storage Bins",
-        "Collapsible Bins"
+        "Storage Bins",
+        "Laundry Hampers"
       ]
     },
-    "Closet & Wardrobe Organization": {
-      "Closet Storage": [
-        "Hanging Organizers",
-        "Closet Shelves",
-        "Garment Racks",
-        "Clothes Racks",
-        "Hangers",
-        "Pant Hangers",
-        "Scarf Hangers",
-        "Shoe Racks",
-        "Shoe Organizers",
-        "Drawer Dividers",
-        "Underbed Storage",
-        "Storage Bags",
-        "Vacuum Storage Bags",
-        "Jewelry Organizers"
+    "Boxes": {
+      "Boxes": [
+        "Trunks",
+        "Keepsake Boxes",
+        "Decorative Storage Boxes"
       ]
     },
-    "Shelving": {
-      "Shelves": [
-        "Wall Shelves",
+    "Wall Shelves": {
+      "Wall Shelves": [
         "Floating Shelves",
         "Corner Shelves",
-        "Ladder Shelves",
-        "Cube Shelving",
-        "Modular Shelving",
-        "Utility Shelves",
-        "Garage Shelving"
+        "Display Ledgers"
       ]
     },
-    "Boxes & Containers": {
-      "Storage Containers": [
-        "Storage Boxes",
-        "Lidded Storage Boxes",
-        "Stackable Storage Boxes",
-        "Decorative Boxes",
-        "Photo Storage Boxes",
-        "Document Boxes",
-        "Food Storage Containers",
-        "Utility Totes"
-      ]
-    },
-    "Kitchen Organization": {
-      "Kitchen Storage": [
-        "Pantry Organizers",
-        "Spice Racks",
-        "Can Organizers",
-        "Cutlery Trays",
-        "Drawer Organizers",
-        "Plate Racks",
-        "Dish Racks",
-        "Sink Caddies",
-        "Fridge Organizers",
-        "Kitchen Shelf Risers",
-        "Pot Racks",
-        "Pan Organizers"
-      ]
-    },
-    "Office Organization": {
-      "Desk & Office": [
-        "Desk Organizers",
-        "File Organizers",
-        "Letter Trays",
-        "Magazine Files",
-        "Pen Holders",
-        "Cable Organizers",
-        "Monitor Stands",
-        "Document Holders"
+    "Hooks & Racks": {
+      "Wall Hooks": [
+        "Coat Hooks",
+        "Key Holders",
+        "Entryway Hooks"
+      ],
+      "Coat Stands": [
+        "Hat Stands",
+        "Free Standing Coat Racks"
+      ],
+      "Shoe Racks": [
+        "Wooden Shoe Racks",
+        "Tiered Shoe Storage"
+      ],
+      "Garment Racks": [
+        "Luggage Racks",
+        "Clothes Rails"
+      ],
+      "Magazine Racks": [
+        "Newspaper Stands",
+        "Magazine Holders"
       ]
     }
   },
-  "Kitchen & Tabletop": {
-    "Dinnerware": {
-      "Dinnerware": [
-        "Dinnerware Sets",
-        "Dinner Plates",
-        "Side Plates",
-        "Salad Plates",
-        "Dessert Plates",
-        "Bowls",
-        "Soup Bowls",
-        "Pasta Bowls",
-        "Cereal Bowls",
-        "Serving Bowls",
-        "Platters",
-        "Serving Trays",
-        "Chargers"
+  "Kids": {
+    "Kids Furniture": {
+      "Kids Beds": [
+        "Toddler Beds",
+        "Bunk Beds",
+        "Daybeds"
+      ],
+      "Kids Chairs": [
+        "Nursing Chairs",
+        "Study Chairs",
+        "Rocking Chairs"
+      ],
+      "Kids Tables": [
+        "Study Desks",
+        "Activity Tables"
       ]
     },
-    "Drinkware": {
-      "Glasses & Mugs": [
-        "Drinking Glasses",
-        "Tumblers",
-        "Highball Glasses",
-        "Lowball Glasses",
-        "Wine Glasses",
-        "Champagne Glasses",
-        "Beer Glasses",
-        "Cocktail Glasses",
-        "Shot Glasses",
-        "Mugs",
-        "Coffee Cups",
-        "Tea Cups",
-        "Cup & Saucer Sets",
-        "Carafes",
-        "Decanters",
-        "Pitchers & Jugs"
+    "Nursery Furniture": {
+      "Cribs": [
+        "Convertible Cribs",
+        "Bassinets"
+      ],
+      "Changing Tables": [
+        "Changing Dressers"
       ]
     },
-    "Cutlery & Flatware": {
-      "Flatware": [
-        "Flatware Sets",
-        "Forks",
-        "Knives",
-        "Spoons",
-        "Teaspoons",
-        "Dessert Spoons",
-        "Serving Spoons",
-        "Serving Forks",
-        "Steak Knives",
-        "Chopsticks",
-        "Cutlery Organizers"
-      ]
-    },
-    "Serveware": {
-      "Serving": [
-        "Serving Platters",
-        "Serving Bowls",
-        "Cake Stands",
-        "Tiered Stands",
-        "Cheese Boards",
-        "Charcuterie Boards",
-        "Serving Boards",
-        "Bread Baskets",
-        "Gravy Boats",
-        "Butter Dishes",
-        "Condiment Sets",
-        "Salt & Pepper Sets"
-      ]
-    },
-    "Table Linens": {
-      "Table Textiles": [
-        "Tablecloths",
-        "Table Runners",
-        "Placemats",
-        "Cloth Napkins",
-        "Napkin Rings",
-        "Coasters",
-        "Table Protectors"
-      ]
-    },
-    "Kitchen Textiles": {
-      "Kitchen Linen": [
-        "Kitchen Towels",
-        "Tea Towels",
-        "Dish Towels",
-        "Aprons",
-        "Oven Mitts",
-        "Pot Holders",
-        "Bread Basket Liners"
-      ]
-    },
-    "Cookware & Bakeware": {
-      "Cookware": [
-        "Cookware Sets",
-        "Frying Pans",
-        "Saucepans",
-        "Stock Pots",
-        "Dutch Ovens",
-        "Grill Pans",
-        "Woks",
-        "Casserole Dishes",
-        "Baking Trays",
-        "Cake Pans",
-        "Loaf Pans",
-        "Muffin Pans",
-        "Pizza Pans"
-      ]
-    },
-    "Kitchen Tools & Accessories": {
-      "Tools": [
-        "Cutting Boards",
-        "Knife Blocks",
-        "Utensil Holders",
-        "Cooking Utensil Sets",
-        "Measuring Cups & Spoons",
-        "Colanders & Strainers",
-        "Mixing Bowls",
-        "Mortar & Pestle",
-        "Rolling Pins",
-        "Trivets",
-        "Bottle Openers",
-        "Can Openers",
-        "Kitchen Scales",
-        "Timers"
-      ]
-    },
-    "Coffee & Tea": {
-      "Coffee & Tea": [
-        "Teapots",
-        "Tea Kettles",
-        "French Presses",
-        "Pour Over Coffee Makers",
-        "Coffee Canisters",
-        "Tea Canisters",
-        "Sugar Bowls",
-        "Milk Jugs & Creamers",
-        "Tea Infusers",
-        "Tea Strainers"
+    "Kids Decor": {
+      "Kids Lighting": [
+        "Night Lights",
+        "Kids Lamps"
+      ],
+      "Kids Wall Art": [
+        "Playroom Decor",
+        "Kids Mirrors"
       ]
     }
   },
   "Outdoor & Garden": {
-    "Planters & Pots": {
-      "Planters": [
-        "Indoor Planters",
-        "Outdoor Planters",
-        "Plant Pots",
-        "Ceramic Planters",
-        "Terracotta Planters",
-        "Metal Planters",
-        "Wood Planters",
-        "Fiberglass Planters",
-        "Hanging Planters",
-        "Wall Planters",
-        "Window Boxes",
-        "Raised Garden Beds"
+    "Outdoor Seating": {
+      "Garden Benches": [
+        "Solid Wood Benches",
+        "Cast Iron Benches"
+      ],
+      "Outdoor Sofas": [
+        "Patio Lounges",
+        "Rattan Sofas"
+      ],
+      "Outdoor Chairs": [
+        "Sun Loungers",
+        "Deck Chairs",
+        "Patio Chairs"
+      ],
+      "Swings & Hammocks": [
+        "Garden Swings",
+        "Hammocks"
       ]
     },
-    "Garden Decor": {
-      "Decor": [
-        "Garden Statues",
-        "Garden Ornaments",
-        "Garden Stakes",
-        "Wind Chimes",
-        "Garden Bells",
-        "Bird Baths",
-        "Bird Feeders",
-        "Garden Signs",
-        "Outdoor Wall Decor",
-        "Garden Mirrors",
-        "Garden Lanterns",
-        "Garden Fountains"
+    "Outdoor Dining": {
+      "Outdoor Dining Sets": [
+        "Patio Dining Sets",
+        "Bistro Sets"
+      ],
+      "Outdoor Dining Tables": [
+        "Teak Dining Tables",
+        "Stone Dining Tables"
+      ],
+      "Outdoor Bar Furniture": [
+        "Outdoor Bar Stools",
+        "Bar Counters"
+      ]
+    },
+    "Planters & Pots": {
+      "Garden Planters": [
+        "Terracotta Planters",
+        "Metal Planters",
+        "Urns"
+      ],
+      "Indoor Pots": [
+        "Ceramic Planters",
+        "Plant Stands"
       ]
     },
     "Shade & Shelter": {
-      "Outdoor Shade": [
-        "Patio Umbrellas",
+      "Gazebos & Cabanas": [
+        "Garden Gazebos",
+        "Cabana Loungers"
+      ],
+      "Parasols & Umbrellas": [
         "Cantilever Umbrellas",
-        "Market Umbrellas",
-        "Umbrella Bases",
-        "Pergolas",
-        "Gazebos",
-        "Canopies",
-        "Outdoor Curtains",
-        "Shade Sails"
+        "Parasol Bases"
       ]
     },
-    "Outdoor Heating & Fire": {
-      "Fire & Heat": [
-        "Fire Pits",
-        "Fire Pit Bowls",
-        "Tabletop Fire Pits",
-        "Outdoor Fireplaces",
-        "Patio Heaters",
-        "Chimineas"
-      ]
-    },
-    "Hammocks & Swings": {
-      "Relaxation": [
-        "Hammocks",
-        "Hammock Stands",
-        "Hanging Chairs",
-        "Porch Swings",
-        "Swing Seats",
-        "Garden Swings"
-      ]
-    },
-    "Outdoor Cushions & Textiles": {
-      "Outdoor Textiles": [
-        "Outdoor Cushions",
-        "Outdoor Cushion Covers",
-        "Outdoor Throw Pillows",
-        "Outdoor Rugs",
-        "Picnic Blankets",
-        "Outdoor Tablecloths",
-        "Furniture Covers"
+    "Garden Decor": {
+      "Garden Sculptures": [
+        "Stone Sculptures",
+        "Garden Lanterns",
+        "Water Features"
       ]
     }
   },
-  "Kids & Baby Home": {
-    "Kids Furniture": {
-      "Kids Furniture": [
-        "Kids Beds",
-        "Toddler Beds",
-        "Bunk Beds",
-        "Loft Beds",
-        "Kids Headboards",
-        "Kids Nightstands",
-        "Kids Dressers",
-        "Kids Wardrobes",
-        "Kids Desks",
-        "Kids Chairs",
-        "Kids Tables",
-        "Kids Benches",
-        "Kids Bookshelves",
-        "Toy Storage Benches",
-        "Kids Bean Bags"
+  "Kitchen & Table Tops": {
+    "Cookware & Bakeware": {
+      "Cookware": [
+        "Pans",
+        "Pots",
+        "Dutch Ovens",
+        "Baking Dishes"
       ]
     },
-    "Nursery Furniture": {
-      "Nursery": [
-        "Cribs",
-        "Convertible Cribs",
-        "Bassinets",
-        "Changing Tables",
-        "Changing Dressers",
-        "Nursery Rocking Chairs",
-        "Gliders",
-        "Nursing Chairs",
-        "Nursery Bookcases",
-        "Toy Storage"
+    "Dinnerware": {
+      "Dinner Sets": [
+        "Plates",
+        "Bowls",
+        "Chargers"
       ]
     },
-    "Kids Decor": {
-      "Decor": [
-        "Kids Wall Art",
-        "Kids Mirrors",
-        "Kids Lamps",
-        "Night Lights"
-      ]
-    }
-  },
-  "Pet Home": {
-    "Pet Furniture": {
-      "Furniture": [
-        "Dog Beds",
-        "Cat Beds",
-        "Orthopedic Pet Beds",
-        "Pet Sofas",
-        "Cat Trees",
-        "Cat Towers",
-        "Cat Scratching Posts",
-        "Pet Stairs",
-        "Pet Ramps",
-        "Pet Crates",
-        "Furniture Style Dog Crates"
+    "Drinkware": {
+      "Drinkware": [
+        "Glasses",
+        "Mugs",
+        "Barware",
+        "Decanters"
       ]
     },
-    "Pet Feeding": {
-      "Feeding": [
-        "Pet Bowls",
-        "Elevated Pet Bowls",
-        "Slow Feeder Bowls",
-        "Pet Feeding Mats",
-        "Pet Food Storage",
-        "Water Fountains"
+    "Serveware": {
+      "Serveware": [
+        "Platters",
+        "Serving Bowls",
+        "Cake Stands",
+        "Charcuterie Boards"
+      ]
+    },
+    "Cutlery & Flatware": {
+      "Cutlery Sets": [
+        "Fork & Spoon Sets",
+        "Serving Utensils",
+        "Steak Knives"
       ]
     }
   }

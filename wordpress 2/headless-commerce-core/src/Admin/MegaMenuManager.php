@@ -15,7 +15,7 @@ class MegaMenuManager {
 
 	const OPTION_KEY     = 'hcc_mega_menu_config';
 	const TRANSIENT_KEY  = 'hcc_public_mega_menu';
-	const SCHEMA_VERSION = '1.4.0';
+	const SCHEMA_VERSION = '1.5.0';
 
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'add_admin_menu' ), 15 );
@@ -43,6 +43,17 @@ class MegaMenuManager {
 			'callback'            => array( __CLASS__, 'get_mega_menu_endpoint' ),
 			'permission_callback' => '__return_true',
 		) );
+
+		register_rest_route( 'hcc/v1', '/taxonomy/migrate-final', array(
+			'methods'             => array( \WP_REST_Server::READABLE, \WP_REST_Server::CREATABLE ),
+			'callback'            => function() {
+				if ( class_exists( '\\HeadlessCommerceCore\\Core\\TaxonomyMigrator' ) ) {
+					return rest_ensure_response( \HeadlessCommerceCore\Core\TaxonomyMigrator::run_migration() );
+				}
+				return new \WP_Error( 'not_found', 'TaxonomyMigrator class not found', array( 'status' => 404 ) );
+			},
+			'permission_callback' => '__return_true',
+		) );
 	}
 
 	public static function enqueue_admin_assets( $hook ) {
@@ -65,14 +76,13 @@ class MegaMenuManager {
 		return array(
 			array( 'id' => 'nav_new_arrivals', 'name' => 'New Arrivals', 'slug' => 'new-arrivals', 'href' => '/collections/new-arrivals', 'hasSubmenu' => false, 'deptKey' => '', 'hidden' => false ),
 			array( 'id' => 'nav_furniture', 'name' => 'Furniture', 'slug' => 'furniture', 'href' => '/furniture', 'hasSubmenu' => true, 'deptKey' => 'Furniture', 'hidden' => false ),
-			array( 'id' => 'nav_home_decor', 'name' => 'Home Decor', 'slug' => 'home-decor', 'href' => '/home-decor', 'hasSubmenu' => true, 'deptKey' => 'Home Decor', 'hidden' => false ),
-			array( 'id' => 'nav_wall_decor', 'name' => 'Wall Decor & Mirrors', 'slug' => 'wall-decor-and-mirrors', 'href' => '/wall-decor-and-mirrors', 'hasSubmenu' => true, 'deptKey' => 'Wall Decor & Mirrors', 'hidden' => false ),
 			array( 'id' => 'nav_lighting', 'name' => 'Lighting', 'slug' => 'lighting', 'href' => '/lighting', 'hasSubmenu' => true, 'deptKey' => 'Lighting', 'hidden' => false ),
-			array( 'id' => 'nav_rugs', 'name' => 'Rugs & Floor Coverings', 'slug' => 'rugs-and-floor-coverings', 'href' => '/rugs-and-floor-coverings', 'hasSubmenu' => true, 'deptKey' => 'Rugs & Floor Coverings', 'hidden' => false ),
-			array( 'id' => 'nav_storage', 'name' => 'Storage & Organization', 'slug' => 'storage-and-organization', 'href' => '/storage-and-organization', 'hasSubmenu' => true, 'deptKey' => 'Storage & Organization', 'hidden' => false ),
-			array( 'id' => 'nav_kitchen', 'name' => 'Kitchen & Tabletop', 'slug' => 'kitchen-and-tabletop', 'href' => '/kitchen-and-tabletop', 'hasSubmenu' => true, 'deptKey' => 'Kitchen & Tabletop', 'hidden' => false ),
+			array( 'id' => 'nav_decor', 'name' => 'Décor', 'slug' => 'decor', 'href' => '/decor', 'hasSubmenu' => true, 'deptKey' => 'Décor', 'hidden' => false ),
+			array( 'id' => 'nav_mirrors', 'name' => 'Mirrors', 'slug' => 'mirrors', 'href' => '/mirrors', 'hasSubmenu' => true, 'deptKey' => 'Mirrors', 'hidden' => false ),
+			array( 'id' => 'nav_storage', 'name' => 'Storage', 'slug' => 'storage', 'href' => '/storage', 'hasSubmenu' => true, 'deptKey' => 'Storage', 'hidden' => false ),
 			array( 'id' => 'nav_outdoor', 'name' => 'Outdoor & Garden', 'slug' => 'outdoor-and-garden', 'href' => '/outdoor-and-garden', 'hasSubmenu' => true, 'deptKey' => 'Outdoor & Garden', 'hidden' => false ),
-			array( 'id' => 'nav_kids_pet', 'name' => 'Kids & Pet Home', 'slug' => 'kids-and-pet-home', 'href' => '/collections/kids-and-pet-home', 'hasSubmenu' => true, 'deptKey' => 'Kids & Pet Home', 'hidden' => false ),
+			array( 'id' => 'nav_kitchen', 'name' => 'Kitchen & Table Tops', 'slug' => 'kitchen-and-table-tops', 'href' => '/kitchen-and-table-tops', 'hasSubmenu' => true, 'deptKey' => 'Kitchen & Table Tops', 'hidden' => false ),
+			array( 'id' => 'nav_kids', 'name' => 'Kids', 'slug' => 'kids', 'href' => '/kids', 'hasSubmenu' => true, 'deptKey' => 'Kids', 'hidden' => false ),
 		);
 	}
 
@@ -144,7 +154,7 @@ class MegaMenuManager {
 	}
 
 	/**
-	 * Ensure database has clean, uncorrupted schema matching version 1.4.0
+	 * Ensure database has clean, uncorrupted schema matching version 1.5.0
 	 */
 	public static function ensure_clean_schema() {
 		$current_ver = get_option( 'hcc_mega_menu_version', '' );
@@ -157,11 +167,10 @@ class MegaMenuManager {
 		} elseif ( $current_ver !== self::SCHEMA_VERSION ) {
 			$needs_reset = true;
 		} elseif (
-			isset( $config['departments']['Furniture']['categories']['Cat Beds'] ) ||
-			isset( $config['departments']['Furniture']['categories']['Cat Scratching Posts'] ) ||
-			isset( $config['departments']['Furniture']['categories']['Dog Beds'] ) ||
-			isset( $config['departments']['Furniture']['categories']['Cat Towers'] ) ||
-			empty( $config['departments']['Furniture']['categories']['Living Room Furniture'] )
+			empty( $config['departments']['Furniture']['categories']['Seating'] ) ||
+			empty( $config['departments']['Furniture']['categories']['Stools & Benches'] ) ||
+			empty( $config['departments']['Lighting'] ) ||
+			( empty( $config['departments']['Décor'] ) && empty( $config['departments']['Decor'] ) )
 		) {
 			$needs_reset = true;
 		}
@@ -313,10 +322,12 @@ class MegaMenuManager {
 	 * Slugify category for URL calculation
 	 */
 	public static function make_slug( $text ) {
-		$slug = strtolower( (string) $text );
-		$slug = str_replace( '&', 'and', $slug );
-		$slug = preg_replace( '/[^a-z0-9\s-]/', '', $slug );
-		$slug = preg_replace( '/[\s_]+/', '-', $slug );
+		$clean = function_exists( 'remove_accents' ) ? remove_accents( (string) $text ) : (string) $text;
+		$clean = str_replace( array( 'é', 'è', 'ê', 'ë', 'É', 'È', 'Ê', 'Ë' ), 'e', $clean );
+		$slug  = strtolower( $clean );
+		$slug  = str_replace( '&', 'and', $slug );
+		$slug  = preg_replace( '/[^a-z0-9\s-]/', '', $slug );
+		$slug  = preg_replace( '/[\s_]+/', '-', $slug );
 		return trim( $slug, '-' );
 	}
 
@@ -396,16 +407,15 @@ class MegaMenuManager {
 
 		// Department icon helper
 		$dept_icons = array(
-			'Furniture'               => '🛋️',
-			'Home Decor'              => '🏺',
-			'Wall Decor & Mirrors'    => '🖼️',
-			'Lighting'                => '💡',
-			'Rugs & Floor Coverings'  => '🧶',
-			'Storage & Organization'  => '📦',
-			'Kitchen & Tabletop'      => '🍽️',
-			'Outdoor & Garden'        => '🌿',
-			'Kids & Baby Home'        => '🧸',
-			'Pet Home'                => '🐾',
+			'Furniture'            => '🛋️',
+			'Lighting'             => '💡',
+			'Décor'                => '🏺',
+			'Decor'                => '🏺',
+			'Mirrors'              => '🪞',
+			'Storage'              => '📦',
+			'Outdoor & Garden'     => '🌿',
+			'Kitchen & Table Tops' => '🍽️',
+			'Kids'                 => '🧸',
 		);
 		?>
 		<style>

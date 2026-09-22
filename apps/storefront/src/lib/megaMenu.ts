@@ -21,14 +21,13 @@ export interface MegaMenuData {
 export const DEFAULT_NAV_CATEGORIES: MegaMenuNavItem[] = [
   { id: 'nav_new_arrivals', name: 'New Arrivals', slug: 'new-arrivals', href: '/collections/new-arrivals', hasSubmenu: false },
   { id: 'nav_furniture', name: 'Furniture', slug: 'furniture', href: '/furniture', hasSubmenu: true, deptKey: 'Furniture' },
-  { id: 'nav_home_decor', name: 'Home Decor', slug: 'home-decor', href: '/home-decor', hasSubmenu: true, deptKey: 'Home Decor' },
-  { id: 'nav_wall_decor', name: 'Wall Decor & Mirrors', slug: 'wall-decor-and-mirrors', href: '/wall-decor-and-mirrors', hasSubmenu: true, deptKey: 'Wall Decor & Mirrors' },
   { id: 'nav_lighting', name: 'Lighting', slug: 'lighting', href: '/lighting', hasSubmenu: true, deptKey: 'Lighting' },
-  { id: 'nav_rugs', name: 'Rugs & Floor Coverings', slug: 'rugs-and-floor-coverings', href: '/rugs-and-floor-coverings', hasSubmenu: true, deptKey: 'Rugs & Floor Coverings' },
-  { id: 'nav_storage', name: 'Storage & Organization', slug: 'storage-and-organization', href: '/storage-and-organization', hasSubmenu: true, deptKey: 'Storage & Organization' },
-  { id: 'nav_kitchen', name: 'Kitchen & Tabletop', slug: 'kitchen-and-tabletop', href: '/kitchen-and-tabletop', hasSubmenu: true, deptKey: 'Kitchen & Tabletop' },
+  { id: 'nav_decor', name: 'Décor', slug: 'decor', href: '/decor', hasSubmenu: true, deptKey: 'Décor' },
+  { id: 'nav_mirrors', name: 'Mirrors', slug: 'mirrors', href: '/mirrors', hasSubmenu: true, deptKey: 'Mirrors' },
+  { id: 'nav_storage', name: 'Storage', slug: 'storage', href: '/storage', hasSubmenu: true, deptKey: 'Storage' },
   { id: 'nav_outdoor', name: 'Outdoor & Garden', slug: 'outdoor-and-garden', href: '/outdoor-and-garden', hasSubmenu: true, deptKey: 'Outdoor & Garden' },
-  { id: 'nav_kids_pet', name: 'Kids & Pet Home', slug: 'kids-and-pet-home', href: '/collections/kids-and-pet-home', hasSubmenu: true, deptKey: 'Kids & Pet Home' },
+  { id: 'nav_kitchen', name: 'Kitchen & Table Tops', slug: 'kitchen-and-table-tops', href: '/kitchen-and-table-tops', hasSubmenu: true, deptKey: 'Kitchen & Table Tops' },
+  { id: 'nav_kids', name: 'Kids', slug: 'kids', href: '/kids', hasSubmenu: true, deptKey: 'Kids' },
 ];
 
 export const DEFAULT_MEGA_MENU_DATA: MegaMenuData = {

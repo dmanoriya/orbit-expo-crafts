@@ -23,6 +23,8 @@ export function slugifyCategory(text: string): string {
   if (!text) return '';
   return text
     .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/&/g, 'and')
     .replace(/[^a-z0-9\s-]/g, '')
     .trim()
@@ -32,16 +34,19 @@ export function slugifyCategory(text: string): string {
 
 export const KNOWN_DEPARTMENTS: Record<string, string> = {
   'furniture': 'Furniture',
-  'home-decor': 'Home Decor',
-  'wall-decor-and-mirrors': 'Wall Decor & Mirrors',
   'lighting': 'Lighting',
-  'rugs-and-floor-coverings': 'Rugs & Floor Coverings',
-  'storage-and-organization': 'Storage & Organization',
-  'kitchen-and-tabletop': 'Kitchen & Tabletop',
+  'decor': 'Décor',
+  'home-decor': 'Décor',
+  'mirrors': 'Mirrors',
+  'wall-decor-and-mirrors': 'Mirrors',
+  'storage': 'Storage',
+  'storage-and-organization': 'Storage',
   'outdoor-and-garden': 'Outdoor & Garden',
-  'kids-and-baby-home': 'Kids & Baby Home',
-  'pet-home': 'Pet Home',
-  'kids-and-pet-home': 'Kids & Pet Home',
+  'kitchen-and-table-tops': 'Kitchen & Table Tops',
+  'kitchen-and-tabletop': 'Kitchen & Table Tops',
+  'kids': 'Kids',
+  'kids-and-baby-home': 'Kids',
+  'kids-and-pet-home': 'Kids',
 };
 
 export function isKnownDepartment(slug: string): boolean {
