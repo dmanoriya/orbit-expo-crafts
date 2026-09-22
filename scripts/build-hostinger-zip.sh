@@ -224,10 +224,13 @@ cd "$ROOT_DIR/dist-hostinger" && zip -r "$ROOT_DIR/hostinger-nextjs-storefront.z
 
 rm -f "$ROOT_DIR/wordpress/headless-commerce-core.zip"
 cd "$ROOT_DIR/wordpress" && zip -r "$ROOT_DIR/wordpress/headless-commerce-core.zip" headless-commerce-core/ > /dev/null
+cp -f "$ROOT_DIR/wordpress/headless-commerce-core.zip" "$ROOT_DIR/headless-commerce-core.zip"
 
 echo ""
 echo "✅ HOSTINGER DEPLOYMENT PACKAGES CREATED SUCCESSFULLY!"
 echo "--------------------------------------------------------"
 echo "1. Next.js Storefront ZIP : $ROOT_DIR/hostinger-nextjs-storefront.zip"
-echo "2. WordPress Plugin ZIP   : $ROOT_DIR/wordpress/headless-commerce-core.zip"
+echo "2. WordPress Plugin ZIP   : $ROOT_DIR/headless-commerce-core.zip"
+echo "   (Also at)              : $ROOT_DIR/wordpress/headless-commerce-core.zip"
 echo "--------------------------------------------------------"
+
