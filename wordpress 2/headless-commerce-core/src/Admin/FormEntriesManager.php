@@ -122,6 +122,8 @@ class FormEntriesManager {
 			$prefix = 'QT-';
 		} elseif ( $form_type === 'discuss_projects' ) {
 			$prefix = 'PRJ-';
+		} elseif ( $form_type === 'trade_membership' || $form_type === 'trade_account' ) {
+			$prefix = 'TRD-';
 		} elseif ( $form_type === 'interior_designer' || $form_type === 'interior_designers' ) {
 			$prefix = 'DES-';
 		} elseif ( $form_type === 'suppliers_vendors' || $form_type === 'supplier_vendor' ) {
@@ -1023,7 +1025,11 @@ class FormEntriesManager {
 
 		$where_clauses = array( '1=1' );
 		if ( $form_type_filter !== 'all' ) {
-			$where_clauses[] = $wpdb->prepare( 'form_type = %s', $form_type_filter );
+			if ( in_array( $form_type_filter, array( 'trade_membership', 'trade_account' ), true ) ) {
+				$where_clauses[] = "form_type IN ('trade_membership', 'trade_account')";
+			} else {
+				$where_clauses[] = $wpdb->prepare( 'form_type = %s', $form_type_filter );
+			}
 		}
 		if ( $status_filter !== 'all' ) {
 			$where_clauses[] = $wpdb->prepare( 'status = %s', $status_filter );
@@ -1038,6 +1044,7 @@ class FormEntriesManager {
 
 		// Counts
 		$total_count    = $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name}" );
+		$trade_count    = $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name} WHERE form_type IN ('trade_membership', 'trade_account')" );
 		$booking_count  = $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name} WHERE form_type = 'commercial_booking'" );
 		$quote_count    = $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name} WHERE form_type = 'quote_enquiry'" );
 		$project_count  = $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name} WHERE form_type = 'discuss_projects'" );
@@ -1073,6 +1080,7 @@ class FormEntriesManager {
 			<!-- FILTER TABS -->
 			<ul class="subsubsub">
 				<li class="all"><a href="admin.php?page=hcc-form-submissions" class="<?php echo $form_type_filter === 'all' ? 'current' : ''; ?>">All Forms <span class="count">(<?php echo intval( $total_count ); ?>)</span></a> |</li>
+				<li class="trade"><a href="admin.php?page=hcc-form-submissions&type=trade_membership" class="<?php echo in_array( $form_type_filter, array( 'trade_membership', 'trade_account' ), true ) ? 'current' : ''; ?>">Trade Memberships <span class="count">(<?php echo intval( $trade_count ); ?>)</span></a> |</li>
 				<li class="booking"><a href="admin.php?page=hcc-form-submissions&type=commercial_booking" class="<?php echo $form_type_filter === 'commercial_booking' ? 'current' : ''; ?>">Commercial Orders <span class="count">(<?php echo intval( $booking_count ); ?>)</span></a> |</li>
 				<li class="quote"><a href="admin.php?page=hcc-form-submissions&type=quote_enquiry" class="<?php echo $form_type_filter === 'quote_enquiry' ? 'current' : ''; ?>">Quote Enquiries <span class="count">(<?php echo intval( $quote_count ); ?>)</span></a> |</li>
 				<li class="project"><a href="admin.php?page=hcc-form-submissions&type=discuss_projects" class="<?php echo $form_type_filter === 'discuss_projects' ? 'current' : ''; ?>">Project Consultations <span class="count">(<?php echo intval( $project_count ); ?>)</span></a> |</li>
@@ -1135,6 +1143,9 @@ class FormEntriesManager {
 							if ( $entry->form_type === 'commercial_booking' ) {
 								$badge_color = '#1E3A8A';
 								$type_label  = 'Commercial Order';
+							} elseif ( $entry->form_type === 'trade_membership' || $entry->form_type === 'trade_account' ) {
+								$badge_color = '#B85735';
+								$type_label  = 'Trade Membership';
 							} elseif ( $entry->form_type === 'discuss_projects' ) {
 								$badge_color = '#0D9488';
 								$type_label  = 'Project Consultation';
@@ -1202,6 +1213,8 @@ class FormEntriesManager {
 							if ( empty( $origin_title ) ) {
 								if ( $entry->form_type === 'commercial_booking' ) {
 									$origin_title = 'Order Checkout';
+								} elseif ( $entry->form_type === 'trade_membership' || $entry->form_type === 'trade_account' ) {
+									$origin_title = 'Trade Membership Program';
 								} elseif ( $entry->form_type === 'discuss_projects' ) {
 									$origin_title = 'Discuss Projects';
 								} elseif ( $entry->form_type === 'interior_designer' ) {

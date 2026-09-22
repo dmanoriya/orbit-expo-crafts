@@ -309,7 +309,7 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
                 <Link href="/discuss-projects" className="header-sublink">
                   Discuss Projects
                 </Link>
-                <Link href="/interior-designers" className="header-sublink">
+                <Link href="/trade-membership" className="header-sublink">
                   Interior Designers
                 </Link>
                 <Link href="/journal" className="header-sublink">
@@ -650,7 +650,7 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
                     <Link href="/discuss-projects" onClick={closeMobileDrawer} className="mobile-quick-link">
                       Discuss Projects
                     </Link>
-                    <Link href="/interior-designers" onClick={closeMobileDrawer} className="mobile-quick-link">
+                    <Link href="/trade-membership" onClick={closeMobileDrawer} className="mobile-quick-link">
                       Interior Designers
                     </Link>
                     <Link href="/journal" onClick={closeMobileDrawer} className="mobile-quick-link">
