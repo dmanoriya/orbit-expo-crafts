@@ -376,6 +376,18 @@ class MegaMenuManager {
 
 		// 2. Process active Department Taxonomy
 		$active_tax = array();
+		$slug_map   = array();
+
+		// Populate slug_map from all live WooCommerce terms
+		if ( ! empty( $all_woo_terms ) && is_array( $all_woo_terms ) ) {
+			foreach ( $all_woo_terms as $wt ) {
+				$clean_name = self::clean_text( $wt->name );
+				$clean_slug = $wt->slug;
+				$slug_map[ $clean_name ] = $clean_slug;
+				$slug_map[ strtolower( $clean_name ) ] = $clean_slug;
+				$slug_map[ $clean_slug ] = $clean_slug;
+			}
+		}
 
 		foreach ( $raw_depts as $dept_name => $dept_info ) {
 			if ( ! empty( $dept_info['hidden'] ) ) {
@@ -384,6 +396,10 @@ class MegaMenuManager {
 
 			$canonical_dept_name = self::clean_text( $dept_name );
 			$dept_display_name   = ! empty( $dept_info['name'] ) ? self::clean_text( $dept_info['name'] ) : $canonical_dept_name;
+			$dept_slug           = ! empty( $dept_info['slug'] ) ? $dept_info['slug'] : self::make_slug( $dept_name );
+			$slug_map[ $dept_display_name ]   = $dept_slug;
+			$slug_map[ $canonical_dept_name ] = $dept_slug;
+
 			$dept_tree           = array();
 			$cats                = $dept_info['categories'] ?? array();
 
@@ -393,6 +409,10 @@ class MegaMenuManager {
 				}
 
 				$l1_display_name = ! empty( $l1_data['name'] ) ? self::clean_text( $l1_data['name'] ) : self::clean_text( $l1_key );
+				$l1_slug         = ! empty( $l1_data['slug'] ) ? $l1_data['slug'] : self::make_slug( $l1_key );
+				$slug_map[ $l1_display_name ] = $l1_slug;
+				$slug_map[ self::clean_text( $l1_key ) ] = $l1_slug;
+
 				$dept_tree[ $l1_display_name ] = array();
 
 				$subgroups = $l1_data['subgroups'] ?? array();
@@ -402,6 +422,10 @@ class MegaMenuManager {
 					}
 
 					$l2_display_name = ! empty( $l2_data['name'] ) ? self::clean_text( $l2_data['name'] ) : self::clean_text( $l2_key );
+					$l2_slug         = ! empty( $l2_data['slug'] ) ? $l2_data['slug'] : self::make_slug( $l2_key );
+					$slug_map[ $l2_display_name ] = $l2_slug;
+					$slug_map[ self::clean_text( $l2_key ) ] = $l2_slug;
+
 					$items_list      = array();
 
 					$items = $l2_data['items'] ?? array();
@@ -438,6 +462,7 @@ class MegaMenuManager {
 		$result = array(
 			'navItems'  => $active_nav,
 			'taxonomy'  => $active_tax,
+			'slugMap'   => $slug_map,
 			'updatedAt' => time(),
 		);
 
@@ -532,13 +557,49 @@ class MegaMenuManager {
 					if ( $matches ) {
 						$item['slug'] = $term->slug;
 						$item['href'] = '/' . $term->slug;
-						$item['name'] = self::clean_text( $term->name );
+						$item['name']    = self::clean_text( $term->name );
+						$item['term_id'] = (int) $term_id;
 						$changed = true;
 					}
 				}
-				if ( $changed ) {
-					update_option( self::OPTION_KEY, $config );
+			}
+
+			// 2. Also update columns and subcategories in departments if matching
+			if ( ! empty( $config['departments'] ) && is_array( $config['departments'] ) ) {
+				foreach ( $config['departments'] as &$dept ) {
+					if ( empty( $dept['categories'] ) || ! is_array( $dept['categories'] ) ) continue;
+					foreach ( $dept['categories'] as &$col ) {
+						$col_name_lower = strtolower( self::clean_text( $col['name'] ?? '' ) );
+						$col_slug_lower = strtolower( $col['slug'] ?? '' );
+						$col_term_match = ! empty( $col['term_id'] ) && (int) $col['term_id'] === (int) $term_id;
+
+						if ( $col_term_match || $col_name_lower === $term_name_lower || $col_slug_lower === $term_slug_lower ) {
+							$col['slug']    = $term->slug;
+							$col['name']    = self::clean_text( $term->name );
+							$col['term_id'] = (int) $term_id;
+							$changed = true;
+						}
+
+						if ( ! empty( $col['subgroups'] ) && is_array( $col['subgroups'] ) ) {
+							foreach ( $col['subgroups'] as &$sub ) {
+								$sub_name_lower = strtolower( self::clean_text( $sub['name'] ?? '' ) );
+								$sub_slug_lower = strtolower( $sub['slug'] ?? '' );
+								$sub_term_match = ! empty( $sub['term_id'] ) && (int) $sub['term_id'] === (int) $term_id;
+
+								if ( $sub_term_match || $sub_name_lower === $term_name_lower || $sub_slug_lower === $term_slug_lower ) {
+									$sub['slug']    = $term->slug;
+									$sub['name']    = self::clean_text( $term->name );
+									$sub['term_id'] = (int) $term_id;
+									$changed = true;
+								}
+							}
+						}
+					}
 				}
+			}
+
+			if ( $changed ) {
+				update_option( self::OPTION_KEY, $config );
 			}
 		}
 
@@ -624,6 +685,30 @@ class MegaMenuManager {
 		$nav_items   = $config['nav_items'] ?? self::get_default_nav_items();
 		$departments = $config['departments'] ?? self::get_default_departments_data();
 
+		// Fetch all live WooCommerce product_cat terms for direct category selector and hierarchy sync
+		$all_woo_terms = get_terms( array(
+			'taxonomy'   => 'product_cat',
+			'hide_empty' => false,
+			'orderby'    => 'name',
+			'order'      => 'ASC',
+		) );
+
+		$woo_category_list = array();
+		if ( ! is_wp_error( $all_woo_terms ) && is_array( $all_woo_terms ) ) {
+			foreach ( $all_woo_terms as $term ) {
+				if ( $term->slug === 'uncategorized' ) {
+					continue;
+				}
+				$woo_category_list[] = array(
+					'id'     => (int) $term->term_id,
+					'name'   => self::clean_text( $term->name ),
+					'slug'   => $term->slug,
+					'parent' => (int) $term->parent,
+					'count'  => (int) $term->count,
+				);
+			}
+		}
+
 		// Department icon helper
 		$dept_icons = array(
 			'Furniture'            => '🛋️',
@@ -669,7 +754,7 @@ class MegaMenuManager {
 			.hcc-column-card.is-hidden { opacity: 0.55; background: #fafafa; border-style: dashed; }
 			
 			.hcc-card-top-row { padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; background: #fafafa; border-bottom: 1px solid #eee; }
-			.hcc-card-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 280px; }
+			.hcc-card-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 280px; flex-wrap: wrap; }
 			.hcc-card-right { display: flex; align-items: center; gap: 8px; }
 
 			.hcc-col-badge { background: #0E5C63; color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
@@ -679,8 +764,16 @@ class MegaMenuManager {
 			.hcc-toggle-btn.is-active { background: #e6f4ea; border-color: #ceead6; color: #137333; }
 			.hcc-toggle-btn:hover { border-color: #8c8f94; }
 
-			.hcc-name-input { font-size: 14px; font-weight: 600; padding: 6px 10px; border: 1px solid #c3c4c7; border-radius: 5px; width: 100%; max-width: 300px; color: #1d2327; background: #fff; }
+			.hcc-name-input { font-size: 14px; font-weight: 600; padding: 6px 10px; border: 1px solid #c3c4c7; border-radius: 5px; width: 100%; max-width: 280px; color: #1d2327; background: #fff; }
 			.hcc-name-input:focus { border-color: #0E5C63; outline: none; box-shadow: 0 0 0 1px #0E5C63; }
+
+			.hcc-slug-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #50575e; background: #f0f0f1; border: 1px solid #dcdcde; border-radius: 4px; padding: 3px 8px; }
+			.hcc-slug-badge code { font-size: 11px; color: #0E5C63; font-weight: 600; background: transparent; padding: 0; }
+			.hcc-slug-inline-input { font-size: 11px; font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace; color: #0E5C63; font-weight: 600; padding: 3px 6px; border: 1px dashed #c3c4c7; border-radius: 4px; background: #fdfdfd; width: 150px; }
+			.hcc-slug-inline-input:focus { border-style: solid; border-color: #0E5C63; outline: none; background: #fff; }
+
+			.hcc-btn-del { color: #b32d2e; border: 1px solid #dcdcde; background: #fff; cursor: pointer; font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 4px; transition: all 0.1s ease; line-height: 1; }
+			.hcc-btn-del:hover { background: #b32d2e; color: #fff; border-color: #b32d2e; }
 
 			.hcc-url-link { color: #0E5C63; text-decoration: none; font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 4px; background: rgba(14,92,99,0.07); display: inline-flex; align-items: center; gap: 4px; transition: all 0.15s ease; }
 			.hcc-url-link:hover { background: rgba(14,92,99,0.16); color: #083c41; text-decoration: underline; }
@@ -694,7 +787,7 @@ class MegaMenuManager {
 
 			.hcc-subgroup-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
 			.hcc-subgroup-table th { text-align: left; font-size: 12px; color: #646970; text-transform: uppercase; padding: 6px 10px; border-bottom: 1px solid #e2e4e7; }
-			.hcc-subgroup-table td { padding: 8px 10px; border-bottom: 1px solid #f0f0f1; vertical-align: top; }
+			.hcc-subgroup-table td { padding: 8px 10px; border-bottom: 1px solid #f0f0f1; vertical-align: middle; }
 
 			/* Items Pills (Level 3) */
 			.hcc-items-container { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 5px; }
@@ -704,8 +797,31 @@ class MegaMenuManager {
 			.hcc-item-pill-link { color: #0E5C63; text-decoration: none; font-size: 10px; margin-left: 2px; }
 			.hcc-item-pill-link:hover { text-decoration: underline; }
 
-			.hcc-add-btn { background: #fff; border: 1px dashed #0E5C63; color: #0E5C63; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; transition: all 0.15s ease; }
+			.hcc-add-btn { background: #fff; border: 1.5px dashed #0E5C63; color: #0E5C63; padding: 7px 15px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s ease; }
 			.hcc-add-btn:hover { background: rgba(14,92,99,0.06); }
+
+			/* Category Picker Modal */
+			.hcc-modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.55); z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
+			.hcc-modal-box { background: #fff; border-radius: 10px; width: 100%; max-width: 640px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 12px 36px rgba(0,0,0,0.25); overflow: hidden; animation: hccModalFadeIn 0.15s ease-out; }
+			@keyframes hccModalFadeIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+			.hcc-modal-header { padding: 18px 24px; border-bottom: 1px solid #dcdcde; display: flex; align-items: center; justify-content: space-between; background: #fafafa; }
+			.hcc-modal-close { background: none; border: none; font-size: 20px; line-height: 1; cursor: pointer; color: #50575e; padding: 4px 8px; border-radius: 4px; }
+			.hcc-modal-close:hover { background: #e0e0e0; color: #1d2327; }
+			.hcc-modal-tabs { display: flex; border-bottom: 1px solid #dcdcde; background: #f0f0f1; }
+			.hcc-mtab-btn { flex: 1; padding: 12px 16px; border: none; background: none; cursor: pointer; font-size: 13px; font-weight: 600; color: #50575e; text-align: center; border-bottom: 2px solid transparent; transition: all 0.15s ease; }
+			.hcc-mtab-btn:hover { background: #e4e4e6; color: #1d2327; }
+			.hcc-mtab-btn.active { background: #fff; color: #0E5C63; border-bottom-color: #0E5C63; }
+			.hcc-modal-body { padding: 20px 24px; overflow-y: auto; flex: 1; }
+			.hcc-woo-cat-search { width: 100%; box-sizing: border-box; padding: 9px 12px; font-size: 14px; border: 1.5px solid #8c8f94; border-radius: 6px; }
+			.hcc-woo-cat-search:focus { border-color: #0E5C63; outline: none; box-shadow: 0 0 0 2px rgba(14,92,99,0.15); }
+			.hcc-woo-list { max-height: 280px; overflow-y: auto; border: 1px solid #dcdcde; border-radius: 6px; margin-top: 8px; background: #fff; }
+			.hcc-woo-cat-item { padding: 9px 14px; border-bottom: 1px solid #f0f0f1; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: background 0.1s ease; }
+			.hcc-woo-cat-item:last-child { border-bottom: none; }
+			.hcc-woo-cat-item:hover { background: #f6f7f7; }
+			.hcc-woo-cat-item.selected { background: #e8f4f5; border-left: 3px solid #0E5C63; }
+			.hcc-cat-label { font-weight: 600; font-size: 13px; color: #1d2327; display: flex; align-items: center; gap: 6px; }
+			.hcc-cat-slug { font-size: 11px; color: #646970; font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+			.hcc-count-badge { background: #e2e4e7; color: #2c3338; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 10px; }
 		</style>
 
 		<div class="wrap hcc-menu-wrap">
@@ -716,7 +832,7 @@ class MegaMenuManager {
 						<span>🧭 Storefront Mega Menu & Category Builder</span>
 					</h1>
 					<p style="margin: 6px 0 0; font-size: 14px; color: #50575e;">
-						Directly control all department columns, subcategories, display names, and visibility with instant live storefront sync.
+						Directly choose existing WooCommerce categories with automatic slug matching, or create custom links with instant live storefront sync.
 					</p>
 				</div>
 				<div>
@@ -803,7 +919,7 @@ class MegaMenuManager {
 				<!-- TABS: DEPARTMENTS -->
 				<?php foreach ( $departments as $dept_key => $dept_info ) :
 					$dept_tab_id    = sanitize_title( $dept_key );
-					$dept_slug      = self::make_slug( $dept_key );
+					$dept_slug      = ! empty( $dept_info['slug'] ) ? $dept_info['slug'] : self::make_slug( $dept_key );
 					$is_dept_hidden = ! empty( $dept_info['hidden'] );
 					$cols           = $dept_info['categories'] ?? array();
 					$dept_live_url  = rtrim( $live_url, '/' ) . '/' . $dept_slug;
@@ -829,7 +945,7 @@ class MegaMenuManager {
 									value="<?php echo esc_attr( $dept_info['name'] ?? $dept_key ); ?>"
 									onchange="hccChangeDeptName('<?php echo esc_js( $dept_key ); ?>', this.value)"
 								/>
-								<span style="color:#50575e; font-size:13px; font-weight:600;">(<?php echo count( $cols ); ?> Mega Columns)</span>
+								<span style="color:#50575e; font-size:13px; font-weight:600;">(<?php echo count( $cols ); ?> Columns)</span>
 							</div>
 							<div>
 								<a href="<?php echo esc_url( $dept_live_url ); ?>" target="_blank" class="hcc-url-link">
@@ -842,7 +958,7 @@ class MegaMenuManager {
 						<div class="hcc-columns-container" data-dept="<?php echo esc_attr( $dept_key ); ?>">
 							<?php foreach ( $cols as $l1_key => $l1_data ) :
 								$is_l1_hidden = ! empty( $l1_data['hidden'] );
-								$l1_slug      = self::make_slug( $l1_key );
+								$l1_slug      = ! empty( $l1_data['slug'] ) ? $l1_data['slug'] : self::make_slug( $l1_key );
 								$l1_live_url  = rtrim( $live_url, '/' ) . '/' . $dept_slug . '/' . $l1_slug;
 								$subgroups    = $l1_data['subgroups'] ?? array();
 							?>
@@ -864,6 +980,9 @@ class MegaMenuManager {
 												placeholder="Column Name"
 												onchange="hccChangeL1Name('<?php echo esc_js( $dept_key ); ?>', '<?php echo esc_js( $l1_key ); ?>', this.value)"
 											/>
+											<span class="hcc-slug-badge" title="WooCommerce Category Slug">
+												slug: <code><?php echo esc_html( $l1_slug ); ?></code>
+											</span>
 										</div>
 										<div class="hcc-card-right">
 											<a href="<?php echo esc_url( $l1_live_url ); ?>" target="_blank" class="hcc-url-link">
@@ -876,26 +995,35 @@ class MegaMenuManager {
 											>
 												<span>▼ Subcategories (<?php echo count( $subgroups ); ?>)</span>
 											</button>
+											<button
+												type="button"
+												class="hcc-btn-del"
+												title="Remove Column"
+												onclick="hccDeleteColumn('<?php echo esc_js( $dept_key ); ?>', '<?php echo esc_js( $l1_key ); ?>')"
+											>
+												✕
+											</button>
 										</div>
 									</div>
 
 									<!-- Drawer: Subcategories (Level 2) and Leaf items (Level 3) -->
 									<div class="hcc-card-drawer">
 										<?php if ( empty( $subgroups ) ) : ?>
-											<p style="margin:0 0 10px; color:#8c8f94; font-size:13px; font-style:italic;">No subcategories yet.</p>
+											<p style="margin:0 0 10px; color:#8c8f94; font-size:13px; font-style:italic;">No subcategories yet. Choose an existing WooCommerce category below to add.</p>
 										<?php else : ?>
 											<table class="hcc-subgroup-table">
 												<thead>
 													<tr>
-														<th style="width: 100px;">Status</th>
-														<th style="width: 260px;">Subcategory Name</th>
+														<th style="width: 85px;">Status</th>
+														<th style="width: 330px;">Subcategory & WooCommerce Slug</th>
 														<th>Items / Storefront Link</th>
+														<th style="width: 50px; text-align: center;">Delete</th>
 													</tr>
 												</thead>
 												<tbody>
 													<?php foreach ( $subgroups as $l2_key => $l2_data ) :
 														$is_l2_hidden = ! empty( $l2_data['hidden'] );
-														$l2_slug      = self::make_slug( $l2_key );
+														$l2_slug      = ! empty( $l2_data['slug'] ) ? $l2_data['slug'] : self::make_slug( $l2_key );
 														$l2_live_url  = rtrim( $live_url, '/' ) . '/' . $dept_slug . '/' . $l1_slug . '/' . $l2_slug;
 														$items        = $l2_data['items'] ?? array();
 													?>
@@ -914,14 +1042,24 @@ class MegaMenuManager {
 																<input
 																	type="text"
 																	class="hcc-name-input"
-																	style="font-size:13px;"
+																	style="font-size:13px; width: 100%; max-width: 250px;"
 																	value="<?php echo esc_attr( $l2_data['name'] ?? $l2_key ); ?>"
 																	onchange="hccChangeL2Name('<?php echo esc_js( $dept_key ); ?>', '<?php echo esc_js( $l1_key ); ?>', '<?php echo esc_js( $l2_key ); ?>', this.value)"
 																/>
+																<div style="font-size:11px; color:#646970; margin-top:4px; display:flex; align-items:center; gap:5px;">
+																	<span>slug:</span>
+																	<input
+																		type="text"
+																		class="hcc-slug-inline-input"
+																		value="<?php echo esc_attr( $l2_slug ); ?>"
+																		title="Exact WooCommerce slug for storefront routing"
+																		onchange="hccChangeL2Slug('<?php echo esc_js( $dept_key ); ?>', '<?php echo esc_js( $l1_key ); ?>', '<?php echo esc_js( $l2_key ); ?>', this.value)"
+																	/>
+																</div>
 															</td>
 															<td>
 																<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 4px;">
-																	<span style="font-size:12px; color:#50575e; font-weight:600;"><?php echo count( $items ); ?> Products/Types</span>
+																	<span style="font-size:12px; color:#50575e; font-weight:600;"><?php echo count( $items ); ?> Leaf Items</span>
 																	<a href="<?php echo esc_url( $l2_live_url ); ?>" target="_blank" class="hcc-url-link" style="font-size:11px; padding:2px 7px;">
 																		<span>View Live ↗</span>
 																	</a>
@@ -947,31 +1085,55 @@ class MegaMenuManager {
 																	</div>
 																<?php endif; ?>
 															</td>
+															<td style="text-align: center;">
+																<button
+																	type="button"
+																	class="hcc-btn-del"
+																	title="Delete Subcategory"
+																	onclick="hccDeleteSubcategory('<?php echo esc_js( $dept_key ); ?>', '<?php echo esc_js( $l1_key ); ?>', '<?php echo esc_js( $l2_key ); ?>')"
+																>
+																	✕
+																</button>
+															</td>
 														</tr>
 													<?php endforeach; ?>
 												</tbody>
 											</table>
 										<?php endif; ?>
 
-										<button
-											type="button"
-											class="hcc-add-btn"
-											onclick="hccAddSubcategory('<?php echo esc_js( $dept_key ); ?>', '<?php echo esc_js( $l1_key ); ?>')"
-										>
-											+ Add Subcategory
-										</button>
+										<div style="display:flex; align-items:center; gap:10px; margin-top:12px; flex-wrap:wrap;">
+											<button
+												type="button"
+												class="hcc-add-btn"
+												style="margin-top:0;"
+												onclick="hccOpenCategoryPicker('l2', '<?php echo esc_js( $dept_key ); ?>', '<?php echo esc_js( $l1_key ); ?>')"
+											>
+												📦 + Add Subcategory from WooCommerce
+											</button>
+											<button
+												type="button"
+												class="button button-secondary"
+												style="font-size:12px; height:32px; line-height:30px;"
+												onclick="hccAutoImportChildCategories('<?php echo esc_js( $dept_key ); ?>', '<?php echo esc_js( $l1_key ); ?>')"
+												title="Auto-fetch and populate all WooCommerce child categories that belong to this column"
+											>
+												⚡ Auto-Import WooCommerce Subcategories
+											</button>
+										</div>
 									</div>
 								</div>
 							<?php endforeach; ?>
 
-							<button
-								type="button"
-								class="hcc-add-btn"
-								style="font-size:14px; padding:10px 20px; border-width:2px;"
-								onclick="hccAddColumn('<?php echo esc_js( $dept_key ); ?>')"
-							>
-								+ Add New Column to <?php echo esc_html( $dept_info['name'] ?? $dept_key ); ?>
-							</button>
+							<div style="margin-top:16px;">
+								<button
+									type="button"
+									class="hcc-add-btn"
+									style="font-size:14px; padding:10px 20px; border-width:2px; margin-top:0;"
+									onclick="hccOpenCategoryPicker('l1', '<?php echo esc_js( $dept_key ); ?>')"
+								>
+									📦 + Add Category Column from WooCommerce to <?php echo esc_html( $dept_info['name'] ?? $dept_key ); ?>
+								</button>
+							</div>
 						</div>
 					</div>
 				<?php endforeach; ?>
@@ -1044,8 +1206,86 @@ class MegaMenuManager {
 			</form>
 		</div>
 
+		<!-- WooCommerce Category Picker Modal Dialog -->
+		<div id="hcc_cat_picker_modal" class="hcc-modal-backdrop" style="display:none;" onclick="if(event.target===this) hccCloseCategoryPicker();">
+			<div class="hcc-modal-box">
+				<div class="hcc-modal-header">
+					<div>
+						<h3 id="hcc_picker_title" style="margin:0 0 4px; font-size:17px; color:#1d2327;">Choose WooCommerce Category</h3>
+						<p id="hcc_picker_subtitle" style="margin:0; font-size:13px; color:#50575e;">Select from existing categories in WooCommerce Products &rarr; Categories.</p>
+					</div>
+					<button type="button" class="hcc-modal-close" onclick="hccCloseCategoryPicker()">✕</button>
+				</div>
+
+				<div class="hcc-modal-tabs">
+					<button type="button" class="hcc-mtab-btn active" id="hcc_mtab_woo" onclick="hccSwitchPickerTab('woo')">
+						📦 Choose Existing WooCommerce Category
+					</button>
+					<button type="button" class="hcc-mtab-btn" id="hcc_mtab_custom" onclick="hccSwitchPickerTab('custom')">
+						✏️ Custom / Curated Item
+					</button>
+				</div>
+
+				<div class="hcc-modal-body">
+					<!-- TAB 1: Live WooCommerce Categories -->
+					<div id="hcc_pane_woo">
+						<div style="margin-bottom:12px;">
+							<input
+								type="text"
+								id="hcc_woo_search"
+								class="hcc-woo-cat-search"
+								placeholder="🔍 Type category name or slug to filter..."
+								onkeyup="hccFilterWooPicker(this.value)"
+							/>
+						</div>
+
+						<div class="hcc-woo-list" id="hcc_woo_list">
+							<!-- Populated dynamically by hccRenderWooCategories() -->
+						</div>
+
+						<div id="hcc_picker_selection_preview" style="display:none; margin-top:14px; padding:12px 14px; background:#f0f6fc; border:1px solid #c8e1ff; border-radius:6px;">
+							<div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+								<div>
+									<span style="font-size:11px; font-weight:700; color:#0E5C63; text-transform:uppercase; letter-spacing:0.5px;">Selected Category:</span>
+									<div style="font-size:14px; font-weight:700; color:#1d2327;" id="hcc_sel_cat_name">Category Name</div>
+									<div style="font-size:12px; color:#50575e; margin-top:2px;">
+										slug: <code id="hcc_sel_cat_slug" style="color:#0E5C63; font-weight:600;">category-slug</code> · ID: <span id="hcc_sel_cat_id">123</span> · Products: <span id="hcc_sel_cat_count">0</span>
+									</div>
+								</div>
+								<button type="button" class="button button-primary" style="background:#0E5C63; border-color:#0E5C63; font-weight:700; height:34px;" onclick="hccConfirmWooCategorySelection()">
+									✓ Add to Menu
+								</button>
+							</div>
+						</div>
+					</div>
+
+					<!-- TAB 2: Custom / Curated Item -->
+					<div id="hcc_pane_custom" style="display:none;">
+						<p style="margin:0 0 14px; font-size:13px; color:#50575e;">
+							Use this if you want to create a promotional banner, curated group, or custom heading that does not correspond to a WooCommerce category.
+						</p>
+						<div style="margin-bottom:12px;">
+							<label style="display:block; font-weight:600; font-size:13px; margin-bottom:4px;">Display Name:</label>
+							<input type="text" id="hcc_custom_name" class="hcc-name-input" style="width:100%; max-width:100%;" placeholder="e.g. Designer Favourites, New Trends" onkeyup="hccAutoSlugCustom(this.value)" />
+						</div>
+						<div style="margin-bottom:18px;">
+							<label style="display:block; font-weight:600; font-size:13px; margin-bottom:4px;">Slug (URL path):</label>
+							<input type="text" id="hcc_custom_slug" class="hcc-name-input" style="width:100%; max-width:100%; font-family:monospace;" placeholder="e.g. designer-favourites" />
+						</div>
+						<div style="text-align:right;">
+							<button type="button" class="button button-primary" style="background:#0E5C63; border-color:#0E5C63; font-weight:700; height:34px;" onclick="hccConfirmCustomSelection()">
+								+ Add Custom Item
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<script>
 			window.HCC_CONFIG = <?php echo wp_json_encode( $config ); ?>;
+			window.HCC_WOO_CATEGORIES = <?php echo wp_json_encode( $woo_category_list ); ?>;
+			window.HCC_PICKER_CONTEXT = { level: '', deptKey: '', l1Key: '', selectedCat: null };
 
 			function hccSwitchTab(tabId, btn) {
 				document.querySelectorAll('.hcc-tab-btn').forEach(function(b) { b.classList.remove('active'); });
@@ -1120,6 +1360,24 @@ class MegaMenuManager {
 				}
 			}
 
+			function hccChangeL1Slug(deptKey, l1Key, val) {
+				var dept = window.HCC_CONFIG.departments[deptKey];
+				if (dept && dept.categories && dept.categories[l1Key]) {
+					dept.categories[l1Key].slug = (val || '').trim().toLowerCase();
+				}
+			}
+
+			function hccDeleteColumn(deptKey, l1Key) {
+				if (!confirm('Are you sure you want to remove the column "' + l1Key + '" from ' + deptKey + '?')) {
+					return;
+				}
+				var dept = window.HCC_CONFIG.departments[deptKey];
+				if (dept && dept.categories && dept.categories[l1Key]) {
+					delete dept.categories[l1Key];
+					hccSaveForm();
+				}
+			}
+
 			/* Level 2 Sub-group Updates */
 			function hccToggleL2Vis(deptKey, l1Key, l2Key, btn) {
 				var dept = window.HCC_CONFIG.departments[deptKey];
@@ -1142,6 +1400,27 @@ class MegaMenuManager {
 				}
 			}
 
+			function hccChangeL2Slug(deptKey, l1Key, l2Key, val) {
+				var dept = window.HCC_CONFIG.departments[deptKey];
+				if (dept && dept.categories && dept.categories[l1Key]) {
+					var l1 = dept.categories[l1Key];
+					if (l1.subgroups && l1.subgroups[l2Key]) {
+						l1.subgroups[l2Key].slug = (val || '').trim().toLowerCase();
+					}
+				}
+			}
+
+			function hccDeleteSubcategory(deptKey, l1Key, l2Key) {
+				if (!confirm('Are you sure you want to remove the subcategory "' + l2Key + '"?')) {
+					return;
+				}
+				var dept = window.HCC_CONFIG.departments[deptKey];
+				if (dept && dept.categories && dept.categories[l1Key] && dept.categories[l1Key].subgroups) {
+					delete dept.categories[l1Key].subgroups[l2Key];
+					hccSaveForm();
+				}
+			}
+
 			/* Level 3 Leaf Item Updates */
 			function hccToggleL3Vis(deptKey, l1Key, l2Key, itIdx, chk) {
 				var dept = window.HCC_CONFIG.departments[deptKey];
@@ -1161,35 +1440,287 @@ class MegaMenuManager {
 				}
 			}
 
-			/* Add Column */
-			function hccAddColumn(deptKey) {
-				var name = prompt('Enter new category column name for ' + deptKey + ':');
-				if (!name || !name.trim()) return;
-				name = name.trim();
-				if (!window.HCC_CONFIG.departments[deptKey].categories) {
-					window.HCC_CONFIG.departments[deptKey].categories = {};
-				}
-				window.HCC_CONFIG.departments[deptKey].categories[name] = {
-					name: name,
-					hidden: false,
-					subgroups: {}
+			/* WooCommerce Category Picker Functions */
+			function hccOpenCategoryPicker(level, deptKey, l1Key) {
+				window.HCC_PICKER_CONTEXT = {
+					level: level,
+					deptKey: deptKey,
+					l1Key: l1Key || '',
+					selectedCat: null
 				};
+
+				var titleEl = document.getElementById('hcc_picker_title');
+				var subEl   = document.getElementById('hcc_picker_subtitle');
+				if (level === 'l1') {
+					titleEl.innerText = 'Add Category Column to ' + deptKey;
+					subEl.innerText   = 'Choose an existing WooCommerce category to add as a new column under ' + deptKey + '.';
+				} else {
+					titleEl.innerText = 'Add Subcategory under ' + l1Key;
+					subEl.innerText   = 'Choose an existing WooCommerce category with verified slug to link under ' + l1Key + '.';
+				}
+
+				hccSwitchPickerTab('woo');
+				document.getElementById('hcc_woo_search').value = '';
+				document.getElementById('hcc_custom_name').value = '';
+				document.getElementById('hcc_custom_slug').value = '';
+				document.getElementById('hcc_picker_selection_preview').style.display = 'none';
+
+				hccRenderWooCategories('');
+				document.getElementById('hcc_cat_picker_modal').style.display = 'flex';
+				setTimeout(function() {
+					document.getElementById('hcc_woo_search').focus();
+				}, 100);
+			}
+
+			function hccCloseCategoryPicker() {
+				document.getElementById('hcc_cat_picker_modal').style.display = 'none';
+				window.HCC_PICKER_CONTEXT.selectedCat = null;
+			}
+
+			function hccSwitchPickerTab(tab) {
+				var btnWoo = document.getElementById('hcc_mtab_woo');
+				var btnCustom = document.getElementById('hcc_mtab_custom');
+				var paneWoo = document.getElementById('hcc_pane_woo');
+				var paneCustom = document.getElementById('hcc_pane_custom');
+
+				if (tab === 'woo') {
+					btnWoo.classList.add('active');
+					btnCustom.classList.remove('active');
+					paneWoo.style.display = 'block';
+					paneCustom.style.display = 'none';
+				} else {
+					btnCustom.classList.add('active');
+					btnWoo.classList.remove('active');
+					paneCustom.style.display = 'block';
+					paneWoo.style.display = 'none';
+				}
+			}
+
+			function hccRenderWooCategories(query) {
+				var listEl = document.getElementById('hcc_woo_list');
+				listEl.innerHTML = '';
+				query = (query || '').toLowerCase().trim();
+
+				var cats = window.HCC_WOO_CATEGORIES || [];
+				var filtered = cats.filter(function(cat) {
+					if (!query) return true;
+					return cat.name.toLowerCase().indexOf(query) !== -1 || cat.slug.toLowerCase().indexOf(query) !== -1;
+				});
+
+				if (filtered.length === 0) {
+					listEl.innerHTML = '<div style="padding:20px; text-align:center; color:#8c8f94; font-size:13px;">No WooCommerce categories found matching "' + query + '".</div>';
+					return;
+				}
+
+				// Build lookup map for parent names
+				var catMap = {};
+				cats.forEach(function(c) { catMap[c.id] = c; });
+
+				filtered.forEach(function(cat) {
+					var itemEl = document.createElement('div');
+					itemEl.className = 'hcc-woo-cat-item';
+					itemEl.setAttribute('data-id', cat.id);
+
+					var parentLabel = '';
+					if (cat.parent && catMap[cat.parent]) {
+						parentLabel = '<span style="color:#8c8f94; font-size:11px; font-weight:normal;">' + catMap[cat.parent].name + ' &rsaquo; </span>';
+					}
+
+					itemEl.innerHTML = `
+						<div>
+							<div class="hcc-cat-label">${parentLabel}${cat.name}</div>
+							<div class="hcc-cat-slug">slug: <code>${cat.slug}</code> &middot; ID: ${cat.id}</div>
+						</div>
+						<div>
+							<span class="hcc-count-badge">${cat.count} products</span>
+						</div>
+					`;
+
+					itemEl.onclick = function() { hccSelectWooCategory(cat.id); };
+					itemEl.ondblclick = function() {
+						hccSelectWooCategory(cat.id);
+						hccConfirmWooCategorySelection();
+					};
+
+					listEl.appendChild(itemEl);
+				});
+			}
+
+			function hccFilterWooPicker(val) {
+				hccRenderWooCategories(val);
+			}
+
+			function hccSelectWooCategory(catId) {
+				var cats = window.HCC_WOO_CATEGORIES || [];
+				var cat = cats.find(function(c) { return c.id === catId; });
+				if (!cat) return;
+
+				window.HCC_PICKER_CONTEXT.selectedCat = cat;
+
+				// Highlight selected row
+				document.querySelectorAll('.hcc-woo-cat-item').forEach(function(el) {
+					el.classList.toggle('selected', parseInt(el.getAttribute('data-id'), 10) === catId);
+				});
+
+				// Update preview card
+				document.getElementById('hcc_sel_cat_name').innerText = cat.name;
+				document.getElementById('hcc_sel_cat_slug').innerText = cat.slug;
+				document.getElementById('hcc_sel_cat_id').innerText   = cat.id;
+				document.getElementById('hcc_sel_cat_count').innerText= cat.count;
+				document.getElementById('hcc_picker_selection_preview').style.display = 'block';
+			}
+
+			function hccConfirmWooCategorySelection() {
+				var cat = window.HCC_PICKER_CONTEXT.selectedCat;
+				if (!cat) {
+					alert('Please click to select a WooCommerce category first.');
+					return;
+				}
+
+				var level   = window.HCC_PICKER_CONTEXT.level;
+				var deptKey = window.HCC_PICKER_CONTEXT.deptKey;
+				var l1Key   = window.HCC_PICKER_CONTEXT.l1Key;
+
+				if (level === 'l1') {
+					if (!window.HCC_CONFIG.departments[deptKey].categories) {
+						window.HCC_CONFIG.departments[deptKey].categories = {};
+					}
+					window.HCC_CONFIG.departments[deptKey].categories[cat.name] = {
+						name: cat.name,
+						slug: cat.slug,
+						term_id: cat.id,
+						hidden: false,
+						subgroups: {}
+					};
+				} else if (level === 'l2') {
+					var l1 = window.HCC_CONFIG.departments[deptKey].categories[l1Key];
+					if (!l1.subgroups) l1.subgroups = {};
+					l1.subgroups[cat.name] = {
+						name: cat.name,
+						slug: cat.slug,
+						term_id: cat.id,
+						hidden: false,
+						items: []
+					};
+				}
+
+				hccCloseCategoryPicker();
 				hccSaveForm();
 			}
 
-			/* Add Subcategory */
-			function hccAddSubcategory(deptKey, l1Key) {
-				var name = prompt('Enter new subcategory name under ' + l1Key + ':');
-				if (!name || !name.trim()) return;
-				name = name.trim();
-				var l1 = window.HCC_CONFIG.departments[deptKey].categories[l1Key];
-				if (!l1.subgroups) l1.subgroups = {};
-				l1.subgroups[name] = {
-					name: name,
-					hidden: false,
-					items: []
-				};
+			function hccAutoSlugCustom(val) {
+				var clean = (val || '')
+					.toLowerCase()
+					.replace(/&/g, 'and')
+					.replace(/[^a-z0-9\s-]/g, '')
+					.trim()
+					.replace(/[\s_]+/g, '-')
+					.replace(/-+/g, '-');
+				document.getElementById('hcc_custom_slug').value = clean;
+			}
+
+			function hccConfirmCustomSelection() {
+				var name = document.getElementById('hcc_custom_name').value.trim();
+				var slug = document.getElementById('hcc_custom_slug').value.trim();
+
+				if (!name) {
+					alert('Please enter a display name for the custom item.');
+					return;
+				}
+				if (!slug) {
+					slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+				}
+
+				var level   = window.HCC_PICKER_CONTEXT.level;
+				var deptKey = window.HCC_PICKER_CONTEXT.deptKey;
+				var l1Key   = window.HCC_PICKER_CONTEXT.l1Key;
+
+				if (level === 'l1') {
+					if (!window.HCC_CONFIG.departments[deptKey].categories) {
+						window.HCC_CONFIG.departments[deptKey].categories = {};
+					}
+					window.HCC_CONFIG.departments[deptKey].categories[name] = {
+						name: name,
+						slug: slug,
+						hidden: false,
+						subgroups: {}
+					};
+				} else if (level === 'l2') {
+					var l1 = window.HCC_CONFIG.departments[deptKey].categories[l1Key];
+					if (!l1.subgroups) l1.subgroups = {};
+					l1.subgroups[name] = {
+						name: name,
+						slug: slug,
+						hidden: false,
+						items: []
+					};
+				}
+
+				hccCloseCategoryPicker();
 				hccSaveForm();
+			}
+
+			/* 1-Click Auto-Import of Child Categories from WooCommerce */
+			function hccAutoImportChildCategories(deptKey, l1Key) {
+				var l1 = window.HCC_CONFIG.departments[deptKey]?.categories?.[l1Key];
+				if (!l1) return;
+
+				var matchedCat = null;
+				if (l1.term_id) {
+					matchedCat = window.HCC_WOO_CATEGORIES.find(function(c) { return c.id === l1.term_id; });
+				}
+				if (!matchedCat && l1.slug) {
+					matchedCat = window.HCC_WOO_CATEGORIES.find(function(c) { return c.slug.toLowerCase() === l1.slug.toLowerCase(); });
+				}
+				if (!matchedCat) {
+					var cleanName = (l1.name || l1Key).toLowerCase().trim();
+					matchedCat = window.HCC_WOO_CATEGORIES.find(function(c) { return c.name.toLowerCase().trim() === cleanName; });
+				}
+
+				if (!matchedCat) {
+					alert('Could not auto-match "' + (l1.name || l1Key) + '" to a parent WooCommerce category.\n\nPlease click "+ Add Subcategory from WooCommerce" to select child categories directly.');
+					return;
+				}
+
+				var childCats = window.HCC_WOO_CATEGORIES.filter(function(c) {
+					return c.parent === matchedCat.id;
+				});
+
+				if (!childCats || childCats.length === 0) {
+					alert('No WooCommerce child categories found under "' + matchedCat.name + '" (slug: ' + matchedCat.slug + ').\n\nYou can add subcategories individually with "+ Add Subcategory from WooCommerce", or define child categories in WordPress under Products -> Categories.');
+					return;
+				}
+
+				if (!l1.subgroups) l1.subgroups = {};
+				var addedCount = 0;
+
+				childCats.forEach(function(child) {
+					var alreadyExists = Object.keys(l1.subgroups).some(function(k) {
+						var sub = l1.subgroups[k];
+						return (sub.term_id && sub.term_id === child.id) ||
+						       (sub.slug && sub.slug.toLowerCase() === child.slug.toLowerCase()) ||
+						       (sub.name && sub.name.toLowerCase() === child.name.toLowerCase()) ||
+						       k.toLowerCase() === child.name.toLowerCase();
+					});
+
+					if (!alreadyExists) {
+						l1.subgroups[child.name] = {
+							name: child.name,
+							slug: child.slug,
+							term_id: child.id,
+							hidden: false,
+							items: []
+						};
+						addedCount++;
+					}
+				});
+
+				if (addedCount > 0) {
+					alert('Successfully imported ' + addedCount + ' child categories from WooCommerce under "' + matchedCat.name + '"!');
+					hccSaveForm();
+				} else {
+					alert('All ' + childCats.length + ' child categories from WooCommerce are already present under "' + matchedCat.name + '".');
+				}
 			}
 
 			function hccSaveForm() {

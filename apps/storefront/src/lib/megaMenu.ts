@@ -15,6 +15,7 @@ export type MegaMenuTaxonomy = Record<string, Record<string, Record<string, stri
 export interface MegaMenuData {
   navItems: MegaMenuNavItem[];
   taxonomy: MegaMenuTaxonomy;
+  slugMap?: Record<string, string>;
   updatedAt?: number;
 }
 
@@ -86,6 +87,7 @@ export async function getMegaMenuData(): Promise<MegaMenuData> {
             return {
               navItems: data.navItems,
               taxonomy: data.taxonomy,
+              slugMap: data.slugMap || {},
               updatedAt: data.updatedAt || Date.now(),
             };
           }

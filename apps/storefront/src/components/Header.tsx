@@ -107,6 +107,13 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
         };
       });
   }, [navCategories, taxonomyData]);
+
+  const resolveSlug = React.useCallback((name: string) => {
+    if (!name) return '';
+    const map = liveMenuData?.slugMap || {};
+    return map[name] || map[name.toLowerCase()] || slugifyCategory(name);
+  }, [liveMenuData]);
+
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [drillStack, setDrillStack] = useState<DrillStep[]>([ROOT_STEP]);
   const currentStep = drillStack[drillStack.length - 1] || ROOT_STEP;
@@ -454,7 +461,7 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
                       <div className={`category-dropdown-compact ${isHovered ? 'is-active' : ''}`}>
                         <ul className="compact-dropdown-list">
                           {l1Keys.map((l1Name) => {
-                            const l1Slug = slugifyCategory(l1Name);
+                            const l1Slug = resolveSlug(l1Name);
                             return (
                               <li key={l1Name}>
                                 <Link
@@ -479,7 +486,7 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
                       <div className={`category-dropdown-panel ${isHovered ? 'is-active' : ''}`}>
                         <div className={`dropdown-cols-grid ${l1Keys.length <= 4 ? 'grid-cols-4' : 'grid-cols-6'}`}>
                           {l1Keys.map((l1Name) => {
-                            const l1Slug = slugifyCategory(l1Name);
+                            const l1Slug = resolveSlug(l1Name);
                             const l2Map = subData[l1Name] || {};
                             const l2Names = Object.keys(l2Map);
                             const hasL2 = l2Names.length > 0;
@@ -502,7 +509,7 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
                                 {hasL2 ? (
                                   <ul className="dropdown-l2-list">
                                     {l2Names.map((l2Name) => {
-                                      const l2Slug = slugifyCategory(l2Name);
+                                      const l2Slug = resolveSlug(l2Name);
                                       return (
                                         <li key={l2Name}>
                                           <Link
@@ -755,7 +762,7 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
                       const l1Keys = Object.keys(subData);
 
                       return l1Keys.map((l1Name) => {
-                        const l1Slug = slugifyCategory(l1Name);
+                        const l1Slug = resolveSlug(l1Name);
                         const l2Map = subData[l1Name] || {};
                         const l2Keys = Object.keys(l2Map);
                         const hasL2 = l2Keys.length > 0;
@@ -822,7 +829,7 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
                       const l2Keys = Object.keys(l2Map);
 
                       return l2Keys.map((l2Name) => {
-                        const l2Slug = slugifyCategory(l2Name);
+                        const l2Slug = resolveSlug(l2Name);
                         return (
                           <Link
                             key={l2Name}
@@ -870,7 +877,7 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
 
                         <div className="mobile-drill-leaves-list">
                           {l3List.map((l3Name) => {
-                            const l3Slug = slugifyCategory(l3Name);
+                            const l3Slug = resolveSlug(l3Name);
                             const leafHref = `/${currentStep.deptSlug}/${currentStep.l1Slug}/${currentStep.l2Slug}/${l3Slug}`;
 
                             return (
