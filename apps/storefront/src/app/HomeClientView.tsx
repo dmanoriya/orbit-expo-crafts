@@ -230,9 +230,10 @@ export default function HomeClientView({
   const heroBgImage =
     hpData.hero_bg_image &&
     !hpData.hero_bg_image.includes('category-outdoor.jpg') &&
-    !hpData.hero_bg_image.includes('category-sofas.jpg')
+    !hpData.hero_bg_image.includes('category-sofas.jpg') &&
+    !hpData.hero_bg_image.includes('hero_section_bg.webp')
       ? hpData.hero_bg_image
-      : '/hero_section_bg.webp';
+      : '/hero_bg.webp';
 
   const catTitle =
     !hpData.cat_title || hpData.cat_title === 'Ten categories. Every piece a room needs.'

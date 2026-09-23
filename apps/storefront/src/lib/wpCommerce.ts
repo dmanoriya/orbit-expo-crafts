@@ -997,7 +997,7 @@ export const DEFAULT_HOMEPAGE_DATA: HomepageData = {
   hero_accent: 'beyond trends.',
   hero_lede: 'Handcrafted furniture and décor, shaped by enduring materials and thoughtful detail.',
   hero_bg_mode: 'image',
-  hero_bg_image: '/hero_section_bg.webp',
+  hero_bg_image: '/hero_bg.webp',
   hero_bg_color: '#F5F2EC',
   hero_overlay_opacity: '0',
   hero_cta1_text: 'EXPLORE THE COLLECTION',
