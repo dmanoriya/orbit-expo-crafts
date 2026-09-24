@@ -17,6 +17,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Tall rectangular mirror with solid acacia frame.",
+      "description": "Tall rectangular mirror with solid acacia frame. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 80cm W x 6cm D x 180cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-mirror_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-mirror_2.webp"
@@ -87,6 +88,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Long wall shelf in solid acacia.",
+      "description": "Long wall shelf in solid acacia. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 168cm W x 20cm D x 15cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-shelf_1.webp",
       "gallery": [],
       "categories": [
@@ -155,6 +157,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Bevel-edged wall mirror with wide dark wood frame.",
+      "description": "Bevel-edged wall mirror with wide dark wood frame. Crafted in Mango, Colonial finish. From the Pawan collection. Dimensions: 120cm W x 3cm D x 90cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-mirror-frame_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-mirror-frame_2.webp"
@@ -225,6 +228,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Rectangular wall mirror with rustic acacia frame.",
+      "description": "Rectangular wall mirror with rustic acacia frame. Crafted in Acacia, Lime finish finish. From the Shora collection. Dimensions: 99.1cm W x 5.1cm D x 83.8cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-mirror_1.webp",
       "gallery": [],
       "categories": [
@@ -293,6 +297,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Large rectangular mirror framed in patchwork teak with a black iron edge.",
+      "description": "Large rectangular mirror framed in patchwork teak with a black iron edge. Crafted in Iron, Teak Wood, MDF, Natural Lacquered finish. From the Teak collection. Dimensions: 80cm W x 140cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/teak-mirror_1.webp",
       "gallery": [],
       "categories": [
@@ -363,6 +368,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Rectangular wall mirror with dark mango frame.",
+      "description": "Rectangular wall mirror with dark mango frame. Crafted in Mango, Max Dark finish. From the Labh collection. Dimensions: 78cm W x 3cm D x 110cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/labh-mirror_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/labh-mirror_2.webp"
@@ -433,6 +439,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Rectangular mirror with a dimple-carved top rail and angled wooden frame.",
+      "description": "Rectangular mirror with a dimple-carved top rail and angled wooden frame. Crafted in Solid Wood, Brushed Steel, Dark Walnut Brown finish. From the Pawan collection.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-mirror-1007_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-mirror-1007_2.webp"
@@ -501,6 +508,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Set of three wall mirrors with solid acacia frames.",
+      "description": "Set of three wall mirrors with solid acacia frames. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 195cm W x 2.5cm D x 90cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-set-of-mirror-three_1.webp",
       "gallery": [],
       "categories": [
@@ -569,6 +577,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Rectangular mirror with wide textured frame in lime sand-blasted mango.",
+      "description": "Rectangular mirror with wide textured frame in lime sand-blasted mango. Crafted in Mango, Lime Sand Blast finish. From the Driftwood collection. Dimensions: 152.4cm W x 10cm D x 81cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-rectangular-mirror_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-rectangular-mirror_2.webp",
@@ -640,6 +649,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Round mirror with wide textured frame in lime sand-blasted mango.",
+      "description": "Round mirror with wide textured frame in lime sand-blasted mango. Crafted in Mango, Lime Sand Blast finish. From the Driftwood collection. Dimensions: 90cm W x 10cm D x 90cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-round-mirror_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-round-mirror_2.webp"
@@ -710,6 +720,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Set of two nesting side tables in chunky solid acacia with exposed corner joinery.",
+      "description": "Set of two nesting side tables in chunky solid acacia with exposed corner joinery. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 55.5cm W x 45cm D x 46cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-miniset_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-miniset_2.webp",
@@ -790,6 +801,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Rectangular tray with sunburst-pattern base in lime sand-blasted mango.",
+      "description": "Rectangular tray with sunburst-pattern base in lime sand-blasted mango. Crafted in Mango, Lime Sand Blast finish. From the Driftwood collection. Dimensions: 59.436cm W x 45.72cm D x 10.16cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-rectangular-tray_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-rectangular-tray_2.webp",
@@ -866,6 +878,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Round tray with sunburst-pattern base in lime sand-blasted mango.",
+      "description": "Round tray with sunburst-pattern base in lime sand-blasted mango. Crafted in Mango, Lime Sand Blast finish. From the Driftwood collection. Dimensions: 33.02cm W x 33.02cm D x 6.35cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-round-topper-tray_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-round-topper-tray_2.webp"
@@ -941,6 +954,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Compact round drum side table with mango reeding and a white marble top.",
+      "description": "Compact round drum side table with mango reeding and a white marble top. Crafted in Solid Mango Wood, White Marble Top, Metal, Whitewashed Reeded Mango finish. From the Reed collection. Dimensions: 40cm W x 40cm D x 45cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/reed-lamp-table_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/reed-lamp-table_2.webp",
@@ -1023,6 +1037,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Square corner table with lower shelf and exposed joinery.",
+      "description": "Square corner table with lower shelf and exposed joinery. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 60cm W x 60cm D x 40cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-corner-table_1.webp",
       "gallery": [],
       "categories": [
@@ -1096,6 +1111,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Round-top folding loft table on X-legs in lime sand-blasted mango.",
+      "description": "Round-top folding loft table on X-legs in lime sand-blasted mango. Crafted in Mango, Lime Sand Blast finish. From the Driftwood collection. Dimensions: 71cm W x 71.12cm D x 64cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-loft-table_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-loft-table_2.webp",
@@ -1172,6 +1188,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Square side table with dimple-carved top on brushed-steel L-legs.",
+      "description": "Square side table with dimple-carved top on brushed-steel L-legs. Crafted in Solid Wood, Brushed Steel, Dark Walnut Brown finish. From the Pawan collection. Dimensions: 50cm W x 50cm D x 45cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-side-table-1002_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-side-table-1002_2.webp",
@@ -1250,6 +1267,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Square iron-framed side table with inset wood top and splayed arched legs.",
+      "description": "Square iron-framed side table with inset wood top and splayed arched legs. Crafted in Solid Wood, Iron, Natural Wood with Black Iron finish. From the Pawan collection. Dimensions: 55cm W x 55cm D x 45cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-side-table-1017_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-side-table-1017_2.webp",
@@ -1327,6 +1345,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Large rectangular solid acacia dining table.",
+      "description": "Large rectangular solid acacia dining table. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 220cm W x 110cm D x 78cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-dining-table-6076_1.webp",
       "gallery": [],
       "categories": [
@@ -1400,6 +1419,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Rectangular solid acacia dining table.",
+      "description": "Rectangular solid acacia dining table. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 190cm W x 90cm D x 78cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-dining-table-6077_1.webp",
       "gallery": [],
       "categories": [
@@ -1473,6 +1493,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Solid drum side table in lime sand-blasted mango.",
+      "description": "Solid drum side table in lime sand-blasted mango. Crafted in Mango, Lime Sand Blast finish. From the Driftwood collection. Dimensions: 30cm W x 30cm D x 47cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-drum-table_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-drum-table_2.webp"
@@ -1548,6 +1569,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Square dining table in solid acacia with waterfall-style legs.",
+      "description": "Square dining table in solid acacia with waterfall-style legs. Crafted in Acacia, Lime finish finish. From the Shora collection. Dimensions: 144.8cm W x 144.8cm D x 76.2cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-dining-table-4281_1.webp",
       "gallery": [],
       "categories": [
@@ -1621,6 +1643,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Square dining table in solid acacia with chunky block legs.",
+      "description": "Square dining table in solid acacia with chunky block legs. Crafted in Acacia, Lime finish finish. From the Shora collection. Dimensions: 139.7cm W x 139.7cm D x 76.2cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-dining-table-4297_1.webp",
       "gallery": [],
       "categories": [
@@ -1694,6 +1717,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Patchwork teak dining table with a black iron-edged top and solid slab legs.",
+      "description": "Patchwork teak dining table with a black iron-edged top and solid slab legs. Crafted in Iron, Teak Wood, MDF, Natural Lacquered finish. From the Teak collection. Dimensions: 195cm W x 100cm D x 76cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/teak-dining-table_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/teak-dining-table_2.webp"
@@ -1771,6 +1795,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Iron-framed dining table with inset wood top panel and sculpted V-shaped iron legs with arched mesh braces.",
+      "description": "Iron-framed dining table with inset wood top panel and sculpted V-shaped iron legs with arched mesh braces. Crafted in Solid Wood, Iron, Natural Wood with Black Iron finish. From the Pawan collection. Dimensions: 180cm W x 90cm D x 76cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-dining-table-1013_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-dining-table-1013_2.webp",
@@ -1848,6 +1873,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Rectangular dark acacia dining table.",
+      "description": "Rectangular dark acacia dining table. Crafted in Acacia, Max finish. From the Pluto collection. Dimensions: 152cm W x 90cm D x 78cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pluto-dining-table_1.webp",
       "gallery": [],
       "categories": [
@@ -1921,6 +1947,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Rectangular white marble top with softly rounded corners, set on two sculptural reeded mango-wood pedestal legs.",
+      "description": "Rectangular white marble top with softly rounded corners, set on two sculptural reeded mango-wood pedestal legs. Crafted in Solid Mango Wood, White Marble Top, Metal, Whitewashed Reeded Mango finish. From the Reed collection. Dimensions: 200cm W x 100cm D x 76cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/reed-200cm-dining-table_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/reed-200cm-dining-table_2.webp",
@@ -2003,6 +2030,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Rectangular dining table with rounded block legs.",
+      "description": "Rectangular dining table with rounded block legs. Crafted in Mango, Colonial finish. From the Pawan collection. Dimensions: 157cm W x 89cm D x 77cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-dining-table_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-dining-table_2.webp"
@@ -2078,6 +2106,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Chamfered-edge solid wood top with a carved dimple band, on angular brushed-steel L-legs.",
+      "description": "Chamfered-edge solid wood top with a carved dimple band, on angular brushed-steel L-legs. Crafted in Solid Wood, Brushed Steel, Dark Walnut Brown finish. From the Pawan collection. Dimensions: 180cm W x 90cm D x 76cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-dining-table-1001_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-dining-table-1001_2.webp",
@@ -2157,6 +2186,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Console with two ribbed drawers and lower shelf.",
+      "description": "Console with two ribbed drawers and lower shelf. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 110cm W x 32cm D x 85cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-console_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-console_2.webp"
@@ -2232,6 +2262,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Rectangular solid acacia dining table on block legs.",
+      "description": "Rectangular solid acacia dining table on block legs. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 200cm W x 95cm D x 77cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-dining-table_1.webp",
       "gallery": [],
       "categories": [
@@ -2305,6 +2336,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Rectangular mango dining table with chunky legs and banded top.",
+      "description": "Rectangular mango dining table with chunky legs and banded top. Crafted in Mango, Max Dark finish. From the Labh collection. Dimensions: 180cm W x 90cm D x 78cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/labh-table-dining_1.webp",
       "gallery": [],
       "categories": [
@@ -2378,6 +2410,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Narrow console with dimple-carved top on brushed-steel L-legs.",
+      "description": "Narrow console with dimple-carved top on brushed-steel L-legs. Crafted in Solid Wood, Brushed Steel, Dark Walnut Brown finish. From the Pawan collection.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-console-table-1009_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-console-table-1009_2.webp",
@@ -2453,6 +2486,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Slim console with a white marble top on two reeded mango-wood slab legs.",
+      "description": "Slim console with a white marble top on two reeded mango-wood slab legs. Crafted in Solid Mango Wood, White Marble Top, Metal, Whitewashed Reeded Mango finish. From the Reed collection. Dimensions: 120cm W x 40cm D x 77cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/reed-console-table_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/reed-console-table_2.webp",
@@ -2540,6 +2574,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Waterfall-leg console table in solid acacia.",
+      "description": "Waterfall-leg console table in solid acacia. Crafted in Acacia, Lime finish finish. From the Shora collection. Dimensions: 129.5cm W x 43.2cm D x 76.2cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-console_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-console_2.webp"
@@ -2615,6 +2650,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Console table with two drawers and lower shelf, dark mango.",
+      "description": "Console table with two drawers and lower shelf, dark mango. Crafted in Mango, Max Dark finish. From the Labh collection. Dimensions: 110cm W x 40cm D x 76cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/labh-table-console_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/labh-table-console_2.webp"
@@ -2690,6 +2726,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Iron-framed console with inset wood top on double V-shaped iron legs.",
+      "description": "Iron-framed console with inset wood top on double V-shaped iron legs. Crafted in Solid Wood, Iron, Natural Wood with Black Iron finish. From the Pawan collection. Dimensions: 150cm W x 50cm D x 76cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-console-1014_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-console-1014_2.webp",
@@ -2767,6 +2804,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Console table with rounded block legs.",
+      "description": "Console table with rounded block legs. Crafted in Mango, Colonial finish. From the Pawan collection. Dimensions: 120cm W x 44cm D x 77cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-console-table_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-console-table_2.webp"
@@ -2842,6 +2880,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Console table with two drawers and lower shelf.",
+      "description": "Console table with two drawers and lower shelf. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 110cm W x 33cm D x 36cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-console-two-drawer_1.webp",
       "gallery": [],
       "categories": [
@@ -2915,6 +2954,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Square patchwork-teak coffee table with drawers on opposite sides and an inset top tray, on a black iron frame.",
+      "description": "Square patchwork-teak coffee table with drawers on opposite sides and an inset top tray, on a black iron frame. Crafted in Iron, Teak Wood, MDF, Natural Lacquered finish. From the Teak collection. Dimensions: 80cm W x 80cm D x 45cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/teak-coffee-table_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/teak-coffee-table_2.webp",
@@ -2993,6 +3033,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Large square coffee table with lower shelf and exposed joinery.",
+      "description": "Large square coffee table with lower shelf and exposed joinery. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 110cm W x 110cm D x 36cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-coffee-table-6071_1.webp",
       "gallery": [],
       "categories": [
@@ -3066,6 +3107,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Rectangular coffee table with lower shelf and exposed joinery.",
+      "description": "Rectangular coffee table with lower shelf and exposed joinery. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 140cm W x 80cm D x 40cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-coffee-table-6072_1.webp",
       "gallery": [],
       "categories": [
@@ -3139,6 +3181,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Centre table with nesting side units on castors and lower shelf.",
+      "description": "Centre table with nesting side units on castors and lower shelf. Crafted in Acacia, Max finish. From the Pluto collection. Dimensions: 109cm W x 60cm D x 46cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pluto-center-table_1.webp",
       "gallery": [],
       "categories": [
@@ -3212,6 +3255,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Round drum coffee table wrapped in mango reeding with a white marble top.",
+      "description": "Round drum coffee table wrapped in mango reeding with a white marble top. Crafted in Solid Mango Wood, White Marble Top, Metal, Whitewashed Reeded Mango finish. From the Reed collection. Dimensions: 80cm W x 80cm D x 40cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/reed-coffee-table_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/reed-coffee-table_2.webp",
@@ -3295,6 +3339,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Square coffee table in solid acacia with waterfall-style legs.",
+      "description": "Square coffee table in solid acacia with waterfall-style legs. Crafted in Acacia, Lime finish finish. From the Shora collection. Dimensions: 68.6cm W x 68.6cm D x 40.6cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-coffee-table_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-coffee-table_2.webp"
@@ -3370,6 +3415,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Rectangular coffee table with rounded block legs.",
+      "description": "Rectangular coffee table with rounded block legs. Crafted in Mango, Colonial finish. From the Pawan collection. Dimensions: 120cm W x 70cm D x 40cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-coffee-table_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-coffee-table_2.webp",
@@ -3446,6 +3492,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Low coffee table with dimple-carved top on brushed-steel L-legs.",
+      "description": "Low coffee table with dimple-carved top on brushed-steel L-legs. Crafted in Solid Wood, Brushed Steel, Dark Walnut Brown finish. From the Pawan collection.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-coffee-table-1008_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-coffee-table-1008_2.webp"
@@ -3519,6 +3566,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Low iron-framed coffee table with inset wood top on V-shaped iron legs.",
+      "description": "Low iron-framed coffee table with inset wood top on V-shaped iron legs. Crafted in Solid Wood, Iron, Natural Wood with Black Iron finish. From the Pawan collection. Dimensions: 130cm W x 60cm D x 45cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-coffee-table-1016_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-coffee-table-1016_2.webp",
@@ -3596,6 +3644,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Solid block coffee table in lime sand-blasted mango.",
+      "description": "Solid block coffee table in lime sand-blasted mango. Crafted in Mango, Lime Sand Blast finish. From the Driftwood collection. Dimensions: 91.44cm W x 60.96cm D x 45.72cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-coffee-table_1.webp",
       "gallery": [],
       "categories": [
@@ -3669,6 +3718,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Square block coffee table with open centre, lime sand-blasted mango.",
+      "description": "Square block coffee table with open centre, lime sand-blasted mango. Crafted in Mango, Lime Sand Blast finish. From the Driftwood collection. Dimensions: 99.06cm W x 99.06cm D x 45.72cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-coffee-table-square_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-coffee-table-square_2.webp",
@@ -3745,6 +3795,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Coffee table with two drawers and open shelf, dark mango.",
+      "description": "Coffee table with two drawers and open shelf, dark mango. Crafted in Mango, Max Dark finish. From the Labh collection. Dimensions: 140cm W x 70cm D x 40cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/labh-table-coffee-2-drawers_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/labh-table-coffee-2-drawers_2.webp",
@@ -3823,6 +3874,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Round log-slice seat on crossed black metal legs.",
+      "description": "Round log-slice seat on crossed black metal legs. Crafted in Solid Wood, Iron. From the Pawan Stools collection. Dimensions: 38.1cm W x 38.1cm D x 46cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2054_1.webp",
       "gallery": [],
       "categories": [
@@ -3856,10 +3908,8 @@
       "material": "Solid Wood, Iron",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "38.1cm W x 38.1cm D x 46cm H",
       "packing": "Export-grade carton, knock-down where possible",
@@ -3894,6 +3944,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Rectangular coffee table with drawer.",
+      "description": "Rectangular coffee table with drawer. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 140cm W x 70cm D x 45cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-coffee-table_1.webp",
       "gallery": [],
       "categories": [
@@ -3967,6 +4018,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Low black iron stool with ring stretcher and dark wood seat.",
+      "description": "Low black iron stool with ring stretcher and dark wood seat. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 46cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2046_1.webp",
       "gallery": [],
       "categories": [
@@ -4000,10 +4052,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 46cm H",
       "packing": "Export-grade carton, knock-down where possible",
@@ -4038,6 +4088,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Recycled wood seat on a cast-style black iron crank base, height adjustable.",
+      "description": "Recycled wood seat on a cast-style black iron crank base, height adjustable. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 46-56cm H (height adjustable).",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2048_1.webp",
       "gallery": [],
       "categories": [
@@ -4071,10 +4122,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 46-56cm H (height adjustable)",
       "packing": "Export-grade carton, knock-down where possible",
@@ -4109,6 +4158,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Upcycled oil-drum stool with printed metal body and galvanised top.",
+      "description": "Upcycled oil-drum stool with printed metal body and galvanised top. Crafted in Upcycled Metal Drum. From the Pawan Stools collection. Dimensions: 27.9cm W x 27.9cm D x 38cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2050_1.webp",
       "gallery": [],
       "categories": [
@@ -4141,10 +4191,8 @@
       "material": "Upcycled Metal Drum",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "27.9cm W x 27.9cm D x 38cm H",
       "packing": "Export-grade carton, knock-down where possible",
@@ -4179,6 +4227,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Iron-framed bench with inset wood top on V-shaped iron legs.",
+      "description": "Iron-framed bench with inset wood top on V-shaped iron legs. Crafted in Solid Wood, Iron, Natural Wood with Black Iron finish. From the Pawan collection.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-bench-1015_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-bench-1015_2.webp",
@@ -4253,6 +4302,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Matching patchwork teak bench with iron-edged top and slab legs.",
+      "description": "Matching patchwork teak bench with iron-edged top and slab legs. Crafted in Iron, Teak Wood, MDF, Natural Lacquered finish. From the Teak collection. Dimensions: 180cm W x 45cm D x 45cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/teak-bench_1.webp",
       "gallery": [],
       "categories": [
@@ -4328,6 +4378,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Long solid acacia dining bench.",
+      "description": "Long solid acacia dining bench. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 190cm W x 38cm D x 46cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-bench_1.webp",
       "gallery": [],
       "categories": [
@@ -4401,6 +4452,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Solid acacia dining bench with block legs.",
+      "description": "Solid acacia dining bench with block legs. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 170cm W x 38cm D x 45cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-bench_1.webp",
       "gallery": [],
       "categories": [
@@ -4474,6 +4526,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Solid mango dining bench with chunky L-shaped legs.",
+      "description": "Solid mango dining bench with chunky L-shaped legs. Crafted in Mango, Max Dark finish. From the Labh collection. Dimensions: 154cm W x 40cm D x 45cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/labh-bench_1.webp",
       "gallery": [],
       "categories": [
@@ -4547,6 +4600,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Dining bench matching the 1001 table: dimple-carved top on steel L-legs.",
+      "description": "Dining bench matching the 1001 table: dimple-carved top on steel L-legs. Crafted in Solid Wood, Brushed Steel, Dark Walnut Brown finish. From the Pawan collection. Dimensions: 155cm W x 40cm D x 45cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-bench-1010_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-bench-1010_2.webp",
@@ -4624,6 +4678,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Wood seat on splayed wooden legs with black iron screw column and footring.",
+      "description": "Wood seat on splayed wooden legs with black iron screw column and footring. Crafted in Solid Wood, Iron. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 61-76cm H (height adjustable).",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2053_1.webp",
       "gallery": [],
       "categories": [
@@ -4657,10 +4712,8 @@
       "material": "Solid Wood, Iron",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 61-76cm H (height adjustable)",
       "packing": "Export-grade carton, knock-down where possible",
@@ -4695,6 +4748,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Dark wood seat on splayed wooden legs with black screw column and ring footrest.",
+      "description": "Dark wood seat on splayed wooden legs with black screw column and ring footrest. Crafted in Solid Wood, Iron. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 61-76cm H (height adjustable).",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2058_1.webp",
       "gallery": [],
       "categories": [
@@ -4728,10 +4782,8 @@
       "material": "Solid Wood, Iron",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 61-76cm H (height adjustable)",
       "packing": "Export-grade carton, knock-down where possible",
@@ -4766,6 +4818,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Rustic three-leg stool with dark wood seat and distressed painted legs.",
+      "description": "Rustic three-leg stool with dark wood seat and distressed painted legs. Crafted in Solid Wood, Iron. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 61cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2066_1.webp",
       "gallery": [],
       "categories": [
@@ -4799,10 +4852,8 @@
       "material": "Solid Wood, Iron",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 61cm H",
       "packing": "Export-grade carton, knock-down where possible",
@@ -4837,6 +4888,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Black seat on a champagne wire-frame base, height adjustable.",
+      "description": "Black seat on a champagne wire-frame base, height adjustable. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 61-76cm H (height adjustable).",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2049_1.webp",
       "gallery": [],
       "categories": [
@@ -4870,10 +4922,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 61-76cm H (height adjustable)",
       "packing": "Export-grade carton, knock-down where possible",
@@ -4908,6 +4958,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Grey metal four-leg bar stool with square black seat and stretchers.",
+      "description": "Grey metal four-leg bar stool with square black seat and stretchers. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 76cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2051_1.webp",
       "gallery": [],
       "categories": [
@@ -4941,10 +4992,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 76cm H",
       "packing": "Export-grade carton, knock-down where possible",
@@ -4979,6 +5028,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Wood swivel seat on black bent-iron legs with wooden feet, height adjustable.",
+      "description": "Wood swivel seat on black bent-iron legs with wooden feet, height adjustable. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 61-76cm H (height adjustable).",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2052_1.webp",
       "gallery": [],
       "categories": [
@@ -5012,10 +5062,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 61-76cm H (height adjustable)",
       "packing": "Export-grade carton, knock-down where possible",
@@ -5050,6 +5098,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Dark wood seat on gold-finish metal A-frame legs.",
+      "description": "Dark wood seat on gold-finish metal A-frame legs. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 61cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2045_1.webp",
       "gallery": [],
       "categories": [
@@ -5083,10 +5132,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 61cm H",
       "packing": "Export-grade carton, knock-down where possible",
@@ -5121,6 +5168,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Black iron four-leg stool with ring footrest and metal-rimmed seat.",
+      "description": "Black iron four-leg stool with ring footrest and metal-rimmed seat. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 76cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2047_1.webp",
       "gallery": [],
       "categories": [
@@ -5154,10 +5202,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 76cm H",
       "packing": "Export-grade carton, knock-down where possible",
@@ -5192,6 +5238,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Industrial adjustable stool: dark wood seat on a grey metal frame with square footrest.",
+      "description": "Industrial adjustable stool: dark wood seat on a grey metal frame with square footrest. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 61-76cm H (height adjustable).",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2041_1.webp",
       "gallery": [],
       "categories": [
@@ -5225,10 +5272,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 61-76cm H (height adjustable)",
       "packing": "Export-grade carton, knock-down where possible",
@@ -5263,6 +5308,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Industrial adjustable stool with dark wood seat and grey metal curved-leg base with footring.",
+      "description": "Industrial adjustable stool with dark wood seat and grey metal curved-leg base with footring. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 61-76cm H (height adjustable).",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2042_1.webp",
       "gallery": [],
       "categories": [
@@ -5296,10 +5342,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 61-76cm H (height adjustable)",
       "packing": "Export-grade carton, knock-down where possible",
@@ -5334,6 +5378,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Wood swivel seat on a black angular crossed-leg iron frame, height adjustable.",
+      "description": "Wood swivel seat on a black angular crossed-leg iron frame, height adjustable. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 61-76cm H (height adjustable).",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2043_1.webp",
       "gallery": [],
       "categories": [
@@ -5367,10 +5412,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 61-76cm H (height adjustable)",
       "packing": "Export-grade carton, knock-down where possible",
@@ -5405,6 +5448,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Recycled multicolour wood seat on a black iron four-leg base with square footrest.",
+      "description": "Recycled multicolour wood seat on a black iron four-leg base with square footrest. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 74cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2044_1.webp",
       "gallery": [],
       "categories": [
@@ -5438,10 +5482,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 74cm H",
       "packing": "Export-grade carton, knock-down where possible",
@@ -5476,6 +5518,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Grey-washed wood seat on a black iron tripod with footring.",
+      "description": "Grey-washed wood seat on a black iron tripod with footring. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 69cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2039_1.webp",
       "gallery": [],
       "categories": [
@@ -5509,10 +5552,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 69cm H",
       "packing": "Export-grade carton, knock-down where possible",
@@ -5547,6 +5588,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Wood seat on a brass-finish hairpin-loop frame.",
+      "description": "Wood seat on a brass-finish hairpin-loop frame. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 61cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2040_1.webp",
       "gallery": [],
       "categories": [
@@ -5580,10 +5622,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 61cm H",
       "packing": "Export-grade carton, knock-down where possible",
@@ -5618,6 +5658,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Striped wood seat on a chrome screw column with looped hairpin base and footring.",
+      "description": "Striped wood seat on a chrome screw column with looped hairpin base and footring. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 61-76cm H (height adjustable).",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2036_1.webp",
       "gallery": [],
       "categories": [
@@ -5651,10 +5692,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 61-76cm H (height adjustable)",
       "packing": "Export-grade carton, knock-down where possible",
@@ -5689,6 +5728,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Dark wood seat on a silver metal frame with crossed loop legs and footring.",
+      "description": "Dark wood seat on a silver metal frame with crossed loop legs and footring. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 61-76cm H (height adjustable).",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2037_1.webp",
       "gallery": [],
       "categories": [
@@ -5722,10 +5762,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 61-76cm H (height adjustable)",
       "packing": "Export-grade carton, knock-down where possible",
@@ -5760,6 +5798,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Dark wood seat on a champagne metal four-leg frame with ring footrest.",
+      "description": "Dark wood seat on a champagne metal four-leg frame with ring footrest. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 69cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2038_1.webp",
       "gallery": [],
       "categories": [
@@ -5793,10 +5832,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 69cm H",
       "packing": "Export-grade carton, knock-down where possible",
@@ -5831,6 +5868,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Square solid wood seat on a grey metal four-leg frame with stretchers.",
+      "description": "Square solid wood seat on a grey metal four-leg frame with stretchers. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 38.1cm W x 30.5cm D x 61cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2033_1.webp",
       "gallery": [],
       "categories": [
@@ -5864,10 +5902,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "38.1cm W x 30.5cm D x 61cm H",
       "packing": "Export-grade carton, knock-down where possible",
@@ -5902,6 +5938,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Metal-topped screw-adjustable seat on curved solid wood legs with black-dipped feet.",
+      "description": "Metal-topped screw-adjustable seat on curved solid wood legs with black-dipped feet. Crafted in Solid Wood, Iron. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 61-76cm H (height adjustable).",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2034_1.webp",
       "gallery": [],
       "categories": [
@@ -5935,10 +5972,8 @@
       "material": "Solid Wood, Iron",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 61-76cm H (height adjustable)",
       "packing": "Export-grade carton, knock-down where possible",
@@ -5973,6 +6008,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Dark wood swivel seat on a black iron tripod base with footring, height adjustable.",
+      "description": "Dark wood swivel seat on a black iron tripod base with footring, height adjustable. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 61-76cm H (height adjustable).",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2035_1.webp",
       "gallery": [],
       "categories": [
@@ -6006,10 +6042,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 61-76cm H (height adjustable)",
       "packing": "Export-grade carton, knock-down where possible",
@@ -6044,6 +6078,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Black iron-frame dining chair with patchwork teak seat and back panel.",
+      "description": "Black iron-frame dining chair with patchwork teak seat and back panel. Crafted in Iron, Teak Wood, MDF, Natural Lacquered finish. From the Teak collection. Dimensions: 45cm W x 46cm D x 85cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/teak-chair_1.webp",
       "gallery": [],
       "categories": [
@@ -6119,6 +6154,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Round wood seat on a reeded wooden column with black iron tripod base, height adjustable.",
+      "description": "Round wood seat on a reeded wooden column with black iron tripod base, height adjustable. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 61-76cm H (height adjustable).",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2031_1.webp",
       "gallery": [],
       "categories": [
@@ -6152,10 +6188,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 61-76cm H (height adjustable)",
       "packing": "Export-grade carton, knock-down where possible",
@@ -6190,6 +6224,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Swivel stool with distressed grey wood seat on a silver looped metal frame with footrest, height adjustable.",
+      "description": "Swivel stool with distressed grey wood seat on a silver looped metal frame with footrest, height adjustable. Crafted in Iron, Solid Wood. From the Pawan Stools collection. Dimensions: 33cm W x 33cm D x 61-76cm H (height adjustable).",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-stool-2032_1.webp",
       "gallery": [],
       "categories": [
@@ -6223,10 +6258,8 @@
       "material": "Iron, Solid Wood",
       "material2": "",
       "segment": "Hotel Guestroom",
-      "color": "Natural Oil",
-      "availableColors": [
-        "Natural Oil"
-      ],
+      "color": "",
+      "availableColors": [],
       "variations": [],
       "dimensions": "33cm W x 33cm D x 61-76cm H (height adjustable)",
       "packing": "Export-grade carton, knock-down where possible",
@@ -6261,6 +6294,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Same slatted dimple-back chair with a padded upholstered seat.",
+      "description": "Same slatted dimple-back chair with a padded upholstered seat. Crafted in Solid Wood, Brushed Steel, Dark Walnut Brown finish. From the Pawan collection. Dimensions: 45cm W x 45cm D x 90cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-chair-upholstered-seat-1006a_1.webp",
       "gallery": [],
       "categories": [
@@ -6335,6 +6369,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "A-frame splayed-back dining chair with upholstered seat.",
+      "description": "A-frame splayed-back dining chair with upholstered seat. Crafted in Acacia, Lime finish finish. From the Shora collection. Dimensions: 45.7cm W x 43.2cm D x 96.5cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-chair-4289_1.webp",
       "gallery": [],
       "categories": [
@@ -6408,6 +6443,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "A-frame splayed-back dining chair with solid wood seat.",
+      "description": "A-frame splayed-back dining chair with solid wood seat. Crafted in Acacia, Lime finish finish. From the Shora collection. Dimensions: 45.7cm W x 43.2cm D x 96.5cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-chair-4291_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-chair-4291_2.webp",
@@ -6485,6 +6521,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "High slatted-back dining chair with solid seat.",
+      "description": "High slatted-back dining chair with solid seat. Crafted in Mango, Colonial finish. From the Pawan collection. Dimensions: 47cm W x 47cm D x 105cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-chair_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-chair_2.webp",
@@ -6561,6 +6598,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Solid wood dining chair with slatted back and dimple-carved centre splat, wooden seat.",
+      "description": "Solid wood dining chair with slatted back and dimple-carved centre splat, wooden seat. Crafted in Solid Wood, Brushed Steel, Dark Walnut Brown finish. From the Pawan collection. Dimensions: 45cm W x 45cm D x 90cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-chair-1006_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-chair-1006_2.webp",
@@ -6639,6 +6677,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Dining chair with vertical-strip slatted back and solid seat.",
+      "description": "Dining chair with vertical-strip slatted back and solid seat. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 45cm W x 46cm D x 103cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-chair-strip_1.webp",
       "gallery": [],
       "categories": [
@@ -6712,6 +6751,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "High slatted-back dining chair in dark mango.",
+      "description": "High slatted-back dining chair in dark mango. Crafted in Mango, Max Dark finish. From the Labh collection. Dimensions: 47cm W x 47cm D x 105cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/labh-chair_1.webp",
       "gallery": [],
       "categories": [
@@ -6785,6 +6825,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "TV dresser with door, drawers and open shelf.",
+      "description": "TV dresser with door, drawers and open shelf. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 156cm W x 50cm D x 55cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-tv-dresser-6068_1.webp",
       "gallery": [],
       "categories": [
@@ -6858,6 +6899,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "TV dresser with two drawers under an open shelf.",
+      "description": "TV dresser with two drawers under an open shelf. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 126cm W x 50cm D x 55cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-tv-dresser-6069_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-tv-dresser-6069_2.webp"
@@ -6933,6 +6975,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Tall cabinet with two upper doors, four ribbed drawers and two lower doors in solid acacia.",
+      "description": "Tall cabinet with two upper doors, four ribbed drawers and two lower doors in solid acacia. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 120cm W x 48cm D x 200cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-chest-4-drawers-4-doors_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-chest-4-drawers-4-doors_2.webp",
@@ -7015,6 +7058,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Reeded media unit with two doors, central open shelving with cable cut-out, marble top and black metal legs.",
+      "description": "Reeded media unit with two doors, central open shelving with cable cut-out, marble top and black metal legs. Crafted in Solid Mango Wood, White Marble Top, Metal, Whitewashed Reeded Mango finish. From the Reed collection. Dimensions: 135cm W x 45.7cm D x 55cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/reed-tv-unit_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/reed-tv-unit_2.webp",
@@ -7100,6 +7144,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Long TV console with open shelves and two drawers.",
+      "description": "Long TV console with open shelves and two drawers. Crafted in Acacia, Lime finish finish. From the Shora collection. Dimensions: 160cm W x 45.7cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-tv-console_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-tv-console_2.webp"
@@ -7175,6 +7220,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Low TV unit with two drawers and open centre shelf in patchwork teak on a black iron base.",
+      "description": "Low TV unit with two drawers and open centre shelf in patchwork teak on a black iron base. Crafted in Iron, Teak Wood, MDF, Natural Lacquered finish. From the Teak collection. Dimensions: 150cm W x 50cm D x 50cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/teak-tv-plasma_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/teak-tv-plasma_2.webp",
@@ -7253,6 +7299,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Angled-side TV unit with open shelf, drawer and dimple-carved top on steel feet.",
+      "description": "Angled-side TV unit with open shelf, drawer and dimple-carved top on steel feet. Crafted in Solid Wood, Brushed Steel, Dark Walnut Brown finish. From the Pawan collection.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-tv-unit-1004_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-tv-unit-1004_2.webp",
@@ -7328,6 +7375,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Low TV console with drawers and open centre.",
+      "description": "Low TV console with drawers and open centre. Crafted in Acacia, Max finish. From the Pluto collection. Dimensions: 150cm W x 50cm D x 30cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pluto-tv-console-6108_1.webp",
       "gallery": [],
       "categories": [
@@ -7401,6 +7449,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "TV console with two doors and open centre niche.",
+      "description": "TV console with two doors and open centre niche. Crafted in Acacia, Max finish. From the Pluto collection. Dimensions: 120cm W x 45cm D x 60cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pluto-tv-console-6125_1.webp",
       "gallery": [],
       "categories": [
@@ -7474,6 +7523,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Low TV unit with two drawers, open shelf and door, in figured solid wood with a curved metal band.",
+      "description": "Low TV unit with two drawers, open shelf and door, in figured solid wood with a curved metal band. Crafted in Solid Wood, Iron, Natural Wood with Black Iron finish. From the Pawan collection. Dimensions: 137cm W x 42cm D x 40cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-plasma-1019_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-plasma-1019_2.webp",
@@ -7552,6 +7602,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Long TV dresser with two centre drawers and side doors, brass hardware.",
+      "description": "Long TV dresser with two centre drawers and side doors, brass hardware. Crafted in Mango, Colonial finish. From the Pawan collection. Dimensions: 200cm W x 54cm D x 65cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-tv-dresser-4001_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-tv-dresser-4001_2.webp",
@@ -7628,6 +7679,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "TV dresser with glazed door, open niche and drawers.",
+      "description": "TV dresser with glazed door, open niche and drawers. Crafted in Mango, Colonial finish. From the Pawan collection. Dimensions: 120cm W x 49cm D x 77cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-tv-dresser-4003_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-tv-dresser-4003_2.webp"
@@ -7703,6 +7755,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "High board with doors, drawers and open centre wine cubbies.",
+      "description": "High board with doors, drawers and open centre wine cubbies. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 170cm W x 45cm D x 140cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-high-board_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-high-board_2.webp"
@@ -7778,6 +7831,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "TV console with centre drawer and open shelf between doors.",
+      "description": "TV console with centre drawer and open shelf between doors. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 170cm W x 50cm D x 52cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-tv-console_1.webp",
       "gallery": [],
       "categories": [
@@ -7851,6 +7905,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Low TV dresser with open shelving and one door, dark mango.",
+      "description": "Low TV dresser with open shelving and one door, dark mango. Crafted in Mango, Max Dark finish. From the Labh collection. Dimensions: 170cm W x 45cm D x 47cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/labh-tv-dresser_1.webp",
       "gallery": [],
       "categories": [
@@ -7924,6 +7979,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Sideboard with two doors and two centre drawers in reclaimed-look patchwork teak, black iron frame and open top shelf.",
+      "description": "Sideboard with two doors and two centre drawers in reclaimed-look patchwork teak, black iron frame and open top shelf. Crafted in Iron, Teak Wood, MDF, Natural Lacquered finish. From the Teak collection. Dimensions: 135cm W x 45cm D x 90cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/teak-side-board_1.webp",
       "gallery": [],
       "categories": [
@@ -7999,6 +8055,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Long three-door buffet in solid acacia.",
+      "description": "Long three-door buffet in solid acacia. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 175cm W x 45cm D x 70cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-buffet-lower-6078_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-buffet-lower-6078_2.webp"
@@ -8074,6 +8131,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Two-door buffet in solid acacia.",
+      "description": "Two-door buffet in solid acacia. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 120cm W x 45cm D x 70cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-buffet-lower-6079_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-buffet-lower-6079_2.webp"
@@ -8149,6 +8207,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "High sideboard with bank of drawers and doors in dark acacia.",
+      "description": "High sideboard with bank of drawers and doors in dark acacia. Crafted in Acacia, Max finish. From the Pluto collection. Dimensions: 156cm W x 45cm D x 140cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pluto-high-board_1.webp",
       "gallery": [],
       "categories": [
@@ -8222,6 +8281,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Fully reeded curved-front sideboard with two doors and two centre drawers, brass bar handles, white marble top and slim black metal legs.",
+      "description": "Fully reeded curved-front sideboard with two doors and two centre drawers, brass bar handles, white marble top and slim black metal legs. Crafted in Solid Mango Wood, White Marble Top, Metal, Whitewashed Reeded Mango finish. From the Reed collection. Dimensions: 149.7cm W x 49.6cm D x 78.6cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/reed-wide-sideboard_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/reed-wide-sideboard_2.webp",
@@ -8307,6 +8367,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Buffet with doors, centre wine-rack cubbies and open top shelf.",
+      "description": "Buffet with doors, centre wine-rack cubbies and open top shelf. Crafted in Acacia, Lime finish finish. From the Shora collection. Dimensions: 134.6cm W x 45.7cm D x 78.7cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-buffet_1.webp",
       "gallery": [],
       "categories": [
@@ -8380,6 +8441,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Four-door lattice-front credenza in lime sand-blasted mango.",
+      "description": "Four-door lattice-front credenza in lime sand-blasted mango. Crafted in Mango, Lime Sand Blast finish. From the Driftwood collection. Dimensions: 183cm W x 51cm D x 80cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-lattice-credenza_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-lattice-credenza_2.webp",
@@ -8456,6 +8518,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Sideboard with two doors and three centre drawers in figured solid wood with a curved metal band.",
+      "description": "Sideboard with two doors and three centre drawers in figured solid wood with a curved metal band. Crafted in Solid Wood, Iron, Natural Wood with Black Iron finish. From the Pawan collection. Dimensions: 124cm W x 42cm D x 80cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-side-board-1020_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-side-board-1020_2.webp",
@@ -8534,6 +8597,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Bedside table with a patchwork-teak drawer, open top shelf and black iron frame.",
+      "description": "Bedside table with a patchwork-teak drawer, open top shelf and black iron frame. Crafted in Iron, Teak Wood, MDF, Natural Lacquered finish. From the Teak collection. Dimensions: 50cm W x 45cm D x 60cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/teak-bed-side_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/teak-bed-side_2.webp",
@@ -8612,6 +8676,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Buffet with three drawers and one door.",
+      "description": "Buffet with three drawers and one door. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 100cm W x 44cm D x 80cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-buffet-3-drawers-1-door_1.webp",
       "gallery": [],
       "categories": [
@@ -8685,6 +8750,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Buffet (hutch lower part) with two drawers over two doors.",
+      "description": "Buffet (hutch lower part) with two drawers over two doors. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 112cm W x 45cm D x 91cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-hutch-lower-part_1.webp",
       "gallery": [],
       "categories": [
@@ -8758,6 +8824,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Bedside table with top drawer and two open shelves.",
+      "description": "Bedside table with top drawer and two open shelves. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 45cm W x 40cm D x 50cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-bed-side-plain_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-bed-side-plain_2.webp",
@@ -8841,6 +8908,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Low wide bed-side table with open shelf.",
+      "description": "Low wide bed-side table with open shelf. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 120cm W x 45cm D x 50cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-bed-table_1.webp",
       "gallery": [],
       "categories": [
@@ -8914,6 +8982,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Compact bedside cabinet with single door in lime-finished acacia.",
+      "description": "Compact bedside cabinet with single door in lime-finished acacia. Crafted in Acacia, Lime finish finish. From the Shora collection. Dimensions: 45.7cm W x 35.6cm D x 40.6cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-bed-side_1.webp",
       "gallery": [],
       "categories": [
@@ -8987,6 +9056,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Long dresser with three ribbed centre drawers between two doors.",
+      "description": "Long dresser with three ribbed centre drawers between two doors. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 216cm W x 45cm D x 90cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-dresser-6060_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-dresser-6060_2.webp",
@@ -9070,6 +9140,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Three-door dresser with ribbed rattan-look drawer fronts above.",
+      "description": "Three-door dresser with ribbed rattan-look drawer fronts above. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 187cm W x 45cm D x 90cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-dresser-6061_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-dresser-6061_2.webp",
@@ -9154,6 +9225,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Bedside table with one drawer and open shelf.",
+      "description": "Bedside table with one drawer and open shelf. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 45cm W x 40cm D x 50cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-bed-side-one-drawer_1.webp",
       "gallery": [],
       "categories": [
@@ -9227,6 +9299,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Dresser with two-door cupboard and bank of drawers in dark acacia.",
+      "description": "Dresser with two-door cupboard and bank of drawers in dark acacia. Crafted in Acacia, Max finish. From the Pluto collection. Dimensions: 132cm W x 45cm D x 88cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pluto-dresser_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pluto-dresser_2.webp",
@@ -9306,6 +9379,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Large solid acacia trunk / blanket chest with twin lift-up lids.",
+      "description": "Large solid acacia trunk / blanket chest with twin lift-up lids. Crafted in Acacia, Lime finish finish. From the Shora collection. Dimensions: 129.5cm W x 68.6cm D x 40.6cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-trunk_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-trunk_2.webp",
@@ -9385,6 +9459,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Six-drawer patchwork teak chest set in a black iron frame with an open top shelf.",
+      "description": "Six-drawer patchwork teak chest set in a black iron frame with an open top shelf. Crafted in Iron, Teak Wood, MDF, Natural Lacquered finish. From the Teak collection. Dimensions: 90cm W x 45cm D x 100cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/teak-chest-of-drawer_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/teak-chest-of-drawer_2.webp"
@@ -9462,6 +9537,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Six-drawer chest in figured solid wood wrapped in a curved dark metal band, with bar pulls.",
+      "description": "Six-drawer chest in figured solid wood wrapped in a curved dark metal band, with bar pulls. Crafted in Solid Wood, Iron, Natural Wood with Black Iron finish. From the Pawan collection. Dimensions: 124cm W x 42cm D x 80cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-drawer-chest-1018_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-drawer-chest-1018_2.webp",
@@ -9540,6 +9616,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Long dresser with three centre drawers and side doors, brass campaign-style hardware.",
+      "description": "Long dresser with three centre drawers and side doors, brass campaign-style hardware. Crafted in Mango, Colonial finish. From the Pawan collection. Dimensions: 200cm W x 49cm D x 85cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-dresser_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-dresser_2.webp",
@@ -9625,6 +9702,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Tall chest with open top niche, two-door cupboard and three drawers.",
+      "description": "Tall chest with open top niche, two-door cupboard and three drawers. Crafted in Acacia, Max finish. From the Pluto collection. Dimensions: 35cm W x 50cm D x 130cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pluto-chest_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pluto-chest_2.webp",
@@ -9707,6 +9785,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Wide dresser with four centre drawers flanked by two doors.",
+      "description": "Wide dresser with four centre drawers flanked by two doors. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 200cm W x 45cm D x 90cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-dresser-4-drawers-2-doors_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-dresser-4-drawers-2-doors_2.webp",
@@ -9788,6 +9867,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Demilune (half-round) three-drawer chest in lime sand-blasted mango with round knobs.",
+      "description": "Demilune (half-round) three-drawer chest in lime sand-blasted mango with round knobs. Crafted in Mango, Lime Sand Blast finish. From the Driftwood collection. Dimensions: 91.44cm W x 50.8cm D x 104.14cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-three-drawer-chest_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-three-drawer-chest_2.webp",
@@ -9869,6 +9949,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Wide mango-wood dresser with four centre drawers between two doors, dark finish.",
+      "description": "Wide mango-wood dresser with four centre drawers between two doors, dark finish. Crafted in Mango, Max Dark finish. From the Labh collection. Dimensions: 180cm W x 45cm D x 85cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/labh-dresser-2-doors-4-drawers_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/labh-dresser-2-doors-4-drawers_2.webp",
@@ -9956,6 +10037,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Two-piece buffet: two-door glazed hutch over two-door base.",
+      "description": "Two-piece buffet: two-door glazed hutch over two-door base. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 120cm W x 35cm D x 145cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-buffet-2-pieces-6075_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-buffet-2-pieces-6075_2.webp"
@@ -10026,6 +10108,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Glass cabinet with glazed upper section, drawers and lower doors.",
+      "description": "Glass cabinet with glazed upper section, drawers and lower doors. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 126cm W x 37cm D x 160cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-glass-cabinet_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-glass-cabinet_2.webp"
@@ -10096,6 +10179,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Tall six-drawer chest in solid acacia with bar handles.",
+      "description": "Tall six-drawer chest in solid acacia with bar handles. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 63cm W x 44cm D x 139cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-chest-6-drawers_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-chest-6-drawers_2.webp",
@@ -10174,6 +10258,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Tall display cabinet with glazed upper door and lower doors.",
+      "description": "Tall display cabinet with glazed upper door and lower doors. Crafted in Acacia, Max finish. From the Pluto collection. Dimensions: 60cm W x 40cm D x 160cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pluto-entertainment_1.webp",
       "gallery": [],
       "categories": [
@@ -10242,6 +10327,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Two-door reeded highboard with rounded sides, brass bar handles, internal shelves and two drawers, on black metal legs with brass caps.",
+      "description": "Two-door reeded highboard with rounded sides, brass bar handles, internal shelves and two drawers, on black metal legs with brass caps. Crafted in Solid Mango Wood, White Marble Top, Metal, Whitewashed Reeded Mango finish. From the Reed collection. Dimensions: 101.3cm W x 49.6cm D x 120cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/reed-highboard_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/reed-highboard_2.webp",
@@ -10328,6 +10414,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Two-piece buffet: three-door glazed hutch over three-door base.",
+      "description": "Two-piece buffet: three-door glazed hutch over three-door base. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 175cm W x 35cm D x 145cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-buffet-2-pieces-6074_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-buffet-2-pieces-6074_2.webp"
@@ -10398,6 +10485,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Glass-door vitrine / display cabinet in dark mango.",
+      "description": "Glass-door vitrine / display cabinet in dark mango. Crafted in Mango, Max Dark finish. From the Labh collection. Dimensions: 110cm W x 50cm D x 145cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/labh-vitrine_1.webp",
       "gallery": [],
       "categories": [
@@ -10466,6 +10554,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "DVD cabinet with four drawers and brass hardware on tapered legs.",
+      "description": "DVD cabinet with four drawers and brass hardware on tapered legs. Crafted in Mango, Colonial finish. From the Pawan collection. Dimensions: 66cm W x 36cm D x 94cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-dvd_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-dvd_2.webp",
@@ -10537,6 +10626,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Tall vitrine with glazed upper doors and four drawers, brass hardware.",
+      "description": "Tall vitrine with glazed upper doors and four drawers, brass hardware. Crafted in Mango, Colonial finish. From the Pawan collection. Dimensions: 100cm W x 50cm D x 200cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-vitrine_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-vitrine_2.webp"
@@ -10607,6 +10697,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "High board with glazed upper doors over lower cupboard.",
+      "description": "High board with glazed upper doors over lower cupboard. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 112cm W x 40cm D x 155cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-high-board_1.webp",
       "gallery": [],
       "categories": [
@@ -10675,6 +10766,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Two-piece hutch with glazed upper cabinet over drawers and doors.",
+      "description": "Two-piece hutch with glazed upper cabinet over drawers and doors. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 112cm W x 45cm D x 202cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-hutch_1.webp",
       "gallery": [],
       "categories": [
@@ -10743,6 +10835,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Two-door cabinet with lattice door fronts in lime sand-blasted mango.",
+      "description": "Two-door cabinet with lattice door fronts in lime sand-blasted mango. Crafted in Mango, Lime Sand Blast finish. From the Driftwood collection. Dimensions: 91cm W x 51cm D x 80cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-lattice-2-doors-cabinet_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/driftwood-lattice-2-doors-cabinet_2.webp",
@@ -10814,6 +10907,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Tall open bookshelf in solid acacia (wider version).",
+      "description": "Tall open bookshelf in solid acacia (wider version). Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 90cm W x 33cm D x 200cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-book-shelf-6067_1.webp",
       "gallery": [],
       "categories": [
@@ -10887,6 +10981,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Compact CD/DVD rack with open shelves and drawer.",
+      "description": "Compact CD/DVD rack with open shelves and drawer. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 32cm W x 30cm D x 63cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-cd-dvd-rack_1.webp",
       "gallery": [],
       "categories": [
@@ -10955,6 +11050,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Tall display cabinet with glazed door, drawer and lower door.",
+      "description": "Tall display cabinet with glazed door, drawer and lower door. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 69.5cm W x 39.5cm D x 181cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-entertainment-1-drawer-2-doors_1.webp",
       "gallery": [],
       "categories": [
@@ -11023,6 +11119,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Tall open-shelf entertainment unit with two drawers, dark mango.",
+      "description": "Tall open-shelf entertainment unit with two drawers, dark mango. Crafted in Mango, Max Dark finish. From the Labh collection. Dimensions: 65cm W x 40cm D x 180cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/labh-entertainment_1.webp",
       "gallery": [],
       "categories": [
@@ -11096,6 +11193,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Tapered open bookcase with a dimple-carved drawer, on steel feet.",
+      "description": "Tapered open bookcase with a dimple-carved drawer, on steel feet. Crafted in Solid Wood, Brushed Steel, Dark Walnut Brown finish. From the Pawan collection.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-bookcase-1005_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-bookcase-1005_2.webp",
@@ -11171,6 +11269,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Tall narrow open bookshelf in solid acacia.",
+      "description": "Tall narrow open bookshelf in solid acacia. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 60cm W x 33cm D x 200cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-book-shelf-6066_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-book-shelf-6066_2.webp"
@@ -11246,6 +11345,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Tall two-door glazed bar cabinet in dark acacia.",
+      "description": "Tall two-door glazed bar cabinet in dark acacia. Crafted in Acacia, Max finish. From the Pluto collection. Dimensions: 103cm W x 28cm D x 122cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pluto-bar_1.webp",
       "gallery": [],
       "categories": [
@@ -11319,6 +11419,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Tall wine cabinet with nine bottle cubbies above three ribbed drawers.",
+      "description": "Tall wine cabinet with nine bottle cubbies above three ribbed drawers. Crafted in Acacia, Lime Cream finish. From the Thar collection. Dimensions: 52cm W x 35cm D x 124cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-bar_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/thar-bar_2.webp"
@@ -11394,6 +11495,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Tall open bookshelf in solid acacia.",
+      "description": "Tall open bookshelf in solid acacia. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 90cm W x 32cm D x 200cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-book-shelf_1.webp",
       "gallery": [],
       "categories": [
@@ -11467,6 +11569,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Tall wine rack cabinet with bottle cubbies over drawer and door.",
+      "description": "Tall wine rack cabinet with bottle cubbies over drawer and door. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 52cm W x 37cm D x 125cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-wine-rack_1.webp",
       "gallery": [],
       "categories": [
@@ -11540,6 +11643,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Bar cabinet with glazed doors opening to bottle racks, glass holders and drawers.",
+      "description": "Bar cabinet with glazed doors opening to bottle racks, glass holders and drawers. Crafted in Mango, Colonial finish. From the Pawan collection. Dimensions: 103cm W x 38cm D x 123cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-bar_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-bar_2.webp",
@@ -11618,6 +11722,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Folding bar cabinet with glazed doors that open out to reveal bottle racks and shelves.",
+      "description": "Folding bar cabinet with glazed doors that open out to reveal bottle racks and shelves. Crafted in Mango, Colonial finish. From the Pawan collection. Dimensions: 90cm W x 48.5cm D x 123cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-folding-bar_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/pawan-folding-bar_2.webp",
@@ -11695,6 +11800,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Double bed in chunky solid acacia with low panelled headboard and slatted base.",
+      "description": "Double bed in chunky solid acacia with low panelled headboard and slatted base. Crafted in Acacia, Lime finish finish. From the Shora collection.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-double-bed_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-double-bed_2.webp"
@@ -11762,6 +11868,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Single bed in chunky solid acacia with low panelled headboard and slatted base.",
+      "description": "Single bed in chunky solid acacia with low panelled headboard and slatted base. Crafted in Acacia, Lime finish finish. From the Shora collection.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-single-bed_1.webp",
       "gallery": [
         "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/shora-single-bed_2.webp"
@@ -11829,6 +11936,7 @@
       "stockStatus": "instock",
       "inStock": true,
       "shortDescription": "Solid acacia bed frame with panelled headboard and footboard and slatted base.",
+      "description": "Solid acacia bed frame with panelled headboard and footboard and slatted base. Crafted in Acacia, Desert finish. From the Bala collection. Dimensions: 220cm W x 168cm D x 104cm H.",
       "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/bala-bed_1.webp",
       "gallery": [],
       "categories": [

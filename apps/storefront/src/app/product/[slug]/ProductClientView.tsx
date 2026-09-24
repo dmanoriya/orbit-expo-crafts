@@ -55,11 +55,18 @@ export default function ProductClientView({
     initialProduct.sku || initialProduct.id || ''
   );
   // Dynamically resolve product colors from WooCommerce backend payload
-  const activeColorList = (product as any).availableColors && (product as any).availableColors.length > 0
-    ? (product as any).availableColors
-    : product.color ? [product.color] : FINISHES.map((f) => f.n);
+  const hasExplicitFinish = Boolean(
+    ((product as any).availableColors && (product as any).availableColors.length > 0) ||
+    (product.color && product.color.trim() !== '' && product.color !== 'Natural Oil')
+  );
 
-  const [selectedFinish, setSelectedFinish] = useState(activeColorList[0] || FINISHES[0].n);
+  const activeColorList: string[] = hasExplicitFinish
+    ? ((product as any).availableColors && (product as any).availableColors.length > 0
+        ? (product as any).availableColors
+        : [product.color!])
+    : [];
+
+  const [selectedFinish, setSelectedFinish] = useState(activeColorList[0] || 'Custom to order');
   const [quantity, setQuantity] = useState(initialProduct.moq || 1);
   const [activePrice, setActivePrice] = useState<number | undefined>(initialProduct.price);
 
@@ -163,20 +170,36 @@ export default function ProductClientView({
 
             {/* FINISHES SECTION */}
             <div className="pdp-finish-section" style={{ marginBottom: 24 }}>
-              <label className="mono" style={{ fontSize: 11, letterSpacing: '0.12em', color: 'var(--ink-3)', display: 'block', marginBottom: 10, textTransform: 'uppercase' }}>
-                FINISH — {displaySwatches.length} VARIATIONS ({selectedFinish || displaySwatches[0]?.n})
-              </label>
-              <div className="swatches" style={{ margin: 0 }}>
-                {displaySwatches.map((f: any) => (
-                  <button
-                    key={f.n}
-                    className={`sw ${selectedFinish === f.n ? 'on' : ''}`}
-                    style={{ background: f.c }}
-                    title={f.n}
-                    onClick={() => handleFinishSelect(f.n)}
-                  />
-                ))}
-              </div>
+              {hasExplicitFinish && displaySwatches.length > 0 ? (
+                <>
+                  <label className="mono" style={{ fontSize: 11, letterSpacing: '0.12em', color: 'var(--ink-3)', display: 'block', marginBottom: 10, textTransform: 'uppercase' }}>
+                    FINISH — {displaySwatches.length} VARIATION{displaySwatches.length > 1 ? 'S' : ''} ({selectedFinish || displaySwatches[0]?.n})
+                  </label>
+                  <div className="swatches" style={{ margin: 0 }}>
+                    {displaySwatches.map((f: any) => (
+                      <button
+                        key={f.n}
+                        className={`sw ${selectedFinish === f.n ? 'on' : ''}`}
+                        style={{ background: f.c }}
+                        title={f.n}
+                        onClick={() => handleFinishSelect(f.n)}
+                      />
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <label className="mono" style={{ fontSize: 11, letterSpacing: '0.12em', color: 'var(--ink-3)', display: 'block', marginBottom: 8, textTransform: 'uppercase' }}>
+                    FINISH — CUSTOMISABLE TO ORDER
+                  </label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: '#FAF7F2', padding: '10px 14px', borderRadius: 4, border: '1px solid var(--line)' }}>
+                    <span style={{ fontSize: 15 }}>🎨</span>
+                    <span style={{ fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.4 }}>
+                      Raw natural wood, commercial wood stains, or powder-coat finishes customisable to your project spec.
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* SPECIFICATION TABLE */}
@@ -200,6 +223,10 @@ export default function ProductClientView({
                 <tr>
                   <td>PRIMARY MATERIAL</td>
                   <td>{product.material || 'Solid Wood'}</td>
+                </tr>
+                <tr>
+                  <td>FINISH / COATING</td>
+                  <td>{hasExplicitFinish ? (selectedFinish || product.color) : 'Customisable to project spec'}</td>
                 </tr>
                 {product.material2 && product.material2.trim() !== '' && product.material2 !== 'None' && product.material2 !== 'Brass Detailing' && (
                   <tr>
@@ -266,13 +293,13 @@ export default function ProductClientView({
                   onClick={() =>
                     addEnquiry({
                       id: activeSku || product.id,
-                      name: `${product.name} (${selectedFinish})`,
+                      name: hasExplicitFinish ? `${product.name} (${selectedFinish})` : product.name,
                       catName: product.catName,
                       q: quantity,
                       image: activeImage || product.image,
                       moq: product.moq,
                       material: product.material,
-                      finish: selectedFinish,
+                      finish: hasExplicitFinish ? selectedFinish : 'Custom to order',
                       dims: Array.isArray(product.dims) ? product.dims.join(' × ') + ' cm' : product.dims,
                       unitPrice: activePrice || product.price || 0,
                       currency: product.currency || 'INR',
@@ -295,7 +322,7 @@ export default function ProductClientView({
                       image: activeImage || product.image,
                       moq: product.moq,
                       material: product.material,
-                      finish: selectedFinish,
+                      finish: hasExplicitFinish ? selectedFinish : 'Custom to order',
                       slug: getProductSlug(product),
                     })
                   }
@@ -385,6 +412,82 @@ export default function ProductClientView({
           </div>
         </div>
       </div>
+
+      {/* DETAILED SPECIFICATIONS & ARCHITECTURAL OVERVIEW */}
+      <section className="blk tight" style={{ borderTop: '1px solid var(--line)', marginTop: 40, paddingTop: 48, paddingBottom: 16 }}>
+        <div style={{ maxWidth: 1140, margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'clamp(28px, 4vw, 56px)', alignItems: 'start' }}>
+            
+            {/* LEFT COLUMN: FULL DESCRIPTION & DESIGN NOTES */}
+            <div>
+              <span className="mono" style={{ fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand)', display: 'block', marginBottom: 12 }}>
+                OVERVIEW & CRAFT DETAILS
+              </span>
+              <h2 className="disp" style={{ fontSize: 'clamp(24px, 2.6vw, 32px)', fontWeight: 400, margin: '0 0 16px', lineHeight: 1.25 }}>
+                {product.name}
+              </h2>
+              <p style={{ color: 'var(--ink-1)', fontSize: 16, lineHeight: 1.8, marginBottom: 24 }}>
+                {product.description || product.shortDescription}
+              </p>
+
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 16 }}>
+                <span style={{ background: '#FAF7F2', border: '1px solid var(--line)', padding: '6px 14px', fontSize: 13, borderRadius: 4, color: 'var(--ink-1)' }}>
+                  🪵 <strong>Material:</strong> {product.material || 'Solid Wood'}
+                </span>
+                {hasExplicitFinish && selectedFinish && selectedFinish !== 'Custom to order' && (
+                  <span style={{ background: '#FAF7F2', border: '1px solid var(--line)', padding: '6px 14px', fontSize: 13, borderRadius: 4, color: 'var(--ink-1)' }}>
+                    🎨 <strong>Finish:</strong> {selectedFinish}
+                  </span>
+                )}
+                <span style={{ background: '#FAF7F2', border: '1px solid var(--line)', padding: '6px 14px', fontSize: 13, borderRadius: 4, color: 'var(--ink-1)' }}>
+                  📐 <strong>Custom Dimensions:</strong> Built to project drawing
+                </span>
+                <span style={{ background: '#FAF7F2', border: '1px solid var(--line)', padding: '6px 14px', fontSize: 13, borderRadius: 4, color: 'var(--ink-1)' }}>
+                  📦 <strong>MOQ:</strong> {product.moq} {product.moq === 1 ? 'unit' : 'units'}
+                </span>
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN: B2B TRADE & CONTRACT SPECIFICATION CARD */}
+            <div style={{ background: '#FAF7F2', border: '1px solid var(--line)', borderRadius: 8, padding: '28px 24px' }}>
+              <span className="mono" style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--brand)', display: 'block', marginBottom: 16 }}>
+                HOSPITALITY & CONTRACT MANUFACTURING
+              </span>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <li style={{ display: 'flex', alignItems: 'flex-start', gap: 12, fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.5 }}>
+                  <span style={{ color: 'var(--brand)', fontWeight: 700, fontSize: 16 }}>✓</span>
+                  <div>
+                    <strong style={{ color: 'var(--ink-1)' }}>Custom Finish Matching:</strong>
+                    <div style={{ fontSize: 13, marginTop: 2 }}>Wood stains, PU lacquers, and powder coatings customisable to control samples.</div>
+                  </div>
+                </li>
+                <li style={{ display: 'flex', alignItems: 'flex-start', gap: 12, fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.5 }}>
+                  <span style={{ color: 'var(--brand)', fontWeight: 700, fontSize: 16 }}>✓</span>
+                  <div>
+                    <strong style={{ color: 'var(--ink-1)' }}>Commercial Grade Build:</strong>
+                    <div style={{ fontSize: 13, marginTop: 2 }}>Kiln-dried sustainable hardwoods and reinforced joinery engineered for high-traffic environments.</div>
+                  </div>
+                </li>
+                <li style={{ display: 'flex', alignItems: 'flex-start', gap: 12, fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.5 }}>
+                  <span style={{ color: 'var(--brand)', fontWeight: 700, fontSize: 16 }}>✓</span>
+                  <div>
+                    <strong style={{ color: 'var(--ink-1)' }}>Export Packing:</strong>
+                    <div style={{ fontSize: 13, marginTop: 2 }}>{product.packing || 'Export-grade carton, knock-down where possible'}.</div>
+                  </div>
+                </li>
+                <li style={{ display: 'flex', alignItems: 'flex-start', gap: 12, fontSize: 14, color: 'var(--ink-2)', lineHeight: 1.5 }}>
+                  <span style={{ color: 'var(--brand)', fontWeight: 700, fontSize: 16 }}>✓</span>
+                  <div>
+                    <strong style={{ color: 'var(--ink-1)' }}>Production Lead Time:</strong>
+                    <div style={{ fontSize: 13, marginTop: 2 }}>{product.leadTimeText || `${product.lead} working days after sample approval`}.</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </section>
 
       {/* RELATED PRODUCTS CAROUSEL */}
       {relatedProducts.length > 0 && (

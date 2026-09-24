@@ -553,7 +553,7 @@ class ProductsController extends RestController {
 		if ( empty( $col_meta ) && ! empty( $attributes_data['color'] ) ) {
 			$col_meta = is_array( $attributes_data['color'] ) ? implode( ', ', $attributes_data['color'] ) : (string) $attributes_data['color'];
 		}
-		$color          = ! empty( $col_meta ) ? $col_meta : 'Natural Oil';
+		$color          = ! empty( $col_meta ) ? $col_meta : '';
 
 		$packing        = (string) ( $product->get_meta( '_packing_text' ) ?: 'Export-grade carton, knock-down where possible' );
 		$lead_time_text = (string) ( $product->get_meta( '_lead_time_text' ) ?: sprintf( '%d working days after sample approval', $lead_time ) );
@@ -663,6 +663,7 @@ class ProductsController extends RestController {
 			'stockStatus'      => $product->get_stock_status(),
 			'inStock'          => $product->is_in_stock(),
 			'shortDescription' => $this->decode_str( $product->get_short_description() ),
+			'description'      => $this->decode_str( $product->get_description() ),
 			'image'            => $final_image,
 			'gallery'          => $gallery,
 			'categories'       => $cats,

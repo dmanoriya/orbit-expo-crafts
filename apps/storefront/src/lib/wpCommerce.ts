@@ -562,7 +562,7 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
             const resolvedMat2 = (p.material2 && p.material2 !== 'Brass Detailing') ? p.material2 : (attrMat2 || '');
 
             const attrColor = p.attributes?.finish?.[0] || p.attributes?.Finish?.[0] || p.attributes?.color?.[0] || p.attributes?.pa_color?.[0];
-            const resolvedColor = (p.color && p.color !== 'Natural Oil') ? p.color : (attrColor || p.color || 'Natural Oil');
+            const resolvedColor = attrColor || (p.color && p.color !== 'Natural Oil' ? p.color : '');
 
             return {
               id: p.slug || `ORB-${p.id}`,
@@ -585,9 +585,9 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
               material: decodeHtmlEntities(resolvedMat),
               material2: decodeHtmlEntities(resolvedMat2),
               color: decodeHtmlEntities(resolvedColor),
-              availableColors: Array.isArray(p.availableColors) && p.availableColors.length > 0
+              availableColors: Array.isArray(p.availableColors) && p.availableColors.length > 0 && !(p.availableColors.length === 1 && p.availableColors[0] === 'Natural Oil' && !attrColor)
                 ? p.availableColors.map(decodeHtmlEntities)
-                : (Array.isArray(p.attributes?.pa_color) ? p.attributes.pa_color.map(decodeHtmlEntities) : [decodeHtmlEntities(resolvedColor)]),
+                : (attrColor ? [decodeHtmlEntities(attrColor)] : (resolvedColor ? [decodeHtmlEntities(resolvedColor)] : [])),
               variations: Array.isArray(p.variations)
                 ? p.variations.map((v: any) => ({
                     ...v,
@@ -859,15 +859,13 @@ export async function fetchWpProductBySlug(slug: string): Promise<{ product: Pro
               : (p.attributes?.material2?.[0] || p.attributes?.pa_material2?.[0] || '')
           ),
           color: decodeHtmlEntities(
-            p.color && p.color !== 'Natural Oil'
-              ? p.color
-              : (p.attributes?.finish?.[0] || p.attributes?.Finish?.[0] || p.attributes?.color?.[0] || p.attributes?.pa_color?.[0] || p.color || 'Natural Oil')
+            p.attributes?.finish?.[0] || p.attributes?.Finish?.[0] || p.attributes?.color?.[0] || p.attributes?.pa_color?.[0] || (p.color && p.color !== 'Natural Oil' ? p.color : '')
           ),
-          availableColors: Array.isArray(p.availableColors) && p.availableColors.length > 0
+          availableColors: Array.isArray(p.availableColors) && p.availableColors.length > 0 && !(p.availableColors.length === 1 && p.availableColors[0] === 'Natural Oil' && !p.attributes?.finish)
             ? p.availableColors.map(decodeHtmlEntities)
-            : (Array.isArray(p.attributes?.pa_color)
-                ? p.attributes.pa_color.map(decodeHtmlEntities)
-                : (p.attributes?.finish ? [decodeHtmlEntities(p.attributes.finish[0])] : [decodeHtmlEntities(p.color || 'Natural Oil')])),
+            : (p.attributes?.finish
+                ? [decodeHtmlEntities(p.attributes.finish[0])]
+                : (p.color && p.color !== 'Natural Oil' ? [decodeHtmlEntities(p.color)] : [])),
           variations: Array.isArray(p.variations)
             ? p.variations.map((v: any) => ({
                 ...v,
