@@ -54,14 +54,14 @@ export default function ProductClientView({
   const [activeSku, setActiveSku] = useState<string>(
     initialProduct.sku || initialProduct.id || ''
   );
-  const [selectedFinish, setSelectedFinish] = useState(FINISHES[0].n);
-  const [quantity, setQuantity] = useState(initialProduct.moq || 1);
-  const [activePrice, setActivePrice] = useState<number | undefined>(initialProduct.price);
-
   // Dynamically resolve product colors from WooCommerce backend payload
   const activeColorList = (product as any).availableColors && (product as any).availableColors.length > 0
     ? (product as any).availableColors
     : product.color ? [product.color] : FINISHES.map((f) => f.n);
+
+  const [selectedFinish, setSelectedFinish] = useState(activeColorList[0] || FINISHES[0].n);
+  const [quantity, setQuantity] = useState(initialProduct.moq || 1);
+  const [activePrice, setActivePrice] = useState<number | undefined>(initialProduct.price);
 
   const displaySwatches = activeColorList.map((colorName: string) => {
     const matched = FINISHES.find((f) => f.n.toLowerCase() === colorName.toLowerCase());
@@ -185,19 +185,28 @@ export default function ProductClientView({
                 <tr>
                   <td>DIMENSIONS (W×D×H)</td>
                   <td>
-                    {Array.isArray(product.dims)
-                      ? `${product.dims[0]} × ${product.dims[1]} × ${product.dims[2]} cm — customisable`
-                      : (product.dims.includes('customisable') ? product.dims : `${product.dims} — customisable`)}
+                    {(() => {
+                      if (Array.isArray(product.dims)) {
+                        return `${product.dims[0]} × ${product.dims[1]} × ${product.dims[2]} cm — Customisable to order`;
+                      }
+                      const str = String(product.dims || '').trim();
+                      if (!str || str.toLowerCase().includes('custom')) {
+                        return 'Customisable to project spec';
+                      }
+                      return `${str} — Customisable to order`;
+                    })()}
                   </td>
                 </tr>
                 <tr>
                   <td>PRIMARY MATERIAL</td>
-                  <td>{product.material}</td>
+                  <td>{product.material || 'Solid Wood'}</td>
                 </tr>
-                <tr>
-                  <td>SECONDARY / DETAIL</td>
-                  <td>{product.material2 || 'Brass Detailing'}</td>
-                </tr>
+                {product.material2 && product.material2.trim() !== '' && product.material2 !== 'None' && product.material2 !== 'Brass Detailing' && (
+                  <tr>
+                    <td>SECONDARY / DETAIL</td>
+                    <td>{product.material2}</td>
+                  </tr>
+                )}
                 <tr>
                   <td>MINIMUM ORDER</td>
                   <td>{product.moq} {product.moq === 1 ? 'unit' : 'units'}</td>

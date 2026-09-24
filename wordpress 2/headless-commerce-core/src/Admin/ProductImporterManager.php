@@ -1561,6 +1561,17 @@ class ProductImporterManager {
 		update_post_meta( $product_id, '_hcc_cad_url', $cad_url );
 		update_post_meta( $product_id, '_hcc_catalog_mode', ( $cat_mode !== '' ) ? $cat_mode : '1' );
 
+		// Standard meta keys for WooCommerce & Headless REST API
+		update_post_meta( $product_id, '_dimensions_text', $dimensions );
+		update_post_meta( $product_id, '_material', $materials );
+		update_post_meta( $product_id, '_color', $finishes );
+		if ( $moq ) {
+			update_post_meta( $product_id, '_moq', $moq );
+		}
+		if ( $lead_time ) {
+			update_post_meta( $product_id, '_lead_time', $lead_time );
+		}
+
 		if ( $is_draft ) {
 			update_post_meta( $product_id, '_hcc_draft_reason', 'Missing image from Media Library: ' . ( $first_img ?? 'None' ) );
 		} else {

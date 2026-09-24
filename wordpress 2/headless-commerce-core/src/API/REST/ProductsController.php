@@ -509,13 +509,52 @@ class ProductsController extends RestController {
 		$fallback_img = \HeadlessCommerceCore\Admin\AdminSettings::get_default_fallback_image_url();
 		$final_image  = $main_img ? $main_img : $fallback_img;
 
-		$moq            = (int) ( $product->get_meta( '_moq' ) ?: 1 );
-		$lead_time      = (int) ( $product->get_meta( '_lead_time' ) ?: 21 );
-		$material       = (string) ( $product->get_meta( '_material' ) ?: 'Solid Wood' );
-		$material2      = (string) ( $product->get_meta( '_material2' ) ?: 'Brass Detailing' );
+		$moq            = (int) ( $product->get_meta( '_moq' ) ?: ( $product->get_meta( '_hcc_minimum_order_qty' ) ?: 1 ) );
+		$lead_time      = (int) ( $product->get_meta( '_lead_time' ) ?: ( $product->get_meta( '_hcc_lead_time' ) ?: 21 ) );
+
+		// 1. Resolve Dimensions from meta or attributes
+		$dim_meta = (string) ( $product->get_meta( '_dimensions_text' ) ?: $product->get_meta( '_hcc_dimensions' ) );
+		if ( empty( $dim_meta ) && ! empty( $attributes_data['dimensions'] ) ) {
+			$dim_meta = is_array( $attributes_data['dimensions'] ) ? implode( ', ', $attributes_data['dimensions'] ) : (string) $attributes_data['dimensions'];
+		}
+		if ( empty( $dim_meta ) && ! empty( $attributes_data['pa_dimensions'] ) ) {
+			$dim_meta = is_array( $attributes_data['pa_dimensions'] ) ? implode( ', ', $attributes_data['pa_dimensions'] ) : (string) $attributes_data['pa_dimensions'];
+		}
+		$dimensions = ! empty( $dim_meta ) ? $dim_meta : 'Customisable to project spec';
+
+		// 2. Resolve Primary Material
+		$mat_meta = (string) ( $product->get_meta( '_material' ) ?: $product->get_meta( '_hcc_material' ) );
+		if ( empty( $mat_meta ) && ! empty( $attributes_data['material'] ) ) {
+			$mat_meta = is_array( $attributes_data['material'] ) ? implode( ', ', $attributes_data['material'] ) : (string) $attributes_data['material'];
+		}
+		if ( empty( $mat_meta ) && ! empty( $attributes_data['pa_material'] ) ) {
+			$mat_meta = is_array( $attributes_data['pa_material'] ) ? implode( ', ', $attributes_data['pa_material'] ) : (string) $attributes_data['pa_material'];
+		}
+		$material = ! empty( $mat_meta ) ? $mat_meta : 'Solid Wood';
+
+		// 3. Resolve Secondary Material (Omit fake default 'Brass Detailing')
+		$mat2_meta = (string) ( $product->get_meta( '_material2' ) ?: $product->get_meta( '_hcc_material2' ) );
+		if ( empty( $mat2_meta ) && ! empty( $attributes_data['material2'] ) ) {
+			$mat2_meta = is_array( $attributes_data['material2'] ) ? implode( ', ', $attributes_data['material2'] ) : (string) $attributes_data['material2'];
+		}
+		$material2 = ( ! empty( $mat2_meta ) && $mat2_meta !== 'Brass Detailing' ) ? $mat2_meta : '';
+
+		// 4. Resolve Segment
 		$segment        = (string) ( $product->get_meta( '_segment' ) ?: 'Hotel Guestroom' );
-		$color          = (string) ( $product->get_meta( '_color' ) ?: 'Natural Oil' );
-		$dimensions     = (string) ( $product->get_meta( '_dimensions_text' ) ?: 'Customisable' );
+
+		// 5. Resolve Finish / Color
+		$col_meta = (string) ( $product->get_meta( '_color' ) ?: $product->get_meta( '_hcc_finish' ) );
+		if ( empty( $col_meta ) && ! empty( $attributes_data['finish'] ) ) {
+			$col_meta = is_array( $attributes_data['finish'] ) ? implode( ', ', $attributes_data['finish'] ) : (string) $attributes_data['finish'];
+		}
+		if ( empty( $col_meta ) && ! empty( $attributes_data['pa_color'] ) ) {
+			$col_meta = is_array( $attributes_data['pa_color'] ) ? implode( ', ', $attributes_data['pa_color'] ) : (string) $attributes_data['pa_color'];
+		}
+		if ( empty( $col_meta ) && ! empty( $attributes_data['color'] ) ) {
+			$col_meta = is_array( $attributes_data['color'] ) ? implode( ', ', $attributes_data['color'] ) : (string) $attributes_data['color'];
+		}
+		$color          = ! empty( $col_meta ) ? $col_meta : 'Natural Oil';
+
 		$packing        = (string) ( $product->get_meta( '_packing_text' ) ?: 'Export-grade carton, knock-down where possible' );
 		$lead_time_text = (string) ( $product->get_meta( '_lead_time_text' ) ?: sprintf( '%d working days after sample approval', $lead_time ) );
 		$price_note     = (string) ( $product->get_meta( '_price_note' ) ?: 'Quoted to your spec & quantity' );
@@ -545,7 +584,9 @@ class ProductsController extends RestController {
 			}
 		}
 
-		if ( ! empty( $all_pa_colors ) ) {
+		if ( ! empty( $attributes_data['finish'] ) ) {
+			$available_colors = is_array( $attributes_data['finish'] ) ? $attributes_data['finish'] : array( (string) $attributes_data['finish'] );
+		} elseif ( ! empty( $all_pa_colors ) ) {
 			$available_colors = $all_pa_colors;
 		} else {
 			$raw_avail_colors = $product->get_meta( '_available_colors' );

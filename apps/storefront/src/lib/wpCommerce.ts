@@ -550,7 +550,21 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
             }
           }
 
-          return {
+            const attrDims = p.attributes?.dimensions?.[0] || p.attributes?.Dimensions?.[0] || p.attributes?.pa_dimensions?.[0];
+            const resolvedDims = p.dimensions && !['customisable', 'customizable'].includes(String(p.dimensions).trim().toLowerCase())
+              ? (Array.isArray(p.dimensions) ? p.dimensions.join(' × ') : p.dimensions)
+              : (attrDims || p.dimensions || 'Customisable to project spec');
+
+            const attrMat = p.attributes?.material?.[0] || p.attributes?.Material?.[0] || p.attributes?.pa_material?.[0];
+            const resolvedMat = (p.material && p.material !== 'Solid Wood') ? p.material : (attrMat || p.material || 'Solid Wood');
+
+            const attrMat2 = p.attributes?.material2?.[0] || p.attributes?.pa_material2?.[0];
+            const resolvedMat2 = (p.material2 && p.material2 !== 'Brass Detailing') ? p.material2 : (attrMat2 || '');
+
+            const attrColor = p.attributes?.finish?.[0] || p.attributes?.Finish?.[0] || p.attributes?.color?.[0] || p.attributes?.pa_color?.[0];
+            const resolvedColor = (p.color && p.color !== 'Natural Oil') ? p.color : (attrColor || p.color || 'Natural Oil');
+
+            return {
               id: p.slug || `ORB-${p.id}`,
               sku: p.sku || `ORB-${p.id}`,
               slug: productSlug,
@@ -567,23 +581,23 @@ export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
               type: detectedType || catName || 'Furniture',
               subtype: detectedType || '',
               segment: decodeHtmlEntities(p.segment || p.attributes?.segment?.[0] || 'Hotel Guestroom'),
-            segment2: 'Restaurant',
-            material: decodeHtmlEntities(p.material || 'Solid Wood'),
-            material2: decodeHtmlEntities(p.material2 || 'Brass Detailing'),
-            color: decodeHtmlEntities(p.color || 'Natural Oil'),
-            availableColors: Array.isArray(p.availableColors) && p.availableColors.length > 0
-              ? p.availableColors.map(decodeHtmlEntities)
-              : (Array.isArray(p.attributes?.pa_color) ? p.attributes.pa_color.map(decodeHtmlEntities) : [decodeHtmlEntities(p.color || 'Natural Oil')]),
-            variations: Array.isArray(p.variations)
-              ? p.variations.map((v: any) => ({
-                  ...v,
-                  image: normalizeCommerceImageUrl(v.image, catSlug),
-                }))
-              : [],
-            attributes: p.attributes || {},
-            moq: p.moq || 1,
-            lead: p.leadTime || 21,
-            dims: decodeHtmlEntities(p.dimensions ? (Array.isArray(p.dimensions) ? p.dimensions.join(' × ') : p.dimensions) : '58 × 62 × 78 cm — customisable'),
+              segment2: 'Restaurant',
+              material: decodeHtmlEntities(resolvedMat),
+              material2: decodeHtmlEntities(resolvedMat2),
+              color: decodeHtmlEntities(resolvedColor),
+              availableColors: Array.isArray(p.availableColors) && p.availableColors.length > 0
+                ? p.availableColors.map(decodeHtmlEntities)
+                : (Array.isArray(p.attributes?.pa_color) ? p.attributes.pa_color.map(decodeHtmlEntities) : [decodeHtmlEntities(resolvedColor)]),
+              variations: Array.isArray(p.variations)
+                ? p.variations.map((v: any) => ({
+                    ...v,
+                    image: normalizeCommerceImageUrl(v.image, catSlug),
+                  }))
+                : [],
+              attributes: p.attributes || {},
+              moq: p.moq || 1,
+              lead: p.leadTime || 21,
+              dims: decodeHtmlEntities(resolvedDims),
             packing: decodeHtmlEntities(p.packing || 'Export-grade carton, knock-down where possible'),
             leadTimeText: decodeHtmlEntities(p.leadTimeText || `${p.leadTime || 30} working days after sample approval`),
             priceNote: decodeHtmlEntities(p.priceNote || 'Quoted to your spec & quantity'),
@@ -834,12 +848,26 @@ export async function fetchWpProductBySlug(slug: string): Promise<{ product: Pro
           type: catName,
           segment: decodeHtmlEntities(p.segment || p.attributes?.segment?.[0] || 'Hotel Guestroom'),
           segment2: 'Restaurant',
-          material: decodeHtmlEntities(p.material || 'Solid Wood'),
-          material2: decodeHtmlEntities(p.material2 || 'Brass Detailing'),
-          color: decodeHtmlEntities(p.color || 'Natural Oil'),
+          material: decodeHtmlEntities(
+            p.material && p.material !== 'Solid Wood'
+              ? p.material
+              : (p.attributes?.material?.[0] || p.attributes?.Material?.[0] || p.attributes?.pa_material?.[0] || p.material || 'Solid Wood')
+          ),
+          material2: decodeHtmlEntities(
+            p.material2 && p.material2 !== 'Brass Detailing'
+              ? p.material2
+              : (p.attributes?.material2?.[0] || p.attributes?.pa_material2?.[0] || '')
+          ),
+          color: decodeHtmlEntities(
+            p.color && p.color !== 'Natural Oil'
+              ? p.color
+              : (p.attributes?.finish?.[0] || p.attributes?.Finish?.[0] || p.attributes?.color?.[0] || p.attributes?.pa_color?.[0] || p.color || 'Natural Oil')
+          ),
           availableColors: Array.isArray(p.availableColors) && p.availableColors.length > 0
             ? p.availableColors.map(decodeHtmlEntities)
-            : (Array.isArray(p.attributes?.pa_color) ? p.attributes.pa_color.map(decodeHtmlEntities) : [decodeHtmlEntities(p.color || 'Natural Oil')]),
+            : (Array.isArray(p.attributes?.pa_color)
+                ? p.attributes.pa_color.map(decodeHtmlEntities)
+                : (p.attributes?.finish ? [decodeHtmlEntities(p.attributes.finish[0])] : [decodeHtmlEntities(p.color || 'Natural Oil')])),
           variations: Array.isArray(p.variations)
             ? p.variations.map((v: any) => ({
                 ...v,
@@ -849,7 +877,11 @@ export async function fetchWpProductBySlug(slug: string): Promise<{ product: Pro
           attributes: p.attributes || {},
           moq: p.moq || 1,
           lead: p.leadTime || 21,
-          dims: decodeHtmlEntities(p.dimensions ? (Array.isArray(p.dimensions) ? p.dimensions.join(' × ') : p.dimensions) : '58 × 62 × 78 cm — customisable'),
+          dims: decodeHtmlEntities(
+            p.dimensions && !['customisable', 'customizable'].includes(String(p.dimensions).trim().toLowerCase())
+              ? (Array.isArray(p.dimensions) ? p.dimensions.join(' × ') : p.dimensions)
+              : (p.attributes?.dimensions?.[0] || p.attributes?.Dimensions?.[0] || p.attributes?.pa_dimensions?.[0] || p.dimensions || 'Customisable to project spec')
+          ),
           packing: decodeHtmlEntities(p.packing || 'Export-grade carton, knock-down where possible'),
           leadTimeText: decodeHtmlEntities(p.leadTimeText || `${p.leadTime || 30} working days after sample approval`),
           priceNote: decodeHtmlEntities(p.priceNote || 'Quoted to your spec & quantity'),
