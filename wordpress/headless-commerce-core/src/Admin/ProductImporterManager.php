@@ -1441,10 +1441,15 @@ class ProductImporterManager {
 			$product->set_sale_price( $sale_price );
 		}
 
-		if ( ! empty( $desc ) ) {
+		if ( isset( $mapping['description'] ) && $mapping['description'] !== -1 ) {
+			$product->set_description( wp_kses_post( $desc ) );
+		} elseif ( ! empty( $desc ) ) {
 			$product->set_description( wp_kses_post( $desc ) );
 		}
-		if ( ! empty( $short_desc ) ) {
+
+		if ( isset( $mapping['short_description'] ) && $mapping['short_description'] !== -1 ) {
+			$product->set_short_description( wp_kses_post( $short_desc ) );
+		} elseif ( ! empty( $short_desc ) ) {
 			$product->set_short_description( wp_kses_post( $short_desc ) );
 		}
 
@@ -1484,6 +1489,8 @@ class ProductImporterManager {
 			$product->set_image_id( $image_ids[0] );
 			if ( count( $image_ids ) > 1 ) {
 				$product->set_gallery_image_ids( array_slice( $image_ids, 1 ) );
+			} else {
+				$product->set_gallery_image_ids( array() );
 			}
 		}
 
@@ -1514,9 +1521,7 @@ class ProductImporterManager {
 				$attr->set_variation( false );
 				$attrs['dimensions'] = $attr;
 			}
-			if ( ! empty( $attrs ) ) {
-				$product->set_attributes( $attrs );
-			}
+			$product->set_attributes( $attrs );
 		}
 
 		// Save Product
@@ -1565,6 +1570,18 @@ class ProductImporterManager {
 		update_post_meta( $product_id, '_dimensions_text', $dimensions );
 		update_post_meta( $product_id, '_material', $materials );
 		update_post_meta( $product_id, '_color', $finishes );
+
+		// Sync available colors JSON array or clean up if no explicit finish
+		if ( ! empty( $finishes ) ) {
+			$fin_arr = array_map( 'trim', explode( ',', $finishes ) );
+			update_post_meta( $product_id, '_available_colors', wp_json_encode( $fin_arr ) );
+		} else {
+			delete_post_meta( $product_id, '_available_colors' );
+		}
+
+		// Ensure old dummy secondary material ('Brass Detailing') is removed
+		delete_post_meta( $product_id, '_material2' );
+		delete_post_meta( $product_id, '_hcc_material2' );
 		if ( $moq ) {
 			update_post_meta( $product_id, '_moq', $moq );
 		}
