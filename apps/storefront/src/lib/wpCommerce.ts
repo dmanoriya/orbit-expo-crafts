@@ -315,12 +315,24 @@ export async function fetchWpJsonWithFailover<T = any>(
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), timeoutMs);
 
-      const res = await fetch(targetUrl, {
+      const isDev = process.env.NODE_ENV === 'development';
+      const fetchOptions: RequestInit = {
         headers: { Accept: 'application/json' },
-        next: options?.tag ? { tags: [options.tag], revalidate: options.revalidate ?? 60 } : undefined,
-        ...(options?.cache ? { cache: options.cache } : {}),
         signal: controller.signal,
-      });
+      };
+
+      if (isDev) {
+        fetchOptions.cache = 'no-store';
+      } else {
+        if (options?.tag) {
+          (fetchOptions as any).next = { tags: [options.tag], revalidate: options.revalidate ?? 60 };
+        }
+        if (options?.cache) {
+          fetchOptions.cache = options.cache;
+        }
+      }
+
+      const res = await fetch(targetUrl, fetchOptions);
       clearTimeout(timer);
 
       if (res.ok) {
@@ -349,7 +361,7 @@ export function clearWpDataCache() {
 }
 
 export async function fetchWpStorefrontData(): Promise<StorefrontDataResult> {
-  const cacheTtlMs = 60000; // 60s cache for ultra-fast page transitions and navigation
+  const cacheTtlMs = process.env.NODE_ENV === 'development' ? 5000 : 60000;
   const now = Date.now();
 
   if (cachedStorefrontData && (now - lastCacheTime < cacheTtlMs)) {

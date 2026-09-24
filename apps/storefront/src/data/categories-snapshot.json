@@ -1,783 +1,2370 @@
 [
   {
-    "id": 1172,
-    "name": "Décor",
-    "slug": "decor",
-    "description": "Explore Décor collections by Orbit Expo Crafts.",
-    "count": 12,
-    "parent": 0,
-    "level": 0,
-    "image": "",
-    "wpId": 1172
-  },
-  {
-    "id": 1130,
-    "name": "Furniture",
-    "slug": "furniture",
-    "description": "Explore Furniture collections by Orbit Expo Crafts.",
-    "count": 140,
-    "parent": 0,
-    "level": 0,
-    "image": "",
-    "wpId": 1130
-  },
-  {
-    "id": 1198,
-    "name": "Kids",
-    "slug": "kids",
-    "description": "Explore Kids collections by Orbit Expo Crafts.",
+    "id": 1173,
+    "name": "Accents",
+    "slug": "accents-decor",
+    "description": "",
     "count": 2,
-    "parent": 0,
-    "level": 0,
+    "parent": 1172,
+    "level": 1,
     "image": "",
-    "wpId": 1198
-  },
-  {
-    "id": 1200,
-    "name": "Kitchen & Table Tops",
-    "slug": "kitchen-and-table-tops",
-    "description": "Explore Kitchen & Table Tops collections by Orbit Expo Crafts.",
-    "count": 0,
-    "parent": 0,
-    "level": 0,
-    "image": "",
-    "wpId": 1200
-  },
-  {
-    "id": 1167,
-    "name": "Lighting",
-    "slug": "lighting",
-    "description": "Explore Lighting collections by Orbit Expo Crafts.",
-    "count": 14,
-    "parent": 0,
-    "level": 0,
-    "image": "",
-    "wpId": 1167
-  },
-  {
-    "id": 1183,
-    "name": "Mirrors",
-    "slug": "mirrors",
-    "description": "Explore Mirrors collections by Orbit Expo Crafts.",
-    "count": 2,
-    "parent": 0,
-    "level": 0,
-    "image": "",
-    "wpId": 1183
-  },
-  {
-    "id": 1199,
-    "name": "Outdoor & Garden",
-    "slug": "outdoor-and-garden",
-    "description": "Explore Outdoor & Garden collections by Orbit Expo Crafts.",
-    "count": 24,
-    "parent": 0,
-    "level": 0,
-    "image": "",
-    "wpId": 1199
-  },
-  {
-    "id": 1187,
-    "name": "Storage",
-    "slug": "storage",
-    "description": "Explore Storage collections by Orbit Expo Crafts.",
-    "count": 4,
-    "parent": 0,
-    "level": 0,
-    "image": "",
-    "wpId": 1187
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Accents Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Accents designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/accents-decor",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Accents Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Accents designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Accents Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Accents designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1163,
     "name": "Accents",
     "slug": "accents",
-    "description": "Explore Accents collections by Orbit Expo Crafts.",
-    "count": 16,
-    "parent": 1130,
-    "level": 1,
-    "image": "",
-    "wpId": 1163
-  },
-  {
-    "id": 1173,
-    "name": "Accents",
-    "slug": "accents-decor",
-    "description": "Explore Accents collections by Orbit Expo Crafts.",
-    "count": 4,
-    "parent": 1172,
-    "level": 1,
-    "image": "",
-    "wpId": 1173
-  },
-  {
-    "id": 1188,
-    "name": "Baskets & Bins",
-    "slug": "baskets-and-bins",
-    "description": "Explore Baskets & Bins collections by Orbit Expo Crafts.",
-    "count": 0,
-    "parent": 1187,
-    "level": 1,
-    "image": "",
-    "wpId": 1188
-  },
-  {
-    "id": 1151,
-    "name": "Beds",
-    "slug": "beds",
-    "description": "Explore Beds collections by Orbit Expo Crafts.",
-    "count": 14,
-    "parent": 1130,
-    "level": 1,
-    "image": "",
-    "wpId": 1151
-  },
-  {
-    "id": 1189,
-    "name": "Boxes",
-    "slug": "boxes",
-    "description": "Explore Boxes collections by Orbit Expo Crafts.",
-    "count": 0,
-    "parent": 1187,
-    "level": 1,
-    "image": "",
-    "wpId": 1189
-  },
-  {
-    "id": 1154,
-    "name": "Cabinets",
-    "slug": "cabinets",
-    "description": "Explore Cabinets collections by Orbit Expo Crafts.",
-    "count": 24,
-    "parent": 1130,
-    "level": 1,
-    "image": "",
-    "wpId": 1154
-  },
-  {
-    "id": 1178,
-    "name": "Candle Holders",
-    "slug": "candle-holders",
-    "description": "Explore Candle Holders collections by Orbit Expo Crafts.",
-    "count": 0,
-    "parent": 1172,
-    "level": 1,
-    "image": "",
-    "wpId": 1178
-  },
-  {
-    "id": 1179,
-    "name": "Clocks",
-    "slug": "clocks",
-    "description": "Explore Clocks collections by Orbit Expo Crafts.",
-    "count": 0,
-    "parent": 1172,
-    "level": 1,
-    "image": "",
-    "wpId": 1179
-  },
-  {
-    "id": 1171,
-    "name": "Desk Lamps",
-    "slug": "desk-lamps",
-    "description": "Explore Desk Lamps collections by Orbit Expo Crafts.",
-    "count": 0,
-    "parent": 1167,
-    "level": 1,
-    "image": "",
-    "wpId": 1171
-  },
-  {
-    "id": 1170,
-    "name": "Floor Lamps",
-    "slug": "floor-lamps",
-    "description": "Explore Floor Lamps collections by Orbit Expo Crafts.",
-    "count": 4,
-    "parent": 1167,
-    "level": 1,
-    "image": "",
-    "wpId": 1170
-  },
-  {
-    "id": 1185,
-    "name": "Floor Mirrors",
-    "slug": "floor-mirrors",
-    "description": "Explore Floor Mirrors collections by Orbit Expo Crafts.",
-    "count": 0,
-    "parent": 1183,
-    "level": 1,
-    "image": "",
-    "wpId": 1185
-  },
-  {
-    "id": 1180,
-    "name": "Frames",
-    "slug": "frames",
-    "description": "Explore Frames collections by Orbit Expo Crafts.",
+    "description": "",
     "count": 2,
-    "parent": 1172,
-    "level": 1,
-    "image": "",
-    "wpId": 1180
-  },
-  {
-    "id": 1191,
-    "name": "Hooks & Racks",
-    "slug": "hooks-and-racks",
-    "description": "Explore Hooks & Racks collections by Orbit Expo Crafts.",
-    "count": 4,
-    "parent": 1187,
-    "level": 1,
-    "image": "",
-    "wpId": 1191
-  },
-  {
-    "id": 1181,
-    "name": "Pooja Mandir",
-    "slug": "pooja-mandir",
-    "description": "Explore Pooja Mandir collections by Orbit Expo Crafts.",
-    "count": 0,
-    "parent": 1172,
-    "level": 1,
-    "image": "",
-    "wpId": 1181
-  },
-  {
-    "id": 1131,
-    "name": "Seating",
-    "slug": "seating",
-    "description": "Explore Seating collections by Orbit Expo Crafts.",
-    "count": 38,
     "parent": 1130,
     "level": 1,
     "image": "",
-    "wpId": 1131
-  },
-  {
-    "id": 1138,
-    "name": "Stools & Benches",
-    "slug": "stools-and-benches",
-    "description": "Explore Stools & Benches collections by Orbit Expo Crafts.",
-    "count": 20,
-    "parent": 1130,
-    "level": 1,
-    "image": "",
-    "wpId": 1138
-  },
-  {
-    "id": 1169,
-    "name": "Table Lamps",
-    "slug": "table-lamps",
-    "description": "Explore Table Lamps collections by Orbit Expo Crafts.",
-    "count": 4,
-    "parent": 1167,
-    "level": 1,
-    "image": "",
-    "wpId": 1169
-  },
-  {
-    "id": 1186,
-    "name": "Table Mirrors",
-    "slug": "table-mirrors",
-    "description": "Explore Table Mirrors collections by Orbit Expo Crafts.",
-    "count": 0,
-    "parent": 1183,
-    "level": 1,
-    "image": "",
-    "wpId": 1186
-  },
-  {
-    "id": 1143,
-    "name": "Tables",
-    "slug": "tables",
-    "description": "Explore Tables collections by Orbit Expo Crafts.",
-    "count": 28,
-    "parent": 1130,
-    "level": 1,
-    "image": "",
-    "wpId": 1143
-  },
-  {
-    "id": 1168,
-    "name": "Wall",
-    "slug": "wall",
-    "description": "Explore Wall collections by Orbit Expo Crafts.",
-    "count": 6,
-    "parent": 1167,
-    "level": 1,
-    "image": "",
-    "wpId": 1168
-  },
-  {
-    "id": 1182,
-    "name": "Wall Art",
-    "slug": "wall-art",
-    "description": "Explore Wall Art collections by Orbit Expo Crafts.",
-    "count": 6,
-    "parent": 1172,
-    "level": 1,
-    "image": "",
-    "wpId": 1182
-  },
-  {
-    "id": 1184,
-    "name": "Wall Mirrors",
-    "slug": "wall-mirrors",
-    "description": "Explore Wall Mirrors collections by Orbit Expo Crafts.",
-    "count": 2,
-    "parent": 1183,
-    "level": 1,
-    "image": "",
-    "wpId": 1184
-  },
-  {
-    "id": 1190,
-    "name": "Wall Shelves",
-    "slug": "wall-shelves",
-    "description": "Explore Wall Shelves collections by Orbit Expo Crafts.",
-    "count": 0,
-    "parent": 1187,
-    "level": 1,
-    "image": "",
-    "wpId": 1190
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Accents Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Accents designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/accents",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Accents Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Accents designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Accents Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Accents designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1134,
     "name": "Armchairs",
     "slug": "armchairs",
-    "description": "Explore Armchairs collections by Orbit Expo Crafts.",
-    "count": 12,
+    "description": "",
+    "count": 0,
     "parent": 1131,
     "level": 2,
     "image": "",
-    "wpId": 1134
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Armchairs Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Armchairs designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/armchairs",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Armchairs Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Armchairs designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Armchairs Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Armchairs designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1162,
     "name": "Bar Cabinets",
     "slug": "bar-cabinets",
-    "description": "Explore Bar Cabinets collections by Orbit Expo Crafts.",
-    "count": 4,
+    "description": "",
+    "count": 5,
     "parent": 1154,
     "level": 2,
     "image": "",
-    "wpId": 1162
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Bar Cabinets Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Bar Cabinets designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/bar-cabinets",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Bar Cabinets Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Bar Cabinets designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Bar Cabinets Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Bar Cabinets designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1139,
     "name": "Bar Stools",
     "slug": "bar-stools",
-    "description": "Explore Bar Stools collections by Orbit Expo Crafts.",
-    "count": 4,
+    "description": "",
+    "count": 22,
     "parent": 1138,
     "level": 2,
     "image": "",
-    "wpId": 1139
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Bar Stools Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Bar Stools designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/bar-stools",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Bar Stools Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Bar Stools designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Bar Stools Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Bar Stools designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1148,
     "name": "Bar Tables",
     "slug": "bar-tables",
-    "description": "Explore Bar Tables collections by Orbit Expo Crafts.",
-    "count": 2,
+    "description": "",
+    "count": 0,
     "parent": 1143,
     "level": 2,
     "image": "",
-    "wpId": 1148
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Bar Tables Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Bar Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/bar-tables",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Bar Tables Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Bar Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Bar Tables Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Bar Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1166,
     "name": "Bar Trolley",
     "slug": "bar-trolley",
-    "description": "Explore Bar Trolley collections by Orbit Expo Crafts.",
-    "count": 10,
+    "description": "",
+    "count": 0,
     "parent": 1163,
     "level": 2,
     "image": "",
-    "wpId": 1166
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Bar Trolley Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Bar Trolley designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/bar-trolley",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Bar Trolley Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Bar Trolley designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Bar Trolley Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Bar Trolley designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1188,
+    "name": "Baskets & Bins",
+    "slug": "baskets-and-bins",
+    "description": "",
+    "count": 0,
+    "parent": 1187,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Baskets &amp; Bins Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Baskets &amp; Bins designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/baskets-and-bins",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Baskets &amp; Bins Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Baskets &amp; Bins designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Baskets &amp; Bins Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Baskets &amp; Bins designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1152,
     "name": "Beds",
     "slug": "beds-beds",
-    "description": "Explore Beds collections by Orbit Expo Crafts.",
-    "count": 12,
+    "description": "",
+    "count": 0,
     "parent": 1151,
     "level": 2,
     "image": "",
-    "wpId": 1152
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Beds Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Beds designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/beds-beds",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Beds Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Beds designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Beds Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Beds designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1151,
+    "name": "Beds",
+    "slug": "beds",
+    "description": "",
+    "count": 3,
+    "parent": 1130,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Beds Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Beds designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/beds",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Beds Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Beds designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Beds Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Beds designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1141,
     "name": "Benches",
     "slug": "benches",
-    "description": "Explore Benches collections by Orbit Expo Crafts.",
-    "count": 8,
+    "description": "",
+    "count": 6,
     "parent": 1138,
     "level": 2,
     "image": "",
-    "wpId": 1141
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Benches Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Benches designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/benches",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Benches Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Benches designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Benches Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Benches designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1161,
     "name": "Bookcases",
     "slug": "bookcases",
-    "description": "Explore Bookcases collections by Orbit Expo Crafts.",
-    "count": 2,
+    "description": "",
+    "count": 5,
     "parent": 1154,
     "level": 2,
     "image": "",
-    "wpId": 1161
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Bookcases Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Bookcases designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/bookcases",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Bookcases Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Bookcases designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Bookcases Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Bookcases designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1177,
     "name": "Bookends",
     "slug": "bookends",
-    "description": "Explore Bookends collections by Orbit Expo Crafts.",
+    "description": "",
     "count": 0,
     "parent": 1173,
     "level": 2,
     "image": "",
-    "wpId": 1177
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Bookends Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Bookends designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/bookends",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Bookends Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Bookends designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Bookends Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Bookends designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1189,
+    "name": "Boxes",
+    "slug": "boxes",
+    "description": "",
+    "count": 0,
+    "parent": 1187,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Boxes Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Boxes designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/boxes",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Boxes Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Boxes designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Boxes Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Boxes designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1153,
     "name": "Bunk Beds",
     "slug": "bunk-beds",
-    "description": "Explore Bunk Beds collections by Orbit Expo Crafts.",
-    "count": 2,
+    "description": "",
+    "count": 0,
     "parent": 1151,
     "level": 2,
     "image": "",
-    "wpId": 1153
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Bunk Beds Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Bunk Beds designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/bunk-beds",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Bunk Beds Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Bunk Beds designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Bunk Beds Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Bunk Beds designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1156,
     "name": "Cabinets",
     "slug": "cabinets-cabinets",
-    "description": "Explore Cabinets collections by Orbit Expo Crafts.",
-    "count": 2,
+    "description": "",
+    "count": 0,
     "parent": 1154,
     "level": 2,
     "image": "",
-    "wpId": 1156
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Cabinets Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Cabinets designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/cabinets-cabinets",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Cabinets Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Cabinets designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Cabinets Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Cabinets designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1154,
+    "name": "Cabinets",
+    "slug": "cabinets",
+    "description": "",
+    "count": 65,
+    "parent": 1130,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Cabinets Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Cabinets designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/cabinets",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Cabinets Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Cabinets designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Cabinets Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Cabinets designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1178,
+    "name": "Candle Holders",
+    "slug": "candle-holders",
+    "description": "",
+    "count": 0,
+    "parent": 1172,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Candle Holders Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Candle Holders designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/candle-holders",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Candle Holders Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Candle Holders designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Candle Holders Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Candle Holders designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1201,
+    "name": "Chests & Dressers",
+    "slug": "chests-dressers",
+    "description": "",
+    "count": 12,
+    "parent": 1154,
+    "level": null,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Chests &amp; Dressers Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Chests &amp; Dressers designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/chests-dressers",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Chests &amp; Dressers Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Chests &amp; Dressers designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Chests &amp; Dressers Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Chests &amp; Dressers designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1157,
     "name": "Chests & Dressers",
     "slug": "chests-and-dressers",
-    "description": "Explore Chests & Dressers collections by Orbit Expo Crafts.",
-    "count": 2,
+    "description": "",
+    "count": 0,
     "parent": 1154,
     "level": 2,
     "image": "",
-    "wpId": 1157
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Chests &amp; Dressers Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Chests &amp; Dressers designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/chests-and-dressers",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Chests &amp; Dressers Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Chests &amp; Dressers designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Chests &amp; Dressers Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Chests &amp; Dressers designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1179,
+    "name": "Clocks",
+    "slug": "clocks",
+    "description": "",
+    "count": 0,
+    "parent": 1172,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Clocks Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Clocks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/clocks",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Clocks Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Clocks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Clocks Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Clocks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1193,
     "name": "Coat Stands",
     "slug": "coat-stands",
-    "description": "Explore Coat Stands collections by Orbit Expo Crafts.",
+    "description": "",
     "count": 0,
     "parent": 1191,
     "level": 2,
     "image": "",
-    "wpId": 1193
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Coat Stands Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Coat Stands designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/coat-stands",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Coat Stands Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Coat Stands designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Coat Stands Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Coat Stands designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1144,
     "name": "Coffee Tables",
     "slug": "coffee-tables",
-    "description": "Explore Coffee Tables collections by Orbit Expo Crafts.",
-    "count": 4,
+    "description": "",
+    "count": 13,
     "parent": 1143,
     "level": 2,
     "image": "",
-    "wpId": 1144
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Coffee Tables Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Coffee Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/coffee-tables",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Coffee Tables Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Coffee Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Coffee Tables Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Coffee Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1146,
     "name": "Console Tables",
     "slug": "console-tables",
-    "description": "Explore Console Tables collections by Orbit Expo Crafts.",
-    "count": 2,
+    "description": "",
+    "count": 8,
     "parent": 1143,
     "level": 2,
     "image": "",
-    "wpId": 1146
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Console Tables Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Console Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/console-tables",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Console Tables Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Console Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Console Tables Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Console Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1172,
+    "name": "Décor",
+    "slug": "decor",
+    "description": "",
+    "count": 2,
+    "parent": 0,
+    "level": 0,
+    "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Home-Decor.webp",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Décor Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Décor designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/decor",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Décor Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Décor designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Home-Decor.webp"
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Décor Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Décor designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Home-Decor.webp"
+      }
+    }
   },
   {
     "id": 1175,
     "name": "Decorative Bowls",
     "slug": "decorative-bowls",
-    "description": "Explore Decorative Bowls collections by Orbit Expo Crafts.",
-    "count": 2,
+    "description": "",
+    "count": 0,
     "parent": 1173,
     "level": 2,
     "image": "",
-    "wpId": 1175
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Decorative Bowls Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Decorative Bowls designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/decorative-bowls",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Decorative Bowls Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Decorative Bowls designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Decorative Bowls Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Decorative Bowls designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1176,
     "name": "Decorative Trays",
     "slug": "decorative-trays",
-    "description": "Explore Decorative Trays collections by Orbit Expo Crafts.",
+    "description": "",
     "count": 2,
     "parent": 1173,
     "level": 2,
     "image": "",
-    "wpId": 1176
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Decorative Trays Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Decorative Trays designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/decorative-trays",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Decorative Trays Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Decorative Trays designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Decorative Trays Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Decorative Trays designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1171,
+    "name": "Desk Lamps",
+    "slug": "desk-lamps",
+    "description": "",
+    "count": 0,
+    "parent": 1167,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Desk Lamps Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Desk Lamps designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/desk-lamps",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Desk Lamps Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Desk Lamps designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Desk Lamps Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Desk Lamps designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1149,
     "name": "Desks",
     "slug": "desks",
-    "description": "Explore Desks collections by Orbit Expo Crafts.",
-    "count": 6,
+    "description": "",
+    "count": 0,
     "parent": 1143,
     "level": 2,
     "image": "",
-    "wpId": 1149
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Desks Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Desks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/desks",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Desks Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Desks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Desks Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Desks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1135,
     "name": "Dining Chairs",
     "slug": "dining-chairs",
-    "description": "Explore Dining Chairs collections by Orbit Expo Crafts.",
-    "count": 4,
+    "description": "",
+    "count": 8,
     "parent": 1131,
     "level": 2,
     "image": "",
-    "wpId": 1135
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Dining Chairs Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Dining Chairs designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/dining-chairs",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Dining Chairs Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Dining Chairs designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Dining Chairs Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Dining Chairs designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1147,
     "name": "Dining Tables",
     "slug": "dining-tables",
-    "description": "Explore Dining Tables collections by Orbit Expo Crafts.",
-    "count": 2,
+    "description": "",
+    "count": 12,
     "parent": 1143,
     "level": 2,
     "image": "",
-    "wpId": 1147
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Dining Tables Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Dining Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/dining-tables",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Dining Tables Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Dining Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Dining Tables Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Dining Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1150,
     "name": "Dressing Tables",
     "slug": "dressing-tables",
-    "description": "Explore Dressing Tables collections by Orbit Expo Crafts.",
-    "count": 2,
+    "description": "",
+    "count": 0,
     "parent": 1143,
     "level": 2,
     "image": "",
-    "wpId": 1150
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Dressing Tables Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Dressing Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/dressing-tables",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Dressing Tables Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Dressing Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Dressing Tables Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Dressing Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1170,
+    "name": "Floor Lamps",
+    "slug": "floor-lamps",
+    "description": "",
+    "count": 0,
+    "parent": 1167,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Floor Lamps Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Floor Lamps designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/floor-lamps",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Floor Lamps Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Floor Lamps designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Floor Lamps Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Floor Lamps designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1185,
+    "name": "Floor Mirrors",
+    "slug": "floor-mirrors",
+    "description": "",
+    "count": 0,
+    "parent": 1183,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Floor Mirrors Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Floor Mirrors designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/floor-mirrors",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Floor Mirrors Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Floor Mirrors designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Floor Mirrors Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Floor Mirrors designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1180,
+    "name": "Frames",
+    "slug": "frames",
+    "description": "",
+    "count": 0,
+    "parent": 1172,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Frames Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Frames designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/frames",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Frames Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Frames designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Frames Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Frames designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1130,
+    "name": "Furniture",
+    "slug": "furniture",
+    "description": "",
+    "count": 150,
+    "parent": 0,
+    "level": 0,
+    "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Furniture.webp",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Furniture Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Furniture designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/furniture",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Furniture Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Furniture designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Furniture.webp"
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Furniture Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Furniture designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Furniture.webp"
+      }
+    }
   },
   {
     "id": 1195,
     "name": "Garment Racks",
     "slug": "garment-racks",
-    "description": "Explore Garment Racks collections by Orbit Expo Crafts.",
-    "count": 2,
+    "description": "",
+    "count": 0,
     "parent": 1191,
     "level": 2,
     "image": "",
-    "wpId": 1195
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Garment Racks Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Garment Racks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/garment-racks",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Garment Racks Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Garment Racks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Garment Racks Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Garment Racks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1191,
+    "name": "Hooks & Racks",
+    "slug": "hooks-and-racks",
+    "description": "",
+    "count": 0,
+    "parent": 1187,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Hooks &amp; Racks Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Hooks &amp; Racks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/hooks-and-racks",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Hooks &amp; Racks Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Hooks &amp; Racks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Hooks &amp; Racks Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Hooks &amp; Racks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1196,
     "name": "Key Holders",
     "slug": "key-holders",
-    "description": "Explore Key Holders collections by Orbit Expo Crafts.",
+    "description": "",
     "count": 0,
     "parent": 1191,
     "level": 2,
     "image": "",
-    "wpId": 1196
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Key Holders Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Key Holders designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/key-holders",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Key Holders Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Key Holders designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Key Holders Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Key Holders designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1198,
+    "name": "Kids Furniture",
+    "slug": "kids-furniture",
+    "description": "",
+    "count": 0,
+    "parent": 0,
+    "level": 0,
+    "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Kids-Furniture.webp",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Kids Furniture Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Kids Furniture designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/kids-furniture",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Kids Furniture Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Kids Furniture designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Kids-Furniture.webp"
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Kids Furniture Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Kids Furniture designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Kids-Furniture.webp"
+      }
+    }
+  },
+  {
+    "id": 1200,
+    "name": "Kitchen & Table Tops",
+    "slug": "kitchen-and-table-tops",
+    "description": "",
+    "count": 0,
+    "parent": 0,
+    "level": 0,
+    "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Kitchen-table-tpops.webp",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Kitchen &amp; Table Tops Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Kitchen &amp; Table Tops designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/kitchen-and-table-tops",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Kitchen &amp; Table Tops Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Kitchen &amp; Table Tops designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Kitchen-table-tpops.webp"
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Kitchen &amp; Table Tops Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Kitchen &amp; Table Tops designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Kitchen-table-tpops.webp"
+      }
+    }
+  },
+  {
+    "id": 1167,
+    "name": "Lighting",
+    "slug": "lighting",
+    "description": "",
+    "count": 0,
+    "parent": 0,
+    "level": 0,
+    "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Lamp.webp",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Lighting Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Lighting designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/lighting",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Lighting Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Lighting designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Lamp.webp"
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Lighting Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Lighting designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Lamp.webp"
+      }
+    }
   },
   {
     "id": 1197,
     "name": "Magazine Racks",
     "slug": "magazine-racks",
-    "description": "Explore Magazine Racks collections by Orbit Expo Crafts.",
+    "description": "",
     "count": 0,
     "parent": 1191,
     "level": 2,
     "image": "",
-    "wpId": 1197
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Magazine Racks Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Magazine Racks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/magazine-racks",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Magazine Racks Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Magazine Racks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Magazine Racks Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Magazine Racks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1183,
+    "name": "Mirrors",
+    "slug": "mirrors",
+    "description": "",
+    "count": 9,
+    "parent": 0,
+    "level": 0,
+    "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Mirror.webp",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Mirrors Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Mirrors designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/mirrors",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Mirrors Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Mirrors designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Mirror.webp"
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Mirrors Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Mirrors designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Mirror.webp"
+      }
+    }
   },
   {
     "id": 1158,
     "name": "Nightstands",
     "slug": "nightstands",
-    "description": "Explore Nightstands collections by Orbit Expo Crafts.",
-    "count": 0,
+    "description": "",
+    "count": 5,
     "parent": 1154,
     "level": 2,
     "image": "",
-    "wpId": 1158
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Nightstands Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Nightstands designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/nightstands",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Nightstands Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Nightstands designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Nightstands Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Nightstands designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1142,
     "name": "Ottomans & Poufs",
     "slug": "ottomans-and-poufs",
-    "description": "Explore Ottomans & Poufs collections by Orbit Expo Crafts.",
-    "count": 4,
+    "description": "",
+    "count": 0,
     "parent": 1138,
     "level": 2,
     "image": "",
-    "wpId": 1142
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Ottomans &amp; Poufs Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Ottomans &amp; Poufs designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/ottomans-and-poufs",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Ottomans &amp; Poufs Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Ottomans &amp; Poufs designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Ottomans &amp; Poufs Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Ottomans &amp; Poufs designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1199,
+    "name": "Outdoor & Garden",
+    "slug": "outdoor-and-garden",
+    "description": "",
+    "count": 0,
+    "parent": 0,
+    "level": 0,
+    "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Outdoor_Garden.webp",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Outdoor &amp; Garden Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Outdoor &amp; Garden designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/outdoor-and-garden",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Outdoor &amp; Garden Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Outdoor &amp; Garden designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Outdoor_Garden.webp"
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Outdoor &amp; Garden Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Outdoor &amp; Garden designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Outdoor_Garden.webp"
+      }
+    }
+  },
+  {
+    "id": 1181,
+    "name": "Pooja Mandir",
+    "slug": "pooja-mandir",
+    "description": "",
+    "count": 0,
+    "parent": 1172,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Pooja Mandir Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Pooja Mandir designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/pooja-mandir",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Pooja Mandir Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Pooja Mandir designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Pooja Mandir Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Pooja Mandir designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1136,
     "name": "Rocking Chairs",
     "slug": "rocking-chairs",
-    "description": "Explore Rocking Chairs collections by Orbit Expo Crafts.",
-    "count": 2,
+    "description": "",
+    "count": 0,
     "parent": 1131,
     "level": 2,
     "image": "",
-    "wpId": 1136
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Rocking Chairs Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Rocking Chairs designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/rocking-chairs",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Rocking Chairs Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Rocking Chairs designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Rocking Chairs Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Rocking Chairs designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1164,
     "name": "Screens & Dividers",
     "slug": "screens-and-dividers",
-    "description": "Explore Screens & Dividers collections by Orbit Expo Crafts.",
-    "count": 4,
+    "description": "",
+    "count": 0,
     "parent": 1163,
     "level": 2,
     "image": "",
-    "wpId": 1164
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Screens &amp; Dividers Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Screens &amp; Dividers designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/screens-and-dividers",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Screens &amp; Dividers Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Screens &amp; Dividers designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Screens &amp; Dividers Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Screens &amp; Dividers designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1174,
     "name": "Sculptures & Figurines",
     "slug": "sculptures-and-figurines",
-    "description": "Explore Sculptures & Figurines collections by Orbit Expo Crafts.",
+    "description": "",
     "count": 0,
     "parent": 1173,
     "level": 2,
     "image": "",
-    "wpId": 1174
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Sculptures &amp; Figurines Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Sculptures &amp; Figurines designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/sculptures-and-figurines",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Sculptures &amp; Figurines Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Sculptures &amp; Figurines designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Sculptures &amp; Figurines Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Sculptures &amp; Figurines designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1131,
+    "name": "Seating",
+    "slug": "seating",
+    "description": "",
+    "count": 8,
+    "parent": 1130,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Seating Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Seating designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/seating",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Seating Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Seating designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Seating Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Seating designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1194,
     "name": "Shoe Racks",
     "slug": "shoe-racks",
-    "description": "Explore Shoe Racks collections by Orbit Expo Crafts.",
-    "count": 2,
+    "description": "",
+    "count": 0,
     "parent": 1191,
     "level": 2,
     "image": "",
-    "wpId": 1194
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Shoe Racks Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Shoe Racks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/shoe-racks",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Shoe Racks Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Shoe Racks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Shoe Racks Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Shoe Racks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1145,
     "name": "Side Tables",
     "slug": "side-tables",
-    "description": "Explore Side Tables collections by Orbit Expo Crafts.",
-    "count": 10,
+    "description": "",
+    "count": 7,
     "parent": 1143,
     "level": 2,
     "image": "",
-    "wpId": 1145
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Side Tables Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Side Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/side-tables",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Side Tables Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Side Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Side Tables Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Side Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1155,
     "name": "Sideboards",
     "slug": "sideboards",
-    "description": "Explore Sideboards collections by Orbit Expo Crafts.",
-    "count": 6,
+    "description": "",
+    "count": 11,
     "parent": 1154,
     "level": 2,
     "image": "",
-    "wpId": 1155
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Sideboards Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Sideboards designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/sideboards",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Sideboards Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Sideboards designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Sideboards Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Sideboards designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1133,
     "name": "Sofa Beds",
     "slug": "sofa-beds",
-    "description": "Explore Sofa Beds collections by Orbit Expo Crafts.",
-    "count": 2,
+    "description": "",
+    "count": 0,
     "parent": 1131,
     "level": 2,
     "image": "",
-    "wpId": 1133
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Sofa Beds Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Sofa Beds designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/sofa-beds",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Sofa Beds Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Sofa Beds designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Sofa Beds Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Sofa Beds designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1132,
     "name": "Sofas",
     "slug": "sofas",
-    "description": "Explore Sofas collections by Orbit Expo Crafts.",
-    "count": 16,
+    "description": "",
+    "count": 0,
     "parent": 1131,
     "level": 2,
     "image": "",
-    "wpId": 1132
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Sofas Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Sofas designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/sofas",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Sofas Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Sofas designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Sofas Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Sofas designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1140,
     "name": "Stools",
     "slug": "stools",
-    "description": "Explore Stools collections by Orbit Expo Crafts.",
+    "description": "",
     "count": 4,
     "parent": 1138,
     "level": 2,
     "image": "",
-    "wpId": 1140
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Stools Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Stools designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/stools",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Stools Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Stools designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Stools Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Stools designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1202,
+    "name": "Stools & Benches",
+    "slug": "stools-benches",
+    "description": "",
+    "count": 32,
+    "parent": 1130,
+    "level": null,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Stools &amp; Benches Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Stools &amp; Benches designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/stools-benches",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Stools &amp; Benches Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Stools &amp; Benches designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Stools &amp; Benches Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Stools &amp; Benches designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1138,
+    "name": "Stools & Benches",
+    "slug": "stools-and-benches",
+    "description": "",
+    "count": 32,
+    "parent": 1130,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Stools &amp; Benches Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Stools &amp; Benches designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/stools-and-benches",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Stools &amp; Benches Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Stools &amp; Benches designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Stools &amp; Benches Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Stools &amp; Benches designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1187,
+    "name": "Storage",
+    "slug": "storage",
+    "description": "",
+    "count": 1,
+    "parent": 0,
+    "level": 0,
+    "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Storage-and-organizations.webp",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Storage Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Storage designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/storage",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Storage Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Storage designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Storage-and-organizations.webp"
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Storage Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Storage designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": "http://woo-catalog-nextjs.local/wp-content/uploads/2026/09/Storage-and-organizations.webp"
+      }
+    }
   },
   {
     "id": 1137,
     "name": "Swings & Hammocks",
     "slug": "swings-and-hammocks",
-    "description": "Explore Swings & Hammocks collections by Orbit Expo Crafts.",
-    "count": 2,
+    "description": "",
+    "count": 0,
     "parent": 1131,
     "level": 2,
     "image": "",
-    "wpId": 1137
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Swings &amp; Hammocks Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Swings &amp; Hammocks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/swings-and-hammocks",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Swings &amp; Hammocks Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Swings &amp; Hammocks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Swings &amp; Hammocks Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Swings &amp; Hammocks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1169,
+    "name": "Table Lamps",
+    "slug": "table-lamps",
+    "description": "",
+    "count": 0,
+    "parent": 1167,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Table Lamps Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Table Lamps designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/table-lamps",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Table Lamps Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Table Lamps designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Table Lamps Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Table Lamps designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1186,
+    "name": "Table Mirrors",
+    "slug": "table-mirrors",
+    "description": "",
+    "count": 0,
+    "parent": 1183,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Table Mirrors Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Table Mirrors designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/table-mirrors",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Table Mirrors Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Table Mirrors designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Table Mirrors Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Table Mirrors designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1143,
+    "name": "Tables",
+    "slug": "tables",
+    "description": "",
+    "count": 40,
+    "parent": 1130,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Tables Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/tables",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Tables Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Tables Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Tables designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1165,
     "name": "Trolleys & Carts",
     "slug": "trolleys-and-carts",
-    "description": "Explore Trolleys & Carts collections by Orbit Expo Crafts.",
-    "count": 2,
+    "description": "",
+    "count": 0,
     "parent": 1163,
     "level": 2,
     "image": "",
-    "wpId": 1165
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Trolleys &amp; Carts Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Trolleys &amp; Carts designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/trolleys-and-carts",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Trolleys &amp; Carts Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Trolleys &amp; Carts designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Trolleys &amp; Carts Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Trolleys &amp; Carts designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1160,
     "name": "TV Units",
     "slug": "tv-units",
-    "description": "Explore TV Units collections by Orbit Expo Crafts.",
-    "count": 2,
+    "description": "",
+    "count": 13,
     "parent": 1154,
     "level": 2,
     "image": "",
-    "wpId": 1160
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "TV Units Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured TV Units designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/tv-units",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "TV Units Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured TV Units designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "TV Units Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured TV Units designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 812,
+    "name": "Uncategorized",
+    "slug": "uncategorized",
+    "description": "",
+    "count": 0,
+    "parent": 0,
+    "level": null,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Uncategorized Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Uncategorized designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/uncategorized",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Uncategorized Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Uncategorized designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Uncategorized Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Uncategorized designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1168,
+    "name": "Wall",
+    "slug": "wall",
+    "description": "",
+    "count": 0,
+    "parent": 1167,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Wall Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Wall designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/wall",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Wall Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Wall designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Wall Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Wall designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1182,
+    "name": "Wall Art",
+    "slug": "wall-art",
+    "description": "",
+    "count": 0,
+    "parent": 1172,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Wall Art Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Wall Art designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/wall-art",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Wall Art Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Wall Art designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Wall Art Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Wall Art designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1192,
     "name": "Wall Hooks",
     "slug": "wall-hooks",
-    "description": "Explore Wall Hooks collections by Orbit Expo Crafts.",
+    "description": "",
     "count": 0,
     "parent": 1191,
     "level": 2,
     "image": "",
-    "wpId": 1192
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Wall Hooks Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Wall Hooks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/wall-hooks",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Wall Hooks Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Wall Hooks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Wall Hooks Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Wall Hooks designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1184,
+    "name": "Wall Mirrors",
+    "slug": "wall-mirrors",
+    "description": "",
+    "count": 9,
+    "parent": 1183,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Wall Mirrors Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Wall Mirrors designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/wall-mirrors",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Wall Mirrors Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Wall Mirrors designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Wall Mirrors Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Wall Mirrors designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
+  },
+  {
+    "id": 1190,
+    "name": "Wall Shelves",
+    "slug": "wall-shelves",
+    "description": "",
+    "count": 1,
+    "parent": 1187,
+    "level": 1,
+    "image": "",
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Wall Shelves Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Wall Shelves designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/wall-shelves",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Wall Shelves Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Wall Shelves designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Wall Shelves Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Wall Shelves designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   },
   {
     "id": 1159,
     "name": "Wardrobes",
     "slug": "wardrobes",
-    "description": "Explore Wardrobes collections by Orbit Expo Crafts.",
-    "count": 6,
+    "description": "",
+    "count": 1,
     "parent": 1154,
     "level": 2,
     "image": "",
-    "wpId": 1159
+    "facets": "",
+    "styles": "",
+    "room": "",
+    "seo": {
+      "provider": "rankmath",
+      "title": "Wardrobes Collections | Orbit Expo Crafts",
+      "description": "Explore custom manufactured Wardrobes designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+      "canonical": "https://orbitexpocrafts.com/collections/wardrobes",
+      "robots": "index, follow",
+      "keywords": "",
+      "openGraph": {
+        "title": "Wardrobes Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Wardrobes designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Wardrobes Collections | Orbit Expo Crafts",
+        "description": "Explore custom manufactured Wardrobes designed for luxury hotels, resorts, and commercial interior projects by Orbit Expo Crafts.",
+        "image": ""
+      }
+    }
   }
 ]
