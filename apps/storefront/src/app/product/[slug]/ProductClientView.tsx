@@ -103,6 +103,161 @@ export default function ProductClientView({
 
   const [recentProducts, setRecentProducts] = useState<any[]>([]);
 
+  // Consolidated and deduplicated gallery images for the product
+  const galleryList: string[] = React.useMemo(() => {
+    const set = new Set<string>();
+    if (activeImage) set.add(activeImage);
+    if (Array.isArray(initialGallery)) {
+      initialGallery.forEach((img) => img && set.add(img));
+    }
+    if (product.image) set.add(product.image);
+    if (Array.isArray((product as any).gallery)) {
+      (product as any).gallery.forEach((img: string) => img && set.add(img));
+    }
+    const arr = Array.from(set);
+    return arr.length > 0 ? arr : ['/fallback-product.svg'];
+  }, [activeImage, initialGallery, product.image, (product as any).gallery]);
+
+  // Desktop Hover Zoom state
+  const [isHoverZooming, setIsHoverZooming] = useState(false);
+  const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
+  const canvasRef = useRef<HTMLDivElement>(null);
+
+  const handleCanvasMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!canvasRef.current) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+    const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+    setZoomOrigin({ x, y });
+  };
+
+  // Fullscreen Lightbox Modal state & navigation
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [lightboxZoom, setLightboxZoom] = useState(1);
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartRef = useRef({ x: 0, y: 0, panX: 0, panY: 0 });
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+
+  const openLightbox = (imgToOpen?: string) => {
+    const target = imgToOpen || activeImage;
+    const idx = galleryList.indexOf(target);
+    setLightboxIndex(idx >= 0 ? idx : 0);
+    setLightboxZoom(1);
+    setPanOffset({ x: 0, y: 0 });
+    setIsLightboxOpen(true);
+  };
+
+  const closeLightbox = () => {
+    setIsLightboxOpen(false);
+    setLightboxZoom(1);
+    setPanOffset({ x: 0, y: 0 });
+  };
+
+  const nextLightboxImage = () => {
+    if (galleryList.length <= 1) return;
+    const newIdx = (lightboxIndex + 1) % galleryList.length;
+    setLightboxIndex(newIdx);
+    setActiveImage(galleryList[newIdx]);
+    setLightboxZoom(1);
+    setPanOffset({ x: 0, y: 0 });
+  };
+
+  const prevLightboxImage = () => {
+    if (galleryList.length <= 1) return;
+    const newIdx = (lightboxIndex - 1 + galleryList.length) % galleryList.length;
+    setLightboxIndex(newIdx);
+    setActiveImage(galleryList[newIdx]);
+    setLightboxZoom(1);
+    setPanOffset({ x: 0, y: 0 });
+  };
+
+  const toggleLightboxZoom = () => {
+    setLightboxZoom((prev) => {
+      if (prev === 1) return 1.85;
+      if (prev === 1.85) return 2.6;
+      return 1;
+    });
+    setPanOffset({ x: 0, y: 0 });
+  };
+
+  // Keyboard navigation & body scroll lock for Lightbox
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeLightbox();
+      } else if (e.key === 'ArrowRight') {
+        nextLightboxImage();
+      } else if (e.key === 'ArrowLeft') {
+        prevLightboxImage();
+      } else if (e.key === '+' || e.key === '=') {
+        toggleLightboxZoom();
+      } else if (e.key === '-') {
+        setLightboxZoom(1);
+        setPanOffset({ x: 0, y: 0 });
+      }
+    };
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isLightboxOpen, lightboxIndex, galleryList]);
+
+  // Touch swipe support on mobile devices
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStartRef.current || e.changedTouches.length === 0) return;
+    const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
+    const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.4) {
+      if (dx < 0) {
+        nextLightboxImage();
+      } else {
+        prevLightboxImage();
+      }
+    }
+    touchStartRef.current = null;
+  };
+
+  // Panning when zoomed inside lightbox
+  const handlePanMouseDown = (e: React.MouseEvent) => {
+    if (lightboxZoom <= 1) return;
+    setIsDragging(true);
+    dragStartRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      panX: panOffset.x,
+      panY: panOffset.y,
+    };
+  };
+
+  const handlePanMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || lightboxZoom <= 1) return;
+    const dx = e.clientX - dragStartRef.current.x;
+    const dy = e.clientY - dragStartRef.current.y;
+    setPanOffset({
+      x: dragStartRef.current.panX + dx,
+      y: dragStartRef.current.panY + dy,
+    });
+  };
+
+  const handlePanMouseUp = () => {
+    setIsDragging(false);
+  };
+
   useEffect(() => {
     if (!product) return;
     try {
@@ -135,21 +290,72 @@ export default function ProductClientView({
       {/* PDP TOP ROW: MAIN IMAGE STRETCHED TO MATCH RIGHT SPECS + ACTION CARD */}
       <div className="pdp-layout-wrap" style={{ paddingBottom: 40 }}>
         <div className="pdp-top-grid">
-          {/* LEFT: MAIN PRODUCT IMAGE */}
-          <div className="gallery-main" style={{ position: 'relative' }}>
+          {/* LEFT: MAIN PRODUCT IMAGE IN STUDIO CANVAS WITH ZOOM & EXPAND */}
+          <div
+            ref={canvasRef}
+            className="gallery-main"
+            onMouseEnter={() => setIsHoverZooming(true)}
+            onMouseMove={handleCanvasMouseMove}
+            onMouseLeave={() => {
+              setIsHoverZooming(false);
+              setZoomOrigin({ x: 50, y: 50 });
+            }}
+            onClick={() => openLightbox(activeImage)}
+            title="Click to view full screen gallery"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openLightbox(activeImage);
+              }
+            }}
+            aria-label="Product image canvas. Click to open gallery lightbox."
+          >
+            {/* PRODUCT BADGE */}
             {product.badge && (
-              <span className={`tag ${product.badge === 'New' ? 'new' : ''}`}>
+              <span className={`tag ${product.badge === 'New' ? 'new' : ''}`} style={{ zIndex: 12, position: 'absolute', top: 14, left: 14 }}>
                 {product.badge}
               </span>
             )}
-            <img
-              src={activeImage || product.image}
-              alt={product.name}
-              onError={(e) => {
-                e.currentTarget.onerror = null;
-                e.currentTarget.src = product.cat ? `/categories/${product.cat}.jpg` : '/fallback-product.svg';
-              }}
-            />
+
+            {/* IMAGE COUNTER (when multiple images exist) */}
+            {galleryList.length > 1 && (
+              <span className="gallery-count-badge">
+                {Math.max(1, galleryList.indexOf(activeImage) + 1)} / {galleryList.length}
+              </span>
+            )}
+
+            {/* STUDIO CANVAS VIEWPORT WITH ZOOM */}
+            <div className="gallery-canvas-viewport">
+              <img
+                src={activeImage || product.image}
+                alt={product.name}
+                className="gallery-canvas-img"
+                style={{
+                  transform: isHoverZooming ? 'scale(2.25)' : 'scale(1)',
+                  transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
+                  transition: isHoverZooming
+                    ? 'transform 0.12s cubic-bezier(0.16, 1, 0.3, 1)'
+                    : 'transform 0.35s ease-out, transform-origin 0.35s ease-out',
+                }}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = product.cat ? `/categories/${product.cat}.jpg` : '/fallback-product.svg';
+                }}
+              />
+            </div>
+
+            {/* EXPAND ACTION PILL */}
+            <div className="gallery-expand-hint">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 3 21 3 21 9" />
+                <polyline points="9 21 3 21 3 15" />
+                <line x1="21" y1="3" x2="14" y2="10" />
+                <line x1="3" y1="21" x2="10" y2="14" />
+              </svg>
+              <span>{galleryList.length > 1 ? `Expand (${galleryList.length} views)` : 'Expand View'}</span>
+            </div>
           </div>
 
           {/* RIGHT SPECS & QUOTE ACTION */}
@@ -364,12 +570,18 @@ export default function ProductClientView({
         <div className="pdp-bottom-grid">
           {/* LEFT: THUMBNAILS STRIP */}
           <div className="gallery-strip">
-            {initialGallery.length > 1 &&
-              initialGallery.map((img, idx) => (
+            {galleryList.length > 1 &&
+              galleryList.map((img, idx) => (
                 <button
                   key={idx}
+                  type="button"
                   className={activeImage === img ? 'on' : ''}
-                  onClick={() => setActiveImage(img)}
+                  onClick={() => {
+                    setActiveImage(img);
+                    setLightboxIndex(idx);
+                  }}
+                  aria-label={`View photo ${idx + 1} of ${galleryList.length}`}
+                  title={`View photo ${idx + 1}`}
                 >
                   <img
                     src={img}
@@ -612,6 +824,177 @@ export default function ProductClientView({
           productMoq={product?.moq || 1}
           initialFinish={selectedFinish}
         />
+      )}
+
+      {/* FULLSCREEN LIGHTBOX SLIDER MODAL */}
+      {isLightboxOpen && (
+        <div
+          className="orbit-lightbox-backdrop"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              closeLightbox();
+            }
+          }}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${product.name} full screen gallery`}
+        >
+          {/* HEADER */}
+          <div className="orbit-lightbox-header">
+            <div className="orbit-lightbox-title">
+              <h3>{product.name}</h3>
+              <span>
+                {activeSku || product.sku || product.id} · {product.catName} · PHOTO {lightboxIndex + 1} OF {galleryList.length}
+              </span>
+            </div>
+
+            <div className="orbit-lightbox-tools">
+              <button
+                type="button"
+                className="orbit-lightbox-btn"
+                onClick={toggleLightboxZoom}
+                title="Toggle zoom level"
+                aria-label={`Current zoom ${lightboxZoom}x. Click to change.`}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  {lightboxZoom > 1 ? (
+                    <line x1="8" y1="11" x2="14" y2="11" />
+                  ) : (
+                    <>
+                      <line x1="11" y1="8" x2="11" y2="14" />
+                      <line x1="8" y1="11" x2="14" y2="11" />
+                    </>
+                  )}
+                </svg>
+                <span>{lightboxZoom}× ZOOM</span>
+              </button>
+
+              <button
+                type="button"
+                className="orbit-lightbox-close"
+                onClick={closeLightbox}
+                title="Close gallery (Esc)"
+                aria-label="Close gallery"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* MAIN STAGE */}
+          <div
+            className="orbit-lightbox-stage"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                closeLightbox();
+              }
+            }}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onMouseDown={handlePanMouseDown}
+            onMouseMove={handlePanMouseMove}
+            onMouseUp={handlePanMouseUp}
+            style={{ cursor: lightboxZoom > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default' }}
+          >
+            {/* PREV BUTTON */}
+            {galleryList.length > 1 && (
+              <button
+                type="button"
+                className="orbit-lightbox-nav prev"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  prevLightboxImage();
+                }}
+                aria-label="Previous photo (Left Arrow)"
+                title="Previous photo"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+              </button>
+            )}
+
+            {/* IMAGE WRAPPER */}
+            <div
+              className="orbit-lightbox-img-wrap"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (lightboxZoom === 1) {
+                  toggleLightboxZoom();
+                }
+              }}
+              style={{
+                cursor: lightboxZoom === 1 ? 'zoom-in' : (isDragging ? 'grabbing' : 'grab'),
+              }}
+            >
+              <img
+                src={galleryList[lightboxIndex] || activeImage}
+                alt={`${product.name} view ${lightboxIndex + 1}`}
+                className="orbit-lightbox-img"
+                draggable={false}
+                style={{
+                  transform: `scale(${lightboxZoom}) translate(${panOffset.x / lightboxZoom}px, ${panOffset.y / lightboxZoom}px)`,
+                }}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = product.cat ? `/categories/${product.cat}.jpg` : '/fallback-product.svg';
+                }}
+              />
+            </div>
+
+            {/* NEXT BUTTON */}
+            {galleryList.length > 1 && (
+              <button
+                type="button"
+                className="orbit-lightbox-nav next"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  nextLightboxImage();
+                }}
+                aria-label="Next photo (Right Arrow)"
+                title="Next photo"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+            )}
+          </div>
+
+          {/* FOOTER THUMBNAILS */}
+          {galleryList.length > 1 && (
+            <div className="orbit-lightbox-footer">
+              {galleryList.map((img, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  className={`orbit-lightbox-thumb ${lightboxIndex === idx ? 'active' : ''}`}
+                  onClick={() => {
+                    setLightboxIndex(idx);
+                    setActiveImage(img);
+                    setLightboxZoom(1);
+                    setPanOffset({ x: 0, y: 0 });
+                  }}
+                  aria-label={`Jump to photo ${idx + 1}`}
+                >
+                  <img
+                    src={img}
+                    alt={`${product.name} thumb ${idx + 1}`}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = product.cat ? `/categories/${product.cat}.jpg` : '/fallback-product.svg';
+                    }}
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

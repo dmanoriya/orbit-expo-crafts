@@ -1503,29 +1503,105 @@ section.blk.tight { padding: 72px 0; }
   padding-top: 14px;
 }
 
+/* ==========================================================================
+   PDP PRODUCT GALLERY CANVAS & ZOOM ENGINE
+   ========================================================================== */
+
 .gallery-main {
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 480px;
-  background: #F8F6F1;
+  min-height: 520px;
+  background: #FAF8F5;
   border: 1px solid var(--line, #E2DDD5);
-  border-radius: 6px;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 2.5vw, 36px);
+  cursor: zoom-in;
+  user-select: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
-.gallery-main img {
-  position: absolute;
-  top: 0;
-  left: 0;
+
+.gallery-main:hover {
+  border-color: #D6D0C5;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+}
+
+.gallery-canvas-viewport {
+  position: relative;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.4s var(--ease);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
-.gallery-main:hover img {
-  transform: scale(1.02);
+
+.gallery-canvas-img {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.05));
+  will-change: transform, transform-origin;
+}
+
+/* Hover Zoom & Expand Action Pill */
+.gallery-expand-hint {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-family: var(--font-mono, monospace);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-1, #1A1A1A);
+  pointer-events: none;
+  transition: all 0.25s ease;
+  z-index: 10;
+}
+
+.gallery-main:hover .gallery-expand-hint {
+  background: #FFFFFF;
+  border-color: var(--brand, #0E5C63);
+  color: var(--brand, #0E5C63);
+  box-shadow: 0 6px 18px rgba(14, 92, 99, 0.15);
+  transform: translateY(-1px);
+}
+
+/* Image counter badge */
+.gallery-count-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-family: var(--font-mono, monospace);
+  color: var(--ink-2, #555);
+  letter-spacing: 0.06em;
+  z-index: 10;
+  pointer-events: none;
 }
 
 .pdp-info-col {
@@ -1553,27 +1629,258 @@ section.blk.tight { padding: 72px 0; }
   width: 76px;
   height: 76px;
   flex-shrink: 0;
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
   border: 1.5px solid var(--line, #E2DDD5);
-  background: #F8F6F1;
+  background: #FAF8F5;
   cursor: pointer;
-  padding: 0;
+  padding: 6px;
   transition: all 0.2s ease;
   opacity: 0.72;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .gallery-strip button:hover,
 .gallery-strip button.on {
   opacity: 1;
   border-color: var(--brand, #0E5C63);
-  box-shadow: 0 2px 8px rgba(14, 92, 99, 0.2);
+  background: #FFFFFF;
+  box-shadow: 0 2px 10px rgba(14, 92, 99, 0.18);
   transform: translateY(-2px);
 }
 .gallery-strip button img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
+}
+
+/* ==========================================================================
+   FULLSCREEN LIGHTBOX SLIDER MODAL
+   ========================================================================== */
+
+.orbit-lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: rgba(10, 12, 14, 0.96);
+  backdrop-filter: blur(14px);
+  display: flex;
+  flex-direction: column;
+  color: #FFFFFF;
+  animation: orbitLightboxFadeIn 0.25s ease-out forwards;
+}
+
+@keyframes orbitLightboxFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.orbit-lightbox-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+  background: rgba(10, 12, 14, 0.65);
+  backdrop-filter: blur(10px);
+}
+
+.orbit-lightbox-title {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.orbit-lightbox-title h3 {
+  margin: 0;
+  font-size: 19px;
+  font-family: var(--font-disp, Georgia, serif);
+  font-weight: 400;
+  color: #FAF8F5;
+  letter-spacing: 0.02em;
+}
+.orbit-lightbox-title span {
+  font-size: 11px;
+  font-family: var(--font-mono, monospace);
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.orbit-lightbox-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.orbit-lightbox-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #FFFFFF;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-family: var(--font-mono, monospace);
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+.orbit-lightbox-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.orbit-lightbox-close {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.orbit-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.06);
+}
+
+.orbit-lightbox-stage {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 80px;
+  overflow: hidden;
+  user-select: none;
+}
+
+.orbit-lightbox-img-wrap {
+  position: relative;
+  max-width: 90vw;
+  max-height: 72vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.orbit-lightbox-img {
+  max-width: 86vw;
+  max-height: 72vh;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 36px rgba(0, 0, 0, 0.5));
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+/* Nav arrows */
+.orbit-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 20;
+}
+.orbit-lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-50%) scale(1.06);
+}
+.orbit-lightbox-nav.prev {
+  left: 24px;
+}
+.orbit-lightbox-nav.next {
+  right: 24px;
+}
+
+/* Bottom thumbnails in lightbox */
+.orbit-lightbox-footer {
+  padding: 14px 20px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  overflow-x: auto;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 12, 14, 0.65);
+}
+
+.orbit-lightbox-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.55;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.orbit-lightbox-thumb:hover,
+.orbit-lightbox-thumb.active {
+  opacity: 1;
+  border-color: #D4AF37; /* Warm Gold */
+  box-shadow: 0 0 14px rgba(212, 175, 55, 0.4);
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.12);
+}
+.orbit-lightbox-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .orbit-lightbox-header {
+    padding: 12px 16px;
+  }
+  .orbit-lightbox-title h3 {
+    font-size: 16px;
+  }
+  .orbit-lightbox-stage {
+    padding: 10px 16px;
+  }
+  .orbit-lightbox-nav {
+    width: 42px;
+    height: 42px;
+  }
+  .orbit-lightbox-nav.prev {
+    left: 10px;
+  }
+  .orbit-lightbox-nav.next {
+    right: 10px;
+  }
+  .orbit-lightbox-thumb {
+    width: 52px;
+    height: 52px;
+  }
 }
 
 .swatches { display: flex; gap: 10px; margin: 8px 0 20px; flex-wrap: wrap; }
@@ -1666,6 +1973,7 @@ section.blk.tight { padding: 72px 0; }
     height: auto;
     aspect-ratio: 1 / 1;
     min-height: 0;
+    padding: 16px;
   }
   .gallery-strip {
     order: 2;
