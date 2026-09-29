@@ -60,6 +60,7 @@ class Plugin {
 			AdminSettings::init();
 			\HeadlessCommerceCore\Admin\HomepageManager::init();
 			\HeadlessCommerceCore\Admin\TypographyManager::init();
+			\HeadlessCommerceCore\Admin\ProductGridManager::init();
 			\HeadlessCommerceCore\Admin\FooterManager::init();
 		}
 		\HeadlessCommerceCore\Admin\CategoryTaxonomyManager::init();

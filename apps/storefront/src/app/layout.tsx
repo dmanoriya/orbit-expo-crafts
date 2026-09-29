@@ -7,6 +7,7 @@ import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { EnquiryDrawer } from '../components/EnquiryDrawer';
 import { FontLoader } from '../components/FontLoader';
+import { ProductGridProvider } from '../context/ProductGridContext';
 import { getMegaMenuData } from '../lib/megaMenu';
 
 export const viewport: Viewport = {
@@ -53,10 +54,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <AuthProvider>
           <EnquiryProvider>
             <FavoritesProvider>
-              <Header menuData={menuData} />
-              <main id="app">{children}</main>
-              <Footer />
-              <EnquiryDrawer />
+              <ProductGridProvider>
+                <Header menuData={menuData} />
+                <main id="app">{children}</main>
+                <Footer />
+                <EnquiryDrawer />
+              </ProductGridProvider>
             </FavoritesProvider>
           </EnquiryProvider>
         </AuthProvider>

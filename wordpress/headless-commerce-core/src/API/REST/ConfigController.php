@@ -5,6 +5,7 @@ namespace HeadlessCommerceCore\API\REST;
 use HeadlessCommerceCore\Core\StoreMode;
 use HeadlessCommerceCore\Admin\HomepageManager;
 use HeadlessCommerceCore\Admin\TypographyManager;
+use HeadlessCommerceCore\Admin\ProductGridManager;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -45,6 +46,12 @@ class ConfigController extends RestController {
 			'callback'            => array( $this, 'get_single_business_page' ),
 			'permission_callback' => '__return_true',
 		) );
+
+		register_rest_route( $this->namespace, '/product-grid', array(
+			'methods'             => \WP_REST_Server::READABLE,
+			'callback'            => array( $this, 'get_product_grid' ),
+			'permission_callback' => '__return_true',
+		) );
 	}
 
 	public function get_config( $request ) {
@@ -67,7 +74,12 @@ class ConfigController extends RestController {
 				'fontMono'    => $typo['font_mono'],
 			),
 			'footer'            => \HeadlessCommerceCore\Admin\FooterManager::get_footer_data(),
+			'productGrid'       => ProductGridManager::get_grid_data(),
 		) );
+	}
+
+	public function get_product_grid( $request ) {
+		return $this->success_response( ProductGridManager::get_grid_data() );
 	}
 
 	public function get_homepage( $request ) {

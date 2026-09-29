@@ -9,6 +9,7 @@ import { useFavorites } from '../../context/FavoritesContext';
 import { fetchWpStorefrontData, getCachedStorefrontData, WpCategoryItem, WpColorItem } from '../../lib/wpCommerce';
 import ProductSkeletonGrid from '../../components/ProductSkeletonGrid';
 import Pagination from '../../components/Pagination';
+import ProductCard from '../../components/ProductCard';
 
 interface CatalogueClientProps {
   initialCategory?: string;
@@ -1007,116 +1008,7 @@ export default function CatalogueClient({
             <>
               <div className="prod-grid">
                 {paginatedProducts.map((p) => (
-                  <article key={p.id} className="card">
-                    <div className="thumb" style={{ position: 'relative' }}>
-                      {p.badge && p.badge.toLowerCase() !== 'none' && (
-                        <span className={`tag ${p.badge === 'New' ? 'new' : ''}`}>{p.badge}</span>
-                      )}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          toggleFavorite({
-                            id: p.id,
-                            name: p.name,
-                            catName: p.catName,
-                            image: (p as any).img || p.image || '/fallback-product.svg',
-                            moq: p.moq || 1,
-                            material: p.material,
-                            finish: (p as any).color || (p as any).finish,
-                            slug: getProductSlug(p),
-                          });
-                        }}
-                        title={isFavorite(p.id) ? 'Remove from Favourites' : 'Save to Favourites'}
-                        aria-label={isFavorite(p.id) ? 'Remove from Favourites' : 'Save to Favourites'}
-                        style={{
-                          position: 'absolute',
-                          top: 8,
-                          right: 8,
-                          width: 32,
-                          height: 32,
-                          borderRadius: '50%',
-                          background: isFavorite(p.id) ? '#FFFFFF' : 'rgba(255, 255, 255, 0.9)',
-                          border: '1px solid rgba(0, 0, 0, 0.08)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          cursor: 'pointer',
-                          zIndex: 3,
-                          boxShadow: '0 2px 6px rgba(0,0,0,0.12)',
-                          transition: 'all 0.2s ease',
-                        }}
-                      >
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill={isFavorite(p.id) ? '#B85735' : 'none'}
-                          stroke={isFavorite(p.id) ? '#B85735' : '#111111'}
-                          strokeWidth="1.8"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                        </svg>
-                      </button>
-
-                      <Link href={`/product/${getProductSlug(p)}`}>
-                        <img
-                          src={(p as any).img || p.image || '/fallback-product.svg'}
-                          alt={p.name}
-                          loading="lazy"
-                          onError={(e) => {
-                            e.currentTarget.onerror = null;
-                            e.currentTarget.src = (p as any).cat ? `/categories/${(p as any).cat}.jpg` : '/fallback-product.svg';
-                          }}
-                        />
-                      </Link>
-
-                      <div className="acts">
-                        <Link href={`/product/${getProductSlug(p)}`} className="btn btn-soft btn-sm">
-                          Details
-                        </Link>
-                        <button
-                          className="btn btn-primary btn-sm"
-                          onClick={() =>
-                            addEnquiry({
-                              id: p.id,
-                              name: p.name,
-                              catName: p.catName,
-                              q: p.moq,
-                              image: (p as any).img || p.image || '/fallback-product.svg',
-                              moq: p.moq,
-                              unitPrice: p.price || 0,
-                              currency: p.currency || 'INR',
-                              currencySymbol: p.currencySymbol || '₹',
-                              material: p.material,
-                              finish: p.color,
-                              slug: p.slug,
-                            })
-                          }
-                        >
-                          + Enquiry
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="body">
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, marginBottom: 4 }}>
-                        <span className="meta">{p.catName || p.type || 'FURNITURE'}</span>
-                        <span className="made-to-order-tag">Made-To-Order</span>
-                      </div>
-                      <Link href={`/product/${getProductSlug(p)}`}>
-                        <h4>{p.name}</h4>
-                      </Link>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 8, fontSize: 12, color: 'var(--ink-3)' }}>
-                        <span>MOQ: <strong style={{ color: 'var(--ink)' }}>{p.moq || 1} units</strong></span>
-                        <span>Lead: <strong style={{ color: 'var(--ink)' }}>{p.lead || (p as any).leadTime || 21}d</strong></span>
-                      </div>
-                      <span className="price-note">Price on request</span>
-                    </div>
-                  </article>
+                  <ProductCard key={p.id} product={p} />
                 ))}
               </div>
 

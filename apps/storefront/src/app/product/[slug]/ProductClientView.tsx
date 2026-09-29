@@ -6,6 +6,7 @@ import { FINISHES, ProductItem, getProductSlug } from '../../../data/catalogData
 import { useEnquiry } from '../../../context/EnquiryContext';
 import { useFavorites } from '../../../context/FavoritesContext';
 import SampleCadModal from '../../../components/SampleCadModal';
+import ProductCard from '../../../components/ProductCard';
 
 interface ProductClientViewProps {
   initialProduct: ProductItem;
@@ -774,39 +775,7 @@ export default function ProductClientView({
           <div className="rel-carousel-wrapper">
             <div className="rel-carousel-track" ref={carouselRef}>
               {relatedProducts.map((p) => (
-                <article key={p.id} className="card">
-                  <div className="thumb">
-                    {p.badge && p.badge.toLowerCase() !== 'none' && (
-                      <span className={`tag ${p.badge === 'New' ? 'new' : ''}`}>
-                        {p.badge}
-                      </span>
-                    )}
-                    <Link href={`/product/${getProductSlug(p)}`}>
-                      <img
-                        src={p.image || '/fallback-product.svg'}
-                        alt={p.name}
-                        loading="lazy"
-                        onError={(e) => {
-                          e.currentTarget.onerror = null;
-                          e.currentTarget.src = p.cat ? `/categories/${p.cat}.jpg` : '/fallback-product.svg';
-                        }}
-                      />
-                    </Link>
-                    <div className="acts">
-                      <Link href={`/product/${getProductSlug(p)}`} className="btn btn-soft btn-sm">
-                        Details
-                      </Link>
-                    </div>
-                  </div>
-                  <div className="body">
-                    <span className="meta">{p.catName || p.type || 'FURNITURE'}</span>
-                    <span className="made-to-order-tag">Made-To-Order</span>
-                    <Link href={`/product/${getProductSlug(p)}`}>
-                      <h4>{p.name}</h4>
-                    </Link>
-                    <span className="price-note">Price on request</span>
-                  </div>
-                </article>
+                <ProductCard key={p.id} product={p} />
               ))}
             </div>
           </div>
@@ -828,26 +797,7 @@ export default function ProductClientView({
           </div>
           <div className="pdp-recent-grid">
             {recentProducts.map((p) => (
-              <article key={p.id} className="card">
-                <div className="thumb">
-                  <Link href={`/product/${getProductSlug(p)}`}>
-                    <img src={p.image || '/fallback-product.svg'} alt={p.name} loading="lazy" />
-                  </Link>
-                  <div className="acts">
-                    <Link href={`/product/${getProductSlug(p)}`} className="btn btn-soft btn-sm">
-                      Details
-                    </Link>
-                  </div>
-                </div>
-                <div className="body">
-                  <span className="meta">{p.catName || p.type || 'FURNITURE'}</span>
-                  <span className="made-to-order-tag">Made-To-Order</span>
-                  <Link href={`/product/${getProductSlug(p)}`}>
-                    <h4>{p.name}</h4>
-                  </Link>
-                  <span className="price-note">Price on request</span>
-                </div>
-              </article>
+              <ProductCard key={p.id} product={p} />
             ))}
           </div>
         </section>
