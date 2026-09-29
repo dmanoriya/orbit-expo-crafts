@@ -219,35 +219,22 @@ export default async function JournalPostPage({ params }: JournalPostPageProps) 
               </Link>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "28px" }}>
+            <div className="journal-related-grid">
               {related.map((item) => (
                 <Link
                   key={item.slug || item.id}
                   href={`/journal/${item.slug}`}
                   style={{ textDecoration: "none", color: "inherit", display: "flex", flexDirection: "column" }}
                 >
-                  <article
-                    className="journal-card"
-                    style={{
-                      backgroundColor: "#FFFFFF",
-                      border: "1px solid #E2DDD5",
-                      borderRadius: "8px",
-                      overflow: "hidden",
-                      display: "flex",
-                      flexDirection: "column",
-                      height: "100%",
-                      transition: "transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease",
-                    }}
-                  >
-                    <div style={{ width: "100%", height: "190px", overflow: "hidden", backgroundColor: "#F1EFE9" }}>
+                  <article className="journal-card">
+                    <div className="journal-card-media" style={{ height: "190px" }}>
                       <img
                         src={item.image}
                         alt={item.title}
-                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
                       />
                     </div>
-                    <div style={{ padding: "20px", display: "flex", flexDirection: "column", flex: 1 }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+                    <div className="journal-card-body" style={{ padding: "20px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px", flexWrap: "wrap", gap: 6 }}>
                         <span className="mono" style={{ fontSize: "10px", color: "#777777", fontWeight: 600 }}>
                           {item.category}
                         </span>

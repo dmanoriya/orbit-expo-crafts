@@ -17,22 +17,22 @@ export default async function JournalsPage() {
   const gridArticles = articles.slice(1);
 
   return (
-    <div style={{ backgroundColor: '#FFFFFF', color: '#111111', minHeight: '100vh', padding: '40px 0 80px' }}>
+    <div className="journal-page">
       <div className="wrap">
         {/* BREADCRUMBS */}
-        <div className="crumbs" style={{ marginBottom: 20 }}>
+        <div className="crumbs" style={{ marginBottom: 16 }}>
           <Link href="/">Home</Link> / <span style={{ fontWeight: 600 }}>Journals</span>
         </div>
 
         {/* PAGE HEADER */}
-        <div style={{ borderBottom: '1px solid #E2DDD5', paddingBottom: '32px', marginBottom: '48px' }}>
-          <div className="mono" style={{ color: '#666666', letterSpacing: '0.15em', marginBottom: '12px' }}>
-            MANUFACTURING & DESIGN INSIGHTS
+        <div className="journal-page-header">
+          <div className="mono" style={{ color: '#666666', letterSpacing: '0.15em', marginBottom: '10px' }}>
+            MANUFACTURING &amp; DESIGN INSIGHTS
           </div>
-          <h1 className="disp" style={{ fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 400, color: '#111111', margin: 0 }}>
-            Journals & Field Notes
+          <h1 className="disp" style={{ fontSize: 'clamp(28px, 5.5vw, 54px)', fontWeight: 400, color: '#111111', margin: 0, lineHeight: 1.15 }}>
+            Journals &amp; Field Notes
           </h1>
-          <p style={{ fontSize: '18px', color: '#555555', maxWidth: '64ch', marginTop: '16px', lineHeight: '1.6' }}>
+          <p style={{ fontSize: '16.5px', color: '#555555', maxWidth: '64ch', marginTop: '12px', lineHeight: '1.6' }}>
             Technical articles, craft heritage studies, and project specification guides directly from our Udaipur and Jodhpur production facilities.
           </p>
         </div>
@@ -43,33 +43,18 @@ export default async function JournalsPage() {
             href={`/journal/${featured.slug}`}
             style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
           >
-            <div
-              className="featured-journal-hero"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1.1fr 0.9fr',
-                gap: '40px',
-                alignItems: 'center',
-                backgroundColor: '#F1EFE9',
-                border: '1px solid #E2DDD5',
-                borderRadius: '8px',
-                padding: '36px',
-                marginBottom: '64px',
-                cursor: 'pointer',
-                transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
-              }}
-            >
-              <div>
+            <div className="featured-journal-hero">
+              <div className="featured-journal-content">
                 <span className="mono" style={{ color: '#111111', fontSize: '11px', fontWeight: 600, letterSpacing: '0.12em', display: 'inline-block', marginBottom: '12px' }}>
                   FEATURED READ · {featured.category}
                 </span>
                 <h2 className="disp" style={{ fontSize: '32px', fontWeight: 400, color: '#111111', lineHeight: '1.2', marginBottom: '16px' }}>
                   {featured.title}
                 </h2>
-                <p style={{ fontSize: '15.5px', color: '#4A4640', lineHeight: '1.6', marginBottom: '24px' }}>
+                <p style={{ fontSize: '15.5px', color: '#4A4640', lineHeight: '1.6', marginBottom: '20px' }}>
                   {featured.excerpt}
                 </p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '13px', color: '#666666' }}>
+                <div className="featured-journal-meta">
                   <span>{featured.author}</span>
                   <span>•</span>
                   <span>{featured.date}</span>
@@ -77,11 +62,10 @@ export default async function JournalsPage() {
                   <span>{featured.readTime}</span>
                 </div>
               </div>
-              <div style={{ width: '100%', height: '320px', borderRadius: '6px', overflow: 'hidden' }}>
+              <div className="featured-journal-media">
                 <img
                   src={featured.image}
                   alt={featured.title}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               </div>
             </div>
@@ -89,36 +73,22 @@ export default async function JournalsPage() {
         )}
 
         {/* ARTICLES GRID */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '32px' }}>
+        <div className="journal-grid">
           {gridArticles.map((article) => (
             <Link
               key={article.slug || article.id}
               href={`/journal/${article.slug}`}
               style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column' }}
             >
-              <article
-                className="journal-card"
-                style={{
-                  backgroundColor: '#FFFFFF',
-                  border: '1px solid #E2DDD5',
-                  borderRadius: '8px',
-                  overflow: 'hidden',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  height: '100%',
-                  cursor: 'pointer',
-                  transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
-                }}
-              >
-                <div style={{ width: '100%', height: '220px', overflow: 'hidden', backgroundColor: '#F1EFE9' }}>
+              <article className="journal-card">
+                <div className="journal-card-media">
                   <img
                     src={article.image}
                     alt={article.title}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 </div>
-                <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                <div className="journal-card-body">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: 6 }}>
                     <span className="mono" style={{ fontSize: '10.5px', color: '#777777', fontWeight: 600 }}>
                       {article.category}
                     </span>
