@@ -68,14 +68,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     <article className={`card ${shadowClass} ${className}`.trim()}>
       <div className="thumb" style={{ position: 'relative' }}>
         {/* BADGE */}
-        {badge && gridConfig.show_badge !== 'no' && (
+        {badge && gridConfig.show_badge === 'yes' && (
           <span className={`tag ${badge.toLowerCase() === 'new' ? 'new' : ''}`}>
             {badge}
           </span>
         )}
 
         {/* FAVOURITE / WISHLIST BUTTON */}
-        {gridConfig.show_favorite !== 'no' && (
+        {gridConfig.show_favorite === 'yes' && (
           <button
             type="button"
             className="card-fav-btn"
@@ -91,7 +91,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               borderRadius: '50%',
               background: isFav ? '#FFFFFF' : 'rgba(255, 255, 255, 0.92)',
               border: '1px solid rgba(0, 0, 0, 0.08)',
-              display: 'flex',
+              display: gridConfig.show_favorite === 'yes' ? 'flex' : 'none',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
@@ -129,14 +129,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </Link>
 
         {/* HOVER OVERLAY QUICK ACTIONS */}
-        {gridConfig.show_actions !== 'no' && gridConfig.actions_mode === 'hover_overlay' && (
+        {gridConfig.show_actions === 'yes' && gridConfig.actions_mode === 'hover_overlay' && (
           <div className="acts">
-            {gridConfig.show_details_btn !== 'no' && (
+            {gridConfig.show_details_btn === 'yes' && (
               <Link href={`/product/${slug}`} className="btn btn-soft btn-sm btn-details">
                 {gridConfig.details_btn_text || 'Details'}
               </Link>
             )}
-            {gridConfig.show_enquiry_btn !== 'no' && (
+            {gridConfig.show_enquiry_btn === 'yes' && (
               <button
                 type="button"
                 className="btn btn-primary btn-sm btn-enquiry"
@@ -152,10 +152,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* CARD BODY */}
       <div className="body">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, marginBottom: 4 }}>
-          {gridConfig.show_category !== 'no' && (
+          {gridConfig.show_category === 'yes' && (
             <span className="meta">{categoryName}</span>
           )}
-          {gridConfig.show_made_to_order !== 'no' && (
+          {gridConfig.show_made_to_order === 'yes' && (
             <span className="made-to-order-tag">Made-To-Order</span>
           )}
         </div>
@@ -165,11 +165,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </Link>
 
         {/* MOQ & PRODUCTION LEAD TIME */}
-        {gridConfig.show_moq_lead !== 'no' && (
+        {gridConfig.show_moq_lead === 'yes' && (
           <div
             className="card-moq-lead"
             style={{
-              display: 'flex',
+              display: gridConfig.show_moq_lead === 'yes' ? 'flex' : 'none',
               alignItems: 'center',
               justifyContent: 'space-between',
               marginTop: 6,
@@ -183,14 +183,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         )}
 
         {/* PRICE NOTE */}
-        {gridConfig.show_price_note !== 'no' && (
+        {gridConfig.show_price_note === 'yes' && (
           <span className="price-note">
             {gridConfig.price_note_text || 'Price on request'}
           </span>
         )}
 
         {/* INLINE ACTION BUTTONS (IF MODE IS ALWAYS_VISIBLE) */}
-        {gridConfig.show_actions !== 'no' && gridConfig.actions_mode === 'always_visible' && (
+        {gridConfig.show_actions === 'yes' && gridConfig.actions_mode === 'always_visible' && (
           <div
             className="acts-inline"
             style={{
@@ -201,7 +201,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               borderTop: '1px solid var(--line, #ECE7DE)',
             }}
           >
-            {gridConfig.show_details_btn !== 'no' && (
+            {gridConfig.show_details_btn === 'yes' && (
               <Link
                 href={`/product/${slug}`}
                 className="btn btn-soft btn-sm btn-details"
@@ -210,7 +210,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 {gridConfig.details_btn_text || 'Details'}
               </Link>
             )}
-            {gridConfig.show_enquiry_btn !== 'no' && (
+            {gridConfig.show_enquiry_btn === 'yes' && (
               <button
                 type="button"
                 className="btn btn-primary btn-sm btn-enquiry"

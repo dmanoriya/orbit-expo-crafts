@@ -8,7 +8,12 @@ import { Footer } from '../components/Footer';
 import { EnquiryDrawer } from '../components/EnquiryDrawer';
 import { FontLoader } from '../components/FontLoader';
 import { ProductGridProvider } from '../context/ProductGridContext';
+import {
+  DEFAULT_PRODUCT_GRID_CONFIG,
+  generateGridCssVariablesString,
+} from '../lib/productGrid';
 import { getMegaMenuData } from '../lib/megaMenu';
+import { fetchWpJsonWithFailover } from '../lib/wpCommerce';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -24,7 +29,14 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const menuData = await getMegaMenuData();
+  const [menuData, configRes] = await Promise.all([
+    getMegaMenuData(),
+    fetchWpJsonWithFailover<any>('/config', { tag: 'wp-config', revalidate: 30 }),
+  ]);
+
+  const initialGridConfig = configRes?.data?.productGrid || DEFAULT_PRODUCT_GRID_CONFIG;
+  const gridCss = generateGridCssVariablesString(initialGridConfig);
+
   return (
     <html lang="en" data-theme="peacock">
       <head>
@@ -34,6 +46,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600;1,700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;600&display=swap"
           rel="stylesheet"
         />
+        <style id="product-grid-vars" dangerouslySetInnerHTML={{ __html: gridCss }} />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -54,7 +67,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <AuthProvider>
           <EnquiryProvider>
             <FavoritesProvider>
-              <ProductGridProvider>
+              <ProductGridProvider initialConfig={initialGridConfig}>
                 <Header menuData={menuData} />
                 <main id="app">{children}</main>
                 <Footer />

@@ -1,70 +1,15 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import {
+  ProductGridConfig,
+  DEFAULT_PRODUCT_GRID_CONFIG,
+  formatAspectRatio,
+  generateGridCssVariablesString,
+} from '../lib/productGrid';
 
-export interface ProductGridConfig {
-  aspect_ratio: string;        // '4:3', '1:1', '4:5', '16:9', '3:2'
-  image_fit: 'cover' | 'contain' | string;
-  thumb_bg: string;            // '#FFFFFF', '#F8F7F5', etc.
-  thumb_padding: string;       // '0', '6', '10', '16', '24'
-  thumb_radius: string;        // '0', '4', '8', '12', '16'
-  card_border: 'subtle' | 'none' | 'medium' | string;
-  card_shadow: 'subtle' | 'none' | 'elevated' | 'hover_float' | string;
-  hover_zoom: string;          // '1.04', '1.08', '1.0'
-  hover_gradient: 'yes' | 'no' | string;
-
-  cols_desktop: string;        // '2', '3', '4'
-  cols_mobile: string;         // '1', '2'
-  gap_desktop: 'compact' | 'standard' | 'spacious' | string;
-  gap_mobile: 'compact' | 'standard' | 'spacious' | string;
-
-  show_badge: 'yes' | 'no' | string;
-  show_favorite: 'yes' | 'no' | string;
-  show_category: 'yes' | 'no' | string;
-  show_made_to_order: 'yes' | 'no' | string;
-  show_moq_lead: 'yes' | 'no' | string;
-  show_price_note: 'yes' | 'no' | string;
-  price_note_text: string;
-
-  show_actions: 'yes' | 'no' | string;
-  actions_mode: 'hover_overlay' | 'always_visible' | 'none' | string;
-  show_details_btn: 'yes' | 'no' | string;
-  show_enquiry_btn: 'yes' | 'no' | string;
-  details_btn_text: string;
-  enquiry_btn_text: string;
-}
-
-export const DEFAULT_PRODUCT_GRID_CONFIG: ProductGridConfig = {
-  aspect_ratio: '4:3',
-  image_fit: 'cover',
-  thumb_bg: '#FFFFFF',
-  thumb_padding: '0',
-  thumb_radius: '8',
-  card_border: 'subtle',
-  card_shadow: 'subtle',
-  hover_zoom: '1.04',
-  hover_gradient: 'yes',
-
-  cols_desktop: '3',
-  cols_mobile: '1',
-  gap_desktop: 'standard',
-  gap_mobile: 'standard',
-
-  show_badge: 'yes',
-  show_favorite: 'yes',
-  show_category: 'yes',
-  show_made_to_order: 'yes',
-  show_moq_lead: 'yes',
-  show_price_note: 'yes',
-  price_note_text: 'Price on request',
-
-  show_actions: 'yes',
-  actions_mode: 'hover_overlay',
-  show_details_btn: 'yes',
-  show_enquiry_btn: 'yes',
-  details_btn_text: 'Details',
-  enquiry_btn_text: '+ Enquiry',
-};
+export type { ProductGridConfig };
+export { DEFAULT_PRODUCT_GRID_CONFIG, formatAspectRatio, generateGridCssVariablesString };
 
 interface ProductGridContextType {
   gridConfig: ProductGridConfig;
@@ -77,25 +22,6 @@ const ProductGridContext = createContext<ProductGridContextType>({
   updateGridConfig: () => {},
   isLoading: false,
 });
-
-/**
- * Maps ratio string ('4:3') to standard CSS aspect-ratio value ('4 / 3')
- */
-export function formatAspectRatio(ratio: string): string {
-  switch (ratio) {
-    case '1:1':
-      return '1 / 1';
-    case '4:5':
-      return '4 / 5';
-    case '16:9':
-      return '16 / 9';
-    case '3:2':
-      return '3 / 2';
-    case '4:3':
-    default:
-      return '4 / 3';
-  }
-}
 
 /**
  * Apply live grid styling directly to :root via CSS custom properties
@@ -176,17 +102,27 @@ export function applyGridStylesToDocument(cfg: ProductGridConfig) {
   root.style.setProperty('--card-enquiry-btn-display', cfg.show_enquiry_btn === 'yes' ? 'inline-flex' : 'none');
 }
 
-export const ProductGridProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [gridConfig, setGridConfig] = useState<ProductGridConfig>(DEFAULT_PRODUCT_GRID_CONFIG);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+export const ProductGridProvider: React.FC<{
+  children: React.ReactNode;
+  initialConfig?: Partial<ProductGridConfig>;
+}> = ({ children, initialConfig }) => {
+  const [gridConfig, setGridConfig] = useState<ProductGridConfig>(() => ({
+    ...DEFAULT_PRODUCT_GRID_CONFIG,
+    ...(initialConfig || {}),
+  }));
+  const [isLoading, setIsLoading] = useState<boolean>(!initialConfig);
 
   useEffect(() => {
-    // Initial application of default styles
-    applyGridStylesToDocument(DEFAULT_PRODUCT_GRID_CONFIG);
+    // If initial config exists, ensure document properties are synced right away
+    const active = {
+      ...DEFAULT_PRODUCT_GRID_CONFIG,
+      ...(initialConfig || {}),
+    };
+    applyGridStylesToDocument(active);
 
     async function loadGridConfig() {
       try {
-        const res = await fetch('/api/wp/config');
+        const res = await fetch('/api/wp/config', { cache: 'no-store' });
         if (!res.ok) return;
 
         const json = await res.json();
@@ -200,14 +136,23 @@ export const ProductGridProvider: React.FC<{ children: React.ReactNode }> = ({ c
           applyGridStylesToDocument(merged);
         }
       } catch (err) {
-        console.warn('[ProductGridContext] Failed to load grid config, using defaults:', err);
+        console.warn('[ProductGridContext] Failed to load grid config:', err);
       } finally {
         setIsLoading(false);
       }
     }
 
     loadGridConfig();
-  }, []);
+
+    // Re-sync seamlessly when tab regains focus after editing in WP admin
+    const onFocus = () => {
+      loadGridConfig();
+    };
+    window.addEventListener('focus', onFocus);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+    };
+  }, [initialConfig]);
 
   const updateGridConfig = (cfg: Partial<ProductGridConfig>) => {
     setGridConfig((prev) => {
@@ -225,3 +170,4 @@ export const ProductGridProvider: React.FC<{ children: React.ReactNode }> = ({ c
 };
 
 export const useProductGridConfig = () => useContext(ProductGridContext);
+

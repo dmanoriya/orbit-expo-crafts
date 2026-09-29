@@ -2371,9 +2371,9 @@ section.blk.tight { padding: 72px 0; }
   border: 1px solid rgba(255,255,255,0.8);
 }
 .card .thumb .acts .btn-soft:hover { background: #ffffff; color: var(--ink); }
-.card .thumb .acts .btn-details { display: var(--card-details-btn-display, inline-flex); }
-.card .thumb .acts .btn-enquiry { display: var(--card-enquiry-btn-display, inline-flex); }
-.acts-inline { display: var(--card-acts-inline-display, none); }
+.card .thumb .acts .btn-details { display: var(--card-details-btn-display, inline-flex) !important; }
+.card .thumb .acts .btn-enquiry { display: var(--card-enquiry-btn-display, inline-flex) !important; }
+.acts-inline { display: var(--card-acts-inline-display, none) !important; }
 
 .card .body { padding: 14px 2px 0; display: flex; flex-direction: column; gap: 4px; }
 .card h4 { font-family: var(--font-display); font-size: 20px; font-weight: 400; line-height: 1.25; cursor: pointer; }
@@ -2384,20 +2384,20 @@ section.blk.tight { padding: 72px 0; }
   letter-spacing: .14em;
   color: var(--ink-3);
   text-transform: uppercase;
-  display: var(--card-category-display, inline-block);
+  display: var(--card-category-display, inline-block) !important;
 }
-.card-moq-lead { display: var(--card-moq-lead-display, flex); }
+.card-moq-lead { display: var(--card-moq-lead-display, flex) !important; }
 .price-note {
   font-size: 13.5px;
   font-weight: 600;
   color: var(--brand);
   letter-spacing: .01em;
-  display: var(--card-price-display, inline-block);
+  display: var(--card-price-display, inline-block) !important;
 }
 
 /* Subtle Minimal Box for Made-To-Order */
 .made-to-order-tag {
-  display: var(--card-mto-display, inline-flex);
+  display: var(--card-mto-display, inline-flex) !important;
   align-items: center;
   align-self: flex-start;
   font-family: var(--font-mono), 'JetBrains Mono', monospace;
