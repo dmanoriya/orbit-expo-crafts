@@ -279,6 +279,7 @@ export const PhoneInputField: React.FC<PhoneInputFieldProps> = ({
           onBlur={onBlur}
           style={{
             flex: 1,
+            minWidth: 0,
             width: '100%',
             padding: '10px 14px',
             borderRadius: 6,

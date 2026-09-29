@@ -247,57 +247,57 @@ export default function DiscussProjectsPage() {
   };
 
   return (
-    <div style={{ backgroundColor: '#FFFFFF', color: '#111111', minHeight: '100vh', padding: '36px 0 80px' }}>
+    <div className="discuss-page">
       <div className="wrap">
         {/* BREADCRUMBS */}
-        <div className="crumbs" style={{ marginBottom: 24 }}>
+        <div className="crumbs" style={{ marginBottom: 20 }}>
           <Link href="/">Home</Link> / <span style={{ fontWeight: 600 }}>Discuss Projects</span>
         </div>
 
         {/* HERO SECTION */}
-        <div style={{ borderBottom: '1px solid var(--line)', paddingBottom: 40, marginBottom: 48 }}>
+        <div className="discuss-hero">
           <span className="mono" style={{ fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--ink-3)', display: 'block', marginBottom: 12 }}>
             TURNKEY CONTRACT CONSULTATION
           </span>
-          <h1 className="disp" style={{ fontSize: 'clamp(32px, 4.5vw, 56px)', fontWeight: 400, color: 'var(--ink)', margin: 0, lineHeight: 1.15 }}>
+          <h1 className="disp" style={{ fontSize: 'clamp(28px, 4.5vw, 54px)', fontWeight: 400, color: 'var(--ink)', margin: 0, lineHeight: 1.15 }}>
             Discuss Your Project
           </h1>
-          <p style={{ fontSize: 17, color: 'var(--ink-2)', maxWidth: '68ch', marginTop: 16, lineHeight: 1.6 }}>
+          <p style={{ fontSize: 16.5, color: 'var(--ink-2)', maxWidth: '68ch', marginTop: 14, lineHeight: 1.6 }}>
             Tell us about your project and furniture needs. We help turn your ideas and designs into custom furniture for your space.
           </p>
         </div>
 
         {/* MAIN 2-COL CONTENT */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.1fr', gap: '48px', alignItems: 'start' }} className="two">
+        <div className="discuss-layout">
           {/* LEFT: Capabilities & Direct Connect */}
           <div>
             <h2 style={{ fontSize: 22, fontWeight: 600, marginBottom: 20 }}>
               How We Work With You
             </h2>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 24, marginBottom: 40 }}>
-              <div style={{ padding: '20px 24px', background: '#F9F8F5', borderRadius: 'var(--r-md)', border: '1px solid #ECE7DE' }}>
+            <div className="discuss-steps">
+              <div className="discuss-step-card">
                 <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 6 }}>1. Share Your Furniture Requirements</div>
                 <p style={{ fontSize: 14, color: '#555555', lineHeight: 1.55, margin: 0 }}>
                   Share your ideas, drawings, reference images, dimensions, and quantities so we can understand your project and custom furniture needs.
                 </p>
               </div>
 
-              <div style={{ padding: '20px 24px', background: '#F9F8F5', borderRadius: 'var(--r-md)', border: '1px solid #ECE7DE' }}>
+              <div className="discuss-step-card">
                 <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 6 }}>2. Choose Materials &amp; Finishes</div>
                 <p style={{ fontSize: 14, color: '#555555', lineHeight: 1.55, margin: 0 }}>
                   Select materials, colours, fabrics, and finishes to suit your design, intended use, and budget.
                 </p>
               </div>
 
-              <div style={{ padding: '20px 24px', background: '#F9F8F5', borderRadius: 'var(--r-md)', border: '1px solid #ECE7DE' }}>
+              <div className="discuss-step-card">
                 <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 6 }}>3. Review &amp; Approve the Design</div>
                 <p style={{ fontSize: 14, color: '#555555', lineHeight: 1.55, margin: 0 }}>
                   Confirm furniture specifications, drawings, and any required samples before production begins.
                 </p>
               </div>
 
-              <div style={{ padding: '20px 24px', background: '#F9F8F5', borderRadius: 'var(--r-md)', border: '1px solid #ECE7DE' }}>
+              <div className="discuss-step-card">
                 <div style={{ fontWeight: 600, fontSize: 16, marginBottom: 6 }}>4. Production &amp; Delivery</div>
                 <p style={{ fontSize: 14, color: '#555555', lineHeight: 1.55, margin: 0 }}>
                   Once approved, we proceed with manufacturing, quality checks, packaging, and delivery based on the agreed project requirements.
@@ -306,47 +306,25 @@ export default function DiscussProjectsPage() {
             </div>
 
             {/* DIRECT HOTLINES */}
-            <div style={{ padding: 24, background: '#111111', color: '#FFFFFF', borderRadius: 'var(--r-md)' }}>
+            <div className="discuss-concierge-card">
               <div style={{ fontSize: 12, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--brand)', marginBottom: 8, fontWeight: 600 }}>
                 Direct Project Concierge
               </div>
-              <div style={{ fontSize: 16, fontWeight: 500, marginBottom: 12 }}>
+              <div style={{ fontSize: 16, fontWeight: 500, marginBottom: 14 }}>
                 Speak directly with our senior contract specifiers
               </div>
-              <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+              <div className="discuss-concierge-actions">
                 <a
                   href="https://wa.me/919928022151?text=Hi,%20I%20would%20like%20to%20discuss%20a%20turnkey%20furniture%20project"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    background: '#25D366',
-                    color: '#FFFFFF',
-                    padding: '10px 18px',
-                    borderRadius: 6,
-                    fontSize: 13.5,
-                    fontWeight: 600,
-                    textDecoration: 'none',
-                  }}
+                  className="discuss-concierge-btn discuss-concierge-btn-wa"
                 >
                   💬 Chat on WhatsApp
                 </a>
                 <a
                   href="mailto:sales@orbitexpocrafts.com?subject=New%20Project%20Inquiry"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    background: 'rgba(255,255,255,0.12)',
-                    color: '#FFFFFF',
-                    padding: '10px 18px',
-                    borderRadius: 6,
-                    fontSize: 13.5,
-                    fontWeight: 600,
-                    textDecoration: 'none',
-                  }}
+                  className="discuss-concierge-btn discuss-concierge-btn-email"
                 >
                   ✉️ Email Specifications
                 </a>
@@ -355,7 +333,7 @@ export default function DiscussProjectsPage() {
           </div>
 
           {/* RIGHT: Inquiry Form */}
-          <div style={{ background: '#FFFFFF', border: '1px solid var(--line)', borderRadius: 'var(--r-md)', padding: '36px 32px', boxShadow: 'var(--shadow-sm)' }}>
+          <div className="discuss-form-card">
             {submitted ? (
               <div style={{ textAlign: 'center', padding: '48px 16px' }}>
                 <div style={{ fontSize: 44, marginBottom: 16 }}>✓</div>
@@ -396,7 +374,7 @@ export default function DiscussProjectsPage() {
                   Fill in the details below and our engineering team will get in touch with technical specs and estimates.
                 </p>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
+                <div className="discuss-field-row">
                   <div>
                     <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6 }}>
                       Your Name *
@@ -411,8 +389,8 @@ export default function DiscussProjectsPage() {
                         if (fieldErrors.name) setFieldErrors((prev) => ({ ...prev, name: '' }));
                       }}
                       onBlur={() => handleBlur('name')}
+                      className="discuss-form-input"
                       style={{
-                        width: '100%',
                         padding: '10px 14px',
                         borderRadius: 6,
                         border: fieldErrors.name ? '1px solid #DC2626' : '1px solid #CCC',
@@ -439,8 +417,8 @@ export default function DiscussProjectsPage() {
                         if (fieldErrors.company) setFieldErrors((prev) => ({ ...prev, company: '' }));
                       }}
                       onBlur={() => handleBlur('company')}
+                      className="discuss-form-input"
                       style={{
-                        width: '100%',
                         padding: '10px 14px',
                         borderRadius: 6,
                         border: fieldErrors.company ? '1px solid #DC2626' : '1px solid #CCC',
@@ -455,7 +433,7 @@ export default function DiscussProjectsPage() {
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
+                <div className="discuss-field-row">
                   <div>
                     <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6 }}>
                       Business Email *
@@ -470,8 +448,8 @@ export default function DiscussProjectsPage() {
                         if (fieldErrors.email) setFieldErrors((prev) => ({ ...prev, email: '' }));
                       }}
                       onBlur={() => handleBlur('email')}
+                      className="discuss-form-input"
                       style={{
-                        width: '100%',
                         padding: '10px 14px',
                         borderRadius: 6,
                         border: fieldErrors.email ? '1px solid #DC2626' : '1px solid #CCC',
@@ -502,7 +480,7 @@ export default function DiscussProjectsPage() {
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
+                <div className="discuss-field-row">
                   <div>
                     <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6 }}>
                       Project Typology
@@ -510,7 +488,8 @@ export default function DiscussProjectsPage() {
                     <select
                       value={formData.projectType}
                       onChange={(e) => setFormData({ ...formData, projectType: e.target.value })}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14, background: '#FFF' }}
+                      className="discuss-form-select"
+                      style={{ padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14, background: '#FFF' }}
                     >
                       <option>Boutique Hotel / Resort</option>
                       <option>Fine Dining / Restaurant / Bar</option>
@@ -527,7 +506,8 @@ export default function DiscussProjectsPage() {
                     <select
                       value={formData.scope}
                       onChange={(e) => setFormData({ ...formData, scope: e.target.value })}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14, background: '#FFF' }}
+                      className="discuss-form-select"
+                      style={{ padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14, background: '#FFF' }}
                     >
                       <option>Under 20 Keys / Rooms</option>
                       <option>20-50 Keys / Rooms</option>
@@ -538,7 +518,7 @@ export default function DiscussProjectsPage() {
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
+                <div className="discuss-field-row">
                   <div>
                     <label style={{ display: 'block', fontSize: 12.5, fontWeight: 600, marginBottom: 6 }}>
                       Project Location (City / Country)
@@ -548,7 +528,8 @@ export default function DiscussProjectsPage() {
                       placeholder="e.g. Dubai, UAE / London, UK"
                       value={formData.location}
                       onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14 }}
+                      className="discuss-form-input"
+                      style={{ padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14 }}
                     />
                   </div>
                   <div>
@@ -558,7 +539,8 @@ export default function DiscussProjectsPage() {
                     <select
                       value={formData.timeline}
                       onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
-                      style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14, background: '#FFF' }}
+                      className="discuss-form-select"
+                      style={{ padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14, background: '#FFF' }}
                     >
                       <option>Urgent (&lt; 2 Months)</option>
                       <option>Within 3-6 Months</option>
@@ -577,13 +559,14 @@ export default function DiscussProjectsPage() {
                     placeholder="Tell us about the pieces required (e.g. headboards, wardrobes, dining sets, inlay consoles) or paste link to Google Drive / Dropbox specs..."
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14, resize: 'vertical' }}
+                    className="discuss-form-textarea"
+                    style={{ padding: '10px 14px', borderRadius: 6, border: '1px solid #CCC', fontSize: 14, resize: 'vertical' }}
                   />
                 </div>
 
                 {/* TRADE PORTAL ACCOUNT SETUP (REQUIRED) */}
                 {user ? (
-                  <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 6, padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 6, padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
                     <span style={{ fontSize: 12.5, color: '#166534', fontWeight: 500 }}>
                       ✓ Linked to Trade Account: <strong>{user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : (user.username || user.email)}</strong>
                     </span>
@@ -593,7 +576,7 @@ export default function DiscussProjectsPage() {
                   </div>
                 ) : (
                   <div style={{ background: '#FAF9F5', border: '1px solid #ECE7DE', borderRadius: 6, padding: '14px 16px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10, flexWrap: 'wrap', gap: 8 }}>
                       <span style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#111111' }}>
                         Trade Portal Account (Required)
                       </span>
@@ -626,7 +609,7 @@ export default function DiscussProjectsPage() {
                             {loginError}
                           </div>
                         )}
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10 }}>
+                        <div className="discuss-subgrid-2col">
                           <div>
                             <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
                               Email or Username *
@@ -636,7 +619,8 @@ export default function DiscussProjectsPage() {
                               placeholder="your@email.com"
                               value={loginEmail}
                               onChange={(e) => setLoginEmail(e.target.value)}
-                              style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13, background: '#FFFFFF' }}
+                              className="discuss-form-input"
+                              style={{ padding: '8px 10px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13, background: '#FFFFFF' }}
                             />
                           </div>
                           <div>
@@ -648,7 +632,8 @@ export default function DiscussProjectsPage() {
                               placeholder="••••••••"
                               value={loginPassword}
                               onChange={(e) => setLoginPassword(e.target.value)}
-                              style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13, background: '#FFFFFF' }}
+                              className="discuss-form-input"
+                              style={{ padding: '8px 10px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13, background: '#FFFFFF' }}
                             />
                           </div>
                         </div>
@@ -679,7 +664,7 @@ export default function DiscussProjectsPage() {
                             {passwordError}
                           </div>
                         )}
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10 }}>
+                        <div className="discuss-subgrid-2col">
                           <div>
                             <label style={{ display: 'block', fontSize: 11.5, fontWeight: 600, color: '#444444', marginBottom: 4 }}>
                               Account Password *
@@ -692,7 +677,8 @@ export default function DiscussProjectsPage() {
                                 setPassword(e.target.value);
                                 if (passwordError) setPasswordError('');
                               }}
-                              style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13, background: '#FFFFFF' }}
+                              className="discuss-form-input"
+                              style={{ padding: '8px 10px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13, background: '#FFFFFF' }}
                             />
                           </div>
                           <div>
@@ -707,7 +693,8 @@ export default function DiscussProjectsPage() {
                                 setConfirmPassword(e.target.value);
                                 if (passwordError) setPasswordError('');
                               }}
-                              style={{ width: '100%', padding: '8px 10px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13, background: '#FFFFFF' }}
+                              className="discuss-form-input"
+                              style={{ padding: '8px 10px', borderRadius: 6, border: '1px solid #D5CEBE', fontSize: 13, background: '#FFFFFF' }}
                             />
                           </div>
                         </div>
@@ -730,6 +717,8 @@ export default function DiscussProjectsPage() {
                     cursor: isSubmitting ? 'not-allowed' : 'pointer',
                     transition: 'background 0.2s ease',
                     marginTop: 6,
+                    width: '100%',
+                    minHeight: 48,
                   }}
                 >
                   {isSubmitting ? 'Sending Project Specifications...' : 'Send Project Specifications →'}
