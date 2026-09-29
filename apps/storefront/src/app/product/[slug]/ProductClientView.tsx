@@ -118,8 +118,8 @@ export default function ProductClientView({
     return arr.length > 0 ? arr : ['/fallback-product.svg'];
   }, [activeImage, initialGallery, product.image, (product as any).gallery]);
 
-  // Desktop Hover Zoom state
-  const [fitMode, setFitMode] = useState<'contain' | 'cover'>('contain');
+  // Desktop Hover Zoom state (defaults to cover for bold, edge-to-edge presentation)
+  const [fitMode, setFitMode] = useState<'contain' | 'cover'>('cover');
   const [isHoverZooming, setIsHoverZooming] = useState(false);
   const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -294,7 +294,7 @@ export default function ProductClientView({
           {/* LEFT: MAIN PRODUCT IMAGE IN STUDIO CANVAS WITH ZOOM & EXPAND */}
           <div
             ref={canvasRef}
-            className="gallery-main"
+            className={`gallery-main ${fitMode === 'cover' ? 'is-cover' : 'is-contain'}`}
             onMouseEnter={() => setIsHoverZooming(true)}
             onMouseMove={handleCanvasMouseMove}
             onMouseLeave={() => {
@@ -341,7 +341,7 @@ export default function ProductClientView({
               <img
                 src={activeImage || product.image}
                 alt={product.name}
-                className={`gallery-canvas-img ${fitMode === 'cover' ? 'cover-mode' : ''}`}
+                className={`gallery-canvas-img ${fitMode === 'contain' ? 'contain-mode' : 'cover-mode'}`}
                 style={{
                   objectFit: fitMode,
                   transform: isHoverZooming ? 'scale(2.25)' : 'scale(1)',
@@ -363,13 +363,13 @@ export default function ProductClientView({
               className="gallery-fit-toggle"
               onClick={(e) => {
                 e.stopPropagation();
-                setFitMode((prev) => (prev === 'contain' ? 'cover' : 'contain'));
+                setFitMode((prev) => (prev === 'cover' ? 'contain' : 'cover'));
               }}
-              title={fitMode === 'contain' ? 'Switch to Fill Frame view' : 'Switch to Full Silhouette view'}
+              title={fitMode === 'cover' ? 'Switch to Full Piece view' : 'Switch to Fill Frame view'}
               aria-label="Toggle image framing mode"
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                {fitMode === 'contain' ? (
+                {fitMode === 'cover' ? (
                   <>
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                     <circle cx="8.5" cy="8.5" r="1.5" />
@@ -384,7 +384,7 @@ export default function ProductClientView({
                   </>
                 )}
               </svg>
-              <span>{fitMode === 'contain' ? 'Full Piece' : 'Fill Frame'}</span>
+              <span>{fitMode === 'cover' ? 'Full Piece' : 'Fill Frame'}</span>
             </button>
 
             {/* EXPAND ACTION PILL */}
