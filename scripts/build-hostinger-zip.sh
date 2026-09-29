@@ -87,7 +87,9 @@ cat << 'EOF' > "$ROOT_DIR/dist-hostinger/package.json"
     "build": "echo 'Pre-built package ready'"
   },
   "dependencies": {
-    "next": "15.5.23"
+    "next": "15.5.26",
+    "sharp": "0.35.5",
+    "postcss": "8.5.28"
   }
 }
 EOF
