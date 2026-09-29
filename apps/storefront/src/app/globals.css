@@ -1512,39 +1512,31 @@ section.blk.tight { padding: 72px 0; }
   width: 100%;
   aspect-ratio: 1 / 1;
   max-height: 600px;
-  background: radial-gradient(circle at 50% 40%, #FFFFFF 0%, #F5F1EB 100%);
+  background: #FFFFFF;
   border: 1px solid var(--line, #E2DDD5);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.03);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
+  padding: clamp(14px, 2.5vw, 28px);
   cursor: zoom-in;
   user-select: none;
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.gallery-main.is-contain {
-  padding: clamp(10px, 1.8vw, 22px);
+.gallery-main.is-cover {
+  padding: 0;
 }
 
 .gallery-main:hover {
   border-color: #D6D0C5;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
 }
 
 .gallery-ambient-backdrop {
-  position: absolute;
-  inset: -20px;
-  background-size: cover;
-  background-position: center;
-  filter: blur(42px) saturate(1.25);
-  opacity: 0.16;
-  pointer-events: none;
-  z-index: 1;
-  transition: opacity 0.35s ease;
+  display: none;
 }
 
 .gallery-canvas-viewport {
@@ -1563,20 +1555,19 @@ section.blk.tight { padding: 72px 0; }
   height: 100%;
   max-width: 100%;
   max-height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   display: block;
   pointer-events: none;
-  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.05));
+  filter: none;
   will-change: transform, transform-origin;
   position: relative;
   z-index: 2;
   transition: object-fit 0.2s ease;
 }
 
-.gallery-canvas-img.contain-mode {
-  object-fit: contain;
-  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.08));
+.gallery-canvas-img.cover-mode {
+  object-fit: cover;
 }
 
 /* Framing Fit Mode Toggle */
@@ -1689,9 +1680,9 @@ section.blk.tight { padding: 72px 0; }
   border-radius: 6px;
   overflow: hidden;
   border: 1.5px solid var(--line, #E2DDD5);
-  background: #FAF8F5;
+  background: #FFFFFF;
   cursor: pointer;
-  padding: 0;
+  padding: 4px;
   transition: all 0.2s ease;
   opacity: 0.72;
   display: flex;
@@ -1709,7 +1700,7 @@ section.blk.tight { padding: 72px 0; }
 .gallery-strip button img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
 }
 
@@ -2030,10 +2021,11 @@ section.blk.tight { padding: 72px 0; }
     height: auto;
     aspect-ratio: 1 / 1;
     min-height: 0;
-    padding: 0;
-  }
-  .gallery-main.is-contain {
     padding: 16px;
+    background: #FFFFFF;
+  }
+  .gallery-main.is-cover {
+    padding: 0;
   }
   .gallery-strip {
     order: 2;

@@ -118,8 +118,8 @@ export default function ProductClientView({
     return arr.length > 0 ? arr : ['/fallback-product.svg'];
   }, [activeImage, initialGallery, product.image, (product as any).gallery]);
 
-  // Desktop Hover Zoom state (defaults to cover for bold, edge-to-edge presentation)
-  const [fitMode, setFitMode] = useState<'contain' | 'cover'>('cover');
+  // Desktop Hover Zoom state (defaults to contain with seamless white studio canvas so products are never cropped)
+  const [fitMode, setFitMode] = useState<'contain' | 'cover'>('contain');
   const [isHoverZooming, setIsHoverZooming] = useState(false);
   const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -363,28 +363,28 @@ export default function ProductClientView({
               className="gallery-fit-toggle"
               onClick={(e) => {
                 e.stopPropagation();
-                setFitMode((prev) => (prev === 'cover' ? 'contain' : 'cover'));
+                setFitMode((prev) => (prev === 'contain' ? 'cover' : 'contain'));
               }}
-              title={fitMode === 'cover' ? 'Switch to Full Piece view' : 'Switch to Fill Frame view'}
+              title={fitMode === 'contain' ? 'Switch to Fill Frame view' : 'Switch to Full Piece view'}
               aria-label="Toggle image framing mode"
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                {fitMode === 'cover' ? (
-                  <>
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                    <circle cx="8.5" cy="8.5" r="1.5" />
-                    <polyline points="21 15 16 10 5 21" />
-                  </>
-                ) : (
+                {fitMode === 'contain' ? (
                   <>
                     <polyline points="15 3 21 3 21 9" />
                     <polyline points="9 21 3 21 3 15" />
                     <line x1="21" y1="3" x2="14" y2="10" />
                     <line x1="3" y1="21" x2="10" y2="14" />
                   </>
+                ) : (
+                  <>
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                  </>
                 )}
               </svg>
-              <span>{fitMode === 'cover' ? 'Full Piece' : 'Fill Frame'}</span>
+              <span>{fitMode === 'contain' ? 'Fill Frame' : 'Full Piece'}</span>
             </button>
 
             {/* EXPAND ACTION PILL */}
