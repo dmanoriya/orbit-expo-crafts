@@ -291,112 +291,142 @@ export default function ProductClientView({
       {/* PDP TOP ROW: MAIN IMAGE STRETCHED TO MATCH RIGHT SPECS + ACTION CARD */}
       <div className="pdp-layout-wrap" style={{ paddingBottom: 40 }}>
         <div className="pdp-top-grid">
-          {/* LEFT: MAIN PRODUCT IMAGE IN STUDIO CANVAS WITH ZOOM & EXPAND */}
-          <div
-            ref={canvasRef}
-            className={`gallery-main ${fitMode === 'cover' ? 'is-cover' : 'is-contain'}`}
-            onMouseEnter={() => setIsHoverZooming(true)}
-            onMouseMove={handleCanvasMouseMove}
-            onMouseLeave={() => {
-              setIsHoverZooming(false);
-              setZoomOrigin({ x: 50, y: 50 });
-            }}
-            onClick={() => openLightbox(activeImage)}
-            title="Click to view full screen gallery"
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                openLightbox(activeImage);
-              }
-            }}
-            aria-label="Product image canvas. Click to open gallery lightbox."
-          >
-            {/* AMBIENT STUDIO BACKDROP */}
+          {/* LEFT: MAIN PRODUCT IMAGE + THUMBNAILS IN UNIFIED GALLERY COLUMN */}
+          <div className="pdp-gallery-col">
             <div
-              className="gallery-ambient-backdrop"
-              style={{
-                backgroundImage: `url(${activeImage || product.image})`,
-                opacity: fitMode === 'contain' ? 0.18 : 0,
+              ref={canvasRef}
+              className={`gallery-main ${fitMode === 'cover' ? 'is-cover' : 'is-contain'}`}
+              onMouseEnter={() => setIsHoverZooming(true)}
+              onMouseMove={handleCanvasMouseMove}
+              onMouseLeave={() => {
+                setIsHoverZooming(false);
+                setZoomOrigin({ x: 50, y: 50 });
               }}
-            />
-
-            {/* PRODUCT BADGE */}
-            {product.badge && (
-              <span className={`tag ${product.badge === 'New' ? 'new' : ''}`} style={{ zIndex: 12, position: 'absolute', top: 14, left: 14 }}>
-                {product.badge}
-              </span>
-            )}
-
-            {/* IMAGE COUNTER (when multiple images exist) */}
-            {galleryList.length > 1 && (
-              <span className="gallery-count-badge">
-                {Math.max(1, galleryList.indexOf(activeImage) + 1)} / {galleryList.length}
-              </span>
-            )}
-
-            {/* STUDIO CANVAS VIEWPORT WITH ZOOM */}
-            <div className="gallery-canvas-viewport">
-              <img
-                src={activeImage || product.image}
-                alt={product.name}
-                className={`gallery-canvas-img ${fitMode === 'contain' ? 'contain-mode' : 'cover-mode'}`}
+              onClick={() => openLightbox(activeImage)}
+              title="Click to view full screen gallery"
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  openLightbox(activeImage);
+                }
+              }}
+              aria-label="Product image canvas. Click to open gallery lightbox."
+            >
+              {/* AMBIENT STUDIO BACKDROP */}
+              <div
+                className="gallery-ambient-backdrop"
                 style={{
-                  objectFit: fitMode,
-                  transform: isHoverZooming ? 'scale(2.25)' : 'scale(1)',
-                  transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
-                  transition: isHoverZooming
-                    ? 'transform 0.12s cubic-bezier(0.16, 1, 0.3, 1)'
-                    : 'transform 0.35s ease-out, transform-origin 0.35s ease-out',
-                }}
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = product.cat ? `/categories/${product.cat}.jpg` : '/fallback-product.svg';
+                  backgroundImage: `url(${activeImage || product.image})`,
+                  opacity: fitMode === 'contain' ? 0.18 : 0,
                 }}
               />
+
+              {/* PRODUCT BADGE */}
+              {product.badge && (
+                <span className={`tag ${product.badge === 'New' ? 'new' : ''}`} style={{ zIndex: 12, position: 'absolute', top: 14, left: 14 }}>
+                  {product.badge}
+                </span>
+              )}
+
+              {/* IMAGE COUNTER (when multiple images exist) */}
+              {galleryList.length > 1 && (
+                <span className="gallery-count-badge">
+                  {Math.max(1, galleryList.indexOf(activeImage) + 1)} / {galleryList.length}
+                </span>
+              )}
+
+              {/* STUDIO CANVAS VIEWPORT WITH ZOOM */}
+              <div className="gallery-canvas-viewport">
+                <img
+                  src={activeImage || product.image}
+                  alt={product.name}
+                  className={`gallery-canvas-img ${fitMode === 'cover' ? 'cover-mode' : ''}`}
+                  style={{
+                    objectFit: fitMode,
+                    transform: isHoverZooming ? 'scale(2.25)' : 'scale(1)',
+                    transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
+                    transition: isHoverZooming
+                      ? 'transform 0.12s cubic-bezier(0.16, 1, 0.3, 1)'
+                      : 'transform 0.35s ease-out, transform-origin 0.35s ease-out',
+                  }}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = product.cat ? `/categories/${product.cat}.jpg` : '/fallback-product.svg';
+                  }}
+                />
+              </div>
+
+              {/* FRAMING FIT MODE TOGGLE */}
+              <button
+                type="button"
+                className="gallery-fit-toggle"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFitMode((prev) => (prev === 'contain' ? 'cover' : 'contain'));
+                }}
+                title={fitMode === 'contain' ? 'Switch to Fill Frame view' : 'Switch to Full Piece view'}
+                aria-label="Toggle image framing mode"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  {fitMode === 'contain' ? (
+                    <>
+                      <polyline points="15 3 21 3 21 9" />
+                      <polyline points="9 21 3 21 3 15" />
+                      <line x1="21" y1="3" x2="14" y2="10" />
+                      <line x1="3" y1="21" x2="10" y2="14" />
+                    </>
+                  ) : (
+                    <>
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                      <circle cx="8.5" cy="8.5" r="1.5" />
+                      <polyline points="21 15 16 10 5 21" />
+                    </>
+                  )}
+                </svg>
+                <span>{fitMode === 'contain' ? 'Fill Frame' : 'Full Piece'}</span>
+              </button>
+
+              {/* EXPAND ACTION PILL */}
+              <div className="gallery-expand-hint">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 3 21 3 21 9" />
+                  <polyline points="9 21 3 21 3 15" />
+                  <line x1="21" y1="3" x2="14" y2="10" />
+                  <line x1="3" y1="21" x2="10" y2="14" />
+                </svg>
+                <span>{galleryList.length > 1 ? `Expand (${galleryList.length} views)` : 'Expand View'}</span>
+              </div>
             </div>
 
-            {/* FRAMING FIT MODE TOGGLE */}
-            <button
-              type="button"
-              className="gallery-fit-toggle"
-              onClick={(e) => {
-                e.stopPropagation();
-                setFitMode((prev) => (prev === 'contain' ? 'cover' : 'contain'));
-              }}
-              title={fitMode === 'contain' ? 'Switch to Fill Frame view' : 'Switch to Full Piece view'}
-              aria-label="Toggle image framing mode"
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                {fitMode === 'contain' ? (
-                  <>
-                    <polyline points="15 3 21 3 21 9" />
-                    <polyline points="9 21 3 21 3 15" />
-                    <line x1="21" y1="3" x2="14" y2="10" />
-                    <line x1="3" y1="21" x2="10" y2="14" />
-                  </>
-                ) : (
-                  <>
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                    <circle cx="8.5" cy="8.5" r="1.5" />
-                    <polyline points="21 15 16 10 5 21" />
-                  </>
-                )}
-              </svg>
-              <span>{fitMode === 'contain' ? 'Fill Frame' : 'Full Piece'}</span>
-            </button>
-
-            {/* EXPAND ACTION PILL */}
-            <div className="gallery-expand-hint">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="15 3 21 3 21 9" />
-                <polyline points="9 21 3 21 3 15" />
-                <line x1="21" y1="3" x2="14" y2="10" />
-                <line x1="3" y1="21" x2="10" y2="14" />
-              </svg>
-              <span>{galleryList.length > 1 ? `Expand (${galleryList.length} views)` : 'Expand View'}</span>
-            </div>
+            {/* THUMBNAILS STRIP DIRECTLY BENEATH MAIN IMAGE (NO VERTICAL GAP) */}
+            {galleryList.length > 1 && (
+              <div className="gallery-strip">
+                {galleryList.map((img, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    className={activeImage === img ? 'on' : ''}
+                    onClick={() => {
+                      setActiveImage(img);
+                      setLightboxIndex(idx);
+                    }}
+                    aria-label={`View photo ${idx + 1} of ${galleryList.length}`}
+                    title={`View photo ${idx + 1}`}
+                  >
+                    <img
+                      src={img}
+                      alt={`${product.name} view ${idx + 1}`}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = product.cat ? `/categories/${product.cat}.jpg` : '/fallback-product.svg';
+                      }}
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* RIGHT SPECS & QUOTE ACTION */}
@@ -604,63 +634,33 @@ export default function ProductClientView({
                 </button>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* PDP BOTTOM ROW: THUMBNAILS ON LEFT, TRUST CARDS ON RIGHT */}
-        <div className="pdp-bottom-grid">
-          {/* LEFT: THUMBNAILS STRIP */}
-          <div className="gallery-strip">
-            {galleryList.length > 1 &&
-              galleryList.map((img, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  className={activeImage === img ? 'on' : ''}
-                  onClick={() => {
-                    setActiveImage(img);
-                    setLightboxIndex(idx);
-                  }}
-                  aria-label={`View photo ${idx + 1} of ${galleryList.length}`}
-                  title={`View photo ${idx + 1}`}
-                >
-                  <img
-                    src={img}
-                    alt={`${product.name} view ${idx + 1}`}
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = product.cat ? `/categories/${product.cat}.jpg` : '/fallback-product.svg';
-                    }}
-                  />
-                </button>
-              ))}
-          </div>
+            {/* TRUST CARDS DIRECTLY UNDER ACTION CARD */}
+            <div className="pdp-trust-grid" style={{ marginTop: 20 }}>
+              <div className="pdp-trust-card">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                <span>Prototype before bulk</span>
+              </div>
 
-          {/* RIGHT: TRUST CARDS */}
-          <div className="pdp-trust-grid">
-            <div className="pdp-trust-card">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
-              <span>Prototype before bulk</span>
-            </div>
+              <div className="pdp-trust-card">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="1" y="3" width="15" height="13" />
+                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                  <circle cx="5.5" cy="18.5" r="2.5" />
+                  <circle cx="18.5" cy="18.5" r="2.5" />
+                </svg>
+                <span>Door-to-door freight</span>
+              </div>
 
-            <div className="pdp-trust-card">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="1" y="3" width="15" height="13" />
-                <polygon points="16 8 20 8 23 11 23 16 16 16 8" />
-                <circle cx="5.5" cy="18.5" r="2.5" />
-                <circle cx="18.5" cy="18.5" r="2.5" />
-              </svg>
-              <span>Door-to-door freight</span>
-            </div>
-
-            <div className="pdp-trust-card">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11z" />
-                <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-              </svg>
-              <span>FSC & low-VOC options</span>
+              <div className="pdp-trust-card">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11z" />
+                  <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                </svg>
+                <span>FSC & low-VOC options</span>
+              </div>
             </div>
           </div>
         </div>
