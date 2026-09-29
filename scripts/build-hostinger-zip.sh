@@ -8,6 +8,14 @@ cd "$ROOT_DIR"
 
 # 1. Build Next.js Storefront App
 echo "📦 Step 1/5: Building Next.js Storefront for Hostinger Production..."
+
+cleanup() {
+  if [ -f "$ROOT_DIR/apps/storefront/.env.local.bak" ]; then
+    mv "$ROOT_DIR/apps/storefront/.env.local.bak" "$ROOT_DIR/apps/storefront/.env.local"
+  fi
+}
+trap cleanup EXIT INT TERM
+
 # Temporarily move .env.local so local WP URL is not baked into the build
 if [ -f "$ROOT_DIR/apps/storefront/.env.local" ]; then
   mv "$ROOT_DIR/apps/storefront/.env.local" "$ROOT_DIR/apps/storefront/.env.local.bak"
