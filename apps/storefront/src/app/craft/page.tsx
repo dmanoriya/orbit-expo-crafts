@@ -69,7 +69,7 @@ export default async function CraftPage() {
             <span className="mono">Material library</span>
             <h2 className="disp">The vocabulary we build in.</h2>
             <p>
-              Click any material to filter the whole catalogue by it. Anything not listed, we will still quote — we buy to spec.
+              Click any material to filter our collections by it. Anything not listed, we will still quote — we buy to spec.
             </p>
           </div>
         </div>

@@ -722,8 +722,8 @@ export const Header: React.FC<HeaderProps> = ({ menuData }) => {
                       <span>Craft & Materials</span>
                       <span className="arrow">→</span>
                     </Link>
-                    <Link href="/catalogue" onClick={closeMobileDrawer} className="mobile-extra-link">
-                      <span>Full Trade Catalogue</span>
+                    <Link href="/collections" onClick={closeMobileDrawer} className="mobile-extra-link">
+                      <span>Full Trade Collections</span>
                       <span className="arrow">→</span>
                     </Link>
                     <Link href="/contact" onClick={closeMobileDrawer} className="mobile-extra-link">

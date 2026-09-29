@@ -54,6 +54,7 @@ export async function POST(request: NextRequest) {
 
     revalidatePath('/', 'layout');
     revalidatePath('/shop', 'page');
+    revalidatePath('/collections', 'page');
     revalidatePath('/catalogue', 'page');
     revalidatePath('/suppliers-vendors', 'page');
     revalidatePath('/interior-designers', 'page');

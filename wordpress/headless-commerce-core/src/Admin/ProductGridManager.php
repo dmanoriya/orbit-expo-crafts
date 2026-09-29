@@ -154,7 +154,7 @@ class ProductGridManager {
 			}
 
 			$frontend_url = get_option( 'hcc_frontend_url', 'http://localhost:3000' );
-			$message = '<strong>Product Grid & Card Design updated successfully!</strong> Next.js storefront revalidation triggered. <a href="' . esc_url( $frontend_url . '/catalogue' ) . '" target="_blank" style="margin-left:8px; font-weight:600; text-decoration:underline; color:#0E5C63;">View Live Catalogue ↗</a>';
+			$message = '<strong>Product Grid & Card Design updated successfully!</strong> Next.js storefront revalidation triggered. <a href="' . esc_url( $frontend_url . '/collections' ) . '" target="_blank" style="margin-left:8px; font-weight:600; text-decoration:underline; color:#0E5C63;">View Live Collections ↗</a>';
 		}
 
 		// Handle Reset to Defaults
@@ -214,12 +214,12 @@ class ProductGridManager {
 							Product Grid & Card Design Manager
 						</h1>
 						<p style="color: rgba(255,255,255,0.85); font-size: 14px; margin: 8px 0 0; max-width: 780px;">
-							Control aspect ratios, image fit mode (cover / contain), canvas background, borders, responsive columns, and product card elements across your entire website (Catalogue, Collections, Homepage, Best Sellers, and Search).
+							Control aspect ratios, image fit mode (cover / contain), canvas background, borders, responsive columns, and product card elements across your entire website (Collections, Category Pages, Homepage, Best Sellers, and Search).
 						</p>
 					</div>
 					<div>
-						<a href="<?php echo esc_url( get_option( 'hcc_frontend_url', 'http://localhost:3000' ) . '/catalogue' ); ?>" target="_blank" class="button" style="background:#FFFFFF; color:#0E5C63; font-weight:600; font-size:13px; border:none; padding:6px 16px; height:auto; border-radius:6px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-							👁️ Live Catalogue ↗
+						<a href="<?php echo esc_url( get_option( 'hcc_frontend_url', 'http://localhost:3000' ) . '/collections' ); ?>" target="_blank" class="button" style="background:#FFFFFF; color:#0E5C63; font-weight:600; font-size:13px; border:none; padding:6px 16px; height:auto; border-radius:6px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+							👁️ Live Collections ↗
 						</a>
 					</div>
 				</div>

@@ -91,7 +91,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           Product Not Found
         </h1>
         <p style={{ color: 'var(--ink-2)', fontSize: 16, maxWidth: 460, marginBottom: 32, lineHeight: 1.6 }}>
-          The product you are looking for has been removed, deleted, or is no longer available in our catalogue.
+          The product you are looking for has been removed, deleted, or is no longer available in our collections.
         </p>
         <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', justifyContent: 'center' }}>
           <Link href="/collections" className="btn btn-primary" style={{ padding: '12px 24px' }}>

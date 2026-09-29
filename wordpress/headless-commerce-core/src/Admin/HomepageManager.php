@@ -80,7 +80,7 @@ class HomepageManager {
 			'track2_points'     => "FSC certified wood options\nNo minimum order quantity\n45-day turnaround guarantee\nSite installation support team",
 
 			// Categories
-			'cat_eyebrow'       => 'PRODUCT CATEGORIES · DIRECT FACTORY CATALOGUE',
+			'cat_eyebrow'       => 'PRODUCT CATEGORIES · DIRECT FACTORY COLLECTIONS',
 			'cat_title'         => 'Categories. Every piece a home needs',
 			'cat_desc'          => 'From solid wood seating to custom storage furniture, every piece is made to order in our manufacturing facilities.',
 
@@ -132,12 +132,25 @@ class HomepageManager {
 			'band_desc'         => 'Send your BOQ or architectural drawings. Our project desk replies with formal pricing, lead time, and freight within 24 working hours.',
 			'band_cta1_text'    => 'Start an enquiry →',
 			'band_cta1_url'     => '/contact',
-			'band_cta2_text'    => 'Explore 2026 catalogue',
-			'band_cta2_url'     => '/catalogue',
+			'band_cta2_text'    => 'Explore 2026 Collections',
+			'band_cta2_url'     => '/collections',
 		);
 
 		$saved = get_option( 'hcc_homepage_options', array() );
-		return wp_parse_args( $saved, $defaults );
+		$data  = wp_parse_args( $saved, $defaults );
+
+		// Auto-migrate legacy /catalogue URLs to /collections
+		if ( isset( $data['band_cta2_url'] ) && ( '/catalogue' === $data['band_cta2_url'] || empty( $data['band_cta2_url'] ) ) ) {
+			$data['band_cta2_url'] = '/collections';
+		}
+		if ( isset( $data['band_cta2_text'] ) && stripos( $data['band_cta2_text'], 'catalogue' ) !== false ) {
+			$data['band_cta2_text'] = str_ireplace( 'catalogue', 'Collections', $data['band_cta2_text'] );
+		}
+		if ( isset( $data['cat_eyebrow'] ) && stripos( $data['cat_eyebrow'], 'catalogue' ) !== false ) {
+			$data['cat_eyebrow'] = str_ireplace( 'CATALOGUE', 'COLLECTIONS', $data['cat_eyebrow'] );
+		}
+
+		return $data;
 	}
 
 	public static function render_homepage_builder_page() {

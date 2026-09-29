@@ -41,20 +41,20 @@ class MenuController extends RestController {
 				) );
 
 				$cat_item_id = wp_update_nav_menu_item( $menu_id, 0, array(
-					'menu-item-title'  => 'Catalogue',
-					'menu-item-url'    => '/catalogue',
+					'menu-item-title'  => 'Collections',
+					'menu-item-url'    => '/collections',
 					'menu-item-status' => 'publish',
 				) );
 
 				$sub_cats = array(
-					'Seating & Chairs'    => '/catalogue/seating',
-					'Tables & Dining'     => '/catalogue/tables',
-					'Sofas & Lounges'     => '/catalogue/sofas',
-					'Beds & Nightstands'  => '/catalogue/beds',
-					'Credenzas & Storage' => '/catalogue/storage',
-					'Outdoor & Patio'     => '/catalogue/outdoor',
-					'Lighting'            => '/catalogue/lighting',
-					'Decor & Objects'     => '/catalogue/decor',
+					'Seating & Chairs'    => '/collections/seating',
+					'Tables & Dining'     => '/collections/tables',
+					'Sofas & Lounges'     => '/collections/sofas',
+					'Beds & Nightstands'  => '/collections/beds',
+					'Credenzas & Storage' => '/collections/storage',
+					'Outdoor & Patio'     => '/collections/outdoor',
+					'Lighting'            => '/collections/lighting',
+					'Decor & Objects'     => '/collections/decor',
 				);
 
 				foreach ( $sub_cats as $sc_title => $sc_url ) {
@@ -102,10 +102,19 @@ class MenuController extends RestController {
 
 		foreach ( $items as $item ) {
 			$classes_str = is_array( $item->classes ) ? implode( ' ', array_filter( $item->classes ) ) : (string) $item->classes;
+			$url         = (string) $item->url;
+			$url         = preg_replace( '#^/catalogue(\b|/|$)#', '/collections$1', $url );
+			$url         = preg_replace( '#(https?://[^/]+)/catalogue(\b|/|$)#', '$1/collections$2', $url );
+
+			$title = html_entity_decode( wp_specialchars_decode( $item->title, ENT_QUOTES ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+			if ( 'Catalogue' === $title ) {
+				$title = 'Collections';
+			}
+
 			$id_map[ $item->ID ] = array(
 				'id'       => (int) $item->ID,
-				'title'    => html_entity_decode( wp_specialchars_decode( $item->title, ENT_QUOTES ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ),
-				'url'      => $item->url,
+				'title'    => $title,
+				'url'      => $url,
 				'target'   => $item->target,
 				'classes'  => $classes_str,
 				'parentId' => (int) $item->menu_item_parent,
