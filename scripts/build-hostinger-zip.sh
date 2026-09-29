@@ -236,6 +236,9 @@ rm -f "$ROOT_DIR/wordpress/headless-commerce-core.zip"
 cd "$ROOT_DIR/wordpress" && zip -r "$ROOT_DIR/wordpress/headless-commerce-core.zip" headless-commerce-core/ > /dev/null
 cp -f "$ROOT_DIR/wordpress/headless-commerce-core.zip" "$ROOT_DIR/headless-commerce-core.zip"
 
+# Reset storefront .next directory so local dev server stays clean
+rm -rf "$ROOT_DIR/apps/storefront/.next" 2>/dev/null || true
+
 echo ""
 echo "✅ HOSTINGER DEPLOYMENT PACKAGES CREATED SUCCESSFULLY!"
 echo "--------------------------------------------------------"
