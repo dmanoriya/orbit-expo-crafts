@@ -1,13 +1,17 @@
 import React from 'react';
 import Link from 'next/link';
-import { fetchWpBlogPosts, WpBlogPostItem, FALLBACK_JOURNAL_ARTICLES } from '../../lib/wpCommerce';
+import type { Metadata } from 'next';
+import { fetchWpBlogPosts, WpBlogPostItem, FALLBACK_JOURNAL_ARTICLES, fetchWpPageMetadata } from '../../lib/wpCommerce';
 
 export const revalidate = 60;
 
-export const metadata = {
-  title: 'Journals & Articles — ORBIT Expo Crafts',
-  description: 'Insights into contract furniture manufacturing, timber treatments, bone inlay techniques, and turnkey hospitality fit-outs in Rajasthan.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return fetchWpPageMetadata('journal', {
+    title: 'Journals & Field Notes | Orbit Expo Crafts',
+    description: 'Technical insights, timber seasoning studies, durability testing standards, and behind-the-scenes craft stories from our Udaipur and Jodhpur production facilities.',
+    canonical: 'https://orbitexpocrafts.com/journal',
+  });
+}
 
 export default async function JournalsPage() {
   const wpPosts = await fetchWpBlogPosts();

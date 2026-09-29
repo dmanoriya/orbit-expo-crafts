@@ -1,1 +1,1 @@
-export { default, metadata, revalidate } from '../journals/page';
+export { default, generateMetadata, revalidate } from '../journals/page';

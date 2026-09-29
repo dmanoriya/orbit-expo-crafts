@@ -1,1 +1,1 @@
-export { default, metadata, revalidate } from '../best-sellers/page';
+export { default, generateMetadata, revalidate } from '../best-sellers/page';

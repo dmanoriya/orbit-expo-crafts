@@ -1,14 +1,17 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
-import { fetchWpStorefrontData } from '../../lib/wpCommerce';
+import { fetchWpStorefrontData, fetchWpPageMetadata } from '../../lib/wpCommerce';
 import { BestSellersClient } from './BestSellersClient';
 
-export const metadata: Metadata = {
-  title: 'The Pieces Everyone Loves — ORBIT Expo Crafts',
-  description: 'A curated selection of our most sought-after furniture and décor. Crafted in solid wood and thoughtfully detailed with natural textures, each piece brings character, warmth and enduring style to contemporary spaces.',
-};
-
 export const revalidate = 60;
+
+export async function generateMetadata(): Promise<Metadata> {
+  return fetchWpPageMetadata('best-sellers', {
+    title: 'Best Selling Contract Furniture | Orbit Expo Crafts',
+    description: 'Explore our most sought-after contract furniture and architectural décor for luxury hospitality and commercial projects.',
+    canonical: 'https://orbitexpocrafts.com/best-sellers',
+  });
+}
 
 export default async function BestSellersPage() {
   const data = await fetchWpStorefrontData();

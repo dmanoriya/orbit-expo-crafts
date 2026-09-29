@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
-import { fetchWpStorefrontData, decodeHtmlEntities } from '../../../lib/wpCommerce';
+import { fetchWpStorefrontData, decodeHtmlEntities, rankMathToMetadata } from '../../../lib/wpCommerce';
 import { isKnownDepartment, resolveTaxonomyPath } from '../../../lib/categoryTaxonomy';
 import CollectionsClient from '../../collections/CollectionsClient';
 
@@ -29,23 +29,21 @@ export async function generateMetadata({ params }: DepartmentPageProps): Promise
   const slugArray = [department, ...(slug || [])];
   const taxonomy = resolveTaxonomyPath(slugArray);
 
-  const title = `${taxonomy.displayName} Collections | Orbit Expo Crafts B2B Wholesale & Custom Manufacturing`;
-  const description = `Explore custom manufactured ${taxonomy.displayName} engineered for luxury hotels, resorts, commercial fit-outs, and architectural interior projects.`;
+  const deepestSlug = slug && slug.length > 0 ? slug[slug.length - 1] : department;
+  const matchedCategory = data.categories.find(
+    (c) => c.slug.toLowerCase() === deepestSlug.toLowerCase() || c.id.toLowerCase() === deepestSlug.toLowerCase()
+  );
+
+  const defaultTitle = `${taxonomy.displayName} Collections | Orbit Expo Crafts B2B Wholesale & Custom Manufacturing`;
+  const defaultDesc = `Explore custom manufactured ${taxonomy.displayName} engineered for luxury hotels, resorts, commercial fit-outs, and architectural interior projects.`;
   const canonicalUrl = `https://orbitexpocrafts.com${taxonomy.canonicalUrl}`;
 
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: canonicalUrl,
-    },
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      type: 'website',
-    },
-  };
+  return rankMathToMetadata(matchedCategory?.seo, {
+    title: defaultTitle,
+    description: defaultDesc,
+    canonical: canonicalUrl,
+    image: matchedCategory?.image || '/Explore_collection.webp',
+  });
 }
 
 export default async function DepartmentCategoryPage({ params }: DepartmentPageProps) {

@@ -79,8 +79,14 @@ class RankMathAdapter {
 		// 3. Canonical URL
 		$canonical = get_post_meta( $post_id, 'rank_math_canonical_url', true );
 		if ( empty( $canonical ) ) {
-			$prefix = ( $post->post_type === 'post' ) ? 'journal' : 'product';
-			$canonical = "{$frontend_url}/{$prefix}/{$post->post_name}";
+			if ( $post->post_type === 'page' ) {
+				$is_front = ( $post_id === (int) get_option( 'page_on_front' ) || $post->post_name === 'home' );
+				$canonical = $is_front ? "{$frontend_url}" : "{$frontend_url}/{$post->post_name}";
+			} elseif ( $post->post_type === 'post' ) {
+				$canonical = "{$frontend_url}/journal/{$post->post_name}";
+			} else {
+				$canonical = "{$frontend_url}/product/{$post->post_name}";
+			}
 		} else {
 			if ( 0 === strpos( $canonical, $wp_home ) ) {
 				$canonical = str_replace( $wp_home, $frontend_url, $canonical );
@@ -167,6 +173,18 @@ class RankMathAdapter {
 				'mainEntityOfPage' => array(
 					'@type' => 'WebPage',
 					'@id'   => esc_url( (string) $canonical ),
+				),
+			);
+		} elseif ( $post->post_type === 'page' ) {
+			$schema = array(
+				'@context'    => 'https://schema.org',
+				'@type'       => 'WebPage',
+				'name'        => wp_strip_all_tags( (string) $title ),
+				'description' => wp_strip_all_tags( (string) $description ),
+				'url'         => esc_url( (string) $canonical ),
+				'publisher'   => array(
+					'@type' => 'Organization',
+					'name'  => 'Orbit Expo Crafts',
 				),
 			);
 		} else {
@@ -325,6 +343,97 @@ class RankMathAdapter {
 				'title'       => wp_strip_all_tags( (string) $og_title ),
 				'description' => wp_strip_all_tags( (string) $og_desc ),
 				'image'       => esc_url( (string) $og_image ),
+			),
+		);
+	}
+
+	/**
+	 * Get normalized SEO metadata for Homepage
+	 */
+	public static function get_homepage_seo_data() {
+		$frontend_url = rtrim( get_option( 'hcc_frontend_url', 'https://orbitexpocrafts.com' ), '/' );
+		$site_name    = get_bloginfo( 'name' ) ?: 'Orbit Expo Crafts';
+		$site_desc    = get_bloginfo( 'description' ) ?: 'Bespoke Contract Furniture & Architectural Manufacturing';
+
+		// If a static front page is assigned, retrieve its SEO data
+		$front_page_id = (int) get_option( 'page_on_front' );
+		if ( ! $front_page_id ) {
+			$home_page = get_page_by_path( 'home', OBJECT, 'page' );
+			if ( $home_page ) {
+				$front_page_id = $home_page->ID;
+			}
+		}
+
+		if ( $front_page_id > 0 ) {
+			$data = self::get_seo_data( $front_page_id );
+			$data['canonical'] = $frontend_url;
+			return $data;
+		}
+
+		// Otherwise check Rank Math Titles & Meta Homepage settings
+		$title = '';
+		$description = '';
+		$og_title = '';
+		$og_desc = '';
+		$og_image = '';
+		$robots = array( 'index', 'follow', 'max-snippet:-1', 'max-video-preview:-1', 'max-image-preview:large' );
+		$keywords = '';
+
+		if ( class_exists( '\RankMath\Helper' ) ) {
+			$title = \RankMath\Helper::get_settings( 'titles.homepage_title' );
+			if ( ! empty( $title ) && method_exists( '\RankMath\Helper', 'replace_vars' ) ) {
+				$title = \RankMath\Helper::replace_vars( $title );
+			}
+
+			$description = \RankMath\Helper::get_settings( 'titles.homepage_description' );
+			if ( ! empty( $description ) && method_exists( '\RankMath\Helper', 'replace_vars' ) ) {
+				$description = \RankMath\Helper::replace_vars( $description );
+			}
+
+			$og_title = \RankMath\Helper::get_settings( 'titles.homepage_facebook_title' );
+			$og_desc  = \RankMath\Helper::get_settings( 'titles.homepage_facebook_description' );
+			$og_image = \RankMath\Helper::get_settings( 'titles.homepage_facebook_image' );
+		}
+
+		$title = trim( (string) $title );
+		if ( empty( $title ) || false !== strpos( $title, '%sitename%' ) ) {
+			$title = "{$site_name} | {$site_desc}";
+		}
+
+		if ( empty( $description ) ) {
+			$description = "Direct factory contract furniture manufacturing in Udaipur & Jodhpur for luxury hospitality, resorts, boutique hotels, and global architectural projects.";
+		}
+
+		if ( empty( $og_title ) ) {
+			$og_title = $title;
+		}
+		if ( empty( $og_desc ) ) {
+			$og_desc = $description;
+		}
+
+		return array(
+			'provider'    => 'rankmath',
+			'title'       => wp_strip_all_tags( (string) $title ),
+			'description' => wp_strip_all_tags( (string) $description ),
+			'canonical'   => esc_url( (string) $frontend_url ),
+			'robots'      => is_array( $robots ) ? implode( ', ', $robots ) : (string) $robots,
+			'keywords'    => $keywords,
+			'openGraph'   => array(
+				'title'       => wp_strip_all_tags( (string) $og_title ),
+				'description' => wp_strip_all_tags( (string) $og_desc ),
+				'image'       => esc_url( (string) $og_image ),
+			),
+			'twitter'     => array(
+				'card'        => 'summary_large_image',
+				'title'       => wp_strip_all_tags( (string) $og_title ),
+				'description' => wp_strip_all_tags( (string) $og_desc ),
+				'image'       => esc_url( (string) $og_image ),
+			),
+			'schema'      => array(
+				'@context' => 'https://schema.org',
+				'@type'    => 'WebSite',
+				'name'     => $site_name,
+				'url'      => esc_url( (string) $frontend_url ),
 			),
 		);
 	}

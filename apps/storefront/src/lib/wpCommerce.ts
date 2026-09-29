@@ -1,4 +1,5 @@
 import { ProductItem, WpSeoData, MOCK_PRODUCTS, CATEGORIES, SEGMENTS, MATERIALS, FINISHES, getProductSlug } from '../data/catalogData';
+import type { Metadata } from 'next';
 import productsSnapshot from '../data/products-snapshot.json';
 import categoriesSnapshot from '../data/categories-snapshot.json';
 import attributesSnapshot from '../data/attributes-snapshot.json';
@@ -1353,3 +1354,131 @@ export async function fetchWpBlogPostBySlug(slug: string): Promise<WpBlogPostIte
   // 3. Fallback: match from local curated articles
   return FALLBACK_JOURNAL_ARTICLES.find((p) => p.slug === cleanSlug || String(p.id) === cleanSlug) || null;
 }
+
+export interface FetchWpSeoParams {
+  id?: number;
+  slug?: string;
+  type?: 'post' | 'page' | 'term' | 'auto';
+}
+
+export async function fetchWpSeo(params: FetchWpSeoParams): Promise<WpSeoData | null> {
+  const queryParts: string[] = [];
+  if (params.id) queryParts.push(`id=${params.id}`);
+  if (params.slug) queryParts.push(`slug=${encodeURIComponent(params.slug)}`);
+  if (params.type) queryParts.push(`type=${encodeURIComponent(params.type)}`);
+
+  const qs = queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
+  const isDev = process.env.NODE_ENV === 'development';
+
+  try {
+    const { data } = await fetchWpJsonWithFailover<WpSeoData>(`/seo${qs}`, {
+      tag: params.slug ? `seo-${params.slug}` : 'seo',
+      revalidate: isDev ? 0 : 60,
+      cache: isDev ? 'no-store' : undefined,
+    });
+    return data || null;
+  } catch (err) {
+    console.warn(`[fetchWpSeo] Error fetching SEO for ${JSON.stringify(params)}:`, err);
+    return null;
+  }
+}
+
+export function rankMathToMetadata(
+  seo: WpSeoData | null | undefined,
+  fallback: {
+    title: string;
+    description: string;
+    canonical: string;
+    image?: string;
+    type?: 'website' | 'article';
+    keywords?: string[];
+  }
+): Metadata {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://orbitexpocrafts.com';
+
+  const title = seo?.title || fallback.title;
+  const description = seo?.description || fallback.description;
+
+  let canonical = seo?.canonical || fallback.canonical;
+  if (canonical && !canonical.startsWith('http')) {
+    canonical = `${siteUrl}${canonical.startsWith('/') ? '' : '/'}${canonical}`;
+  }
+
+  const rawImage = seo?.openGraph?.image || seo?.twitter?.image || fallback.image || '/og-image.jpg';
+  const fullImage = rawImage && !rawImage.startsWith('http')
+    ? `${siteUrl}${rawImage.startsWith('/') ? '' : '/'}${rawImage}`
+    : rawImage;
+
+  const robotsStr = (seo?.robots || 'index, follow').toLowerCase();
+  const isNoIndex = robotsStr.includes('noindex');
+  const isNoFollow = robotsStr.includes('nofollow');
+
+  const keywords = seo?.keywords
+    ? seo.keywords.split(',').map((k) => k.trim()).filter(Boolean)
+    : (fallback.keywords || []);
+
+  const ogTitle = seo?.openGraph?.title || title;
+  const ogDescription = seo?.openGraph?.description || description;
+  const twitterTitle = seo?.twitter?.title || ogTitle;
+  const twitterDescription = seo?.twitter?.description || ogDescription;
+  const twitterCard = (seo?.twitter?.card as any) || 'summary_large_image';
+
+  return {
+    title,
+    description,
+    keywords: keywords.length > 0 ? keywords : undefined,
+    alternates: {
+      canonical: canonical || undefined,
+    },
+    robots: {
+      index: !isNoIndex,
+      follow: !isNoFollow,
+      googleBot: {
+        index: !isNoIndex,
+        follow: !isNoFollow,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+    openGraph: {
+      title: ogTitle,
+      description: ogDescription,
+      url: canonical || undefined,
+      siteName: 'Orbit Expo Crafts',
+      images: fullImage
+        ? [
+            {
+              url: fullImage,
+              width: 1200,
+              height: 630,
+              alt: title,
+            },
+          ]
+        : undefined,
+      type: fallback.type || 'website',
+    },
+    twitter: {
+      card: twitterCard,
+      title: twitterTitle,
+      description: twitterDescription,
+      images: fullImage ? [fullImage] : undefined,
+    },
+  };
+}
+
+export async function fetchWpPageMetadata(
+  slug: string,
+  fallback: {
+    title: string;
+    description: string;
+    canonical: string;
+    image?: string;
+    type?: 'website' | 'article';
+    keywords?: string[];
+  }
+): Promise<Metadata> {
+  const seo = await fetchWpSeo({ slug });
+  return rankMathToMetadata(seo, fallback);
+}
+

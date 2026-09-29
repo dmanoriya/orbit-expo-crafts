@@ -1,10 +1,18 @@
 import React from 'react';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { MATERIALS, MOCK_PRODUCTS } from '../../data/catalogData';
-import { fetchWpStorefrontData } from '../../lib/wpCommerce';
+import { fetchWpStorefrontData, fetchWpPageMetadata } from '../../lib/wpCommerce';
 
-export const revalidate = 0;
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
+
+export async function generateMetadata(): Promise<Metadata> {
+  return fetchWpPageMetadata('craft', {
+    title: 'The Craft, Materials & Artisanal Techniques | Orbit Expo Crafts',
+    description: 'Explore our mastery of kiln-dried Sheesham and Teak, bone and mother-of-pearl inlay, lost-wax brass casting, hand-carved stone, and architectural joinery.',
+    canonical: 'https://orbitexpocrafts.com/craft',
+  });
+}
 
 export default async function CraftPage() {
   const { products: wpProducts } = await fetchWpStorefrontData();

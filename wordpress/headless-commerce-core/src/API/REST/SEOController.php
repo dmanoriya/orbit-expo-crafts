@@ -23,13 +23,21 @@ class SEOController extends RestController {
 
 	public function get_seo( $request ) {
 		$id   = (int) $request->get_param( 'id' );
-		$type = sanitize_text_field( $request->get_param( 'type' ) ?? 'post' );
+		$slug = sanitize_text_field( $request->get_param( 'slug' ) ?? $request->get_param( 'path' ) ?? '' );
+		$type = sanitize_text_field( $request->get_param( 'type' ) ?? 'auto' );
 
-		if ( ! $id ) {
-			return $this->error_response( 'hcc_missing_id', 'Object ID is required.', 400 );
+		if ( $id > 0 ) {
+			$seo = SEOService::get_seo( $id, $type );
+			return $this->success_response( $seo );
 		}
 
-		$seo = SEOService::get_seo( $id, $type );
+		if ( ! empty( $slug ) || $request->has_param( 'slug' ) || $request->has_param( 'path' ) ) {
+			$seo = SEOService::get_seo_by_slug( $slug, $type );
+			return $this->success_response( $seo );
+		}
+
+		// If no param passed, default to homepage SEO
+		$seo = SEOService::get_seo_by_slug( 'home', 'page' );
 		return $this->success_response( $seo );
 	}
 }

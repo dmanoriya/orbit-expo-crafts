@@ -2,49 +2,29 @@ import React from 'react';
 import type { Metadata } from 'next';
 import TradeMembershipClient from './TradeMembershipClient';
 
-export const revalidate = 300;
+import { fetchWpPageMetadata } from '../../lib/wpCommerce';
 
-export const metadata: Metadata = {
-  title: 'Trade Program | For Interior Designers & Architects | Orbit Expo Crafts',
-  description:
-    'Join the Orbit Expo Crafts Trade Program. Long-term alliance-based membership for licensed interior designers, architects, decorators, and hospitality procurement professionals with exclusive trade pricing, custom manufacturing, CAD assets, and swatch kits.',
-  keywords: [
-    'Trade Program',
-    'Interior Designers Membership',
-    'Architects Furniture Sourcing',
-    'Wholesale Furniture Trade',
-    'Custom Furniture Manufacturing',
-    'CAD 3D Models Furniture',
-    'Hospitality Procurement',
-    'Bespoke Wood Furniture Trade',
-  ],
-  alternates: {
+export const revalidate = 60;
+
+export async function generateMetadata(): Promise<Metadata> {
+  return fetchWpPageMetadata('trade-membership', {
+    title: 'Trade Membership & Architect Program | Orbit Expo Crafts',
+    description:
+      'Exclusive trade pricing, custom sample boxes, prioritized factory lead times, and dedicated project management for registered architects, interior designers, and procurement managers.',
     canonical: 'https://orbitexpocrafts.com/trade-membership',
-  },
-  openGraph: {
-    title: 'Trade Program for Interior Designers & Architects | Orbit Expo Crafts',
-    description:
-      'Access wholesale trade pricing, bespoke customization, 3D CAD assets, and physical swatch kits. Apply for long-term trade alliance membership.',
-    url: 'https://orbitexpocrafts.com/trade-membership',
-    siteName: 'Orbit Expo Crafts',
-    images: [
-      {
-        url: '/business/trade-hero-desk.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Orbit Expo Crafts Trade Membership Program',
-      },
+    image: '/business/trade-hero-desk.jpg',
+    keywords: [
+      'Trade Program',
+      'Interior Designers Membership',
+      'Architects Furniture Sourcing',
+      'Wholesale Furniture Trade',
+      'Custom Furniture Manufacturing',
+      'CAD 3D Models Furniture',
+      'Hospitality Procurement',
+      'Bespoke Wood Furniture Trade',
     ],
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Trade Program for Interior Designers & Architects | Orbit Expo Crafts',
-    description:
-      'Access wholesale trade pricing, bespoke customization, 3D CAD assets, and physical swatch kits. Apply for long-term trade alliance membership.',
-    images: ['/business/trade-hero-desk.jpg'],
-  },
-};
+  });
+}
 
 export default function TradeMembershipPage() {
   return <TradeMembershipClient />;
