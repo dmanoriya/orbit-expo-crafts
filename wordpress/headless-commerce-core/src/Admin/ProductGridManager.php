@@ -167,6 +167,40 @@ class ProductGridManager {
 		}
 
 		$data = self::get_grid_data();
+
+		// Try to resolve an actual published WooCommerce product image
+		$preview_img_url          = '';
+		$preview_product_title    = 'Bala Low Platform Bed';
+		$preview_product_category = 'BEDS & HEADBOARDS';
+
+		if ( function_exists( 'wc_get_products' ) ) {
+			$sample_products = wc_get_products( array(
+				'limit'   => 1,
+				'status'  => 'publish',
+				'orderby' => 'date',
+				'order'   => 'DESC',
+			) );
+			if ( ! empty( $sample_products ) && is_array( $sample_products ) ) {
+				$sample_prod = reset( $sample_products );
+				$img_id      = $sample_prod->get_image_id();
+				if ( $img_id ) {
+					$real_img = wp_get_attachment_image_url( $img_id, 'large' );
+					if ( $real_img ) {
+						$preview_img_url = $real_img;
+					}
+				}
+				$preview_product_title = $sample_prod->get_name();
+				$cats = wp_get_post_terms( $sample_prod->get_id(), 'product_cat' );
+				if ( ! empty( $cats ) && ! is_wp_error( $cats ) ) {
+					$preview_product_category = strtoupper( $cats[0]->name );
+				}
+			}
+		}
+
+		$bundled_bed = HCC_PLUGIN_URL . 'assets/categories/beds.jpg';
+		if ( empty( $preview_img_url ) ) {
+			$preview_img_url = $bundled_bed;
+		}
 		?>
 		<div class="wrap" style="max-width: 1300px; margin-top: 15px;">
 			<!-- Header -->
@@ -603,9 +637,19 @@ class ProductGridManager {
 							</div>
 						</div>
 
-						<p style="font-size:12px; color:#777; margin:0 0 16px;">
+						<p style="font-size:12px; color:#777; margin:0 0 10px;">
 							Tweak settings on the left to see live changes instantly reflected here.
 						</p>
+
+						<!-- Sample Product Switcher -->
+						<div style="display:flex; align-items:center; gap:5px; margin-bottom:14px; flex-wrap:wrap;">
+							<span style="font-size:11px; color:#777; font-weight:600;">Sample Product:</span>
+							<button type="button" class="button button-small prev-sample-btn active" data-img="<?php echo esc_url( $preview_img_url ); ?>" data-title="<?php echo esc_attr( $preview_product_title ); ?>" data-cat="<?php echo esc_attr( $preview_product_category ); ?>" style="font-size:11px; border-radius:4px; font-weight:600; background:#0E5C63; color:#FFFFFF;">Current</button>
+							<button type="button" class="button button-small prev-sample-btn" data-img="<?php echo esc_url( HCC_PLUGIN_URL . 'assets/categories/beds.jpg' ); ?>" data-title="Bala Low Platform Bed" data-cat="BEDS & HEADBOARDS" style="font-size:11px; border-radius:4px; background:#F4F0EA; color:#333;">Bed</button>
+							<button type="button" class="button button-small prev-sample-btn" data-img="<?php echo esc_url( HCC_PLUGIN_URL . 'assets/categories/chairs.jpg' ); ?>" data-title="Artisan Cane Chair" data-cat="CHAIRS & SEATING" style="font-size:11px; border-radius:4px; background:#F4F0EA; color:#333;">Chair</button>
+							<button type="button" class="button button-small prev-sample-btn" data-img="<?php echo esc_url( HCC_PLUGIN_URL . 'assets/categories/tables.jpg' ); ?>" data-title="Solid Sheesham Dining Table" data-cat="TABLES & DESKS" style="font-size:11px; border-radius:4px; background:#F4F0EA; color:#333;">Table</button>
+							<button type="button" class="button button-small prev-sample-btn" data-img="<?php echo esc_url( HCC_PLUGIN_URL . 'assets/categories/sofas.jpg' ); ?>" data-title="Modern Velvet Sofa" data-cat="LIVING & LOUNGE" style="font-size:11px; border-radius:4px; background:#F4F0EA; color:#333;">Sofa</button>
+						</div>
 
 						<!-- Preview Frame Container -->
 						<div id="preview-viewport" style="width: 100%; transition: max-width 0.3s ease; margin: 0 auto;">
@@ -666,7 +710,7 @@ class ProductGridManager {
 									</div>
 
 									<!-- Sample Product Image -->
-									<img id="prev-img" src="<?php echo esc_url( HCC_PLUGIN_URL . 'assets/images/sample-product.jpg' ); ?>" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1540518614846-7ede433c4ef7?w=800&auto=format&fit=crop&q=80';" alt="Preview Product" style="
+									<img id="prev-img" src="<?php echo esc_url( $preview_img_url ); ?>" onerror="this.onerror=null; this.src='<?php echo esc_url( $bundled_bed ); ?>';" alt="Preview Product" style="
 										width: 100%;
 										height: 100%;
 										object-fit: <?php echo esc_attr( $data['image_fit'] ); ?>;
@@ -733,7 +777,7 @@ class ProductGridManager {
 											color: #777;
 											text-transform: uppercase;
 											display: <?php echo 'yes' === $data['show_category'] ? 'inline-block' : 'none'; ?>;
-										">BEDS & HEADBOARDS</span>
+										"><?php echo esc_html( $preview_product_category ); ?></span>
 
 										<span id="prev-made-to-order" style="
 											font-family: monospace;
@@ -750,8 +794,8 @@ class ProductGridManager {
 										">Made-To-Order</span>
 									</div>
 
-									<h4 style="font-family: Georgia, serif; font-size: 18px; font-weight: 500; margin: 2px 0 0; color: #111; line-height: 1.25;">
-										Bala Low Platform Bed
+									<h4 id="prev-title" style="font-family: Georgia, serif; font-size: 18px; font-weight: 500; margin: 2px 0 0; color: #111; line-height: 1.25;">
+										<?php echo esc_html( $preview_product_title ); ?>
 									</h4>
 
 									<div id="prev-moq-lead" style="
@@ -845,6 +889,19 @@ class ProductGridManager {
 				$(this).css({ background: '#0E5C63', color: '#FFFFFF' });
 				$('#preview-mode-desktop').css({ background: '#F4F0EA', color: '#333' });
 				$('#preview-viewport').css('max-width', '280px');
+			});
+
+			// Sample product switcher
+			$('.prev-sample-btn').on('click', function(e) {
+				e.preventDefault();
+				$('.prev-sample-btn').removeClass('active').css({ background: '#F4F0EA', color: '#333' });
+				$(this).addClass('active').css({ background: '#0E5C63', color: '#FFFFFF' });
+				var img = $(this).data('img');
+				var title = $(this).data('title');
+				var cat = $(this).data('cat');
+				if (img) $('#prev-img').attr('src', img);
+				if (title) $('#prev-title').text(title);
+				if (cat) $('#prev-category').text(cat);
 			});
 
 			// Listen for changes
