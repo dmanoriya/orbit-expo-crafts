@@ -227,6 +227,22 @@ rm -rf "$ROOT_DIR/dist-hostinger/apps/storefront/.next/cache" 2>/dev/null || tru
 rm -rf "$ROOT_DIR/dist-hostinger/nodejs/apps/storefront/.next/cache" 2>/dev/null || true
 find "$ROOT_DIR/dist-hostinger" -name "*.map" -delete 2>/dev/null || true
 
+# 4.5 Security Hardening: Ensure no internal package.json references vulnerable postcss < 8.5.28
+echo "🛡️ Step 4.5/5: Hardening Package Dependencies & Eliminating Vulnerabilities..."
+find "$ROOT_DIR/dist-hostinger" -name "package.json" -exec node -e '
+  const fs = require("fs");
+  for (let i = 1; i < process.argv.length; i++) {
+    const p = process.argv[i];
+    try {
+      let content = fs.readFileSync(p, "utf8");
+      if (content.includes("\"8.4.31\"") || content.includes("\"postcss\": \"8.4.")) {
+        content = content.replace(/"postcss":\s*"8\.4\.[0-9]+"/g, "\"postcss\": \"8.5.28\"");
+        fs.writeFileSync(p, content, "utf8");
+      }
+    } catch(e) {}
+  }
+' {} +
+
 # 5. Create Deployable ZIP Archives
 echo "🗜️ Step 5/5: Creating ZIP Archives..."
 rm -f "$ROOT_DIR/hostinger-nextjs-storefront.zip"
