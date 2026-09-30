@@ -8,6 +8,7 @@ import { Footer } from '../components/Footer';
 import { EnquiryDrawer } from '../components/EnquiryDrawer';
 import { FontLoader } from '../components/FontLoader';
 import { ProductGridProvider } from '../context/ProductGridContext';
+import { ProductPageProvider } from '../context/ProductPageContext';
 import {
   DEFAULT_PRODUCT_GRID_CONFIG,
   generateGridCssVariablesString,
@@ -48,6 +49,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   ]);
 
   const initialGridConfig = configRes?.data?.productGrid || DEFAULT_PRODUCT_GRID_CONFIG;
+  const initialPageConfig = configRes?.data?.productPage;
   const gridCss = generateGridCssVariablesString(initialGridConfig);
 
   return (
@@ -81,10 +83,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <EnquiryProvider>
             <FavoritesProvider>
               <ProductGridProvider initialConfig={initialGridConfig}>
-                <Header menuData={menuData} />
-                <main id="app">{children}</main>
-                <Footer />
-                <EnquiryDrawer />
+                <ProductPageProvider initialConfig={initialPageConfig}>
+                  <Header menuData={menuData} />
+                  <main id="app">{children}</main>
+                  <Footer />
+                  <EnquiryDrawer />
+                </ProductPageProvider>
               </ProductGridProvider>
             </FavoritesProvider>
           </EnquiryProvider>

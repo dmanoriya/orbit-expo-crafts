@@ -5,6 +5,13 @@ import Link from 'next/link';
 import { FINISHES, ProductItem, getProductSlug } from '../../../data/catalogData';
 import { useEnquiry } from '../../../context/EnquiryContext';
 import { useFavorites } from '../../../context/FavoritesContext';
+import { useProductPageConfig } from '../../../context/ProductPageContext';
+import {
+  getCanvasBorderCss,
+  getCanvasShadowCss,
+  getCanvasPaddingCss,
+  getThumbSizePx,
+} from '../../../lib/productPageDesign';
 import SampleCadModal from '../../../components/SampleCadModal';
 import ProductCard from '../../../components/ProductCard';
 
@@ -21,6 +28,7 @@ export default function ProductClientView({
 }: ProductClientViewProps) {
   const { addEnquiry } = useEnquiry();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { pageConfig } = useProductPageConfig();
   const carouselRef = useRef<HTMLDivElement>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -119,13 +127,20 @@ export default function ProductClientView({
     return arr.length > 0 ? arr : ['/fallback-product.svg'];
   }, [activeImage, initialGallery, product.image, (product as any).gallery]);
 
-  // Desktop Hover Zoom state (defaults to contain with seamless white studio canvas so products are never cropped)
-  const [fitMode, setFitMode] = useState<'contain' | 'cover'>('contain');
+  // Desktop Hover Zoom state (defaults to contain with seamless studio canvas so products are never cropped)
+  const [fitMode, setFitMode] = useState<'contain' | 'cover'>(() => pageConfig.default_fit_mode || 'contain');
   const [isHoverZooming, setIsHoverZooming] = useState(false);
   const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
   const canvasRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (pageConfig?.default_fit_mode) {
+      setFitMode(pageConfig.default_fit_mode);
+    }
+  }, [pageConfig?.default_fit_mode]);
+
   const handleCanvasMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (pageConfig.enable_hover_zoom === 'no') return;
     if (!canvasRef.current) return;
     const rect = canvasRef.current.getBoundingClientRect();
     const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
@@ -297,7 +312,18 @@ export default function ProductClientView({
             <div
               ref={canvasRef}
               className={`gallery-main ${fitMode === 'cover' ? 'is-cover' : 'is-contain'}`}
-              onMouseEnter={() => setIsHoverZooming(true)}
+              style={{
+                border: getCanvasBorderCss(pageConfig.canvas_border),
+                boxShadow: getCanvasShadowCss(pageConfig.canvas_shadow),
+                borderRadius: `${pageConfig.canvas_radius || '8'}px`,
+                background: pageConfig.canvas_bg || '#FFFFFF',
+                padding: fitMode === 'cover' ? 0 : getCanvasPaddingCss(pageConfig.canvas_padding),
+              }}
+              onMouseEnter={() => {
+                if (pageConfig.enable_hover_zoom !== 'no') {
+                  setIsHoverZooming(true);
+                }
+              }}
               onMouseMove={handleCanvasMouseMove}
               onMouseLeave={() => {
                 setIsHoverZooming(false);
@@ -332,7 +358,7 @@ export default function ProductClientView({
               )}
 
               {/* IMAGE COUNTER (when multiple images exist) */}
-              {galleryList.length > 1 && (
+              {galleryList.length > 1 && pageConfig.show_counter_badge === 'yes' && (
                 <span className="gallery-count-badge">
                   {Math.max(1, galleryList.indexOf(activeImage) + 1)} / {galleryList.length}
                 </span>
@@ -360,84 +386,119 @@ export default function ProductClientView({
               </div>
 
               {/* FRAMING FIT MODE TOGGLE */}
-              <button
-                type="button"
-                className="gallery-fit-toggle"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setFitMode((prev) => (prev === 'contain' ? 'cover' : 'contain'));
-                }}
-                title={fitMode === 'contain' ? 'Switch to Fill Frame view' : 'Switch to Full Piece view'}
-                aria-label="Toggle image framing mode"
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  {fitMode === 'contain' ? (
-                    <>
-                      <polyline points="15 3 21 3 21 9" />
-                      <polyline points="9 21 3 21 3 15" />
-                      <line x1="21" y1="3" x2="14" y2="10" />
-                      <line x1="3" y1="21" x2="10" y2="14" />
-                    </>
-                  ) : (
-                    <>
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                      <circle cx="8.5" cy="8.5" r="1.5" />
-                      <polyline points="21 15 16 10 5 21" />
-                    </>
-                  )}
-                </svg>
-                <span>{fitMode === 'contain' ? 'Fill Frame' : 'Full Piece'}</span>
-              </button>
+              {pageConfig.show_fit_toggle === 'yes' && (
+                <button
+                  type="button"
+                  className="gallery-fit-toggle"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setFitMode((prev) => (prev === 'contain' ? 'cover' : 'contain'));
+                  }}
+                  title={fitMode === 'contain' ? 'Switch to Fill Frame view' : 'Switch to Full Piece view'}
+                  aria-label="Toggle image framing mode"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    {fitMode === 'contain' ? (
+                      <>
+                        <polyline points="15 3 21 3 21 9" />
+                        <polyline points="9 21 3 21 3 15" />
+                        <line x1="21" y1="3" x2="14" y2="10" />
+                        <line x1="3" y1="21" x2="10" y2="14" />
+                      </>
+                    ) : (
+                      <>
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <polyline points="21 15 16 10 5 21" />
+                      </>
+                    )}
+                  </svg>
+                  <span>{fitMode === 'contain' ? 'Fill Frame' : 'Full Piece'}</span>
+                </button>
+              )}
 
               {/* EXPAND ACTION PILL */}
-              <div className="gallery-expand-hint">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="15 3 21 3 21 9" />
-                  <polyline points="9 21 3 21 3 15" />
-                  <line x1="21" y1="3" x2="14" y2="10" />
-                  <line x1="3" y1="21" x2="10" y2="14" />
-                </svg>
-                <span>{galleryList.length > 1 ? `Expand (${galleryList.length} views)` : 'Expand View'}</span>
-              </div>
+              {pageConfig.show_expand_hint === 'yes' && (
+                <div className="gallery-expand-hint">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="15 3 21 3 21 9" />
+                    <polyline points="9 21 3 21 3 15" />
+                    <line x1="21" y1="3" x2="14" y2="10" />
+                    <line x1="3" y1="21" x2="10" y2="14" />
+                  </svg>
+                  <span>{galleryList.length > 1 ? `Expand (${galleryList.length} views)` : 'Expand View'}</span>
+                </div>
+              )}
             </div>
 
             {/* THUMBNAILS STRIP DIRECTLY BENEATH MAIN IMAGE (NO VERTICAL GAP) */}
             {galleryList.length > 1 && (
               <div className="gallery-strip">
-                {galleryList.map((img, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    className={activeImage === img ? 'on' : ''}
-                    onClick={() => {
-                      setActiveImage(img);
-                      setLightboxIndex(idx);
-                    }}
-                    aria-label={`View photo ${idx + 1} of ${galleryList.length}`}
-                    title={`View photo ${idx + 1}`}
-                  >
-                    <img
-                      src={img}
-                      alt={`${product.name} view ${idx + 1}`}
-                      onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = '/fallback-product.svg';
+                {galleryList.map((img, idx) => {
+                  const isActive = activeImage === img;
+                  let thumbBorder = 'none';
+                  if (isActive && pageConfig.thumb_border === 'accent') {
+                    thumbBorder = '1.5px solid var(--brand, #0E5C63)';
+                  } else if (pageConfig.thumb_border === 'subtle') {
+                    thumbBorder = '1px solid var(--line, #E2DDD5)';
+                  }
+
+                  let thumbShadow = 'none';
+                  if (pageConfig.thumb_shadow === 'subtle' && isActive) {
+                    thumbShadow = '0 2px 8px rgba(0, 0, 0, 0.08)';
+                  }
+
+                  const thumbSize = getThumbSizePx(pageConfig.thumb_size);
+
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      className={isActive ? 'on' : ''}
+                      style={{
+                        width: `${thumbSize}px`,
+                        height: `${thumbSize}px`,
+                        borderRadius: `${pageConfig.thumb_radius || '6'}px`,
+                        opacity: isActive ? 1 : parseFloat(pageConfig.thumb_opacity || '0.65'),
+                        border: thumbBorder,
+                        boxShadow: thumbShadow,
                       }}
-                    />
-                  </button>
-                ))}
+                      onClick={() => {
+                        setActiveImage(img);
+                        setLightboxIndex(idx);
+                      }}
+                      aria-label={`View photo ${idx + 1} of ${galleryList.length}`}
+                      title={`View photo ${idx + 1}`}
+                    >
+                      <img
+                        src={img}
+                        alt={`${product.name} view ${idx + 1}`}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = '/fallback-product.svg';
+                        }}
+                      />
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
 
           {/* RIGHT SPECS & QUOTE ACTION */}
           <div className="pdp-info-col">
-            <span className="mono" style={{ fontSize: 11, letterSpacing: '0.14em', color: 'var(--brand)', textTransform: 'uppercase' }}>
-              {activeSku || product.sku || product.id} · {product.catName}
-            </span>
-            <div style={{ display: 'flex', alignItems: 'center', marginTop: 8, marginBottom: 2 }}>
-              <span className="made-to-order-tag">Made-To-Order</span>
-            </div>
+            {(pageConfig.show_sku === 'yes' || pageConfig.show_category_meta === 'yes') && (
+              <span className="mono" style={{ fontSize: 11, letterSpacing: '0.14em', color: 'var(--brand)', textTransform: 'uppercase' }}>
+                {pageConfig.show_sku === 'yes' && (activeSku || product.sku || product.id)}
+                {pageConfig.show_sku === 'yes' && pageConfig.show_category_meta === 'yes' && ' · '}
+                {pageConfig.show_category_meta === 'yes' && product.catName}
+              </span>
+            )}
+            {pageConfig.show_made_to_order === 'yes' && (
+              <div style={{ display: 'flex', alignItems: 'center', marginTop: 8, marginBottom: 2 }}>
+                <span className="made-to-order-tag">Made-To-Order</span>
+              </div>
+            )}
             <h1 className="disp" style={{ fontSize: 'clamp(28px, 3.2vw, 40px)', margin: '6px 0 14px', fontWeight: 400, lineHeight: 1.15 }}>
               {product.name}
             </h1>
@@ -481,149 +542,161 @@ export default function ProductClientView({
             </div>
 
             {/* SPECIFICATION TABLE */}
-            <table className="spec-table">
-              <tbody>
-                <tr>
-                  <td>DIMENSIONS (W×D×H)</td>
-                  <td>
-                    {(() => {
-                      if (Array.isArray(product.dims)) {
-                        return `${product.dims[0]} × ${product.dims[1]} × ${product.dims[2]} cm — Customisable to order`;
-                      }
-                      const str = String(product.dims || '').trim();
-                      if (!str || str.toLowerCase().includes('custom')) {
-                        return 'Customisable to project spec';
-                      }
-                      return `${str} — Customisable to order`;
-                    })()}
-                  </td>
-                </tr>
-                <tr>
-                  <td>PRIMARY MATERIAL</td>
-                  <td>{product.material || 'Solid Wood'}</td>
-                </tr>
-                <tr>
-                  <td>FINISH / COATING</td>
-                  <td>{hasExplicitFinish ? (selectedFinish || product.color) : 'Customisable to project spec'}</td>
-                </tr>
-                {product.material2 && product.material2.trim() !== '' && product.material2 !== 'None' && product.material2 !== 'Brass Detailing' && (
+            {pageConfig.show_specs_table === 'yes' && (
+              <table className="spec-table">
+                <tbody>
                   <tr>
-                    <td>SECONDARY / DETAIL</td>
-                    <td>{product.material2}</td>
+                    <td>DIMENSIONS (W×D×H)</td>
+                    <td>
+                      {(() => {
+                        if (Array.isArray(product.dims)) {
+                          return `${product.dims[0]} × ${product.dims[1]} × ${product.dims[2]} cm — Customisable to order`;
+                        }
+                        const str = String(product.dims || '').trim();
+                        if (!str || str.toLowerCase().includes('custom')) {
+                          return 'Customisable to project spec';
+                        }
+                        return `${str} — Customisable to order`;
+                      })()}
+                    </td>
                   </tr>
-                )}
-                <tr>
-                  <td>MINIMUM ORDER</td>
-                  <td>{product.moq} {product.moq === 1 ? 'unit' : 'units'}</td>
-                </tr>
-                <tr>
-                  <td>LEAD TIME</td>
-                  <td>{product.leadTimeText || `${product.lead} working days after sample approval`}</td>
-                </tr>
-                <tr>
-                  <td>PACKING</td>
-                  <td>{product.packing || 'Export-grade carton, knock-down where possible'}</td>
-                </tr>
-                <tr>
-                  <td>INDICATIVE PRICE</td>
-                  <td style={{ color: 'var(--brand)', fontWeight: 700 }}>
-                    {activePrice && activePrice > 0
-                      ? `${product.currencySymbol || '₹'}${activePrice.toLocaleString()} ${product.currency || 'INR'} / unit`
-                      : (product.priceNote || 'Quoted to your spec & quantity')}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                  <tr>
+                    <td>PRIMARY MATERIAL</td>
+                    <td>{product.material || 'Solid Wood'}</td>
+                  </tr>
+                  <tr>
+                    <td>FINISH / COATING</td>
+                    <td>{hasExplicitFinish ? (selectedFinish || product.color) : 'Customisable to project spec'}</td>
+                  </tr>
+                  {product.material2 && product.material2.trim() !== '' && product.material2 !== 'None' && product.material2 !== 'Brass Detailing' && (
+                    <tr>
+                      <td>SECONDARY / DETAIL</td>
+                      <td>{product.material2}</td>
+                    </tr>
+                  )}
+                  {pageConfig.show_moq === 'yes' && (
+                    <tr>
+                      <td>MINIMUM ORDER</td>
+                      <td>{product.moq} {product.moq === 1 ? 'unit' : 'units'}</td>
+                    </tr>
+                  )}
+                  {pageConfig.show_lead_time === 'yes' && (
+                    <tr>
+                      <td>LEAD TIME</td>
+                      <td>{product.leadTimeText || `${product.lead} working days after sample approval`}</td>
+                    </tr>
+                  )}
+                  <tr>
+                    <td>PACKING</td>
+                    <td>{product.packing || 'Export-grade carton, knock-down where possible'}</td>
+                  </tr>
+                  <tr>
+                    <td>INDICATIVE PRICE</td>
+                    <td style={{ color: 'var(--brand)', fontWeight: 700 }}>
+                      {activePrice && activePrice > 0
+                        ? `${product.currencySymbol || '₹'}${activePrice.toLocaleString()} ${product.currency || 'INR'} / unit`
+                        : (product.priceNote || 'Quoted to your spec & quantity')}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            )}
 
             {/* ACTION BOX CONTAINER CARD */}
             <div className="pdp-action-card">
               <div className="pdp-actions-row">
-                <div className="qty-mini pdp-qty-picker">
+                {pageConfig.show_enquiry_btn === 'yes' && (
+                  <>
+                    <div className="qty-mini pdp-qty-picker">
+                      <button
+                        type="button"
+                        style={{
+                          width: 28,
+                          height: 44,
+                          fontSize: 16,
+                          opacity: quantity <= (product.moq || 1) ? 0.35 : 1,
+                          cursor: quantity <= (product.moq || 1) ? 'not-allowed' : 'pointer',
+                        }}
+                        disabled={quantity <= (product.moq || 1)}
+                        onClick={() => setQuantity(Math.max(product.moq || 1, quantity - 1))}
+                        aria-label="Decrease quantity"
+                      >
+                        -
+                      </button>
+                      <span className="pdp-qty-val">{quantity}</span>
+                      <button
+                        type="button"
+                        style={{ width: 28, height: 44, fontSize: 16 }}
+                        onClick={() => setQuantity(quantity + 1)}
+                        aria-label="Increase quantity"
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="btn btn-primary pdp-enquiry-btn"
+                      onClick={() =>
+                        addEnquiry({
+                          id: activeSku || product.id,
+                          name: hasExplicitFinish ? `${product.name} (${selectedFinish})` : product.name,
+                          catName: product.catName,
+                          q: quantity,
+                          image: activeImage || product.image,
+                          moq: product.moq,
+                          material: product.material,
+                          finish: hasExplicitFinish ? selectedFinish : 'Custom to order',
+                          dims: Array.isArray(product.dims) ? product.dims.join(' × ') + ' cm' : product.dims,
+                          unitPrice: activePrice || product.price || 0,
+                          currency: product.currency || 'INR',
+                          currencySymbol: product.currencySymbol || '₹',
+                          slug: product.slug,
+                        })
+                      }
+                    >
+                      {pageConfig.enquiry_btn_text || '+ Add to Project Quote'}
+                    </button>
+                  </>
+                )}
+
+                {pageConfig.show_favorite_btn === 'yes' && (
                   <button
                     type="button"
+                    className="pdp-fav-btn"
+                    onClick={() =>
+                      toggleFavorite({
+                        id: product.id,
+                        name: product.name,
+                        catName: product.catName,
+                        image: activeImage || product.image,
+                        moq: product.moq,
+                        material: product.material,
+                        finish: hasExplicitFinish ? selectedFinish : 'Custom to order',
+                        slug: getProductSlug(product),
+                      })
+                    }
+                    title={isFavorite(product.id) ? 'Remove from Favourites' : 'Save to Favourites'}
+                    aria-label={isFavorite(product.id) ? 'Remove from Favourites' : 'Save to Favourites'}
                     style={{
-                      width: 28,
-                      height: 44,
-                      fontSize: 16,
-                      opacity: quantity <= (product.moq || 1) ? 0.35 : 1,
-                      cursor: quantity <= (product.moq || 1) ? 'not-allowed' : 'pointer',
+                      border: isFavorite(product.id) ? '1.5px solid #B85735' : '1px solid var(--line)',
+                      background: isFavorite(product.id) ? '#FDF6F3' : '#FFFFFF',
                     }}
-                    disabled={quantity <= (product.moq || 1)}
-                    onClick={() => setQuantity(Math.max(product.moq || 1, quantity - 1))}
-                    aria-label="Decrease quantity"
                   >
-                    -
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill={isFavorite(product.id) ? '#B85735' : 'none'}
+                      stroke={isFavorite(product.id) ? '#B85735' : '#111111'}
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                    </svg>
                   </button>
-                  <span className="pdp-qty-val">{quantity}</span>
-                  <button
-                    type="button"
-                    style={{ width: 28, height: 44, fontSize: 16 }}
-                    onClick={() => setQuantity(quantity + 1)}
-                    aria-label="Increase quantity"
-                  >
-                    +
-                  </button>
-                </div>
-
-                <button
-                  type="button"
-                  className="btn btn-primary pdp-enquiry-btn"
-                  onClick={() =>
-                    addEnquiry({
-                      id: activeSku || product.id,
-                      name: hasExplicitFinish ? `${product.name} (${selectedFinish})` : product.name,
-                      catName: product.catName,
-                      q: quantity,
-                      image: activeImage || product.image,
-                      moq: product.moq,
-                      material: product.material,
-                      finish: hasExplicitFinish ? selectedFinish : 'Custom to order',
-                      dims: Array.isArray(product.dims) ? product.dims.join(' × ') + ' cm' : product.dims,
-                      unitPrice: activePrice || product.price || 0,
-                      currency: product.currency || 'INR',
-                      currencySymbol: product.currencySymbol || '₹',
-                      slug: product.slug,
-                    })
-                  }
-                >
-                  + Add to Enquiry
-                </button>
-
-                <button
-                  type="button"
-                  className="pdp-fav-btn"
-                  onClick={() =>
-                    toggleFavorite({
-                      id: product.id,
-                      name: product.name,
-                      catName: product.catName,
-                      image: activeImage || product.image,
-                      moq: product.moq,
-                      material: product.material,
-                      finish: hasExplicitFinish ? selectedFinish : 'Custom to order',
-                      slug: getProductSlug(product),
-                    })
-                  }
-                  title={isFavorite(product.id) ? 'Remove from Favourites' : 'Save to Favourites'}
-                  aria-label={isFavorite(product.id) ? 'Remove from Favourites' : 'Save to Favourites'}
-                  style={{
-                    border: isFavorite(product.id) ? '1.5px solid #B85735' : '1px solid var(--line)',
-                    background: isFavorite(product.id) ? '#FDF6F3' : '#FFFFFF',
-                  }}
-                >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill={isFavorite(product.id) ? '#B85735' : 'none'}
-                    stroke={isFavorite(product.id) ? '#B85735' : '#111111'}
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                  </svg>
-                </button>
+                )}
               </div>
 
               <div className="pdp-sub-links">
@@ -637,32 +710,34 @@ export default function ProductClientView({
             </div>
 
             {/* TRUST CARDS DIRECTLY UNDER ACTION CARD */}
-            <div className="pdp-trust-grid" style={{ marginTop: 20 }}>
-              <div className="pdp-trust-card">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                </svg>
-                <span>Prototype before bulk</span>
-              </div>
+            {pageConfig.show_trust_badges === 'yes' && (
+              <div className="pdp-trust-grid" style={{ marginTop: 20 }}>
+                <div className="pdp-trust-card">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                  <span>Prototype before bulk</span>
+                </div>
 
-              <div className="pdp-trust-card">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="1" y="3" width="15" height="13" />
-                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-                  <circle cx="5.5" cy="18.5" r="2.5" />
-                  <circle cx="18.5" cy="18.5" r="2.5" />
-                </svg>
-                <span>Door-to-door freight</span>
-              </div>
+                <div className="pdp-trust-card">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="1" y="3" width="15" height="13" />
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                    <circle cx="5.5" cy="18.5" r="2.5" />
+                    <circle cx="18.5" cy="18.5" r="2.5" />
+                  </svg>
+                  <span>Door-to-door freight</span>
+                </div>
 
-              <div className="pdp-trust-card">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11z" />
-                  <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-                </svg>
-                <span>FSC & low-VOC options</span>
+                <div className="pdp-trust-card">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.1 2 7 0 6-4.5 11-10 11z" />
+                    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                  </svg>
+                  <span>FSC & low-VOC options</span>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -744,7 +819,7 @@ export default function ProductClientView({
       </section>
 
       {/* RELATED PRODUCTS CAROUSEL */}
-      {relatedProducts.length > 0 && (
+      {relatedProducts.length > 0 && pageConfig.show_related_products === 'yes' && (
         <section className="blk tight" style={{ borderTop: '1px solid var(--line)', marginTop: 20, paddingTop: 48 }}>
           <div className="sec-head" style={{ marginBottom: 24, alignItems: 'center' }}>
             <div>
@@ -783,7 +858,7 @@ export default function ProductClientView({
       )}
 
       {/* RECENTLY VIEWED PRODUCTS SECTION (EXACT SAME PROD-GRID CARDS AS ABOVE) */}
-      {recentProducts.length > 0 && (
+      {recentProducts.length > 0 && pageConfig.show_recently_viewed === 'yes' && (
         <section className="blk tight" style={{ borderTop: '1px solid var(--line)', marginTop: 40, paddingTop: 48 }}>
           <div className="sec-head" style={{ marginBottom: 24 }}>
             <div>

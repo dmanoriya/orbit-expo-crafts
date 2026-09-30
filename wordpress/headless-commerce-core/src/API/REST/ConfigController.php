@@ -52,6 +52,12 @@ class ConfigController extends RestController {
 			'callback'            => array( $this, 'get_product_grid' ),
 			'permission_callback' => '__return_true',
 		) );
+
+		register_rest_route( $this->namespace, '/product-page', array(
+			'methods'             => \WP_REST_Server::READABLE,
+			'callback'            => array( $this, 'get_product_page' ),
+			'permission_callback' => '__return_true',
+		) );
 	}
 
 	public function get_config( $request ) {
@@ -75,11 +81,16 @@ class ConfigController extends RestController {
 			),
 			'footer'            => \HeadlessCommerceCore\Admin\FooterManager::get_footer_data(),
 			'productGrid'       => ProductGridManager::get_grid_data(),
+			'productPage'       => \HeadlessCommerceCore\Admin\ProductPageDesignManager::get_page_data(),
 		) );
 	}
 
 	public function get_product_grid( $request ) {
 		return $this->success_response( ProductGridManager::get_grid_data() );
+	}
+
+	public function get_product_page( $request ) {
+		return $this->success_response( \HeadlessCommerceCore\Admin\ProductPageDesignManager::get_page_data() );
 	}
 
 	public function get_homepage( $request ) {

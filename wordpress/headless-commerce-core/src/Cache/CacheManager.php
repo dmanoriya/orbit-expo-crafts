@@ -32,6 +32,7 @@ class CacheManager {
 		add_action( 'updated_option_hcc_frontend_url', array( __CLASS__, 'purge_all_cache' ) );
 		add_action( 'updated_option_hcc_homepage_data', array( __CLASS__, 'purge_all_cache' ) );
 		add_action( 'updated_option_hcc_product_grid_options', array( __CLASS__, 'purge_all_cache' ) );
+		add_action( 'updated_option_hcc_product_page_options', array( __CLASS__, 'purge_all_cache' ) );
 	}
 
 	public static function get( $key ) {
