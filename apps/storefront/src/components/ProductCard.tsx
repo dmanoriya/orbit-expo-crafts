@@ -123,7 +123,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             loading={priorityImage ? 'eager' : 'lazy'}
             onError={(e) => {
               e.currentTarget.onerror = null;
-              e.currentTarget.src = (p as any).cat ? `/categories/${(p as any).cat}.jpg` : '/fallback-product.svg';
+              e.currentTarget.src = '/fallback-product.svg';
             }}
           />
         </Link>

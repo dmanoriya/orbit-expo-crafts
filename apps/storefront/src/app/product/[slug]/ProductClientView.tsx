@@ -354,7 +354,7 @@ export default function ProductClientView({
                   }}
                   onError={(e) => {
                     e.currentTarget.onerror = null;
-                    e.currentTarget.src = product.cat ? `/categories/${product.cat}.jpg` : '/fallback-product.svg';
+                    e.currentTarget.src = '/fallback-product.svg';
                   }}
                 />
               </div>
@@ -421,7 +421,7 @@ export default function ProductClientView({
                       alt={`${product.name} view ${idx + 1}`}
                       onError={(e) => {
                         e.currentTarget.onerror = null;
-                        e.currentTarget.src = product.cat ? `/categories/${product.cat}.jpg` : '/fallback-product.svg';
+                        e.currentTarget.src = '/fallback-product.svg';
                       }}
                     />
                   </button>
@@ -933,7 +933,7 @@ export default function ProductClientView({
                 }}
                 onError={(e) => {
                   e.currentTarget.onerror = null;
-                  e.currentTarget.src = product.cat ? `/categories/${product.cat}.jpg` : '/fallback-product.svg';
+                  e.currentTarget.src = '/fallback-product.svg';
                 }}
               />
             </div>
@@ -978,7 +978,7 @@ export default function ProductClientView({
                     alt={`${product.name} thumb ${idx + 1}`}
                     onError={(e) => {
                       e.currentTarget.onerror = null;
-                      e.currentTarget.src = product.cat ? `/categories/${product.cat}.jpg` : '/fallback-product.svg';
+                      e.currentTarget.src = '/fallback-product.svg';
                     }}
                   />
                 </button>
